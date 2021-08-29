@@ -37,7 +37,7 @@ from InerukiX.services.pyrogram import pbot
 )
 @admins_only
 async def hmm(_, message):
-    global daisy_chats
+    global Ineruki_chats
     try:
         user_id = message.from_user.id
     except:
