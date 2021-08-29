@@ -1,0 +1,3 @@
+files:
+  - source: InerukiX/localization/en.yaml
+    translation: /**/InerukiX/localization/%locale_with_underscore%.yaml
