@@ -23,7 +23,7 @@ jobs:
 
           find: "errorshivanshx"
 
-          replace: "Inerukix"
+          replace: "errorshivansh"
 
       - name: Create Pull Request
 
