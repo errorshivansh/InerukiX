@@ -21,9 +21,9 @@ jobs:
 
         with:
 
-          find: "errorshivanshX"
+          find: "daisy"
 
-          replace: "errorshivansh"
+          replace: "Ineruki"
 
       - name: Create Pull Request
 
