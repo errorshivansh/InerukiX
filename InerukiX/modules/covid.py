@@ -1,5 +1,5 @@
 # Copyright (C) 2021 TheHamkerCat
-# Edited by errorshivanshX
+# Edited by errorshivansh
 
 # This file is part of Ineruki (Telegram Bot)
 

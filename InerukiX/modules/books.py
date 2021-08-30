@@ -1,6 +1,6 @@
 # Copyright (C) 2020 DevsExpo
 # Copyright (C) 2021 Inuka Asith
-# Copyright (C) 2021 errorshivanshX
+# Copyright (C) 2021 errorshivansh
 
 # This file is part of Ineruki (Telegram Bot)
 

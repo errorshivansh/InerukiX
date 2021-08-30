@@ -1,4 +1,4 @@
-# Copyright (C) 2021 AlainX &errorshivanshX
+# Copyright (C) 2021 AlainX &errorshivansh
 
 # This file is part of Ineruki (Telegram Bot)
 
