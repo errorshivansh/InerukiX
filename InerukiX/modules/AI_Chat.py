@@ -1,4 +1,4 @@
-# Copyright (C) 2021 Red-Aura & TeamInerukiX & HamkerCat
+# Copyright (C) 2021 Red-Aura & errorshivanshX & HamkerCat
 
 # This file is part of Ineruki (Telegram Bot)
 

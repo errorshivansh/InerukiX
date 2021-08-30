@@ -1,5 +1,5 @@
 # Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 TeamInerukiX
+# Copyright (C) 2021 errorshivanshX
 # Copyright (C) 2020 Inuka Asith
 
 # This file is part of Ineruki (Telegram Bot)

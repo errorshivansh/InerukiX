@@ -109,7 +109,7 @@ async def alive_function(answers):
     )
 
     msg = f"""
-**[InerukiX✨](https://github.com/TeamInerukiX):**
+**[InerukiX✨](https://github.com/errorshivanshX):**
 **MainBot:** `{bot_state}`
 **UserBot:** `Alive`
 **Python:** `3.9`

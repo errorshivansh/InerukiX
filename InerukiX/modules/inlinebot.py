@@ -1,4 +1,4 @@
-# Copyright (C) 2021 TheHamkerCat & TeamInerukiX
+# Copyright (C) 2021 TheHamkerCat & errorshivanshX
 
 # Ported some parts From WilliamButcherBot.
 # Pokedex Inline Credit Red-Aura[Madepranav]

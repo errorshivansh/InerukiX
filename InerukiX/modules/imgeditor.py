@@ -1,5 +1,5 @@
 # By @TroJanzHEX
-# Improved by TeamInerukiX
+# Improved by errorshivanshX
 
 from pyrogram import filters
 from pyrogram.types import (
