@@ -21,7 +21,7 @@ jobs:
 
         with:
 
-          find: "TeamIneruki"
+          find: "errorshivanshX"
 
           replace: "errorshivansh"
 
