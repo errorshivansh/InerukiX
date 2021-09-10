@@ -19,9 +19,9 @@ from aiogram.dispatcher.filters import Filter
 from aiogram.types.callback_query import CallbackQuery
 from aiogram.utils.exceptions import BadRequest
 
-from InerukiX import BOT_ID, dp
-from InerukiX.modules.utils.language import get_strings
-from InerukiX.modules.utils.user_details import check_admin_rights
+from Ineruki  import BOT_ID, dp
+from Ineruki .modules.utils.language import get_strings
+from Ineruki .modules.utils.user_details import check_admin_rights
 
 
 @dataclass

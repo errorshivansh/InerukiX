@@ -2,7 +2,7 @@ import os
 
 from telethon.tl.types import *
 
-from InerukiX.function.pluginhelpers import runcmd
+from Ineruki .function.pluginhelpers import runcmd
 
 
 async def convert_to_image(event, borg):

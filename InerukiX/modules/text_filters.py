@@ -14,7 +14,7 @@ copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, E PRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -26,14 +26,14 @@ SOFTWARE.
 
 from pyrogram import filters
 
-from InerukiX.db.mongo_helpers.filterdb import (
+from Ineruki .db.mongo_helpers.filterdb import (
     delete_filter,
     get_filter,
     get_filters_names,
     save_filter,
 )
-from InerukiX.function.pluginhelpers import member_permissions
-from InerukiX.services.pyrogram import pbot as app
+from Ineruki .function.pluginhelpers import member_permissions
+from Ineruki .services.pyrogram import pbot as app
 
 # Original file >> https://github.com/TheHamkerCat/WilliamButcherBot/blob/dev/wbb/modules/filters.py
 

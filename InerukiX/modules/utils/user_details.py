@@ -23,10 +23,10 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.utils.exceptions import BadRequest, ChatNotFound, Unauthorized
 from telethon.tl.functions.users import GetFullUserRequest
 
-from InerukiX import OPERATORS, bot
-from InerukiX.services.mongo import db
-from InerukiX.services.redis import bredis
-from InerukiX.services.telethon import tbot
+from Ineruki  import OPERATORS, bot
+from Ineruki .services.mongo import db
+from Ineruki .services.redis import bredis
+from Ineruki .services.telethon import tbot
 
 from .language import get_string
 from .message import get_arg

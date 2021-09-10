@@ -21,9 +21,9 @@ import asyncio
 
 from telethon.errors.rpcerrorlist import MessageDeleteForbiddenError
 
-from InerukiX import bot
-from InerukiX.decorator import register
-from InerukiX.services.telethon import tbot
+from Ineruki  import bot
+from Ineruki .decorator import register
+from Ineruki .services.telethon import tbot
 
 from .utils.language import get_strings_dec
 from .utils.notes import BUTTONS

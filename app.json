@@ -1,16 +1,16 @@
 {
-  "name": "InerukiX",
+  "name": "Ineruki ",
   "description": "?",
   "keywords": [
     "telegram",
     "Ineruki",
     "plugin",
-    "telegram-InerukiX",
+    "telegram-Ineruki ",
     "fuck-TG"
   ],
   "repository": "https://github.com/errorshivansh/Ineruki-x",
   "website": "Inerukiproject.studio",
-  "success_url": "t.me/InerukiXUpdates",
+  "success_url": "t.me/Ineruki Updates",
   "buildpacks": [
    {
      "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest"
@@ -49,7 +49,7 @@
     },
     "MONGO_DB": {
       "description": "Don't change.",
-      "value": "InerukiX",
+      "value": "Ineruki ",
       "required": false
     },
     "HEROKU_APP_NAME": {
@@ -64,7 +64,7 @@
     },
     "UPSTREAM_REPO_URL": {
       "description": "Only for fork users else don't change",
-      "value": "https://github.com/errorshivansh/InerukiX-v2.0",
+      "value": "https://github.com/errorshivansh/Ineruki -v2.0",
       "required": false  
     },
     "API_PORT": {

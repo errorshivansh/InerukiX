@@ -2,7 +2,7 @@
 echo "
 *********** STARTING DEPLOY ***********
 
-INERUKIX v2 -Base Aiogram
+INERUKI  v2 -Base Aiogram
 (C) 2020-2021 by @errorshivansh
 Support Chat is @INERUKISUPPORT_OFFICIAL.
 
@@ -30,7 +30,7 @@ ech_final () {
     echo "
     
 =++---------------------------------------------++=
-INERUKIX. Deployed Successfully
+INERUKI . Deployed Successfully
 
  ***************************
 
@@ -50,7 +50,7 @@ INERUKIX. Deployed Successfully
 
  ******************* v0.0.1 ** 
 
-Thanks for deploying InerukiX
+Thanks for deploying Ineruki 
 (C) 2020-2021 by @errorshivansh
 Support Chat is @INERUKISUPPORT_OFFICIAL.
 =++---------------------------------------------++=

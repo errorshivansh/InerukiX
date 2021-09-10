@@ -16,7 +16,7 @@
 from aiogram import types
 from aiogram.dispatcher.filters import BoundFilter
 
-from InerukiX import dp
+from Ineruki  import dp
 
 
 class OnlyPM(BoundFilter):

@@ -20,15 +20,15 @@ from aiogram import types
 from aiogram.dispatcher.handler import SkipHandler
 from sentry_sdk import configure_scope
 
-from InerukiX import BOT_USERNAME, dp
-from InerukiX.config import get_bool_key
-from InerukiX.modules.error import parse_update
-from InerukiX.utils.filters import ALL_FILTERS
-from InerukiX.utils.logger import log
+from Ineruki  import BOT_USERNAME, dp
+from Ineruki .config import get_bool_key
+from Ineruki .modules.error import parse_update
+from Ineruki .utils.filters import ALL_FILTERS
+from Ineruki .utils.logger import log
 
 DEBUG_MODE = get_bool_key("DEBUG_MODE")
 ALLOW_F_COMMANDS = get_bool_key("ALLOW_FORWARDS_COMMANDS")
-ALLOW_COMMANDS_FROM_EXC = get_bool_key("ALLOW_EXCEL")
+ALLOW_COMMANDS_FROM_E C = get_bool_key("ALLOW_E CEL")
 CMD_NOT_MONO = get_bool_key("DISALLOW_MONO_CMDS")
 
 REGISTRED_COMMANDS = []
@@ -38,7 +38,7 @@ COMMANDS_ALIASES = {}
 log.info("Filters to load: %s", str(ALL_FILTERS))
 for module_name in ALL_FILTERS:
     log.debug("Importing " + module_name)
-    imported_module = import_module("InerukiX.utils.filters." + module_name)
+    imported_module = import_module("Ineruki .utils.filters." + module_name)
 log.info("Filters loaded!")
 
 
@@ -49,7 +49,7 @@ def register(*args, cmds=None, f=None, allow_edited=True, allow_kwargs=False, **
     register_kwargs = {}
 
     if cmds and not f:
-        regex = r"\A^{}(".format("[!/]" if ALLOW_COMMANDS_FROM_EXC else "/")
+        regex = r"\A^{}(".format("[!/]" if ALLOW_COMMANDS_FROM_E C else "/")
 
         if "not_forwarded" not in kwargs and ALLOW_F_COMMANDS is False:
             kwargs["not_forwarded"] = True
@@ -79,7 +79,7 @@ def register(*args, cmds=None, f=None, allow_edited=True, allow_kwargs=False, **
         register_kwargs["regexp"] = regex
 
     elif f == "text":
-        register_kwargs["content_types"] = types.ContentTypes.TEXT
+        register_kwargs["content_types"] = types.ContentTypes.TE T
 
     elif f == "welcome":
         register_kwargs["content_types"] = types.ContentTypes.NEW_CHAT_MEMBERS

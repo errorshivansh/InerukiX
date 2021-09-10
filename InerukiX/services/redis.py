@@ -17,8 +17,8 @@ import sys
 
 import redis as redis_lib
 
-from InerukiX import log
-from InerukiX.config import get_str_key
+from Ineruki  import log
+from Ineruki .config import get_str_key
 
 # Init Redis
 redis = redis_lib.Redis(

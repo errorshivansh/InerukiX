@@ -27,11 +27,11 @@ import aiohttp
 from googletrans import Translator as google_translator
 from pyrogram import filters
 
-from InerukiX import BOT_ID
-from InerukiX.db.mongo_helpers.aichat import add_chat, get_session, remove_chat
-from InerukiX.function.inlinehelper import arq
-from InerukiX.function.pluginhelpers import admins_only, edit_or_reply
-from InerukiX.services.pyrogram import pbot as Inerukix
+from Ineruki  import BOT_ID
+from Ineruki .db.mongo_helpers.aichat import add_chat, get_session, remove_chat
+from Ineruki .function.inlinehelper import arq
+from Ineruki .function.pluginhelpers import admins_only, edit_or_reply
+from Ineruki .services.pyrogram import pbot as Inerukix
 
 translator = google_translator()
 
@@ -288,7 +288,7 @@ async def inuka(client, message):
 
 
 @Inerukix.on_message(
-    filters.regex("Ineruki|Ineruki|InerukiX|Inerukix|Inerukix")
+    filters.regex("Ineruki|Ineruki|Ineruki |Inerukix|Inerukix")
     & ~filters.bot
     & ~filters.via_bot
     & ~filters.forwarded
@@ -367,7 +367,7 @@ __help__ = """
 <b> Chatbot </b>
 INERUKI AI 3.0 IS THE ONLY AI SYSTEM WHICH CAN DETECT & REPLY UPTO 200 LANGUAGES
 
- - /chatbot [ON/OFF]: Enables and disables AI Chat mode (EXCLUSIVE)
+ - /chatbot [ON/OFF]: Enables and disables AI Chat mode (E CLUSIVE)
  - /chatbot EN : Enables English only chatbot
  
  

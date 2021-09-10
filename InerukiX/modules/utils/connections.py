@@ -14,10 +14,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from aiogram.utils.exceptions import Unauthorized
 
-from InerukiX.modules.utils.user_details import is_user_admin
-from InerukiX.services.mongo import db
-from InerukiX.services.redis import redis
-from InerukiX.utils.cached import cached
+from Ineruki .modules.utils.user_details import is_user_admin
+from Ineruki .services.mongo import db
+from Ineruki .services.redis import redis
+from Ineruki .utils.cached import cached
 
 
 async def get_connected_chat(

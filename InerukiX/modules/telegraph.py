@@ -24,10 +24,10 @@ from PIL import Image
 from telegraph import Telegraph, exceptions, upload_file
 from telethon import events
 
-from InerukiX.services.telethon import tbot as borg
+from Ineruki .services.telethon import tbot as borg
 
 telegraph = Telegraph()
-r = telegraph.create_account(short_name="InerukiX")
+r = telegraph.create_account(short_name="Ineruki ")
 auth_url = r["auth_url"]
 
 # Will change later

@@ -6,7 +6,7 @@ import aiofiles
 import aiohttp
 from pyrogram import filters
 
-from InerukiX.services.pyrogram import pbot as LYCIA
+from Ineruki .services.pyrogram import pbot as LYCIA
 
 
 async def fetch(url):
@@ -33,7 +33,7 @@ async def ai_lycia(url):
 @LYCIA.on_message(filters.command("Ineruki"))
 async def Lycia(_, message):
     if len(message.command) < 2:
-        await message.reply_text("InerukiX AI Voice Chatbot")
+        await message.reply_text("Ineruki  AI Voice Chatbot")
         return
     text = message.text.split(None, 1)[1]
     lycia = text.replace(" ", "%20")
@@ -44,7 +44,7 @@ async def Lycia(_, message):
         )
         chatbot = L["message"]
         VoiceAi = f"https://lyciavoice.herokuapp.com/lycia?text={chatbot}&lang=hi"
-        name = "InerukiX"
+        name = "Ineruki "
     except Exception as e:
         await m.edit(str(e))
         return

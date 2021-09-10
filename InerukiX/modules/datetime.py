@@ -23,9 +23,9 @@ import requests
 from telethon import types
 from telethon.tl import functions
 
-from InerukiX.config import get_str_key
-from InerukiX.services.events import register
-from InerukiX.services.telethon import tbot
+from Ineruki .config import get_str_key
+from Ineruki .services.events import register
+from Ineruki .services.telethon import tbot
 
 TIME_API_KEY = get_str_key("TIME_API_KEY", required=False)
 

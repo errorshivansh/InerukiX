@@ -32,9 +32,9 @@ from pyrogram.types import Message
 from youtube_dl import YoutubeDL
 from youtubesearchpython import SearchVideos
 
-from InerukiX.function.inlinehelper import arq
-from InerukiX.function.pluginhelpers import get_text, progress
-from InerukiX.services.pyrogram import pbot as Client
+from Ineruki .function.inlinehelper import arq
+from Ineruki .function.pluginhelpers import get_text, progress
+from Ineruki .services.pyrogram import pbot as Client
 
 dl_limit = 0
 

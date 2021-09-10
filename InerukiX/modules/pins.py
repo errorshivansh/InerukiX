@@ -15,8 +15,8 @@
 
 from aiogram.utils.exceptions import BadRequest
 
-from InerukiX import bot
-from InerukiX.decorator import register
+from Ineruki  import bot
+from Ineruki .decorator import register
 
 from .utils.connections import chat_connection
 from .utils.language import get_strings_dec

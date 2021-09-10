@@ -33,7 +33,7 @@ from aiogram.utils.exceptions import (
     MessageToDeleteNotFound,
 )
 
-from InerukiX.decorator import register
+from Ineruki .decorator import register
 
 from .utils.disable import disableable_dec
 from .utils.httpx import http

@@ -16,8 +16,8 @@
 import os
 import signal
 
-from InerukiX.services.redis import redis
-from InerukiX.utils.logger import log
+from Ineruki .services.redis import redis
+from Ineruki .utils.logger import log
 
 
 def exit_gracefully(signum, frame):

@@ -26,10 +26,10 @@ from aiogram.utils.callback_data import CallbackData
 from aiogram.utils.deep_linking import get_start_link
 from aiogram.utils.exceptions import BotBlocked, CantInitiateConversation
 
-from InerukiX import bot
-from InerukiX.decorator import register
-from InerukiX.services.mongo import db
-from InerukiX.services.redis import redis
+from Ineruki  import bot
+from Ineruki .decorator import register
+from Ineruki .services.mongo import db
+from Ineruki .services.redis import redis
 
 from .utils.connections import chat_connection, get_connection_data, set_connected_chat
 from .utils.language import get_strings_dec
@@ -78,7 +78,7 @@ async def connect_to_chat_direct(message, strings):
         await def_connect_chat(message, user_id, chat_id, chat_title)
     except (BotBlocked, CantInitiateConversation):
         await message.reply(strings["connected_pm_to_me"].format(chat_name=chat_title))
-        redis.set("InerukiX_connected_start_state:" + str(user_id), 1)
+        redis.set("Ineruki _connected_start_state:" + str(user_id), 1)
 
 
 # In pm without args - show last connected chats
@@ -211,7 +211,7 @@ async def allow_users_to_connect(message, strings, chat):
 @get_strings_dec("connections")
 @chat_connection()
 async def connected_start_state(message, strings, chat):
-    key = "InerukiX_connected_start_state:" + str(message.from_user.id)
+    key = "Ineruki _connected_start_state:" + str(message.from_user.id)
     if redis.get(key):
         await message.reply(
             strings["pm_connected"].format(chat_name=chat["chat_title"])

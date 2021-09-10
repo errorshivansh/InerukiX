@@ -4,11 +4,11 @@ from pyrogram import filters
 from pyrogram.errors import ChatAdminRequired, RightForbidden, RPCError
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
-from InerukiX.function.pluginhelpers import member_permissions
-from InerukiX.services.mongo import mongodb as db
-from InerukiX.services.pyrogram import pbot as app
+from Ineruki .function.pluginhelpers import member_permissions
+from Ineruki .services.mongo import mongodb as db
+from Ineruki .services.pyrogram import pbot as app
 
-BTN_URL_REGEX = compile_re(r"(\[([^\[]+?)\]\(buttonurl:(?:/{0,2})(.+?)(:same)?\))")
+BTN_URL_REGE  = compile_re(r"(\[([^\[]+?)\]\(buttonurl:(?:/{0,2})(.+?)(:same)?\))")
 
 
 async def parse_button(text: str):
@@ -17,7 +17,7 @@ async def parse_button(text: str):
     prev = 0
     note_data = ""
     buttons = []
-    for match in BTN_URL_REGEX.finditer(markdown_note):
+    for match in BTN_URL_REGE .finditer(markdown_note):
         # Check if btnurl is escaped
         n_escapes = 0
         to_check = match.start(1) - 1

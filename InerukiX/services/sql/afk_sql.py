@@ -5,7 +5,7 @@ import time
 
 from sqlalchemy import Boolean, Column, Integer, String, UnicodeText
 
-from InerukiX.services.sql import BASE, SESSION
+from Ineruki .services.sql import BASE, SESSION
 
 
 class AFK(BASE):

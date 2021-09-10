@@ -34,11 +34,11 @@ from babel.dates import format_datetime
 from pymongo import ReplaceOne
 from telethon.errors.rpcerrorlist import MessageDeleteForbiddenError
 
-from InerukiX import bot
-from InerukiX.decorator import register
-from InerukiX.services.mongo import db
-from InerukiX.services.redis import redis
-from InerukiX.services.telethon import tbot
+from Ineruki  import bot
+from Ineruki .decorator import register
+from Ineruki .services.mongo import db
+from Ineruki .services.redis import redis
+from Ineruki .services.telethon import tbot
 
 from .utils.connections import chat_connection, set_connected_command
 from .utils.disable import disableable_dec

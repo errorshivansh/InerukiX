@@ -19,8 +19,8 @@ from faker import Faker
 from faker.providers import internet
 from telethon import events
 
-from InerukiX.function.telethonbasics import is_admin
-from InerukiX.services.telethon import tbot
+from Ineruki .function.telethonbasics import is_admin
+from Ineruki .services.telethon import tbot
 
 
 @tbot.on(events.NewMessage(pattern="/fakegen$"))

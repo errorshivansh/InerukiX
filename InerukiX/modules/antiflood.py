@@ -32,22 +32,22 @@ from aiogram.types.message import ContentType, Message
 from aiogram.utils.callback_data import CallbackData
 from babel.dates import format_timedelta
 
-from InerukiX import dp
-from InerukiX.decorator import register
-from InerukiX.modules.utils.connections import chat_connection
-from InerukiX.modules.utils.language import get_strings, get_strings_dec
-from InerukiX.modules.utils.message import (
+from Ineruki  import dp
+from Ineruki .decorator import register
+from Ineruki .modules.utils.connections import chat_connection
+from Ineruki .modules.utils.language import get_strings, get_strings_dec
+from Ineruki .modules.utils.message import (
     InvalidTimeUnit,
     convert_time,
     get_args,
     need_args_dec,
 )
-from InerukiX.modules.utils.restrictions import ban_user, kick_user, mute_user
-from InerukiX.modules.utils.user_details import get_user_link, is_user_admin
-from InerukiX.services.mongo import db
-from InerukiX.services.redis import bredis, redis
-from InerukiX.utils.cached import cached
-from InerukiX.utils.logger import log
+from Ineruki .modules.utils.restrictions import ban_user, kick_user, mute_user
+from Ineruki .modules.utils.user_details import get_user_link, is_user_admin
+from Ineruki .services.mongo import db
+from Ineruki .services.redis import bredis, redis
+from Ineruki .utils.cached import cached
+from Ineruki .utils.logger import log
 
 cancel_state = CallbackData("cancel_state", "user_id")
 
@@ -210,7 +210,7 @@ async def setflood_command(message: Message, chat: dict, strings: dict):
 
 @register(
     state=AntiFloodConfigState.expiration_proc,
-    content_types=ContentType.TEXT,
+    content_types=ContentType.TE T,
     allow_kwargs=True,
 )
 @chat_connection()

@@ -1,2 +1,2 @@
-INERUKIX: python3 -m InerukiX
-ps:scale INERUKIX=1
+INERUKI : python3 -m Ineruki 
+ps:scale INERUKI =1

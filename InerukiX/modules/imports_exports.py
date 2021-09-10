@@ -27,9 +27,9 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types.input_file import InputFile
 from babel.dates import format_timedelta
 
-from InerukiX import OPERATORS, bot
-from InerukiX.decorator import register
-from InerukiX.services.redis import redis
+from Ineruki  import OPERATORS, bot
+from Ineruki .decorator import register
+from Ineruki .services.redis import redis
 
 from . import LOADED_MODULES
 from .utils.connections import chat_connection
@@ -148,7 +148,7 @@ async def import_fun(message, document, chat, strings):
 
     imported = []
     for module in [m for m in LOADED_MODULES if hasattr(m, "__import__")]:
-        module_name = module.__name__.replace("InerukiX.modules.", "")
+        module_name = module.__name__.replace("Ineruki .modules.", "")
         if module_name not in data:
             continue
         if not data[module_name]:

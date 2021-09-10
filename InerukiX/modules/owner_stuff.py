@@ -25,12 +25,12 @@ import sys
 import rapidjson
 import requests
 
-from InerukiX import INERUKI_VERSION, OWNER_ID, bot, dp
-from InerukiX.decorator import COMMANDS_ALIASES, REGISTRED_COMMANDS, register
-from InerukiX.modules import LOADED_MODULES
-from InerukiX.services.mongo import db, mongodb
-from InerukiX.services.redis import redis
-from InerukiX.services.telethon import tbot
+from Ineruki  import INERUKI_VERSION, OWNER_ID, bot, dp
+from Ineruki .decorator import COMMANDS_ALIASES, REGISTRED_COMMANDS, register
+from Ineruki .modules import LOADED_MODULES
+from Ineruki .services.mongo import db, mongodb
+from Ineruki .services.redis import redis
+from Ineruki .services.telethon import tbot
 
 from .utils.covert import convert_size
 from .utils.message import need_args_dec
@@ -166,7 +166,7 @@ async def bot_stop(message):
 @register(cmds="restart", is_owner=True)
 async def restart_bot(message):
     await message.reply("Ineruki will be restarted...")
-    args = [sys.executable, "-m", "InerukiX"]
+    args = [sys.executable, "-m", "Ineruki "]
     os.execl(sys.executable, *args)
 
 
@@ -184,7 +184,7 @@ async def upgrade(message):
             await m.edit_text("There's nothing to upgrade.")
         else:
             await m.edit_text("Restarting...")
-            args = [sys.executable, "-m", "InerukiX"]
+            args = [sys.executable, "-m", "Ineruki "]
             os.execl(sys.executable, *args)
     else:
         await m.edit_text(

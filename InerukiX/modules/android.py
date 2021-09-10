@@ -24,14 +24,14 @@ import rapidjson as json
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from bs4 import BeautifulSoup
 
-from InerukiX import decorator
-from InerukiX.decorator import register
+from Ineruki  import decorator
+from Ineruki .decorator import register
 
 from .utils.android import GetDevice
 from .utils.disable import disableable_dec
 from .utils.message import get_arg, get_cmd
 
-MIUI_FIRM = "https://raw.githubusercontent.com/XiaomiFirmwareUpdater/miui-updates-tracker/master/data/latest.yml"
+MIUI_FIRM = "https://raw.githubusercontent.com/ iaomiFirmwareUpdater/miui-updates-tracker/master/data/latest.yml"
 REALME_FIRM = "https://raw.githubusercontent.com/RealmeUpdater/realme-updates-tracker/master/data/latest.yml"
 
 

@@ -21,9 +21,9 @@ import datetime
 
 from telethon.tl import functions, types
 
-from InerukiX.services.events import register
-from InerukiX.services.telethon import tbot
-from InerukiX.services.telethonuserbot import ubot
+from Ineruki .services.events import register
+from Ineruki .services.telethon import tbot
+from Ineruki .services.telethonuserbot import ubot
 
 
 async def is_register_admin(chat, user):

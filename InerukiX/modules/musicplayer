@@ -18,18 +18,18 @@
 
 __mod_name__ = "Music Player"
 __help__ = """
-          <b>》** INERUKIXMUSIC v2 ** 《</b>
+          <b>》** INERUKI MUSIC v2 ** 《</b>
             
- INERUKIXMUSIC plays plays music in your group's voice chat
+ INERUKI MUSIC plays plays music in your group's voice chat
  
- Assistant name >> @InerukiXhelper
+ Assistant name >> @Ineruki helper
  
 <b> Setting up </b>
 
 1) Make bot admin
 2) Start a voice chat
 3) Try `/play [song name]` for the first time by an admin
-*) If userbot joined enjoy music, If not add @InerukiXhelper to your group and retry
+*) If userbot joined enjoy music, If not add @Ineruki helper to your group and retry
 
 <b> Commands </b>
 
@@ -53,7 +53,7 @@ __help__ = """
 =>> More tools 🧑‍🔧
 
   /admincache: Updates admin info of your group. Try if bot isn't recognize admin
-  /userbotjoin: Invite @InerukiXhelper Userbot to your chat
+  /userbotjoin: Invite @Ineruki helper Userbot to your chat
 
 *Player cmd and all other cmds except /play, /current  and /playlist  are only for admins with manage group
 

@@ -22,9 +22,9 @@ import html
 from aiogram.utils.exceptions import ChatAdminRequired
 from telethon.errors import AdminRankEmojiNotAllowedError
 
-from InerukiX import BOT_ID, bot
-from InerukiX.decorator import register
-from InerukiX.services.telethon import tbot
+from Ineruki  import BOT_ID, bot
+from Ineruki .decorator import register
+from Ineruki .services.telethon import tbot
 
 from .utils.connections import chat_connection
 from .utils.language import get_strings_dec

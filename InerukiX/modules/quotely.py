@@ -27,7 +27,7 @@ from fontTools.ttLib import TTFont
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from telethon.tl import functions, types
 
-from InerukiX.services.events import register
+from Ineruki .services.events import register
 
 COLORS = [
     "#F07975",

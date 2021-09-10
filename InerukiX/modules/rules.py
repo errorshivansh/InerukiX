@@ -21,8 +21,8 @@ import re
 
 from aiogram.dispatcher.filters import CommandStart
 
-from InerukiX.decorator import register
-from InerukiX.services.mongo import db
+from Ineruki .decorator import register
+from Ineruki .services.mongo import db
 
 from .utils.connections import chat_connection
 from .utils.disable import disableable_dec
@@ -42,7 +42,7 @@ from .utils.notes import (
 async def set_rules(message, chat, strings):
     chat_id = chat["chat_id"]
 
-    # FIXME: documents are allow to saved (why?), check for args if no 'reply_to_message'
+    # FI ME: documents are allow to saved (why?), check for args if no 'reply_to_message'
     note = await get_parsed_note_list(message, allow_reply_message=True, split_args=-1)
     note["chat_id"] = chat_id
 

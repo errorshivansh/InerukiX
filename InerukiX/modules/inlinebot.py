@@ -17,7 +17,7 @@ copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, E PRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -53,10 +53,10 @@ from search_engine_parser import GoogleSearch
 from tswift import Song
 from youtubesearchpython import VideosSearch
 
-from InerukiX.config import get_str_key
-from InerukiX.function.inlinehelper import *
-from InerukiX.function.pluginhelpers import fetch, json_prettify
-from InerukiX.services.pyrogram import pbot as app
+from Ineruki .config import get_str_key
+from Ineruki .function.inlinehelper import *
+from Ineruki .function.pluginhelpers import fetch, json_prettify
+from Ineruki .services.pyrogram import pbot as app
 
 OPENWEATHERMAP_ID = get_str_key("OPENWEATHERMAP_ID", "")
 TIME_API_KEY = get_str_key("TIME_API_KEY", required=False)
@@ -86,12 +86,12 @@ class AioHttp:
 
 __mod_name__ = "Inline"
 __help__ = """
- <b> INLINE BOT SERVICE OF @INERUKIXBOT </b> 
+ <b> INLINE BOT SERVICE OF @INERUKI BOT </b> 
  
 <i> I'm more efficient when added as group admin. By the way these commands can be used by anyone in a group via inline.</i>
 
 <b>Syntax</b>
-   @InerukiXBot [command] [query]
+   @Ineruki Bot [command] [query]
 
 <b> Commands Available</b>
 - alive - Check Bot's Stats.
@@ -111,7 +111,7 @@ __help__ = """
 - imdb [QUERY] - Search movies on imdb.
 - spaminfo [ID] - Get spam info of the user.
 - lyrics [QUERY] - Get lyrics of the song.
-- paste [TEXT] - Paste text on pastebin.
+- paste [TE T] - Paste text on pastebin.
 - define [WORD] - Get definition from Dictionary.
 - synonyms [WORD] - Get synonyms from Dictionary.
 - antonyms [WORD] - Get antonyms from Dictionary.
@@ -126,16 +126,16 @@ __help__ = """
 - so [QUERY] - Search stack overflow.
 - wiki [QUERY] - Search wikipedia.
 - ping - Check ping rate.
-- pokedex [TEXT]: Pokemon Search
+- pokedex [TE T]: Pokemon Search
 """
 
 __MODULE__ = "Inline"
 __HELP__ = """
- ==>> **INLINE BOT SERVICE OF @INERUKIXBOT** <<==
+ ==>> **INLINE BOT SERVICE OF @INERUKI BOT** <<==
 `I'm more efficient when added as group admin. By the way these commands can be used by anyone in a group via inline.`
 
    >> Syntax <<
-@InerukiXBot [command] [query]
+@Ineruki Bot [command] [query]
 
    >> Commands Available <<
 - **alive** - __Check Bot's Stats.__
@@ -155,7 +155,7 @@ __HELP__ = """
 - **imdb [QUERY]** - __Search movies on imdb.__
 - **spaminfo [id]** - __Get spam info of the user.__
 - **lyrics [QUERY]** - __Get lyrics of given song.__
-- **paste [TEXT]** - __Paste text on pastebin.__
+- **paste [TE T]** - __Paste text on pastebin.__
 - **define [WORD]** - __Get definition from Dictionary.__
 - **synonyms [WORD]** - __Get synonyms from Dictionary.__
 - **antonyms [WORD]** - __Get antonyms from Dictionary.__
@@ -170,7 +170,7 @@ __HELP__ = """
 - **so [QUERY]** - __Search stack overfolw.__
 - **wiki [QUERY]** - __Search wikipedia.__
 - **ping** - __Check ping rate.__
-- **pokedex [TEXT]** - __Pokemon Search.__
+- **pokedex [TE T]** - __Pokemon Search.__
 """
 
 
@@ -661,7 +661,7 @@ async def inline_query_handler(client, query):
         Time Zones:- {tom}
         Top Level Domain:- {lanester}
         wikipedia:- {wiki}</b>
-        Gathered By Ineruki X.</b>
+        Gathered By Ineruki  .</b>
         """
             results.append(
                 InlineQueryResultArticle(

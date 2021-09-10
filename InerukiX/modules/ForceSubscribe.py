@@ -28,11 +28,11 @@ from pyrogram.errors.exceptions.bad_request_400 import (
 )
 from pyrogram.types import ChatPermissions, InlineKeyboardButton, InlineKeyboardMarkup
 
-from InerukiX import BOT_ID
+from Ineruki  import BOT_ID
 
-# from InerukiX import OWNER_ID as SUDO_USERS
-from InerukiX.services.pyrogram import pbot
-from InerukiX.services.sql import forceSubscribe_sql as sql
+# from Ineruki  import OWNER_ID as SUDO_USERS
+from Ineruki .services.pyrogram import pbot
+from Ineruki .services.sql import forceSubscribe_sql as sql
 
 logging.basicConfig(level=logging.INFO)
 

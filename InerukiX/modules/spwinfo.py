@@ -23,7 +23,7 @@ import aiohttp
 from pyrogram import filters
 from pyrogram.errors import PeerIdInvalid
 
-from InerukiX.services.pyrogram import pbot
+from Ineruki .services.pyrogram import pbot
 
 
 class AioHttp:

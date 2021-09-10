@@ -17,8 +17,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from InerukiX.decorator import register
-from InerukiX.services.mongo import db
+from Ineruki .decorator import register
+from Ineruki .services.mongo import db
 
 from .utils.connections import chat_connection
 from .utils.disable import disableable_dec

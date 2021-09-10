@@ -18,17 +18,17 @@ import os
 import yaml
 from babel.core import Locale
 
-from InerukiX.services.mongo import db
-from InerukiX.services.redis import redis
-from InerukiX.utils.logger import log
+from Ineruki .services.mongo import db
+from Ineruki .services.redis import redis
+from Ineruki .utils.logger import log
 
 LANGUAGES = {}
 
 log.info("Loading localizations...")
 
-for filename in os.listdir("InerukiX/localization"):
+for filename in os.listdir("Ineruki /localization"):
     log.debug("Loading language file " + filename)
-    with open("InerukiX/localization/" + filename, "r", encoding="utf8") as f:
+    with open("Ineruki /localization/" + filename, "r", encoding="utf8") as f:
         lang = yaml.load(f, Loader=yaml.CLoader)
 
         lang_code = lang["language_info"]["code"]

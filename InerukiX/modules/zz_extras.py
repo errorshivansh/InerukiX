@@ -26,12 +26,12 @@ Usage: Create a paste or a shortened url using nekobin (https://nekobin.com)
 <b> TORRENT </b>
 - /torrent [QUERY]: Search for torrent links
 
-<b> TEXT TO SPEECH </b>
+<b> TE T TO SPEECH </b>
 - /tts: Reply to any message to get text to speech output
 - /stt: Type in reply to a voice message(english only) to extract text from it.
 
 <b> VIRUS SCAN </b>
-- /scanit: Scan a file for virus (MAX SIZE = 3MB)
+- /scanit: Scan a file for virus (MA  SIZE = 3MB)
  
 <b>COUNTRY</b>
 - /country [country name]*:* Gathering info about given country

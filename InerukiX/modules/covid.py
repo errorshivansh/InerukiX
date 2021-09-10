@@ -18,8 +18,8 @@
 
 from pyrogram import filters
 
-from InerukiX.function.pluginhelpers import fetch, json_prettify
-from InerukiX.services.pyrogram import pbot as app
+from Ineruki .function.pluginhelpers import fetch, json_prettify
+from Ineruki .services.pyrogram import pbot as app
 
 
 @app.on_message(filters.command("covid") & ~filters.edited)

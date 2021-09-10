@@ -21,8 +21,8 @@ import json
 import aiohttp
 from pyrogram import filters
 
-from InerukiX.function.pluginhelpers import admins_only, get_text
-from InerukiX.services.pyrogram import pbot
+from Ineruki .function.pluginhelpers import admins_only, get_text
+from Ineruki .services.pyrogram import pbot
 
 
 # Used my api key here, don't fuck with it

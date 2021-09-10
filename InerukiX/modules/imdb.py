@@ -24,8 +24,8 @@ import requests
 from telethon import types
 from telethon.tl import functions
 
-from InerukiX.services.events import register
-from InerukiX.services.telethon import tbot
+from Ineruki .services.events import register
+from Ineruki .services.telethon import tbot
 
 langi = "en"
 

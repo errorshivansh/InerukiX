@@ -10,7 +10,7 @@ copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, E PRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -40,11 +40,11 @@ from pyrogram.types import (
 from Python_ARQ import ARQ
 from search_engine_parser import GoogleSearch
 
-from InerukiX import BOT_USERNAME, OWNER_ID
-from InerukiX.config import get_str_key
-from InerukiX.function.pluginhelpers import convert_seconds_to_minutes as time_convert
-from InerukiX.function.pluginhelpers import fetch
-from InerukiX.services.pyrogram import pbot
+from Ineruki  import BOT_USERNAME, OWNER_ID
+from Ineruki .config import get_str_key
+from Ineruki .function.pluginhelpers import convert_seconds_to_minutes as time_convert
+from Ineruki .function.pluginhelpers import fetch
+from Ineruki .services.pyrogram import pbot
 
 ARQ_API = get_str_key("ARQ_API", required=True)
 ARQ_API_KEY = ARQ_API
@@ -104,12 +104,12 @@ async def alive_function(answers):
     bot_state = "Dead" if not await app.get_me() else "Alive"
     # ubot_state = 'Dead' if not await app2.get_me() else 'Alive'
     buttons.add(
-        InlineKeyboardButton("Main Bot", url="https://t.me/InerukiXbot"),
+        InlineKeyboardButton("Main Bot", url="https://t.me/Ineruki bot"),
         InlineKeyboardButton("Go Inline!", switch_inline_query_current_chat=""),
     )
 
     msg = f"""
-**[InerukiX✨](https://github.com/errorshivansh):**
+**[Ineruki ✨](https://github.com/errorshivansh):**
 **MainBot:** `{bot_state}`
 **UserBot:** `Alive`
 **Python:** `3.9`

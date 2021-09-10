@@ -1,4 +1,4 @@
-# By @TroJanzHEX
+# By @TroJanzHE 
 import os
 import shutil
 
@@ -314,7 +314,7 @@ async def pencil(client, message):
             img = cv2.imread(a)
             img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             img_invert = cv2.bitwise_not(img_gray)
-            img_smoothing = cv2.GaussianBlur(img_invert, (21, 21), sigmaX=0, sigmaY=0)
+            img_smoothing = cv2.GaussianBlur(img_invert, (21, 21), sigma =0, sigmaY=0)
             final_img = dodgeV2(img_gray, img_smoothing)
             cv2.imwrite(edit_img_loc, final_img)
             await message.reply_chat_action("upload_photo")
@@ -341,7 +341,7 @@ async def pencil(client, message):
 
 def color_quantization(img, k):
     data = np.float32(img).reshape((-1, 3))
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 20, 1.0)
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MA _ITER, 20, 1.0)
     _, label, center = cv2.kmeans(
         data, k, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS
     )

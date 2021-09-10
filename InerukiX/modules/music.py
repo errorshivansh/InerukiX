@@ -23,8 +23,8 @@ import lyricsgenius
 from pyrogram import filters
 from tswift import Song
 
-from InerukiX.config import get_str_key
-from InerukiX.services.pyrogram import pbot
+from Ineruki .config import get_str_key
+from Ineruki .services.pyrogram import pbot
 
 GENIUS = get_str_key("GENIUS_API_TOKEN", None)
 

@@ -1,4 +1,4 @@
-from InerukiX.services.mongo2 import db
+from Ineruki .services.mongo2 import db
 
 nsfwdb = db.nsfw
 

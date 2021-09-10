@@ -2,8 +2,8 @@ import sys
 import traceback
 from functools import wraps
 
-from InerukiX import SUPPORT_CHAT
-from InerukiX.services.pyrogram import pbot
+from Ineruki  import SUPPORT_CHAT
+from Ineruki .services.pyrogram import pbot
 
 
 def split_limits(text):

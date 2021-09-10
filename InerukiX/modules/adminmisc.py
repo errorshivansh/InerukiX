@@ -1,4 +1,4 @@
-# Copyright (C) 2021 AlainX &errorshivansh
+# Copyright (C) 2021 Alain  &errorshivansh
 
 # This file is part of Ineruki (Telegram Bot)
 
@@ -32,8 +32,8 @@ from telethon.tl.types import (
     MessageEntityMentionName,
 )
 
-from InerukiX import OWNER_ID
-from InerukiX.services.telethon import tbot as bot
+from Ineruki  import OWNER_ID
+from Ineruki .services.telethon import tbot as bot
 
 # =================== CONSTANT ===================
 PP_TOO_SMOL = "**The image is too small**"

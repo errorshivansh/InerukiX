@@ -23,9 +23,9 @@ import zipfile
 from telethon import types
 from telethon.tl import functions
 
-from InerukiX import TEMP_DOWNLOAD_DIRECTORY
-from InerukiX.services.events import register
-from InerukiX.services.telethon import tbot as client
+from Ineruki  import TEMP_DOWNLOAD_DIRECTORY
+from Ineruki .services.events import register
+from Ineruki .services.telethon import tbot as client
 
 
 async def is_register_admin(chat, user):

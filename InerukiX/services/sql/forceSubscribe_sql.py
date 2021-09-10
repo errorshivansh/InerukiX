@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Numeric, String
 
-from InerukiX.services.sql import BASE, SESSION
+from Ineruki .services.sql import BASE, SESSION
 
 
 class forceSubscribe(BASE):

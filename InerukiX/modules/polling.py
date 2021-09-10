@@ -20,17 +20,17 @@ from pymongo import MongoClient
 from telethon import *
 from telethon.tl import *
 
-from InerukiX import BOT_ID
-from InerukiX.config import get_str_key
-from InerukiX.services.events import register
-from InerukiX.services.telethon import tbot
+from Ineruki  import BOT_ID
+from Ineruki .config import get_str_key
+from Ineruki .services.events import register
+from Ineruki .services.telethon import tbot
 
 MONGO_DB_URI = get_str_key("MONGO_URI", required=True)
 client = MongoClient()
 client = MongoClient(MONGO_DB_URI)
-db = client["InerukiX"]
+db = client["Ineruki "]
 approved_users = db.approve
-dbb = client["InerukiX"]
+dbb = client["Ineruki "]
 poll_id = dbb.pollid
 
 

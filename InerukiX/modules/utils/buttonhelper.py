@@ -3,7 +3,7 @@ from typing import List
 
 from pyrogram.types import InlineKeyboardButton
 
-BTN_URL_REGEX = re.compile(
+BTN_URL_REGE  = re.compile(
     r"(\[([^\[]+?)\]\((buttonurl|buttonalert):(?:/{0,2})(.+?)(:same)?\))"
 )
 
@@ -45,7 +45,7 @@ def parser(text, keyword):
     prev = 0
     i = 0
     alerts = []
-    for match in BTN_URL_REGEX.finditer(text):
+    for match in BTN_URL_REGE .finditer(text):
         # Check if btnurl is escaped
         n_escapes = 0
         to_check = match.start(1) - 1

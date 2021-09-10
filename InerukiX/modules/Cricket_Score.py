@@ -19,7 +19,7 @@ from bs4 import BeautifulSoup
 from telethon import events
 from telethon.tl import functions, types
 
-from InerukiX.services.telethon import tbot
+from Ineruki .services.telethon import tbot
 
 
 async def is_register_admin(chat, user):

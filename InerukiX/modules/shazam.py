@@ -6,8 +6,8 @@ import requests
 # import ffmpeg
 from pyrogram import filters
 
-from InerukiX.function.pluginhelpers import admins_only, edit_or_reply, fetch_audio
-from InerukiX.services.pyrogram import pbot
+from Ineruki .function.pluginhelpers import admins_only, edit_or_reply, fetch_audio
+from Ineruki .services.pyrogram import pbot
 
 
 @pbot.on_message(filters.command(["identify", "shazam"]))
@@ -46,7 +46,7 @@ async def shazamm(client, message):
     messageo = f"""<b>Song Shazamed.</b>
 <b>Song Name : </b>{title}
 <b>Song By : </b>{by}
-<u><b>Identified Using @InerukiXBot - Join our support @InerukiSupport_Official</b></u>
+<u><b>Identified Using @Ineruki Bot - Join our support @InerukiSupport_Official</b></u>
 <i>Powered by @FridayOT</i>
 """
     await client.send_photo(message.chat.id, image, messageo, parse_mode="HTML")

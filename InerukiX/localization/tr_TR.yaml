@@ -464,25 +464,25 @@ STRINGS:
   restrictions:
     user_not_in_chat: Kullanıcı bu sohbette değil!
     #Kicks
-    kick_InerukiX: Beni tekmelemeye çalışmak yerine zamanını daha iyi geçirebilirsin. Bu sadece sıkıcı.
+    kick_Ineruki : Beni tekmelemeye çalışmak yerine zamanını daha iyi geçirebilirsin. Bu sadece sıkıcı.
     kick_admin: Yönetici tekmelemek iyi bir düşünce değildir.
     kick_self: Kendini tekmelemek istiyorsan - sadece bu sohbetten ayrıl. Kendi kendini cezalandırma konusundaki bu acınası girişimlere bakmak yerine bir daha seni görmek istemiyorum.
     user_kicked: "{user}, {chat_name} grubunda {admin} tarafından tekmelendi."
     #Mutes
-    mute_InerukiX: Aslında, onun yerine seni susturmaktan mutluluk duyarım.
+    mute_Ineruki : Aslında, onun yerine seni susturmaktan mutluluk duyarım.
     mute_admin: Yönetici susturabileceğinizi düşünüyorsanız, yanılıyorsunuz!
     mute_self: Kendini tekmelemek istiyorsan - sadece bu sohbetten ayrıl. Kendi kendini cezalandırma konusundaki bu acınası girişimlere bakmak yerine bir daha seni görmek istemiyorum.
     user_muted: "{user}, {chat_name} grubunda {admin} tarafından susturuldu."
-    unmute_InerukiX: Aslında, sessiz değilim.
+    unmute_Ineruki : Aslında, sessiz değilim.
     unmute_admin: Haha hayır, önce onu susturmayı dene!
     unmute_self: Önce seni susturmalı mıyım?
     user_unmuted: "{user}, {chat_name} grubunda {admin} tarafından tekrar konuşabilir."
     #Bans
-    ban_InerukiX: Hayır, yapmayacağım! Sohbet sahibinden bunu yapmasını isteyin!
+    ban_Ineruki : Hayır, yapmayacağım! Sohbet sahibinden bunu yapmasını isteyin!
     ban_admin: Haha, önce onu <code>/demote</code> edelim.
     ban_self: Neden kendini yasaklamaya çalışıyorsun?
     user_banned: "{user}, {chat_name} grubunda {admin} tarafından yasaklandı."
-    unban_InerukiX: Aslında, yasaklı değilim.
+    unban_Ineruki : Aslında, yasaklı değilim.
     unban_admin: Haha hayır, önce onu yasaklamayı dene!
     unban_self: Önce seni yasaklamalı mıyım?
     user_unband: "{user}, {chat_name} grubunda {admin} tarafından yasağı kaldırıldı."
@@ -525,7 +525,7 @@ STRINGS:
   greetings:
     default_welcome: "Merhaba {mention}! Nasılsın?"
     default_security_note: "Hoşgeldin {mention}! Lütfen kendini insan olarak doğrulamak için aşağıdaki düğmeye basın!"
-    thank_for_add: "Thanks for adding me to your group! Take a look at /help and follow my news channel @InerukiXUpdates."
+    thank_for_add: "Thanks for adding me to your group! Take a look at /help and follow my news channel @Ineruki Updates."
     bool_invalid_arg: Geçersiz argüman, beklenen <code>on</code>/<code>off</code>.
     #/setwelcome
     saved: Karşılama mesajı <b>%s</b> içinde kaydedildi

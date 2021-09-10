@@ -23,9 +23,9 @@ import tldextract
 from telethon import events, types
 from telethon.tl import functions
 
-import InerukiX.services.sql.urlblacklist_sql as urlsql
-from InerukiX.services.events import register
-from InerukiX.services.telethon import tbot
+import Ineruki .services.sql.urlblacklist_sql as urlsql
+from Ineruki .services.events import register
+from Ineruki .services.telethon import tbot
 
 
 async def can_change_info(message):

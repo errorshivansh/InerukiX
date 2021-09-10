@@ -25,9 +25,9 @@ import requests
 from telethon import types
 from telethon.tl import functions
 
-from InerukiX.config import get_str_key
-from InerukiX.services.events import register
-from InerukiX.services.telethon import tbot
+from Ineruki .config import get_str_key
+from Ineruki .services.events import register
+from Ineruki .services.telethon import tbot
 
 REM_BG_API_KEY = get_str_key("REM_BG_API_KEY", required=False)
 TEMP_DOWNLOAD_DIRECTORY = "./"
@@ -102,7 +102,7 @@ async def _(event):
 
 def ReTrieveFile(input_file_name):
     headers = {
-        "X-API-Key": REM_BG_API_KEY,
+        " -API-Key": REM_BG_API_KEY,
     }
     files = {
         "image_file": (input_file_name, open(input_file_name, "rb")),

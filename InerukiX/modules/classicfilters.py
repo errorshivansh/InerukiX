@@ -23,17 +23,17 @@ import re
 from telethon import Button, events, utils
 from telethon.tl import functions, types
 
-from InerukiX.services.events import register
-from InerukiX.services.sql.filters_sql import (
+from Ineruki .services.events import register
+from Ineruki .services.sql.filters_sql import (
     add_filter,
     get_all_filters,
     remove_all_filters,
     remove_filter,
 )
-from InerukiX.services.telethon import tbot
+from Ineruki .services.telethon import tbot
 
 DELETE_TIMEOUT = 0
-TYPE_TEXT = 0
+TYPE_TE T = 0
 TYPE_PHOTO = 1
 TYPE_DOCUMENT = 2
 last_triggered_filters = {}
@@ -162,7 +162,7 @@ async def on_snip_save(event):
 
     if msg:
 
-        snip = {"type": TYPE_TEXT, "text": msg.message or ""}
+        snip = {"type": TYPE_TE T, "text": msg.message or ""}
 
         if msg.media:
 

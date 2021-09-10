@@ -1,4 +1,4 @@
-# InerukiXBot example config
+# Ineruki Bot example config
 
 # Basic
 
@@ -14,13 +14,13 @@ APP_HASH: ""
 
 STRING_SESSION: ""
 
-MONGO_URI: "mongodb+srv://dfsdfX:dfsfdX@cluster0.df4j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+MONGO_URI: "mongodb+srv://dfsdf :dfsfd @cluster0.df4j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 
 MONGO_URI2: ""
 
 MONGO_PORT: 27017
 
-MONGO_DB': 'InerukiX'
+MONGO_DB': 'Ineruki '
 
 API_PORT': 8080
 
@@ -70,4 +70,4 @@ LOGS_CHANNEL_ID: -000000000
 
 ALLOW_FORWARDS_COMMANDS: False
 
-ALLOW_EXCEL: False
+ALLOW_E CEL: False

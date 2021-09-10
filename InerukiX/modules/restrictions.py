@@ -24,10 +24,10 @@ from contextlib import suppress
 from aiogram.utils.exceptions import MessageNotModified
 from babel.dates import format_timedelta
 
-from InerukiX import BOT_ID, bot
-from InerukiX.decorator import register
-from InerukiX.services.redis import redis
-from InerukiX.services.telethon import tbot
+from Ineruki  import BOT_ID, bot
+from Ineruki .decorator import register
+from Ineruki .services.redis import redis
+from Ineruki .services.telethon import tbot
 
 from .misc import customise_reason_finish, customise_reason_start
 from .utils.connections import chat_connection
@@ -55,7 +55,7 @@ async def kick_user_cmd(message, chat, user, args, strings):
     user_id = user["user_id"]
 
     if user_id == BOT_ID:
-        await message.reply(strings["kick_InerukiX"])
+        await message.reply(strings["kick_Ineruki "])
         return
 
     elif user_id == message.from_user.id:
@@ -114,7 +114,7 @@ async def mute_user_cmd(message, chat, user, args, strings):
     user_id = user["user_id"]
 
     if user_id == BOT_ID:
-        await message.reply(strings["mute_InerukiX"])
+        await message.reply(strings["mute_Ineruki "])
         return
 
     elif user_id == message.from_user.id:
@@ -192,7 +192,7 @@ async def unmute_user_cmd(message, chat, user, strings):
     user_id = user["user_id"]
 
     if user_id == BOT_ID:
-        await message.reply(strings["unmute_InerukiX"])
+        await message.reply(strings["unmute_Ineruki "])
         return
 
     elif user_id == message.from_user.id:
@@ -227,7 +227,7 @@ async def ban_user_cmd(message, chat, user, args, strings):
     user_id = user["user_id"]
 
     if user_id == BOT_ID:
-        await message.reply(strings["ban_InerukiX"])
+        await message.reply(strings["ban_Ineruki "])
         return
 
     elif user_id == message.from_user.id:
@@ -305,7 +305,7 @@ async def unban_user_cmd(message, chat, user, strings):
     user_id = user["user_id"]
 
     if user_id == BOT_ID:
-        await message.reply(strings["unban_InerukiX"])
+        await message.reply(strings["unban_Ineruki "])
         return
 
     elif user_id == message.from_user.id:

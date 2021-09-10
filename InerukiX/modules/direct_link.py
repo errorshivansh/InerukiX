@@ -22,7 +22,7 @@ from random import choice
 import requests
 from bs4 import BeautifulSoup
 
-from InerukiX.decorator import register
+from Ineruki .decorator import register
 
 from .utils.disable import disableable_dec
 from .utils.message import get_arg

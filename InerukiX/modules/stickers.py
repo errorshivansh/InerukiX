@@ -37,12 +37,12 @@ from telethon.tl.types import (
     MessageMediaPhoto,
 )
 
-from InerukiX import bot
-from InerukiX.decorator import register
-from InerukiX.services.events import register as Ineruki
-from InerukiX.services.pyrogram import pbot
-from InerukiX.services.telethon import tbot
-from InerukiX.services.telethonuserbot import ubot
+from Ineruki  import bot
+from Ineruki .decorator import register
+from Ineruki .services.events import register as Ineruki
+from Ineruki .services.pyrogram import pbot
+from Ineruki .services.telethon import tbot
+from Ineruki .services.telethonuserbot import ubot
 
 from .utils.disable import disableable_dec
 from .utils.language import get_strings_dec
@@ -197,7 +197,7 @@ def find_instance(items, class_or_tuple):
     return None
 
 
-DEFAULTUSER = "InerukiX"
+DEFAULTUSER = "Ineruki "
 FILLED_UP_DADDY = "Invalid pack selected."
 
 
@@ -227,7 +227,7 @@ async def _(event):
     userid = event.sender_id
     first_name = user.first_name
     packname = f"{first_name}'s Sticker Vol.{pack}"
-    packshortname = f"InerukiX_stickers_{userid}"
+    packshortname = f"Ineruki _stickers_{userid}"
     kanga = await event.reply(
         "Hello, This Sticker Looks Noice. Mind if Ineruki steal it"
     )
@@ -239,7 +239,7 @@ async def _(event):
         file_ext_ns_ion = "AnimatedSticker.tgs"
         uploaded_sticker = await ubot.upload_file(file, file_name=file_ext_ns_ion)
         packname = f"{first_name}'s Animated Sticker Vol.{pack}"
-        packshortname = f"InerukiX_animated_{userid}"
+        packshortname = f"Ineruki _animated_{userid}"
     elif not is_message_image(reply_message):
         await kanga.edit("Oh no.. This Message type is invalid")
         return

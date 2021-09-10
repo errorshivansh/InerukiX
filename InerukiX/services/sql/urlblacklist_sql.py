@@ -18,7 +18,7 @@ import threading
 
 from sqlalchemy import Column, String, UnicodeText
 
-from InerukiX.services.sql import BASE, SESSION
+from Ineruki .services.sql import BASE, SESSION
 
 
 class URLBlackListFilters(BASE):

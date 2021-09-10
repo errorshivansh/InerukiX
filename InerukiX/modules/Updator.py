@@ -6,16 +6,16 @@ import heroku3
 from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
 
-from InerukiX import OWNER_ID
-from InerukiX.config import get_str_key
-from InerukiX.services.events import register
-from InerukiX.services.telethon import tbot as update
+from Ineruki  import OWNER_ID
+from Ineruki .config import get_str_key
+from Ineruki .services.events import register
+from Ineruki .services.telethon import tbot as update
 
 HEROKU_APP_NAME = get_str_key("HEROKU_APP_NAME", None)
 HEROKU_API_KEY = get_str_key("HEROKU_API_KEY", None)
 UPSTREAM_REPO_URL = get_str_key("UPSTREAM_REPO_URL", None)
 if not UPSTREAM_REPO_URL:
-    UPSTREAM_REPO_URL = "https://github.com/errorshivansh/InerukiX"
+    UPSTREAM_REPO_URL = "https://github.com/errorshivansh/Ineruki "
 
 requirements_path = path.join(
     path.dirname(path.dirname(path.dirname(__file__))), "requirements.txt"
@@ -107,7 +107,7 @@ async def upstream(ups):
     changelog = await gen_chlog(repo, f"HEAD..upstream/{ac_br}")
 
     if not changelog and not force_update:
-        await lol.edit("\nYour InerukiX  >>  **up-to-date**  \n")
+        await lol.edit("\nYour Ineruki   >>  **up-to-date**  \n")
         repo.__del__()
         return
 
@@ -184,6 +184,6 @@ async def upstream(ups):
             repo.git.reset("--hard", "FETCH_HEAD")
         await updateme_requirements()
         await lol.edit("`Successfully Updated!\n" "restarting......`")
-        args = [sys.executable, "-m", "InerukiX"]
+        args = [sys.executable, "-m", "Ineruki "]
         execle(sys.executable, *args, environ)
         return

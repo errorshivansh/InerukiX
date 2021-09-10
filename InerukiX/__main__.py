@@ -20,10 +20,10 @@ from importlib import import_module
 from aiogram import executor
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
-from InerukiX import TOKEN, bot, dp
-from InerukiX.config import get_bool_key, get_list_key
-from InerukiX.modules import ALL_MODULES, LOADED_MODULES, MOD_HELP
-from InerukiX.utils.logger import log
+from Ineruki  import TOKEN, bot, dp
+from Ineruki .config import get_bool_key, get_list_key
+from Ineruki .modules import ALL_MODULES, LOADED_MODULES, MOD_HELP
+from Ineruki .utils.logger import log
 
 if get_bool_key("DEBUG_MODE"):
     log.debug("Enabling logging middleware.")
@@ -46,7 +46,7 @@ if get_bool_key("LOAD_MODULES"):
         if module_name == "pm_menu":
             continue
         log.debug(f"Importing <d><n>{module_name}</></>")
-        imported_module = import_module("InerukiX.modules." + module_name)
+        imported_module = import_module("Ineruki .modules." + module_name)
         if hasattr(imported_module, "__help__"):
             if hasattr(imported_module, "__mod_name__"):
                 MOD_HELP[imported_module.__mod_name__] = imported_module.__help__
@@ -59,11 +59,11 @@ else:
 
 loop = asyncio.get_event_loop()
 
-import_module("InerukiX.modules.pm_menu")
+import_module("Ineruki .modules.pm_menu")
 # Import misc stuff
-import_module("InerukiX.utils.exit_gracefully")
+import_module("Ineruki .utils.exit_gracefully")
 if not get_bool_key("DEBUG_MODE"):
-    import_module("InerukiX.utils.sentry")
+    import_module("Ineruki .utils.sentry")
 
 
 async def before_srv_task(loop):

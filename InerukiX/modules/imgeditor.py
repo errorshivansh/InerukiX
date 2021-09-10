@@ -1,4 +1,4 @@
-# By @TroJanzHEX
+# By @TroJanzHE 
 # Improved by errorshivansh
 
 from pyrogram import filters
@@ -9,8 +9,8 @@ from pyrogram.types import (
     Message,
 )
 
-# By @TroJanzHEX
-from InerukiX.Addons.ImageEditor.edit_1 import (  # pylint:disable=import-error
+# By @TroJanzHE 
+from Ineruki .Addons.ImageEditor.edit_1 import (  # pylint:disable=import-error
     black_white,
     box_blur,
     bright,
@@ -18,7 +18,7 @@ from InerukiX.Addons.ImageEditor.edit_1 import (  # pylint:disable=import-error
     mix,
     normal_blur,
 )
-from InerukiX.Addons.ImageEditor.edit_2 import (  # pylint:disable=import-error
+from Ineruki .Addons.ImageEditor.edit_2 import (  # pylint:disable=import-error
     cartoon,
     circle_with_bg,
     circle_without_bg,
@@ -28,13 +28,13 @@ from InerukiX.Addons.ImageEditor.edit_2 import (  # pylint:disable=import-error
     sepia_mode,
     sticker,
 )
-from InerukiX.Addons.ImageEditor.edit_3 import (  # pylint:disable=import-error
+from Ineruki .Addons.ImageEditor.edit_3 import (  # pylint:disable=import-error
     black_border,
     blue_border,
     green_border,
     red_border,
 )
-from InerukiX.Addons.ImageEditor.edit_4 import (  # pylint:disable=import-error
+from Ineruki .Addons.ImageEditor.edit_4 import (  # pylint:disable=import-error
     inverted,
     removebg_plain,
     removebg_sticker,
@@ -44,7 +44,7 @@ from InerukiX.Addons.ImageEditor.edit_4 import (  # pylint:disable=import-error
     rotate_270,
     round_sticker,
 )
-from InerukiX.Addons.ImageEditor.edit_5 import (  # pylint:disable=import-error
+from Ineruki .Addons.ImageEditor.edit_5 import (  # pylint:disable=import-error
     normalglitch_1,
     normalglitch_2,
     normalglitch_3,
@@ -56,7 +56,7 @@ from InerukiX.Addons.ImageEditor.edit_5 import (  # pylint:disable=import-error
     scanlineglitch_4,
     scanlineglitch_5,
 )
-from InerukiX.services.pyrogram import pbot as Client
+from Ineruki .services.pyrogram import pbot as Client
 
 lel = 00000000
 # pylint:disable=import-error
@@ -81,7 +81,7 @@ async def photo(client: Client, message: Message):
                 [
                     [
                         InlineKeyboardButton(text="💡 BRIGHT", callback_data="bright"),
-                        InlineKeyboardButton(text="🖼 MIXED", callback_data="mix"),
+                        InlineKeyboardButton(text="🖼 MI ED", callback_data="mix"),
                         InlineKeyboardButton(text="🔳 B&W", callback_data="b|w"),
                     ],
                     [
@@ -459,5 +459,5 @@ Bright, Circle, RemBG, Blur, Border, Flip, Glitch, Sticker maker and more
 - /edit [reply to image]: Open the image editor
 - /rmbg [REPLY]: Revove BG of replied image/sticker.
 
-<i> Special credits to TroJanzHEX </i>
+<i> Special credits to TroJanzHE  </i>
 """

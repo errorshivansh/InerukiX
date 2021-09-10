@@ -21,15 +21,15 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from telethon import events, functions
 from telethon.tl.types import ChatBannedRights
 
-from InerukiX import BOT_ID
-from InerukiX.function.telethonbasics import is_admin
-from InerukiX.services.sql.night_mode_sql import (
+from Ineruki  import BOT_ID
+from Ineruki .function.telethonbasics import is_admin
+from Ineruki .services.sql.night_mode_sql import (
     add_nightmode,
     get_all_chat_id,
     is_nightmode_indb,
     rmnightmode,
 )
-from InerukiX.services.telethon import tbot
+from Ineruki .services.telethon import tbot
 
 CLEAN_GROUPS = False
 hehes = ChatBannedRights(
@@ -113,7 +113,7 @@ async def job_close():
         try:
             await tbot.send_message(
                 int(warner.chat_id),
-                "`12:00 Am, Group Is Closing Till 6 Am. Night Mode Started !` \n**Powered By @InerukiXbot**",
+                "`12:00 Am, Group Is Closing Till 6 Am. Night Mode Started !` \n**Powered By @Ineruki bot**",
             )
             await tbot(
                 functions.messages.EditChatDefaultBannedRightsRequest(
@@ -143,7 +143,7 @@ async def job_open():
         try:
             await tbot.send_message(
                 int(warner.chat_id),
-                "`06:00 Am, Group Is Opening.`\n**Powered By @InerukiXBot**",
+                "`06:00 Am, Group Is Opening.`\n**Powered By @Ineruki Bot**",
             )
             await tbot(
                 functions.messages.EditChatDefaultBannedRightsRequest(

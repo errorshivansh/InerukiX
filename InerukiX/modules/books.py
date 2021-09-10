@@ -25,7 +25,7 @@ import requests
 from bs4 import BeautifulSoup
 from telethon import events
 
-from InerukiX.services.telethon import tbot
+from Ineruki .services.telethon import tbot
 
 
 @tbot.on(events.NewMessage(pattern="^/book (.*)"))
@@ -41,7 +41,7 @@ async def _(event):
 
     headers = [
         "User-Agent",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:74.0) Gecko/20100101 Firefox/74.0",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS   10.15; rv:74.0) Gecko/20100101 Firefox/74.0",
     ]
     page = requests.get(link)
     soup = BeautifulSoup(page.content, "html.parser")
@@ -65,14 +65,14 @@ async def _(event):
                 f.write("\n" + title)
                 f.write("\nBook link:- " + link + "\n\n")
 
-        f.write("By @InerukiXBot.")
+        f.write("By @Ineruki Bot.")
         f.close()
         caption = "A collabration with Friday.\n Join Support @InerukiSupport_Official"
 
         await tbot.send_file(
             event.chat_id,
             "book.txt",
-            caption=f"**BOOKS GATHERED SUCCESSFULLY!\n\nBY INERUKIX. JOIN THE SUPPORT @InerukiSupport_Official.**",
+            caption=f"**BOOKS GATHERED SUCCESSFULLY!\n\nBY INERUKI . JOIN THE SUPPORT @InerukiSupport_Official.**",
         )
         os.remove("book.txt")
         await KkK.delete()

@@ -21,13 +21,13 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.bot.api import TELEGRAM_PRODUCTION, TelegramAPIServer
 from aiogram.contrib.fsm_storage.redis import RedisStorage2
 
-from InerukiX.config import get_bool_key, get_int_key, get_list_key, get_str_key
-from InerukiX.services.telethon import tbot
-from InerukiX.utils.logger import log
-from InerukiX.versions import INERUKI_VERSION
+from Ineruki .config import get_bool_key, get_int_key, get_list_key, get_str_key
+from Ineruki .services.telethon import tbot
+from Ineruki .utils.logger import log
+from Ineruki .versions import INERUKI_VERSION
 
 log.info("----------------------")
-log.info("|      Ineruki X      |")
+log.info("|      Ineruki        |")
 log.info("----------------------")
 log.info("Version: " + INERUKI_VERSION)
 

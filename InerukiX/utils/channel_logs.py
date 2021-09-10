@@ -15,9 +15,9 @@
 
 import html
 
-from InerukiX import bot
-from InerukiX.config import get_int_key
-from InerukiX.utils.logger import log
+from Ineruki  import bot
+from Ineruki .config import get_int_key
+from Ineruki .utils.logger import log
 
 
 async def channel_log(msg, info_log=True):

@@ -18,8 +18,8 @@
 
 from pyrogram import filters
 
-from InerukiX.function.pluginhelpers import admins_only
-from InerukiX.services.pyrogram import pbot
+from Ineruki .function.pluginhelpers import admins_only
+from Ineruki .services.pyrogram import pbot
 
 __HELP__ = """
 Classic filters are just like marie's filter system. If you still like that kind of filter system

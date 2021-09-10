@@ -16,8 +16,8 @@
 import sentry_sdk
 from sentry_sdk.integrations.redis import RedisIntegration
 
-from InerukiX.config import get_str_key
-from InerukiX.utils.logger import log
+from Ineruki .config import get_str_key
+from Ineruki .utils.logger import log
 
 log.info("Starting sentry.io integraion...")
 

@@ -29,10 +29,10 @@ from aiogram.utils.exceptions import MessageNotModified
 from babel.dates import format_timedelta
 from bson.objectid import ObjectId
 
-from InerukiX import BOT_ID, bot
-from InerukiX.decorator import register
-from InerukiX.services.mongo import db
-from InerukiX.services.telethon import tbot
+from Ineruki  import BOT_ID, bot
+from Ineruki .decorator import register
+from Ineruki .services.mongo import db
+from Ineruki .services.telethon import tbot
 
 from .misc import customise_reason_finish, customise_reason_start
 from .utils.connections import chat_connection
@@ -297,7 +297,7 @@ async def warnmode(message, chat, strings):
                 return await message.reply(strings["no_time"])
             else:
                 try:
-                    # TODO: For better UX we have to show until time of tmute when action is done.
+                    # TODO: For better U  we have to show until time of tmute when action is done.
                     # We can't store timedelta class in mongodb; Here we check validity of given time.
                     convert_time(time)
                 except (InvalidTimeUnit, TypeError, ValueError):

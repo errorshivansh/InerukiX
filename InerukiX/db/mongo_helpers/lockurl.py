@@ -1,4 +1,4 @@
-from InerukiX.services.mongo import mongodb as db_x
+from Ineruki .services.mongo import mongodb as db_x
 
 lockurl = db_x["Lockurlp"]
 

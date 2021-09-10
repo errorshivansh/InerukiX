@@ -25,10 +25,10 @@ from telethon.tl import functions
 from telethon.tl.types import *
 from zalgo_text import zalgo
 
-from InerukiX import *
-from InerukiX.services.events import register
-from InerukiX.services.telethon import tbot
-from InerukiX.services.telethonuserbot import ubot
+from Ineruki  import *
+from Ineruki .services.events import register
+from Ineruki .services.telethon import tbot
+from Ineruki .services.telethonuserbot import ubot
 
 nltk.download("punkt")
 nltk.download("averaged_perceptron_tagger")
@@ -1324,7 +1324,7 @@ async def msg(event):
         replyto = event.sender_id
     await tbot.send_message(
         event.chat_id,
-        "/BLUE /TEXT /MUST /CLICK /I /AM /A /STUPID /ANIMAL /THAT /IS /ATTRACTED /TO /COLORS",
+        "/BLUE /TE T /MUST /CLICK /I /AM /A /STUPID /ANIMAL /THAT /IS /ATTRACTED /TO /COLORS",
         reply_to=replyto,
     )
 
@@ -1416,7 +1416,7 @@ SFW_STRINGS = (
     "Try provoking a tiger while you both are in a cage.",
     "Have you tried shooting yourself as high as 100m using a canon.",
     "You should try holding TNT in your mouth and igniting it.",
-    "Try playing catch and throw with RDX its fun.",
+    "Try playing catch and throw with RD  its fun.",
     "I heard phogine is poisonous but i guess you wont mind inhaling it for fun.",
     "Launch yourself into outer space while forgetting oxygen on Earth.",
     "You should try playing snake and ladders, with real snakes and no ladders.",

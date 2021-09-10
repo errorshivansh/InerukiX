@@ -22,7 +22,7 @@ from pyrogram import filters
 from pyrogram.errors import PeerIdInvalid
 from pyrogram.types import Message, User
 
-from InerukiX.services.pyrogram import pbot
+from Ineruki .services.pyrogram import pbot
 
 
 def ReplyCheck(message: Message):

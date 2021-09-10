@@ -21,15 +21,15 @@ import asyncio
 from pyrogram import filters
 from pyrogram.errors import RPCError
 
-from InerukiX import BOT_ID
-from InerukiX.db.mongo_helpers.lockurl import add_chat, get_session, remove_chat
-from InerukiX.function.pluginhelpers import (
+from Ineruki  import BOT_ID
+from Ineruki .db.mongo_helpers.lockurl import add_chat, get_session, remove_chat
+from Ineruki .function.pluginhelpers import (
     admins_only,
     edit_or_reply,
     get_url,
     member_permissions,
 )
-from InerukiX.services.pyrogram import pbot
+from Ineruki .services.pyrogram import pbot
 
 
 @pbot.on_message(

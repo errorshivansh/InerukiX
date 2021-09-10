@@ -16,11 +16,11 @@
 from aiogram import types
 from aiogram.dispatcher.filters import BoundFilter
 
-from InerukiX import OPERATORS, dp
-from InerukiX.config import get_int_key
-from InerukiX.modules.utils.language import get_strings_dec
-from InerukiX.modules.utils.user_details import is_user_admin
-from InerukiX.services.mongo import mongodb
+from Ineruki  import OPERATORS, dp
+from Ineruki .config import get_int_key
+from Ineruki .modules.utils.language import get_strings_dec
+from Ineruki .modules.utils.user_details import is_user_admin
+from Ineruki .services.mongo import mongodb
 
 
 class IsAdmin(BoundFilter):

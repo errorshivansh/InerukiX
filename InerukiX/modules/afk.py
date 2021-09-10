@@ -20,8 +20,8 @@
 import html
 import re
 
-from InerukiX.decorator import register
-from InerukiX.services.mongo import db
+from Ineruki .decorator import register
+from Ineruki .services.mongo import db
 
 from .utils.disable import disableable_dec
 from .utils.language import get_strings_dec

@@ -1,6 +1,6 @@
 from pyrogram import filters
 
-from InerukiX.services.pyrogram import pbot as Ineruki
+from Ineruki .services.pyrogram import pbot as Ineruki
 
 
 @Ineruki.on_message(filters.command("webshot", ["."]))

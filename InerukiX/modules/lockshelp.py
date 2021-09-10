@@ -3,7 +3,7 @@
 # Copyright (C) 2020 Jeepeo
 #
 # This file was a  part of Hitsuki (Telegram Bot)
-# Modified by errorshivansh for InerukiX
+# Modified by errorshivansh for Ineruki 
 
 
 # This program is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ import itertools
 
 from aiogram.types.chat_permissions import ChatPermissions
 
-from InerukiX import bot
-from InerukiX.decorator import register
+from Ineruki  import bot
+from Ineruki .decorator import register
 
 from .utils.connections import chat_connection
 from .utils.language import get_strings_dec

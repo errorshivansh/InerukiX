@@ -19,8 +19,8 @@ import functools
 import pickle
 from typing import Optional, Union
 
-from InerukiX.services.redis import bredis
-from InerukiX.utils.logger import log
+from Ineruki .services.redis import bredis
+from Ineruki .utils.logger import log
 
 
 async def set_value(key, value, ttl):

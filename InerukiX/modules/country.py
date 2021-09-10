@@ -18,8 +18,8 @@
 
 from countryinfo import CountryInfo
 
-from InerukiX.services.events import register
-from InerukiX.services.telethon import tbot as borg
+from Ineruki .services.events import register
+from Ineruki .services.telethon import tbot as borg
 
 
 @register(pattern="^/country (.*)")
@@ -111,7 +111,7 @@ Sub Region:- {sub}
 Time Zones:- {tom}
 Top Level Domain:- {lanester}
 wikipedia:- {wiki}</b>
-Gathered By Ineruki X.</b>
+Gathered By Ineruki  .</b>
 """
 
     await borg.send_message(

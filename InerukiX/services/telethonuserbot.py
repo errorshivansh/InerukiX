@@ -1,4 +1,4 @@
-# This file is part of InerukiXBot (Telegram Bot)
+# This file is part of Ineruki Bot (Telegram Bot)
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,7 @@ import sys
 from telethon import TelegramClient
 from telethon.sessions import StringSession
 
-from InerukiX.config import get_int_key, get_str_key
+from Ineruki .config import get_int_key, get_str_key
 
 STRING_SESSION = get_str_key("STRING_SESSION", required=True)
 API_ID = get_int_key("APP_ID", required=True)

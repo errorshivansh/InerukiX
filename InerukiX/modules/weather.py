@@ -23,11 +23,11 @@ import aiohttp
 from telethon.tl import functions, types
 from telethon.tl.types import *
 
-from InerukiX.config import get_str_key
+from Ineruki .config import get_str_key
 
 OPENWEATHERMAP_ID = get_str_key("OPENWEATHERMAP_ID", "")
-from InerukiX.services.events import register
-from InerukiX.services.telethon import tbot
+from Ineruki .services.events import register
+from Ineruki .services.telethon import tbot
 
 
 async def is_register_admin(chat, user):

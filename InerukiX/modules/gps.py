@@ -20,8 +20,8 @@ from geopy.geocoders import Nominatim
 from telethon import *
 from telethon.tl import *
 
-from InerukiX.services.events import register
-from InerukiX.services.telethon import tbot as client
+from Ineruki .services.events import register
+from Ineruki .services.telethon import tbot as client
 
 
 async def is_register_admin(chat, user):

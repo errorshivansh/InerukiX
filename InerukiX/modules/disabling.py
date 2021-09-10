@@ -19,8 +19,8 @@
 
 from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
 
-from InerukiX.decorator import COMMANDS_ALIASES, register
-from InerukiX.services.mongo import db
+from Ineruki .decorator import COMMANDS_ALIASES, register
+from Ineruki .services.mongo import db
 
 from .utils.connections import chat_connection
 from .utils.disable import DISABLABLE_COMMANDS, disableable_dec

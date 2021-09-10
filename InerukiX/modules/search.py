@@ -28,9 +28,9 @@ from pyrogram import filters
 # This plugin is ported from https://github.com/thehamkercat/WilliamButcherBot
 from search_engine_parser import GoogleSearch
 
-from InerukiX.modules.utils.fetch import fetch
-from InerukiX.services.events import register
-from InerukiX.services.pyrogram import pbot as app
+from Ineruki .modules.utils.fetch import fetch
+from Ineruki .services.events import register
+from Ineruki .services.pyrogram import pbot as app
 
 ARQ = "https://thearq.tech/"
 

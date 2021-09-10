@@ -22,8 +22,8 @@ from telethon import events
 from telethon.tl import functions, types
 from telethon.tl.types import *
 
-from InerukiX.services.mongo import mongodb as db
-from InerukiX.services.telethon import tbot
+from Ineruki .services.mongo import mongodb as db
+from Ineruki .services.telethon import tbot
 
 approved_users = db.approve
 
@@ -332,7 +332,7 @@ async def torrentstop(event):
     await tbot.edit_message(
         chatid,
         msgid,
-        "Thanks for using.\n❤️ from [Ineruki X](t.me/InerukiXBot) !",
+        "Thanks for using.\n❤️ from [Ineruki  ](t.me/Ineruki Bot) !",
         link_preview=False,
     )
 

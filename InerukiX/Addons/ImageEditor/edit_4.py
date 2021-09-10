@@ -1,4 +1,4 @@
-# By @TroJanzHEX
+# By @TroJanzHE 
 import io
 import os
 import shutil
@@ -8,7 +8,7 @@ import numpy as np
 import requests
 from PIL import Image, ImageDraw, ImageOps
 
-from InerukiX.config import get_str_key
+from Ineruki .config import get_str_key
 
 RemoveBG_API = get_str_key("REM_BG_API_KEY", required=False)
 
@@ -253,7 +253,7 @@ async def removebg_plain(client, message):
                     "https://api.remove.bg/v1.0/removebg",
                     files={"image_file": open(download_location, "rb")},
                     data={"size": "auto"},
-                    headers={"X-Api-Key": RemoveBG_API},
+                    headers={" -Api-Key": RemoveBG_API},
                 )
                 if response.status_code == 200:
                     with open(f"{edit_img_loc}", "wb") as out:
@@ -313,7 +313,7 @@ async def removebg_white(client, message):
                     "https://api.remove.bg/v1.0/removebg",
                     files={"image_file": open(download_location, "rb")},
                     data={"size": "auto"},
-                    headers={"X-Api-Key": Config.RemoveBG_API},
+                    headers={" -Api-Key": Config.RemoveBG_API},
                 )
                 if response.status_code == 200:
                     with open(f"{edit_img_loc}", "wb") as out:
@@ -373,7 +373,7 @@ async def removebg_sticker(client, message):
                     "https://api.remove.bg/v1.0/removebg",
                     files={"image_file": open(download_location, "rb")},
                     data={"size": "auto"},
-                    headers={"X-Api-Key": RemoveBG_API},
+                    headers={" -Api-Key": RemoveBG_API},
                 )
                 if response.status_code == 200:
                     with open(f"{edit_img_loc}", "wb") as out:

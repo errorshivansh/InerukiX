@@ -15,9 +15,9 @@
 
 from contextlib import suppress
 
-from InerukiX.modules.utils.user_details import is_user_admin
-from InerukiX.services.mongo import db
-from InerukiX.utils.logger import log
+from Ineruki .modules.utils.user_details import is_user_admin
+from Ineruki .services.mongo import db
+from Ineruki .utils.logger import log
 
 DISABLABLE_COMMANDS = []
 

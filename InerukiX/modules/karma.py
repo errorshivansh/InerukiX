@@ -12,7 +12,7 @@ copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, E PRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -25,10 +25,10 @@ from typing import Dict, Union
 
 from pyrogram import filters
 
-from InerukiX.db.mongo_helpers.karma import is_karma_on, karma_off, karma_on
-from InerukiX.function.pluginhelpers import member_permissions
-from InerukiX.services.mongo2 import db
-from InerukiX.services.pyrogram import pbot as app
+from Ineruki .db.mongo_helpers.karma import is_karma_on, karma_off, karma_on
+from Ineruki .function.pluginhelpers import member_permissions
+from Ineruki .services.mongo2 import db
+from Ineruki .services.pyrogram import pbot as app
 
 karmadb = db.karma
 karma_positive_group = 3

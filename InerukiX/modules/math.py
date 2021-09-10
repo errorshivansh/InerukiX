@@ -1,5 +1,5 @@
 # Written by errorshivansh for the Ineruki project
-# This file is part of InerukiXBot (Telegram Bot)
+# This file is part of Ineruki Bot (Telegram Bot)
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -17,7 +17,7 @@ import math
 
 import requests
 
-from InerukiX.decorator import register
+from Ineruki .decorator import register
 
 from .utils.disable import disableable_dec
 from .utils.message import get_args_str

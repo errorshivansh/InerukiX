@@ -18,8 +18,8 @@ from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from pytz import utc
 
-from InerukiX.config import get_str_key
-from InerukiX.utils.logger import log
+from Ineruki .config import get_str_key
+from Ineruki .utils.logger import log
 
 DEFAULT = "default"
 

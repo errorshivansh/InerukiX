@@ -23,9 +23,9 @@ import cloudmersive_virus_api_client
 from telethon.tl import functions, types
 from telethon.tl.types import DocumentAttributeFilename, MessageMediaDocument
 
-from InerukiX.config import get_str_key
-from InerukiX.services.events import register
-from InerukiX.services.telethon import tbot
+from Ineruki .config import get_str_key
+from Ineruki .services.events import register
+from Ineruki .services.telethon import tbot
 
 
 async def is_register_admin(chat, user):
@@ -88,7 +88,7 @@ async def virusscan(event):
         await event.client.download_file(c, virus)
         gg = await event.reply("Scanning the file ...")
         fsize = c.file.size
-        if not fsize <= 3145700:  # MAX = 3MB
+        if not fsize <= 3145700:  # MA  = 3MB
             await gg.edit("File size exceeds 3MB")
             return
         api_response = api_instance.scan_file_advanced(
@@ -112,5 +112,5 @@ async def virusscan(event):
 
 _mod_name_ = "Virus Scan"
 _help_ = """
- - /scanit: Scan a file for virus (MAX SIZE = 3MB)
+ - /scanit: Scan a file for virus (MA  SIZE = 3MB)
  """

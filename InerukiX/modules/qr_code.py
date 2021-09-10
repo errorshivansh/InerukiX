@@ -23,8 +23,8 @@ from datetime import datetime
 from requests import get, post
 from telethon.tl import functions, types
 
-from InerukiX.services.events import register
-from InerukiX.services.telethon import tbot as client
+from Ineruki .services.events import register
+from Ineruki .services.telethon import tbot as client
 
 
 def progress(current, total):
@@ -89,7 +89,7 @@ async def make_qr(qrcode):
         return
     start = datetime.now()
     input_str = qrcode.pattern_match.group(1)
-    message = "SYNTAX: `.makeqr <long text to include>`"
+    message = "SYNTA : `.makeqr <long text to include>`"
     reply_msg_id = None
     if input_str:
         message = input_str

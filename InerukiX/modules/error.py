@@ -23,9 +23,9 @@ import sys
 from aiogram.types import Update
 from redis.exceptions import RedisError
 
-from InerukiX import OWNER_ID, bot, dp
-from InerukiX.services.redis import redis
-from InerukiX.utils.logger import log
+from Ineruki  import OWNER_ID, bot, dp
+from Ineruki .services.redis import redis
+from Ineruki .utils.logger import log
 
 SENT = []
 

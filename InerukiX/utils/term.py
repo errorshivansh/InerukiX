@@ -15,7 +15,7 @@
 
 import subprocess
 
-from InerukiX.utils.logger import log
+from Ineruki .utils.logger import log
 
 
 def term(cmd):

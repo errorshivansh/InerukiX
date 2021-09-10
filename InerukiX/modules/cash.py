@@ -20,9 +20,9 @@ import requests
 from telethon import types
 from telethon.tl import functions
 
-from InerukiX.config import get_str_key
-from InerukiX.services.events import register
-from InerukiX.services.telethon import tbot
+from Ineruki .config import get_str_key
+from Ineruki .services.events import register
+from Ineruki .services.telethon import tbot
 
 CASH_API_KEY = get_str_key("CASH_API_KEY", required=False)
 
@@ -68,7 +68,7 @@ async def _(event):
 
         request_url = (
             f"https://www.alphavantage.co/query"
-            f"?function=CURRENCY_EXCHANGE_RATE"
+            f"?function=CURRENCY_E CHANGE_RATE"
             f"&from_currency={orig_cur}"
             f"&to_currency={new_cur}"
             f"&apikey={CASH_API_KEY}"

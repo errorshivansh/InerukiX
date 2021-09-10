@@ -12,7 +12,7 @@ import feedparser
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from pyrogram import filters
 
-from InerukiX.db.mongo_helpers.rss_db import (
+from Ineruki .db.mongo_helpers.rss_db import (
     add_rss,
     basic_check,
     del_rss,
@@ -23,8 +23,8 @@ from InerukiX.db.mongo_helpers.rss_db import (
     overall_check,
     update_rss,
 )
-from InerukiX.function.pluginhelpers import admins_only, edit_or_reply, get_text
-from InerukiX.services.pyrogram import pbot
+from Ineruki .function.pluginhelpers import admins_only, edit_or_reply, get_text
+from Ineruki .services.pyrogram import pbot
 
 
 @pbot.on_message(filters.command("addrss") & ~filters.edited & ~filters.bot)

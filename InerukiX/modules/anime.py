@@ -26,8 +26,8 @@ import requests
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyrogram import filters
 
-from InerukiX.decorator import register
-from InerukiX.services.pyrogram import pbot
+from Ineruki .decorator import register
+from Ineruki .services.pyrogram import pbot
 
 from .utils.anime import (
     airing_query,

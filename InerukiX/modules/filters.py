@@ -34,12 +34,12 @@ from async_timeout import timeout
 from bson.objectid import ObjectId
 from pymongo import UpdateOne
 
-from InerukiX import bot, loop
-from InerukiX.decorator import register
-from InerukiX.modules import LOADED_MODULES
-from InerukiX.services.mongo import db
-from InerukiX.services.redis import redis
-from InerukiX.utils.logger import log
+from Ineruki  import bot, loop
+from Ineruki .decorator import register
+from Ineruki .modules import LOADED_MODULES
+from Ineruki .services.mongo import db
+from Ineruki .services.redis import redis
+from Ineruki .utils.logger import log
 
 from .utils.connections import chat_connection, get_connected_chat
 from .utils.language import get_string, get_strings_dec
@@ -454,7 +454,7 @@ You can also use regex and buttons for filters. Check /buttonshelp to know more.
 
 You want to know all filter of your chat/ chat you joined? Use this command. It will list all filters along with specified actions !
 
-<b> TEXT FILTERS </b>
+<b> TE T FILTERS </b>
 Text filters are for short and text replies
 <i> Commands available </i>
 - /filter [KEYWORD] [REPLY TO MESSAGE] : Filters the replied message with given keyword.

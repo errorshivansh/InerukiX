@@ -2,7 +2,7 @@ import threading
 
 from sqlalchemy import Column, String
 
-from InerukiX.services.sql import BASE, SESSION
+from Ineruki .services.sql import BASE, SESSION
 
 
 class ChatbotChats(BASE):

@@ -23,8 +23,8 @@ from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMa
 from aiogram.utils.callback_data import CallbackData
 from aiogram.utils.exceptions import MessageNotModified
 
-from InerukiX.decorator import register
-from InerukiX.services.mongo import db
+from Ineruki .decorator import register
+from Ineruki .services.mongo import db
 
 from .utils.language import (
     LANGUAGES,
@@ -167,7 +167,7 @@ async def __import__(chat_id, data):
 __mod_name__ = "Languages"
 
 __help__ = """
-This module is dedicated towards utlising Ineruki's localization feature! You can also <a href='https://crowdin.com/project/InerukiXx'>contribute</a> for improving localization in Ineruki!
+This module is dedicated towards utlising Ineruki's localization feature! You can also <a href='https://crowdin.com/project/Ineruki x'>contribute</a> for improving localization in Ineruki!
 
 <b>Available commands:</b>
 - /lang: Shows a list of avaible languages

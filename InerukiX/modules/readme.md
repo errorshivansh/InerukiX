@@ -1,9 +1,9 @@
-# InerukiX Example plugin format
+# Ineruki  Example plugin format
 
 ## Basic: Simple Plugins
 ```python3
 
-from InerukiX.decorator import register
+from Ineruki .decorator import register
 from .utils.disable import disableable_dec
 from .utils.message import get_args_str
 
@@ -24,10 +24,10 @@ __help__ = """
 ```python3
 # You can import env like this. If config present auto use config
 
-from InerukiX.decorator import register
+from Ineruki .decorator import register
 from .utils.disable import disableable_dec
 from .utils.message import get_args_str
-from InerukiX.config import get_int_key, get_str_key
+from Ineruki .config import get_int_key, get_str_key
 
 HI_STRING = get_str_key("HI_STRING", required=True) # String
 MULTI = get_int_key("MULTI", required=True) #Intiger
@@ -49,8 +49,8 @@ __help__ = """
 
 ## Advanced: Pyrogram
 ```python3
-from InerukiX.function.pluginhelpers import admins_only
-from InerukiX.services.pyrogram import pbot
+from Ineruki .function.pluginhelpers import admins_only
+from Ineruki .services.pyrogram import pbot
 
 @pbot.on_message(filters.command("hi") & ~filters.edited & ~filters.bot)
 @admins_only
@@ -68,8 +68,8 @@ __help__ = """
 ## Advanced: Telethon
 ```python3
 
-from InerukiX.services.telethon import tbot
-from InerukiX.services.events import register
+from Ineruki .services.telethon import tbot
+from Ineruki .services.events import register
 
 @register(pattern="^/hi$")
 async def hmm(event):

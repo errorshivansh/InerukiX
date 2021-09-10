@@ -40,14 +40,14 @@ from babel.dates import format_timedelta
 from captcha.image import ImageCaptcha
 from telethon.tl.custom import Button
 
-from InerukiX import BOT_ID, BOT_USERNAME, bot, dp
-from InerukiX.config import get_str_key
-from InerukiX.decorator import register
-from InerukiX.services.apscheduller import scheduler
-from InerukiX.services.mongo import db
-from InerukiX.services.redis import redis
-from InerukiX.services.telethon import tbot
-from InerukiX.stuff.fonts import ALL_FONTS
+from Ineruki  import BOT_ID, BOT_USERNAME, bot, dp
+from Ineruki .config import get_str_key
+from Ineruki .decorator import register
+from Ineruki .services.apscheduller import scheduler
+from Ineruki .services.mongo import db
+from Ineruki .services.redis import redis
+from Ineruki .services.telethon import tbot
+from Ineruki .stuff.fonts import ALL_FONTS
 
 from ..utils.cached import cached
 from .utils.connections import chat_connection
@@ -480,7 +480,7 @@ async def welcome_security_config_proc(
 
 @register(
     state=WelcomeSecurityConf.send_time,
-    content_types=ContentType.TEXT,
+    content_types=ContentType.TE T,
     allow_kwargs=True,
 )
 @chat_connection(admin=True)
@@ -573,7 +573,7 @@ async def reset_security_note(message, chat, strings):
 @get_strings_dec("greetings")
 async def welcome_security_handler(message: Message, strings):
     if len(message.new_chat_members) > 1:
-        # FIXME: AllMightRobot doesnt support adding multiple users currently
+        # FI ME: AllMightRobot doesnt support adding multiple users currently
         return
 
     new_user = message.new_chat_members[0]
@@ -623,7 +623,7 @@ async def welcome_security_handler(message: Message, strings):
         Button.inline(strings["click_here"], f"ws_{chat_id}_{user_id}")
     ]
 
-    # FIXME: Better workaround
+    # FI ME: Better workaround
     if not (msg := await send_note(chat_id, text, **kwargs)):
         # Wasn't able to sent message
         return
@@ -1000,7 +1000,7 @@ async def welcome_security_passed(
 @get_strings_dec("greetings")
 async def welcome_trigger(message: Message, strings):
     if len(message.new_chat_members) > 1:
-        # FIXME: AllMightRobot doesnt support adding multiple users currently
+        # FI ME: AllMightRobot doesnt support adding multiple users currently
         return
 
     chat_id = message.chat.id
@@ -1121,11 +1121,11 @@ Setting up welcome security will give you a choice to customize join expiration 
 - <code>math</code>: Asking to solve simple math query, few buttons with answers will be provided, only one will have right answer
 - <code>captcha</code>: Ask user to enter captcha
 <b>Welcome mutes:</b>
-- /welcomemute (time): Set welcome mute (no media) for X time
+- /welcomemute (time): Set welcome mute (no media) for   time
 - /welcomemute (off/no): Disable welcome mute
 <b>Purges:</b>
 - /cleanwelcome (on/off): Deletes old welcome messages and last one after 45 mintes
-- /cleanservice (on/off): Cleans service messages (user X joined)
+- /cleanservice (on/off): Cleans service messages (user   joined)
 If welcome security is enabled, user will be welcomed with security text, if user successfully verify self as user, he/she will be welcomed also with welcome text in his PM (to prevent spamming in chat).
 If user didn't verified self for 24 hours he/she will be kicked from chat.
 <b>Addings buttons and variables to welcomes or security text:</b>

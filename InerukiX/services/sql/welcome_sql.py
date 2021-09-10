@@ -1,6 +1,6 @@
 from sqlalchemy import BigInteger, Boolean, Column, String, UnicodeText
 
-from InerukiX.services.sql import BASE, SESSION
+from Ineruki .services.sql import BASE, SESSION
 
 
 class Goodbye(BASE):

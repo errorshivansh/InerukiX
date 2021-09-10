@@ -19,8 +19,8 @@
 from pyrogram import filters
 from pyrogram.errors import RPCError
 
-from InerukiX.function.pluginhelpers import admins_only, get_text
-from InerukiX.services.pyrogram import pbot
+from Ineruki .function.pluginhelpers import admins_only, get_text
+from Ineruki .services.pyrogram import pbot
 
 
 @pbot.on_message(

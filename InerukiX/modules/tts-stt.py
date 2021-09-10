@@ -24,9 +24,9 @@ import requests
 from gtts import gTTS, gTTSError
 from telethon.tl import functions, types
 
-from InerukiX.config import get_str_key
-from InerukiX.services.events import register
-from InerukiX.services.telethon import tbot
+from Ineruki .config import get_str_key
+from Ineruki .services.events import register
+from Ineruki .services.telethon import tbot
 
 IBM_WATSON_CRED_PASSWORD = get_str_key("IBM_WATSON_CRED_PASSWORD", required=False)
 IBM_WATSON_CRED_URL = get_str_key("IBM_WATSON_CRED_URL", required=False)

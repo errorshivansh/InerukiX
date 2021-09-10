@@ -4,8 +4,8 @@ from pathlib import Path
 
 from telethon import events
 
-from InerukiX.services.mongo import mongodb as db
-from InerukiX.services.telethon import tbot
+from Ineruki .services.mongo import mongodb as db
+from Ineruki .services.telethon import tbot
 
 gbanned = db.gban
 CMD_LIST = {}

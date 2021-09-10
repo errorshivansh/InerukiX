@@ -45,10 +45,10 @@ from aiogram.utils.exceptions import (
 from babel.dates import format_timedelta
 from pymongo import DeleteMany, InsertOne
 
-from InerukiX import BOT_ID, OPERATORS, OWNER_ID, bot, decorator
-from InerukiX.services.mongo import db
-from InerukiX.services.redis import redis
-from InerukiX.services.telethon import tbot
+from Ineruki  import BOT_ID, OPERATORS, OWNER_ID, bot, decorator
+from Ineruki .services.mongo import db
+from Ineruki .services.redis import redis
+from Ineruki .services.telethon import tbot
 
 from ..utils.cached import cached
 from .utils.connections import chat_connection, get_connected_chat

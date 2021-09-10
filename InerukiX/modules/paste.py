@@ -11,8 +11,8 @@ import os
 import requests
 from pyrogram import filters
 
-from InerukiX.function.pluginhelpers import edit_or_reply, get_text
-from InerukiX.services.pyrogram import pbot
+from Ineruki .function.pluginhelpers import edit_or_reply, get_text
+from Ineruki .services.pyrogram import pbot
 
 
 @pbot.on_message(filters.command("paste") & ~filters.edited & ~filters.bot)

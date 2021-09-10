@@ -18,7 +18,7 @@
 from typing import Union
 
 
-class SanTeXDoc:
+class SanTe Doc:
     def __init__(self, *args):
         self.items = list(args)
 
