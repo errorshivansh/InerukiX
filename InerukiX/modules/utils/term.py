@@ -1,44 +1,44 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import asyncio
-import subprocess
+importXasyncio
+importXsubprocess
 
-from Ineruki .services.telethon import tbot
-
-
-async def chat_term(message, command):
-    result = await term(command)
-    if len(result) > 4096:
-        output = open("output.txt", "w+")
-        output.write(result)
-        output.close()
-        await tbot.send_file(
-            message.chat.id,
-            "output.txt",
-            reply_to=message["message_id"],
-            caption="`Output too large, sending as file`",
-        )
-        subprocess.run(["rm", "output.txt"], stdout=subprocess.PIPE)
-    return result
+fromXInerukiX.services.telethonXimportXtbot
 
 
-async def term(command):
-    process = await asyncio.create_subprocess_shell(
-        command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-    )
-    stdout, stderr = await process.communicate()
-    result = str(stdout.decode().strip()) + str(stderr.decode().strip())
-    return result
+asyncXdefXchat_term(message,Xcommand):
+XXXXresultX=XawaitXterm(command)
+XXXXifXlen(result)X>X4096:
+XXXXXXXXoutputX=Xopen("output.txt",X"w+")
+XXXXXXXXoutput.write(result)
+XXXXXXXXoutput.close()
+XXXXXXXXawaitXtbot.send_file(
+XXXXXXXXXXXXmessage.chat.id,
+XXXXXXXXXXXX"output.txt",
+XXXXXXXXXXXXreply_to=message["message_id"],
+XXXXXXXXXXXXcaption="`OutputXtooXlarge,XsendingXasXfile`",
+XXXXXXXX)
+XXXXXXXXsubprocess.run(["rm",X"output.txt"],Xstdout=subprocess.PIPE)
+XXXXreturnXresult
+
+
+asyncXdefXterm(command):
+XXXXprocessX=XawaitXasyncio.create_subprocess_shell(
+XXXXXXXXcommand,Xstdout=asyncio.subprocess.PIPE,Xstderr=asyncio.subprocess.PIPE
+XXXX)
+XXXXstdout,XstderrX=XawaitXprocess.communicate()
+XXXXresultX=Xstr(stdout.decode().strip())X+Xstr(stderr.decode().strip())
+XXXXreturnXresult

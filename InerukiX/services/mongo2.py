@@ -1,14 +1,14 @@
-# Support Dual Mongo DB now
-# For free users
+#XSupportXDualXMongoXDBXnow
+#XForXfreeXusers
 
-from motor.motor_asyncio import AsyncIOMotorClient as MongoClient
+fromXmotor.motor_asyncioXimportXAsyncIOMotorClientXasXMongoClient
 
-from Ineruki .config import get_str_key
+fromXInerukiX.configXimportXget_str_key
 
-MONGO2 = get_str_key("MONGO_URI_2", None)
-MONGO = get_str_key("MONGO_URI", required=True)
-if MONGO2 == None:
-    MONGO2 = MONGO
+MONGO2X=Xget_str_key("MONGO_URI_2",XNone)
+MONGOX=Xget_str_key("MONGO_URI",Xrequired=True)
+ifXMONGO2X==XNone:
+XXXXMONGO2X=XMONGO
 
-mongo_client = MongoClient(MONGO2)
-db = mongo_client.Ineruki
+mongo_clientX=XMongoClient(MONGO2)
+dbX=Xmongo_client.Ineruki

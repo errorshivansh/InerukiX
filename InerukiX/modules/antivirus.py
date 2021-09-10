@@ -1,116 +1,116 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-import os
-
-import cloudmersive_virus_api_client
-from telethon.tl import functions, types
-from telethon.tl.types import DocumentAttributeFilename, MessageMediaDocument
-
-from Ineruki .config import get_str_key
-from Ineruki .services.events import register
-from Ineruki .services.telethon import tbot
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
 
-async def is_register_admin(chat, user):
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
-        return isinstance(
-            (
-                await tbot(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    if isinstance(chat, types.InputPeerUser):
-        return True
+importXos
+
+importXcloudmersive_virus_api_client
+fromXtelethon.tlXimportXfunctions,Xtypes
+fromXtelethon.tl.typesXimportXDocumentAttributeFilename,XMessageMediaDocument
+
+fromXInerukiX.configXimportXget_str_key
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.telethonXimportXtbot
 
 
-VIRUS_API_KEY = get_str_key("VIRUS_API_KEY", required=False)
-configuration = cloudmersive_virus_api_client.Configuration()
-configuration.api_key["Apikey"] = VIRUS_API_KEY
-api_instance = cloudmersive_virus_api_client.ScanApi(
-    cloudmersive_virus_api_client.ApiClient(configuration)
+asyncXdefXis_register_admin(chat,Xuser):
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXtbot(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXifXisinstance(chat,Xtypes.InputPeerUser):
+XXXXXXXXreturnXTrue
+
+
+VIRUS_API_KEYX=Xget_str_key("VIRUS_API_KEY",Xrequired=False)
+configurationX=Xcloudmersive_virus_api_client.Configuration()
+configuration.api_key["Apikey"]X=XVIRUS_API_KEY
+api_instanceX=Xcloudmersive_virus_api_client.ScanApi(
+XXXXcloudmersive_virus_api_client.ApiClient(configuration)
 )
-allow_executables = True
-allow_invalid_files = True
-allow_scripts = True
-allow_password_protected_files = True
+allow_executablesX=XTrue
+allow_invalid_filesX=XTrue
+allow_scriptsX=XTrue
+allow_password_protected_filesX=XTrue
 
 
 @register(pattern="^/scanit$")
-async def virusscan(event):
-    if event.fwd_from:
-        return
-    if event.is_group:
-        if await is_register_admin(event.input_chat, event.message.sender_id):
-            pass
-        else:
-            return
-    if not event.reply_to_msg_id:
-        await event.reply("Reply to a file to scan it.")
-        return
+asyncXdefXvirusscan(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXifXevent.is_group:
+XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+XXXXifXnotXevent.reply_to_msg_id:
+XXXXXXXXawaitXevent.reply("ReplyXtoXaXfileXtoXscanXit.")
+XXXXXXXXreturn
 
-    c = await event.get_reply_message()
-    try:
-        c.media.document
-    except Exception:
-        await event.reply("Thats not a file.")
-        return
-    h = c.media
-    try:
-        k = h.document.attributes
-    except Exception:
-        await event.reply("Thats not a file.")
-        return
-    if not isinstance(h, MessageMediaDocument):
-        await event.reply("Thats not a file.")
-        return
-    if not isinstance(k[0], DocumentAttributeFilename):
-        await event.reply("Thats not a file.")
-        return
-    try:
-        virus = c.file.name
-        await event.client.download_file(c, virus)
-        gg = await event.reply("Scanning the file ...")
-        fsize = c.file.size
-        if not fsize <= 3145700:  # MA  = 3MB
-            await gg.edit("File size exceeds 3MB")
-            return
-        api_response = api_instance.scan_file_advanced(
-            c.file.name,
-            allow_executables=allow_executables,
-            allow_invalid_files=allow_invalid_files,
-            allow_scripts=allow_scripts,
-            allow_password_protected_files=allow_password_protected_files,
-        )
-        if api_response.clean_result is True:
-            await gg.edit("This file is safe ✔️\nNo virus detected 🐞")
-        else:
-            await gg.edit("This file is Dangerous ☠️️\nVirus detected 🐞")
-        os.remove(virus)
-    except Exception as e:
-        print(e)
-        os.remove(virus)
-        await gg.edit("Some error occurred.")
-        return
+XXXXcX=XawaitXevent.get_reply_message()
+XXXXtry:
+XXXXXXXXc.media.document
+XXXXexceptXException:
+XXXXXXXXawaitXevent.reply("ThatsXnotXaXfile.")
+XXXXXXXXreturn
+XXXXhX=Xc.media
+XXXXtry:
+XXXXXXXXkX=Xh.document.attributes
+XXXXexceptXException:
+XXXXXXXXawaitXevent.reply("ThatsXnotXaXfile.")
+XXXXXXXXreturn
+XXXXifXnotXisinstance(h,XMessageMediaDocument):
+XXXXXXXXawaitXevent.reply("ThatsXnotXaXfile.")
+XXXXXXXXreturn
+XXXXifXnotXisinstance(k[0],XDocumentAttributeFilename):
+XXXXXXXXawaitXevent.reply("ThatsXnotXaXfile.")
+XXXXXXXXreturn
+XXXXtry:
+XXXXXXXXvirusX=Xc.file.name
+XXXXXXXXawaitXevent.client.download_file(c,Xvirus)
+XXXXXXXXggX=XawaitXevent.reply("ScanningXtheXfileX...")
+XXXXXXXXfsizeX=Xc.file.size
+XXXXXXXXifXnotXfsizeX<=X3145700:XX#XMAXX=X3MB
+XXXXXXXXXXXXawaitXgg.edit("FileXsizeXexceedsX3MB")
+XXXXXXXXXXXXreturn
+XXXXXXXXapi_responseX=Xapi_instance.scan_file_advanced(
+XXXXXXXXXXXXc.file.name,
+XXXXXXXXXXXXallow_executables=allow_executables,
+XXXXXXXXXXXXallow_invalid_files=allow_invalid_files,
+XXXXXXXXXXXXallow_scripts=allow_scripts,
+XXXXXXXXXXXXallow_password_protected_files=allow_password_protected_files,
+XXXXXXXX)
+XXXXXXXXifXapi_response.clean_resultXisXTrue:
+XXXXXXXXXXXXawaitXgg.edit("ThisXfileXisXsafeX✔️\nNoXvirusXdetectedX🐞")
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXgg.edit("ThisXfileXisXDangerousX☠️️\nVirusXdetectedX🐞")
+XXXXXXXXos.remove(virus)
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint(e)
+XXXXXXXXos.remove(virus)
+XXXXXXXXawaitXgg.edit("SomeXerrorXoccurred.")
+XXXXXXXXreturn
 
 
-_mod_name_ = "Virus Scan"
-_help_ = """
- - /scanit: Scan a file for virus (MA  SIZE = 3MB)
- """
+_mod_name_X=X"VirusXScan"
+_help_X=X"""
+X-X/scanit:XScanXaXfileXforXvirusX(MAXXSIZEX=X3MB)
+X"""

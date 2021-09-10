@@ -1,84 +1,84 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-from geopy.geocoders import Nominatim
-from telethon import *
-from telethon.tl import *
-
-from Ineruki .services.events import register
-from Ineruki .services.telethon import tbot as client
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
 
-async def is_register_admin(chat, user):
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
+fromXgeopy.geocodersXimportXNominatim
+fromXtelethonXimportX*
+fromXtelethon.tlXimportX*
 
-        return isinstance(
-            (
-                await client(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    if isinstance(chat, types.InputPeerChat):
-
-        ui = await client.get_peer_id(user)
-        ps = (
-            await client(functions.messages.GetFullChatRequest(chat.chat_id))
-        ).full_chat.participants.participants
-        return isinstance(
-            next((p for p in ps if p.user_id == ui), None),
-            (types.ChatParticipantAdmin, types.ChatParticipantCreator),
-        )
-    return None
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.telethonXimportXtbotXasXclient
 
 
-GMAPS_LOC = "https://maps.googleapis.com/maps/api/geocode/json"
+asyncXdefXis_register_admin(chat,Xuser):
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
+
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXclient(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXifXisinstance(chat,Xtypes.InputPeerChat):
+
+XXXXXXXXuiX=XawaitXclient.get_peer_id(user)
+XXXXXXXXpsX=X(
+XXXXXXXXXXXXawaitXclient(functions.messages.GetFullChatRequest(chat.chat_id))
+XXXXXXXX).full_chat.participants.participants
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXXnext((pXforXpXinXpsXifXp.user_idX==Xui),XNone),
+XXXXXXXXXXXX(types.ChatParticipantAdmin,Xtypes.ChatParticipantCreator),
+XXXXXXXX)
+XXXXreturnXNone
 
 
-@register(pattern="^/gps (.*)")
-async def _(event):
-    if event.fwd_from:
-        return
-    if event.is_group:
-        if not (await is_register_admin(event.input_chat, event.message.sender_id)):
-            await event.reply(
-                "You are not Admin. So, You can't use this. Try in my inbox"
-            )
-            return
+GMAPS_LOCX=X"https://maps.googleapis.com/maps/api/geocode/json"
 
-    args = event.pattern_match.group(1)
 
-    try:
-        geolocator = Nominatim(user_agent="SkittBot")
-        location = args
-        geoloc = geolocator.geocode(location)
-        longitude = geoloc.longitude
-        latitude = geoloc.latitude
-        gm = "https://www.google.com/maps/search/{},{}".format(latitude, longitude)
-        await client.send_file(
-            event.chat_id,
-            file=types.InputMediaGeoPoint(
-                types.InputGeoPoint(float(latitude), float(longitude))
-            ),
-        )
-        await event.reply(
-            "Open with: [Google Maps]({})".format(gm),
-            link_preview=False,
-        )
-    except Exception as e:
-        print(e)
-        await event.reply("I can't find that")
+@register(pattern="^/gpsX(.*)")
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXifXevent.is_group:
+XXXXXXXXifXnotX(awaitXis_register_admin(event.input_chat,Xevent.message.sender_id)):
+XXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXX"YouXareXnotXAdmin.XSo,XYouXcan'tXuseXthis.XTryXinXmyXinbox"
+XXXXXXXXXXXX)
+XXXXXXXXXXXXreturn
+
+XXXXargsX=Xevent.pattern_match.group(1)
+
+XXXXtry:
+XXXXXXXXgeolocatorX=XNominatim(user_agent="SkittBot")
+XXXXXXXXlocationX=Xargs
+XXXXXXXXgeolocX=Xgeolocator.geocode(location)
+XXXXXXXXlongitudeX=Xgeoloc.longitude
+XXXXXXXXlatitudeX=Xgeoloc.latitude
+XXXXXXXXgmX=X"https://www.google.com/maps/search/{},{}".format(latitude,Xlongitude)
+XXXXXXXXawaitXclient.send_file(
+XXXXXXXXXXXXevent.chat_id,
+XXXXXXXXXXXXfile=types.InputMediaGeoPoint(
+XXXXXXXXXXXXXXXXtypes.InputGeoPoint(float(latitude),Xfloat(longitude))
+XXXXXXXXXXXX),
+XXXXXXXX)
+XXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXX"OpenXwith:X[GoogleXMaps]({})".format(gm),
+XXXXXXXXXXXXlink_preview=False,
+XXXXXXXX)
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint(e)
+XXXXXXXXawaitXevent.reply("IXcan'tXfindXthat")

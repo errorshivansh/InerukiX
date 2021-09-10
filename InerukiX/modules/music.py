@@ -1,135 +1,135 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import io
-import os
+importXio
+importXos
 
-import lyricsgenius
-from pyrogram import filters
-from tswift import Song
+importXlyricsgenius
+fromXpyrogramXimportXfilters
+fromXtswiftXimportXSong
 
-from Ineruki .config import get_str_key
-from Ineruki .services.pyrogram import pbot
+fromXInerukiX.configXimportXget_str_key
+fromXInerukiX.services.pyrogramXimportXpbot
 
-GENIUS = get_str_key("GENIUS_API_TOKEN", None)
-
-
-# Lel, Didn't Get Time To Make New One So Used Plugin Made br @mrconfused and @sandy1709 dont edit credits
+GENIUSX=Xget_str_key("GENIUS_API_TOKEN",XNone)
 
 
-@pbot.on_message(filters.command(["lyric", "lyrics"]))
-async def _(client, message):
-    lel = await message.reply("Searching For Lyrics.....")
-    query = message.text
-    if not query:
-        await lel.edit("`What I am Supposed to find `")
-        return
-
-    song = ""
-    song = Song.find_song(query)
-    if song:
-        if song.lyrics:
-            reply = song.format()
-        else:
-            reply = "Couldn't find any lyrics for that song! try with artist name along with song if still doesnt work try `.glyrics`"
-    else:
-        reply = "lyrics not found! try with artist name along with song if still doesnt work try `.glyrics`"
-
-    if len(reply) > 4095:
-        with io.BytesIO(str.encode(reply)) as out_file:
-            out_file.name = "lyrics.text"
-            await client.send_document(
-                message.chat.id,
-                out_file,
-                force_document=True,
-                allow_cache=False,
-                caption=query,
-                reply_to_msg_id=message.message_id,
-            )
-            await lel.delete()
-    else:
-        await lel.edit(reply)  # edit or reply
+#XLel,XDidn'tXGetXTimeXToXMakeXNewXOneXSoXUsedXPluginXMadeXbrX@mrconfusedXandX@sandy1709XdontXeditXcredits
 
 
-@pbot.on_message(filters.command(["glyric", "glyrics"]))
-async def lyrics(client, message):
+@pbot.on_message(filters.command(["lyric",X"lyrics"]))
+asyncXdefX_(client,Xmessage):
+XXXXlelX=XawaitXmessage.reply("SearchingXForXLyrics.....")
+XXXXqueryX=Xmessage.text
+XXXXifXnotXquery:
+XXXXXXXXawaitXlel.edit("`WhatXIXamXSupposedXtoXfindX`")
+XXXXXXXXreturn
 
-    if r"-" in message.text:
-        pass
-    else:
-        await message.reply(
-            "`Error: please use '-' as divider for <artist> and <song>`\n"
-            "eg: `.glyrics Nicki Minaj - Super Bass`"
-        )
-        return
+XXXXsongX=X""
+XXXXsongX=XSong.find_song(query)
+XXXXifXsong:
+XXXXXXXXifXsong.lyrics:
+XXXXXXXXXXXXreplyX=Xsong.format()
+XXXXXXXXelse:
+XXXXXXXXXXXXreplyX=X"Couldn'tXfindXanyXlyricsXforXthatXsong!XtryXwithXartistXnameXalongXwithXsongXifXstillXdoesntXworkXtryX`.glyrics`"
+XXXXelse:
+XXXXXXXXreplyX=X"lyricsXnotXfound!XtryXwithXartistXnameXalongXwithXsongXifXstillXdoesntXworkXtryX`.glyrics`"
 
-    if GENIUS is None:
-        await message.reply(
-            "`Provide genius access token to config.py or Heroku Config first kthxbye!`"
-        )
-    else:
-        genius = lyricsgenius.Genius(GENIUS)
-        try:
-            args = message.text.split(".lyrics")[1].split("-")
-            artist = args[0].strip(" ")
-            song = args[1].strip(" ")
-        except Exception:
-            await message.reply("`Lel please provide artist and song names`")
-            return
-
-    if len(args) < 1:
-        await message.reply("`Please provide artist and song names`")
-        return
-
-    lel = await message.reply(f"`Searching lyrics for {artist} - {song}...`")
-
-    try:
-        songs = genius.search_song(song, artist)
-    except TypeError:
-        songs = None
-
-    if songs is None:
-        await lel.edit(f"Song **{artist} - {song}** not found!")
-        return
-    if len(songs.lyrics) > 4096:
-        await lel.edit("`Lyrics is too big, view the file to see it.`")
-        with open("lyrics.txt", "w+") as f:
-            f.write(f"Search query: \n{artist} - {song}\n\n{songs.lyrics}")
-        await client.send_document(
-            message.chat.id,
-            "lyrics.txt",
-            reply_to_msg_id=message.message_id,
-        )
-        os.remove("lyrics.txt")
-    else:
-        await lel.edit(
-            f"**Search query**: \n`{artist} - {song}`\n\n```{songs.lyrics}```"
-        )
-    return
+XXXXifXlen(reply)X>X4095:
+XXXXXXXXwithXio.BytesIO(str.encode(reply))XasXout_file:
+XXXXXXXXXXXXout_file.nameX=X"lyrics.text"
+XXXXXXXXXXXXawaitXclient.send_document(
+XXXXXXXXXXXXXXXXmessage.chat.id,
+XXXXXXXXXXXXXXXXout_file,
+XXXXXXXXXXXXXXXXforce_document=True,
+XXXXXXXXXXXXXXXXallow_cache=False,
+XXXXXXXXXXXXXXXXcaption=query,
+XXXXXXXXXXXXXXXXreply_to_msg_id=message.message_id,
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXlel.delete()
+XXXXelse:
+XXXXXXXXawaitXlel.edit(reply)XX#XeditXorXreply
 
 
-__mod_name__ = "Music"
+@pbot.on_message(filters.command(["glyric",X"glyrics"]))
+asyncXdefXlyrics(client,Xmessage):
 
-__help__ = """
-/video <i>query</i>: download video from youtube. 
-/deezer <i>query</i>: download from deezer. 
-/saavn <I>query</i>: download song from saavn. 
-/music <i>query</i>: download song from yt servers. (API BASED) 
-/lyrics <i>song name</i> : This plugin searches for song lyrics with song name.
-/glyrics <i> song name </i> : This plugin searches for song lyrics with song name and artist.
+XXXXifXr"-"XinXmessage.text:
+XXXXXXXXpass
+XXXXelse:
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXX"`Error:XpleaseXuseX'-'XasXdividerXforX<artist>XandX<song>`\n"
+XXXXXXXXXXXX"eg:X`.glyricsXNickiXMinajX-XSuperXBass`"
+XXXXXXXX)
+XXXXXXXXreturn
+
+XXXXifXGENIUSXisXNone:
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXX"`ProvideXgeniusXaccessXtokenXtoXconfig.pyXorXHerokuXConfigXfirstXkthxbye!`"
+XXXXXXXX)
+XXXXelse:
+XXXXXXXXgeniusX=Xlyricsgenius.Genius(GENIUS)
+XXXXXXXXtry:
+XXXXXXXXXXXXargsX=Xmessage.text.split(".lyrics")[1].split("-")
+XXXXXXXXXXXXartistX=Xargs[0].strip("X")
+XXXXXXXXXXXXsongX=Xargs[1].strip("X")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXawaitXmessage.reply("`LelXpleaseXprovideXartistXandXsongXnames`")
+XXXXXXXXXXXXreturn
+
+XXXXifXlen(args)X<X1:
+XXXXXXXXawaitXmessage.reply("`PleaseXprovideXartistXandXsongXnames`")
+XXXXXXXXreturn
+
+XXXXlelX=XawaitXmessage.reply(f"`SearchingXlyricsXforX{artist}X-X{song}...`")
+
+XXXXtry:
+XXXXXXXXsongsX=Xgenius.search_song(song,Xartist)
+XXXXexceptXTypeError:
+XXXXXXXXsongsX=XNone
+
+XXXXifXsongsXisXNone:
+XXXXXXXXawaitXlel.edit(f"SongX**{artist}X-X{song}**XnotXfound!")
+XXXXXXXXreturn
+XXXXifXlen(songs.lyrics)X>X4096:
+XXXXXXXXawaitXlel.edit("`LyricsXisXtooXbig,XviewXtheXfileXtoXseeXit.`")
+XXXXXXXXwithXopen("lyrics.txt",X"w+")XasXf:
+XXXXXXXXXXXXf.write(f"SearchXquery:X\n{artist}X-X{song}\n\n{songs.lyrics}")
+XXXXXXXXawaitXclient.send_document(
+XXXXXXXXXXXXmessage.chat.id,
+XXXXXXXXXXXX"lyrics.txt",
+XXXXXXXXXXXXreply_to_msg_id=message.message_id,
+XXXXXXXX)
+XXXXXXXXos.remove("lyrics.txt")
+XXXXelse:
+XXXXXXXXawaitXlel.edit(
+XXXXXXXXXXXXf"**SearchXquery**:X\n`{artist}X-X{song}`\n\n```{songs.lyrics}```"
+XXXXXXXX)
+XXXXreturn
+
+
+__mod_name__X=X"Music"
+
+__help__X=X"""
+/videoX<i>query</i>:XdownloadXvideoXfromXyoutube.X
+/deezerX<i>query</i>:XdownloadXfromXdeezer.X
+/saavnX<I>query</i>:XdownloadXsongXfromXsaavn.X
+/musicX<i>query</i>:XdownloadXsongXfromXytXservers.X(APIXBASED)X
+/lyricsX<i>songXname</i>X:XThisXpluginXsearchesXforXsongXlyricsXwithXsongXname.
+/glyricsX<i>XsongXnameX</i>X:XThisXpluginXsearchesXforXsongXlyricsXwithXsongXnameXandXartist.
 """

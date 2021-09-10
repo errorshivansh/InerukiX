@@ -1,78 +1,78 @@
-# Copyright (C) 2020 DevsExpo
-# Copyright (C) 2021 Inuka Asith
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2020XDevsExpo
+#XCopyrightX(C)X2021XInukaXAsith
+#XCopyrightX(C)X2021Xerrorshivansh
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-import os
-import re
-
-import requests
-from bs4 import BeautifulSoup
-from telethon import events
-
-from Ineruki .services.telethon import tbot
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
 
-@tbot.on(events.NewMessage(pattern="^/book (.*)"))
-async def _(event):
-    if event.fwd_from:
-        return
-    input_str = event.pattern_match.group(1)
-    lool = 0
-    KkK = await event.reply("searching for the book...")
-    lin = "https://b-ok.cc/s/"
-    text = input_str
-    link = lin + text
+importXos
+importXre
 
-    headers = [
-        "User-Agent",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS   10.15; rv:74.0) Gecko/20100101 Firefox/74.0",
-    ]
-    page = requests.get(link)
-    soup = BeautifulSoup(page.content, "html.parser")
-    f = open("book.txt", "w")
-    total = soup.find(class_="totalCounter")
-    for nb in total.descendants:
-        nbx = nb.replace("(", "").replace(")", "")
-    if nbx == "0":
-        await event.reply("No Books Found with that name.")
-    else:
+importXrequests
+fromXbs4XimportXBeautifulSoup
+fromXtelethonXimportXevents
 
-        for tr in soup.find_all("td"):
-            for td in tr.find_all("h3"):
-                for ts in td.find_all("a"):
-                    title = ts.get_text()
-                    lool = lool + 1
-                for ts in td.find_all("a", attrs={"href": re.compile("^/book/")}):
-                    ref = ts.get("href")
-                    link = "https://b-ok.cc" + ref
+fromXInerukiX.services.telethonXimportXtbot
 
-                f.write("\n" + title)
-                f.write("\nBook link:- " + link + "\n\n")
 
-        f.write("By @Ineruki Bot.")
-        f.close()
-        caption = "A collabration with Friday.\n Join Support @InerukiSupport_Official"
+@tbot.on(events.NewMessage(pattern="^/bookX(.*)"))
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXinput_strX=Xevent.pattern_match.group(1)
+XXXXloolX=X0
+XXXXKkKX=XawaitXevent.reply("searchingXforXtheXbook...")
+XXXXlinX=X"https://b-ok.cc/s/"
+XXXXtextX=Xinput_str
+XXXXlinkX=XlinX+Xtext
 
-        await tbot.send_file(
-            event.chat_id,
-            "book.txt",
-            caption=f"**BOOKS GATHERED SUCCESSFULLY!\n\nBY INERUKI . JOIN THE SUPPORT @InerukiSupport_Official.**",
-        )
-        os.remove("book.txt")
-        await KkK.delete()
+XXXXheadersX=X[
+XXXXXXXX"User-Agent",
+XXXXXXXX"Mozilla/5.0X(Macintosh;XIntelXMacXOSXXX10.15;Xrv:74.0)XGecko/20100101XFirefox/74.0",
+XXXX]
+XXXXpageX=Xrequests.get(link)
+XXXXsoupX=XBeautifulSoup(page.content,X"html.parser")
+XXXXfX=Xopen("book.txt",X"w")
+XXXXtotalX=Xsoup.find(class_="totalCounter")
+XXXXforXnbXinXtotal.descendants:
+XXXXXXXXnbxX=Xnb.replace("(",X"").replace(")",X"")
+XXXXifXnbxX==X"0":
+XXXXXXXXawaitXevent.reply("NoXBooksXFoundXwithXthatXname.")
+XXXXelse:
+
+XXXXXXXXforXtrXinXsoup.find_all("td"):
+XXXXXXXXXXXXforXtdXinXtr.find_all("h3"):
+XXXXXXXXXXXXXXXXforXtsXinXtd.find_all("a"):
+XXXXXXXXXXXXXXXXXXXXtitleX=Xts.get_text()
+XXXXXXXXXXXXXXXXXXXXloolX=XloolX+X1
+XXXXXXXXXXXXXXXXforXtsXinXtd.find_all("a",Xattrs={"href":Xre.compile("^/book/")}):
+XXXXXXXXXXXXXXXXXXXXrefX=Xts.get("href")
+XXXXXXXXXXXXXXXXXXXXlinkX=X"https://b-ok.cc"X+Xref
+
+XXXXXXXXXXXXXXXXf.write("\n"X+Xtitle)
+XXXXXXXXXXXXXXXXf.write("\nBookXlink:-X"X+XlinkX+X"\n\n")
+
+XXXXXXXXf.write("ByX@InerukiXBot.")
+XXXXXXXXf.close()
+XXXXXXXXcaptionX=X"AXcollabrationXwithXFriday.\nXJoinXSupportX@InerukiSupport_Official"
+
+XXXXXXXXawaitXtbot.send_file(
+XXXXXXXXXXXXevent.chat_id,
+XXXXXXXXXXXX"book.txt",
+XXXXXXXXXXXXcaption=f"**BOOKSXGATHEREDXSUCCESSFULLY!\n\nBYXINERUKIX.XJOINXTHEXSUPPORTX@InerukiSupport_Official.**",
+XXXXXXXX)
+XXXXXXXXos.remove("book.txt")
+XXXXXXXXawaitXKkK.delete()

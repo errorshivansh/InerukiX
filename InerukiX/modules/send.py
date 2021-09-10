@@ -1,31 +1,31 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-from pyrogram import filters
+fromXpyrogramXimportXfilters
 
-from Ineruki .function.pluginhelpers import admins_only, get_text
-from Ineruki .services.pyrogram import pbot
+fromXInerukiX.function.pluginhelpersXimportXadmins_only,Xget_text
+fromXInerukiX.services.pyrogramXimportXpbot
 
 
 @pbot.on_message(
-    filters.command("send") & ~filters.edited & ~filters.bot & ~filters.private
+XXXXfilters.command("send")X&X~filters.editedX&X~filters.botX&X~filters.private
 )
 @admins_only
-async def send(client, message):
-    args = get_text(message)
-    await client.send_message(message.chat.id, text=args)
+asyncXdefXsend(client,Xmessage):
+XXXXargsX=Xget_text(message)
+XXXXawaitXclient.send_message(message.chat.id,Xtext=args)

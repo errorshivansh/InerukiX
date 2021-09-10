@@ -1,444 +1,444 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import pickle
-import re
-from contextlib import suppress
-from typing import Union
+importXpickle
+importXre
+fromXcontextlibXimportXsuppress
+fromXtypingXimportXUnion
 
-from aiogram.dispatcher.handler import SkipHandler
-from aiogram.types import CallbackQuery, Message
-from aiogram.utils.exceptions import BadRequest, ChatNotFound, Unauthorized
-from telethon.tl.functions.users import GetFullUserRequest
+fromXaiogram.dispatcher.handlerXimportXSkipHandler
+fromXaiogram.typesXimportXCallbackQuery,XMessage
+fromXaiogram.utils.exceptionsXimportXBadRequest,XChatNotFound,XUnauthorized
+fromXtelethon.tl.functions.usersXimportXGetFullUserRequest
 
-from Ineruki  import OPERATORS, bot
-from Ineruki .services.mongo import db
-from Ineruki .services.redis import bredis
-from Ineruki .services.telethon import tbot
+fromXInerukiXXimportXOPERATORS,Xbot
+fromXInerukiX.services.mongoXimportXdb
+fromXInerukiX.services.redisXimportXbredis
+fromXInerukiX.services.telethonXimportXtbot
 
-from .language import get_string
-from .message import get_arg
-
-
-async def add_user_to_db(user):
-    if hasattr(user, "user"):
-        user = user.user
-
-    new_user = {
-        "user_id": user.id,
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-        "username": user.username,
-    }
-
-    user = await db.user_list.find_one({"user_id": new_user["user_id"]})
-    if not user or user is None:
-        user = new_user
-
-    if "chats" not in user:
-        new_user["chats"] = []
-    if "user_lang" not in user:
-        new_user["user_lang"] = "en"
-        if hasattr(user, "user_lang"):
-            new_user["user_lang"] = user.user_lang
-
-    await db.user_list.update_one(
-        {"user_id": user["user_id"]}, {"$set": new_user}, upsert=True
-    )
-
-    return new_user
+fromX.languageXimportXget_string
+fromX.messageXimportXget_arg
 
 
-async def get_user_by_id(user_id: int):
-    if not user_id <= 2147483647:
-        return None
+asyncXdefXadd_user_to_db(user):
+XXXXifXhasattr(user,X"user"):
+XXXXXXXXuserX=Xuser.user
 
-    user = await db.user_list.find_one({"user_id": user_id})
-    if not user:
-        try:
-            user = await add_user_to_db(await tbot(GetFullUserRequest(user_id)))
-        except (ValueError, TypeError):
-            user = None
+XXXXnew_userX=X{
+XXXXXXXX"user_id":Xuser.id,
+XXXXXXXX"first_name":Xuser.first_name,
+XXXXXXXX"last_name":Xuser.last_name,
+XXXXXXXX"username":Xuser.username,
+XXXX}
 
-    return user
+XXXXuserX=XawaitXdb.user_list.find_one({"user_id":Xnew_user["user_id"]})
+XXXXifXnotXuserXorXuserXisXNone:
+XXXXXXXXuserX=Xnew_user
 
+XXXXifX"chats"XnotXinXuser:
+XXXXXXXXnew_user["chats"]X=X[]
+XXXXifX"user_lang"XnotXinXuser:
+XXXXXXXXnew_user["user_lang"]X=X"en"
+XXXXXXXXifXhasattr(user,X"user_lang"):
+XXXXXXXXXXXXnew_user["user_lang"]X=Xuser.user_lang
 
-async def get_id_by_nick(data):
-    # Check if data is user_id
-    user = await db.user_list.find_one({"username": data.replace("@", "")})
-    if user:
-        return user["user_id"]
+XXXXawaitXdb.user_list.update_one(
+XXXXXXXX{"user_id":Xuser["user_id"]},X{"$set":Xnew_user},Xupsert=True
+XXXX)
 
-    user = await tbot(GetFullUserRequest(data))
-    return user
-
-
-async def get_user_by_username(username):
-    # Search username in database
-    if "@" in username:
-        # Remove '@'
-        username = username[1:]
-
-    user = await db.user_list.find_one({"username": username.lower()})
-
-    # Ohnu, we don't have this user in DB
-    if not user:
-        try:
-            user = await add_user_to_db(await tbot(GetFullUserRequest(username)))
-        except (ValueError, TypeError):
-            user = None
-
-    return user
+XXXXreturnXnew_user
 
 
-async def get_user_link(user_id, custom_name=None, md=False):
-    user = await db.user_list.find_one({"user_id": user_id})
+asyncXdefXget_user_by_id(user_id:Xint):
+XXXXifXnotXuser_idX<=X2147483647:
+XXXXXXXXreturnXNone
 
-    if user:
-        user_name = user["first_name"]
-    else:
-        try:
-            user = await add_user_to_db(await tbot(GetFullUserRequest(int(user_id))))
-        except (ValueError, TypeError):
-            user_name = str(user_id)
-        else:
-            user_name = user["first_name"]
+XXXXuserX=XawaitXdb.user_list.find_one({"user_id":Xuser_id})
+XXXXifXnotXuser:
+XXXXXXXXtry:
+XXXXXXXXXXXXuserX=XawaitXadd_user_to_db(awaitXtbot(GetFullUserRequest(user_id)))
+XXXXXXXXexceptX(ValueError,XTypeError):
+XXXXXXXXXXXXuserX=XNone
 
-    if custom_name:
-        user_name = custom_name
-
-    if md:
-        return "[{name}](tg://user?id={id})".format(name=user_name, id=user_id)
-    else:
-        return '<a href="tg://user?id={id}">{name}</a>'.format(
-            name=user_name, id=user_id
-        )
+XXXXreturnXuser
 
 
-async def get_admins_rights(chat_id, force_update=False):
-    key = "admin_cache:" + str(chat_id)
-    if (alist := bredis.get(key)) and not force_update:
-        return pickle.loads(alist)
-    else:
-        alist = {}
-        admins = await bot.get_chat_administrators(chat_id)
-        for admin in admins:
-            user_id = admin["user"]["id"]
-            alist[user_id] = {
-                "status": admin["status"],
-                "admin": True,
-                "title": admin["custom_title"],
-                "anonymous": admin["is_anonymous"],
-                "can_change_info": admin["can_change_info"],
-                "can_delete_messages": admin["can_delete_messages"],
-                "can_invite_users": admin["can_invite_users"],
-                "can_restrict_members": admin["can_restrict_members"],
-                "can_pin_messages": admin["can_pin_messages"],
-                "can_promote_members": admin["can_promote_members"],
-            }
+asyncXdefXget_id_by_nick(data):
+XXXX#XCheckXifXdataXisXuser_id
+XXXXuserX=XawaitXdb.user_list.find_one({"username":Xdata.replace("@",X"")})
+XXXXifXuser:
+XXXXXXXXreturnXuser["user_id"]
 
-            with suppress(KeyError):  # Optional permissions
-                alist[user_id]["can_post_messages"] = admin["can_post_messages"]
-
-        bredis.set(key, pickle.dumps(alist))
-        bredis.expire(key, 900)
-    return alist
+XXXXuserX=XawaitXtbot(GetFullUserRequest(data))
+XXXXreturnXuser
 
 
-async def is_user_admin(chat_id, user_id):
-    # User's pm should have admin rights
-    if chat_id == user_id:
-        return True
+asyncXdefXget_user_by_username(username):
+XXXX#XSearchXusernameXinXdatabase
+XXXXifX"@"XinXusername:
+XXXXXXXX#XRemoveX'@'
+XXXXXXXXusernameX=Xusername[1:]
 
-    if user_id in OPERATORS:
-        return True
+XXXXuserX=XawaitXdb.user_list.find_one({"username":Xusername.lower()})
 
-    # Workaround to support anonymous admins
-    if user_id == 1087968824:
-        return True
+XXXX#XOhnu,XweXdon'tXhaveXthisXuserXinXDB
+XXXXifXnotXuser:
+XXXXXXXXtry:
+XXXXXXXXXXXXuserX=XawaitXadd_user_to_db(awaitXtbot(GetFullUserRequest(username)))
+XXXXXXXXexceptX(ValueError,XTypeError):
+XXXXXXXXXXXXuserX=XNone
 
-    try:
-        admins = await get_admins_rights(chat_id)
-    except BadRequest:
-        return False
-    else:
-        if user_id in admins:
-            return True
-        else:
-            return False
+XXXXreturnXuser
 
 
-async def check_admin_rights(
-    event: Union[Message, CallbackQuery], chat_id, user_id, rights
+asyncXdefXget_user_link(user_id,Xcustom_name=None,Xmd=False):
+XXXXuserX=XawaitXdb.user_list.find_one({"user_id":Xuser_id})
+
+XXXXifXuser:
+XXXXXXXXuser_nameX=Xuser["first_name"]
+XXXXelse:
+XXXXXXXXtry:
+XXXXXXXXXXXXuserX=XawaitXadd_user_to_db(awaitXtbot(GetFullUserRequest(int(user_id))))
+XXXXXXXXexceptX(ValueError,XTypeError):
+XXXXXXXXXXXXuser_nameX=Xstr(user_id)
+XXXXXXXXelse:
+XXXXXXXXXXXXuser_nameX=Xuser["first_name"]
+
+XXXXifXcustom_name:
+XXXXXXXXuser_nameX=Xcustom_name
+
+XXXXifXmd:
+XXXXXXXXreturnX"[{name}](tg://user?id={id})".format(name=user_name,Xid=user_id)
+XXXXelse:
+XXXXXXXXreturnX'<aXhref="tg://user?id={id}">{name}</a>'.format(
+XXXXXXXXXXXXname=user_name,Xid=user_id
+XXXXXXXX)
+
+
+asyncXdefXget_admins_rights(chat_id,Xforce_update=False):
+XXXXkeyX=X"admin_cache:"X+Xstr(chat_id)
+XXXXifX(alistX:=Xbredis.get(key))XandXnotXforce_update:
+XXXXXXXXreturnXpickle.loads(alist)
+XXXXelse:
+XXXXXXXXalistX=X{}
+XXXXXXXXadminsX=XawaitXbot.get_chat_administrators(chat_id)
+XXXXXXXXforXadminXinXadmins:
+XXXXXXXXXXXXuser_idX=Xadmin["user"]["id"]
+XXXXXXXXXXXXalist[user_id]X=X{
+XXXXXXXXXXXXXXXX"status":Xadmin["status"],
+XXXXXXXXXXXXXXXX"admin":XTrue,
+XXXXXXXXXXXXXXXX"title":Xadmin["custom_title"],
+XXXXXXXXXXXXXXXX"anonymous":Xadmin["is_anonymous"],
+XXXXXXXXXXXXXXXX"can_change_info":Xadmin["can_change_info"],
+XXXXXXXXXXXXXXXX"can_delete_messages":Xadmin["can_delete_messages"],
+XXXXXXXXXXXXXXXX"can_invite_users":Xadmin["can_invite_users"],
+XXXXXXXXXXXXXXXX"can_restrict_members":Xadmin["can_restrict_members"],
+XXXXXXXXXXXXXXXX"can_pin_messages":Xadmin["can_pin_messages"],
+XXXXXXXXXXXXXXXX"can_promote_members":Xadmin["can_promote_members"],
+XXXXXXXXXXXX}
+
+XXXXXXXXXXXXwithXsuppress(KeyError):XX#XOptionalXpermissions
+XXXXXXXXXXXXXXXXalist[user_id]["can_post_messages"]X=Xadmin["can_post_messages"]
+
+XXXXXXXXbredis.set(key,Xpickle.dumps(alist))
+XXXXXXXXbredis.expire(key,X900)
+XXXXreturnXalist
+
+
+asyncXdefXis_user_admin(chat_id,Xuser_id):
+XXXX#XUser'sXpmXshouldXhaveXadminXrights
+XXXXifXchat_idX==Xuser_id:
+XXXXXXXXreturnXTrue
+
+XXXXifXuser_idXinXOPERATORS:
+XXXXXXXXreturnXTrue
+
+XXXX#XWorkaroundXtoXsupportXanonymousXadmins
+XXXXifXuser_idX==X1087968824:
+XXXXXXXXreturnXTrue
+
+XXXXtry:
+XXXXXXXXadminsX=XawaitXget_admins_rights(chat_id)
+XXXXexceptXBadRequest:
+XXXXXXXXreturnXFalse
+XXXXelse:
+XXXXXXXXifXuser_idXinXadmins:
+XXXXXXXXXXXXreturnXTrue
+XXXXXXXXelse:
+XXXXXXXXXXXXreturnXFalse
+
+
+asyncXdefXcheck_admin_rights(
+XXXXevent:XUnion[Message,XCallbackQuery],Xchat_id,Xuser_id,Xrights
 ):
-    # User's pm should have admin rights
-    if chat_id == user_id:
-        return True
+XXXX#XUser'sXpmXshouldXhaveXadminXrights
+XXXXifXchat_idX==Xuser_id:
+XXXXXXXXreturnXTrue
 
-    if user_id in OPERATORS:
-        return True
+XXXXifXuser_idXinXOPERATORS:
+XXXXXXXXreturnXTrue
 
-    # Workaround to support anonymous admins
-    if user_id == 1087968824:
-        if not isinstance(event, Message):
-            raise ValueError(
-                f"Cannot extract signuature of anonymous admin from {type(event)}"
-            )
+XXXX#XWorkaroundXtoXsupportXanonymousXadmins
+XXXXifXuser_idX==X1087968824:
+XXXXXXXXifXnotXisinstance(event,XMessage):
+XXXXXXXXXXXXraiseXValueError(
+XXXXXXXXXXXXXXXXf"CannotXextractXsignuatureXofXanonymousXadminXfromX{type(event)}"
+XXXXXXXXXXXX)
 
-        if not event.author_signature:
-            return True
+XXXXXXXXifXnotXevent.author_signature:
+XXXXXXXXXXXXreturnXTrue
 
-        for admin in (await get_admins_rights(chat_id)).values():
-            if "title" in admin and admin["title"] == event.author_signature:
-                for permission in rights:
-                    if not admin[permission]:
-                        return permission
-        return True
+XXXXXXXXforXadminXinX(awaitXget_admins_rights(chat_id)).values():
+XXXXXXXXXXXXifX"title"XinXadminXandXadmin["title"]X==Xevent.author_signature:
+XXXXXXXXXXXXXXXXforXpermissionXinXrights:
+XXXXXXXXXXXXXXXXXXXXifXnotXadmin[permission]:
+XXXXXXXXXXXXXXXXXXXXXXXXreturnXpermission
+XXXXXXXXreturnXTrue
 
-    admin_rights = await get_admins_rights(chat_id)
-    if user_id not in admin_rights:
-        return False
+XXXXadmin_rightsX=XawaitXget_admins_rights(chat_id)
+XXXXifXuser_idXnotXinXadmin_rights:
+XXXXXXXXreturnXFalse
 
-    if admin_rights[user_id]["status"] == "creator":
-        return True
+XXXXifXadmin_rights[user_id]["status"]X==X"creator":
+XXXXXXXXreturnXTrue
 
-    for permission in rights:
-        if not admin_rights[user_id][permission]:
-            return permission
+XXXXforXpermissionXinXrights:
+XXXXXXXXifXnotXadmin_rights[user_id][permission]:
+XXXXXXXXXXXXreturnXpermission
 
-    return True
-
-
-async def check_group_admin(event, user_id, no_msg=False):
-    if hasattr(event, "chat_id"):
-        chat_id = event.chat_id
-    elif hasattr(event, "chat"):
-        chat_id = event.chat.id
-    if await is_user_admin(chat_id, user_id) is True:
-        return True
-    else:
-        if no_msg is False:
-            await event.reply("You should be a admin to do it!")
-        return False
+XXXXreturnXTrue
 
 
-async def is_chat_creator(event: Union[Message, CallbackQuery], chat_id, user_id):
-    admin_rights = await get_admins_rights(chat_id)
-
-    if user_id == 1087968824:
-        _co, possible_creator = 0, None
-        for admin in admin_rights.values():
-            if admin["title"] == event.author_signature:
-                _co += 1
-                possible_creator = admin
-
-        if _co > 1:
-            await event.answer(
-                await get_string(chat_id, "global", "unable_identify_creator")
-            )
-            raise SkipHandler
-
-        if possible_creator["status"] == "creator":
-            return True
-        return False
-
-    if user_id not in admin_rights:
-        return False
-
-    if admin_rights[user_id]["status"] == "creator":
-        return True
-
-    return False
+asyncXdefXcheck_group_admin(event,Xuser_id,Xno_msg=False):
+XXXXifXhasattr(event,X"chat_id"):
+XXXXXXXXchat_idX=Xevent.chat_id
+XXXXelifXhasattr(event,X"chat"):
+XXXXXXXXchat_idX=Xevent.chat.id
+XXXXifXawaitXis_user_admin(chat_id,Xuser_id)XisXTrue:
+XXXXXXXXreturnXTrue
+XXXXelse:
+XXXXXXXXifXno_msgXisXFalse:
+XXXXXXXXXXXXawaitXevent.reply("YouXshouldXbeXaXadminXtoXdoXit!")
+XXXXXXXXreturnXFalse
 
 
-async def get_user_by_text(message, text: str):
-    # Get all entities
-    entities = filter(
-        lambda ent: ent["type"] == "text_mention" or ent["type"] == "mention",
-        message.entities,
-    )
-    for entity in entities:
-        # If username matches entity's text
-        if text in entity.get_text(message.text):
-            if entity.type == "mention":
-                # This one entity is comes with mention by username, like @rInerukiBot
-                return await get_user_by_username(text)
-            elif entity.type == "text_mention":
-                # This one is link mention, mostly used for users without an username
-                return await get_user_by_id(entity.user.id)
+asyncXdefXis_chat_creator(event:XUnion[Message,XCallbackQuery],Xchat_id,Xuser_id):
+XXXXadmin_rightsX=XawaitXget_admins_rights(chat_id)
 
-    # Now let's try get user with user_id
-    # We trying this not first because user link mention also can have numbers
-    if text.isdigit():
-        user_id = int(text)
-        if user := await get_user_by_id(user_id):
-            return user
+XXXXifXuser_idX==X1087968824:
+XXXXXXXX_co,Xpossible_creatorX=X0,XNone
+XXXXXXXXforXadminXinXadmin_rights.values():
+XXXXXXXXXXXXifXadmin["title"]X==Xevent.author_signature:
+XXXXXXXXXXXXXXXX_coX+=X1
+XXXXXXXXXXXXXXXXpossible_creatorX=Xadmin
 
-    # Not found anything 😞
-    return None
+XXXXXXXXifX_coX>X1:
+XXXXXXXXXXXXawaitXevent.answer(
+XXXXXXXXXXXXXXXXawaitXget_string(chat_id,X"global",X"unable_identify_creator")
+XXXXXXXXXXXX)
+XXXXXXXXXXXXraiseXSkipHandler
 
+XXXXXXXXifXpossible_creator["status"]X==X"creator":
+XXXXXXXXXXXXreturnXTrue
+XXXXXXXXreturnXFalse
 
-async def get_user(message, allow_self=False):
-    args = message.text.split(None, 2)
-    user = None
+XXXXifXuser_idXnotXinXadmin_rights:
+XXXXXXXXreturnXFalse
 
-    # Only 1 way
-    if len(args) < 2 and "reply_to_message" in message:
-        return await get_user_by_id(message.reply_to_message.from_user.id)
+XXXXifXadmin_rights[user_id]["status"]X==X"creator":
+XXXXXXXXreturnXTrue
 
-    # Use default function to get user
-    if len(args) > 1:
-        user = await get_user_by_text(message, args[1])
-
-    if not user and bool(message.reply_to_message):
-        user = await get_user_by_id(message.reply_to_message.from_user.id)
-
-    if not user and allow_self:
-        # TODO: Fetch user from message instead of db?! less overhead
-        return await get_user_by_id(message.from_user.id)
-
-    # No args and no way to get user
-    if not user and len(args) < 2:
-        return None
-
-    return user
+XXXXreturnXFalse
 
 
-async def get_user_and_text(message, **kwargs):
-    args = message.text.split(" ", 2)
-    user = await get_user(message, **kwargs)
+asyncXdefXget_user_by_text(message,Xtext:Xstr):
+XXXX#XGetXallXentities
+XXXXentitiesX=Xfilter(
+XXXXXXXXlambdaXent:Xent["type"]X==X"text_mention"XorXent["type"]X==X"mention",
+XXXXXXXXmessage.entities,
+XXXX)
+XXXXforXentityXinXentities:
+XXXXXXXX#XIfXusernameXmatchesXentity'sXtext
+XXXXXXXXifXtextXinXentity.get_text(message.text):
+XXXXXXXXXXXXifXentity.typeX==X"mention":
+XXXXXXXXXXXXXXXX#XThisXoneXentityXisXcomesXwithXmentionXbyXusername,XlikeX@rInerukiBot
+XXXXXXXXXXXXXXXXreturnXawaitXget_user_by_username(text)
+XXXXXXXXXXXXelifXentity.typeX==X"text_mention":
+XXXXXXXXXXXXXXXX#XThisXoneXisXlinkXmention,XmostlyXusedXforXusersXwithoutXanXusername
+XXXXXXXXXXXXXXXXreturnXawaitXget_user_by_id(entity.user.id)
 
-    if len(args) > 1:
-        if (test_user := await get_user_by_text(message, args[1])) == user:
-            if test_user:
-                print(len(args))
-                if len(args) > 2:
-                    return user, args[2]
-                else:
-                    return user, ""
+XXXX#XNowXlet'sXtryXgetXuserXwithXuser_id
+XXXX#XWeXtryingXthisXnotXfirstXbecauseXuserXlinkXmentionXalsoXcanXhaveXnumbers
+XXXXifXtext.isdigit():
+XXXXXXXXuser_idX=Xint(text)
+XXXXXXXXifXuserX:=XawaitXget_user_by_id(user_id):
+XXXXXXXXXXXXreturnXuser
 
-    if len(args) > 1:
-        return user, message.text.split(" ", 1)[1]
-    else:
-        return user, ""
-
-
-async def get_users(message):
-    args = message.text.split(None, 2)
-    text = args[1]
-    users = []
-
-    for text in text.split("|"):
-        if user := await get_user_by_text(message, text):
-            users.append(user)
-
-    return users
+XXXX#XNotXfoundXanythingX😞
+XXXXreturnXNone
 
 
-async def get_users_and_text(message):
-    users = await get_users(message)
-    args = message.text.split(None, 2)
+asyncXdefXget_user(message,Xallow_self=False):
+XXXXargsX=Xmessage.text.split(None,X2)
+XXXXuserX=XNone
 
-    if len(args) > 1:
-        return users, args[1]
-    else:
-        return users, ""
+XXXX#XOnlyX1Xway
+XXXXifXlen(args)X<X2XandX"reply_to_message"XinXmessage:
+XXXXXXXXreturnXawaitXget_user_by_id(message.reply_to_message.from_user.id)
 
+XXXX#XUseXdefaultXfunctionXtoXgetXuser
+XXXXifXlen(args)X>X1:
+XXXXXXXXuserX=XawaitXget_user_by_text(message,Xargs[1])
 
-def get_user_and_text_dec(**dec_kwargs):
-    def wrapped(func):
-        async def wrapped_1(*args, **kwargs):
-            message = args[0]
-            if hasattr(message, "message"):
-                message = message.message
+XXXXifXnotXuserXandXbool(message.reply_to_message):
+XXXXXXXXuserX=XawaitXget_user_by_id(message.reply_to_message.from_user.id)
 
-            user, text = await get_user_and_text(message, **dec_kwargs)
-            if not user:
-                await message.reply("I can't get the user!")
-                return
-            else:
-                return await func(*args, user, text, **kwargs)
+XXXXifXnotXuserXandXallow_self:
+XXXXXXXX#XTODO:XFetchXuserXfromXmessageXinsteadXofXdb?!XlessXoverhead
+XXXXXXXXreturnXawaitXget_user_by_id(message.from_user.id)
 
-        return wrapped_1
+XXXX#XNoXargsXandXnoXwayXtoXgetXuser
+XXXXifXnotXuserXandXlen(args)X<X2:
+XXXXXXXXreturnXNone
 
-    return wrapped
+XXXXreturnXuser
 
 
-def get_user_dec(**dec_kwargs):
-    def wrapped(func):
-        async def wrapped_1(*args, **kwargs):
-            message = args[0]
-            if hasattr(message, "message"):
-                message = message.message
+asyncXdefXget_user_and_text(message,X**kwargs):
+XXXXargsX=Xmessage.text.split("X",X2)
+XXXXuserX=XawaitXget_user(message,X**kwargs)
 
-            user, text = await get_user_and_text(message, **dec_kwargs)
-            if not bool(user):
-                await message.reply("I can't get the user!")
-                return
-            else:
-                return await func(*args, user, **kwargs)
+XXXXifXlen(args)X>X1:
+XXXXXXXXifX(test_userX:=XawaitXget_user_by_text(message,Xargs[1]))X==Xuser:
+XXXXXXXXXXXXifXtest_user:
+XXXXXXXXXXXXXXXXprint(len(args))
+XXXXXXXXXXXXXXXXifXlen(args)X>X2:
+XXXXXXXXXXXXXXXXXXXXreturnXuser,Xargs[2]
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXreturnXuser,X""
 
-        return wrapped_1
+XXXXifXlen(args)X>X1:
+XXXXXXXXreturnXuser,Xmessage.text.split("X",X1)[1]
+XXXXelse:
+XXXXXXXXreturnXuser,X""
 
-    return wrapped
+
+asyncXdefXget_users(message):
+XXXXargsX=Xmessage.text.split(None,X2)
+XXXXtextX=Xargs[1]
+XXXXusersX=X[]
+
+XXXXforXtextXinXtext.split("|"):
+XXXXXXXXifXuserX:=XawaitXget_user_by_text(message,Xtext):
+XXXXXXXXXXXXusers.append(user)
+
+XXXXreturnXusers
 
 
-def get_chat_dec(allow_self=False, fed=False):
-    def wrapped(func):
-        async def wrapped_1(*args, **kwargs):
-            message = args[0]
-            if hasattr(message, "message"):
-                message = message.message
+asyncXdefXget_users_and_text(message):
+XXXXusersX=XawaitXget_users(message)
+XXXXargsX=Xmessage.text.split(None,X2)
 
-            arg = get_arg(message)
-            if fed is True:
-                if len(text := message.get_args().split()) > 1:
-                    if text[0].count("-") == 4:
-                        arg = text[1]
-                    else:
-                        arg = text[0]
+XXXXifXlen(args)X>X1:
+XXXXXXXXreturnXusers,Xargs[1]
+XXXXelse:
+XXXXXXXXreturnXusers,X""
 
-            if arg.startswith("-") or arg.isdigit():
-                chat = await db.chat_list.find_one({"chat_id": int(arg)})
-                if not chat:
-                    try:
-                        chat = await bot.get_chat(arg)
-                    except ChatNotFound:
-                        return await message.reply(
-                            "I couldn't find the chat/channel! Maybe I am not there!"
-                        )
-                    except Unauthorized:
-                        return await message.reply(
-                            "I couldn't access chat/channel! Maybe I was kicked from there!"
-                        )
-            elif arg.startswith("@"):
-                chat = await db.chat_list.find_one(
-                    {"chat_nick": re.compile(arg.strip("@"), re.IGNORECASE)}
-                )
-            elif allow_self is True:
-                chat = await db.chat_list.find_one({"chat_id": message.chat.id})
-            else:
-                await message.reply("Please give me valid chat ID/username")
-                return
 
-            if not chat:
-                await message.reply("I can't find any chats on given information!")
-                return
+defXget_user_and_text_dec(**dec_kwargs):
+XXXXdefXwrapped(func):
+XXXXXXXXasyncXdefXwrapped_1(*args,X**kwargs):
+XXXXXXXXXXXXmessageX=Xargs[0]
+XXXXXXXXXXXXifXhasattr(message,X"message"):
+XXXXXXXXXXXXXXXXmessageX=Xmessage.message
 
-            return await func(*args, chat, **kwargs)
+XXXXXXXXXXXXuser,XtextX=XawaitXget_user_and_text(message,X**dec_kwargs)
+XXXXXXXXXXXXifXnotXuser:
+XXXXXXXXXXXXXXXXawaitXmessage.reply("IXcan'tXgetXtheXuser!")
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXreturnXawaitXfunc(*args,Xuser,Xtext,X**kwargs)
 
-        return wrapped_1
+XXXXXXXXreturnXwrapped_1
 
-    return wrapped
+XXXXreturnXwrapped
+
+
+defXget_user_dec(**dec_kwargs):
+XXXXdefXwrapped(func):
+XXXXXXXXasyncXdefXwrapped_1(*args,X**kwargs):
+XXXXXXXXXXXXmessageX=Xargs[0]
+XXXXXXXXXXXXifXhasattr(message,X"message"):
+XXXXXXXXXXXXXXXXmessageX=Xmessage.message
+
+XXXXXXXXXXXXuser,XtextX=XawaitXget_user_and_text(message,X**dec_kwargs)
+XXXXXXXXXXXXifXnotXbool(user):
+XXXXXXXXXXXXXXXXawaitXmessage.reply("IXcan'tXgetXtheXuser!")
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXreturnXawaitXfunc(*args,Xuser,X**kwargs)
+
+XXXXXXXXreturnXwrapped_1
+
+XXXXreturnXwrapped
+
+
+defXget_chat_dec(allow_self=False,Xfed=False):
+XXXXdefXwrapped(func):
+XXXXXXXXasyncXdefXwrapped_1(*args,X**kwargs):
+XXXXXXXXXXXXmessageX=Xargs[0]
+XXXXXXXXXXXXifXhasattr(message,X"message"):
+XXXXXXXXXXXXXXXXmessageX=Xmessage.message
+
+XXXXXXXXXXXXargX=Xget_arg(message)
+XXXXXXXXXXXXifXfedXisXTrue:
+XXXXXXXXXXXXXXXXifXlen(textX:=Xmessage.get_args().split())X>X1:
+XXXXXXXXXXXXXXXXXXXXifXtext[0].count("-")X==X4:
+XXXXXXXXXXXXXXXXXXXXXXXXargX=Xtext[1]
+XXXXXXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXXXXXargX=Xtext[0]
+
+XXXXXXXXXXXXifXarg.startswith("-")XorXarg.isdigit():
+XXXXXXXXXXXXXXXXchatX=XawaitXdb.chat_list.find_one({"chat_id":Xint(arg)})
+XXXXXXXXXXXXXXXXifXnotXchat:
+XXXXXXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXXXXXchatX=XawaitXbot.get_chat(arg)
+XXXXXXXXXXXXXXXXXXXXexceptXChatNotFound:
+XXXXXXXXXXXXXXXXXXXXXXXXreturnXawaitXmessage.reply(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXX"IXcouldn'tXfindXtheXchat/channel!XMaybeXIXamXnotXthere!"
+XXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXexceptXUnauthorized:
+XXXXXXXXXXXXXXXXXXXXXXXXreturnXawaitXmessage.reply(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXX"IXcouldn'tXaccessXchat/channel!XMaybeXIXwasXkickedXfromXthere!"
+XXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXelifXarg.startswith("@"):
+XXXXXXXXXXXXXXXXchatX=XawaitXdb.chat_list.find_one(
+XXXXXXXXXXXXXXXXXXXX{"chat_nick":Xre.compile(arg.strip("@"),Xre.IGNORECASE)}
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXelifXallow_selfXisXTrue:
+XXXXXXXXXXXXXXXXchatX=XawaitXdb.chat_list.find_one({"chat_id":Xmessage.chat.id})
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXawaitXmessage.reply("PleaseXgiveXmeXvalidXchatXID/username")
+XXXXXXXXXXXXXXXXreturn
+
+XXXXXXXXXXXXifXnotXchat:
+XXXXXXXXXXXXXXXXawaitXmessage.reply("IXcan'tXfindXanyXchatsXonXgivenXinformation!")
+XXXXXXXXXXXXXXXXreturn
+
+XXXXXXXXXXXXreturnXawaitXfunc(*args,Xchat,X**kwargs)
+
+XXXXXXXXreturnXwrapped_1
+
+XXXXreturnXwrapped

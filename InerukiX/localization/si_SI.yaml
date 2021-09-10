@@ -1,764 +1,764 @@
 ---
 language_info:
-  flag: "🇱🇰"
-  code: si
+XXflag:X"🇱🇰"
+XXcode:Xsi
 
 STRINGS:
-  notes:
-    note_saved: "🗒 සටහන <code>{note_name}</code> හි save කර ඇත <b>{chat_title}</b>!"
-    note_updated: "🗒 සටහන <code> {note_name} </code> <b> {chat_title} </b> හි යාවත්කාලීන කර ඇත!"
-    you_can_get_note: "\n ඔබට <code> / {note_name} </code> හෝ <code> # {note_name} </code> භාවිතා කිරීමෙන් ඔබට මෙම සටහන ලබා ගත හැකිය."
-    # පරිවර්තක සටහන: කරුණාකර ඔබට නූල් අවසානයේ ඉඩක් නොමැති බවට වග බලා ගන්න
-    note_aliases: "\n අන්වර්ථයන් සටහන් කරන්න:"
-    blank_note: "හිස් සටහනක් සුරැකීමට අවසර නැත!"
-    notename_cant_contain: "Note name can't contain \"<code>{symbol}</code>\"!"
-
-
-    # /get
-
-    cant_find_note: මට මෙම සටහන <b> {chat_name} </b> හි සොයාගත නොහැක!
-    no_note: "එම සටහන සොයාගත නොහැක."
-    no_notes_pattern: "<code> %s </code> රටාව අනුව සටහන් කිසිවක් හමු නොවීය."
-    u_mean: "\ n ඔබ අදහස් කළේ <code> # {note_name} </code> ද?"
-
-    # /සටහන්
-    notelist_no_notes: "<b> {chat_title} </b> හි කිසිදු සටහනක් නොමැත!"
-    notelist_header: "<b> {chat_name}  හි සටහන් </b>:"
-    notes_in_private: "සටහන් ලැයිස්තුව ලබා ගැනීමට පහත බොත්තම ක්ලික් කරන්න."
-    notelist_search: |
-      <b> රටාව: </b> <code> {request} </code>
-      <b> ගැලපෙන සටහන්: </b>
-
-    # /පැහැදිලිව
-    note_removed: "සටහන <code> # {note_name} </code> <b> {chat_name} </b> හි ඉවත් කර ඇත!"
-    note_removed_multiple: |
-      <b> {chat_name} </b> හි බහු සටහන් ඉවත් කරන ලදි
-      <b> ඉවත් කරන ලදි: </b> <code> {removed} </code>
-    not_removed_multiple: "<b> ඉවත් කර නැත: </ b> <code> {not_removed} </code>"
-
-    # / clearall
-    clear_all_text: "මෙය සියලුම සටහන් {chat_name} වෙතින් ඉවත් කරයි. ඔබට විශ්වාසද?"
-    clearall_btn_yes: "ඔව්, මගේ සියලු සටහන් ඉවත් කරන්න!"
-    clearall_btn_no: "නැත!"
-    clearall_done: "{chat_name} in හි ඇති සියලුම (<code> {num} </code>) සටහන් ඉවත් කරන ලදි!"
-
-    # /සොයන්න
-    search_header: |
-      <b> request chat_name in හි සෙවුම් ඉල්ලීම </b>:
-      <b> රටාව: </b> <code> {request} </code>
-      <b> ගැලපෙන සටහන්: </b>
-
-    # / noteinfo
-    note_info_title: "<b> සටහන් තොරතුරු </ b> \n"
-    note_info_note: "සටහන් නම්:%s \n"
-    note_info_content: "සටහන් අන්තර්ගතය: %s \n"
-    note_info_parsing: "විග්‍රහ කිරීමේ මාදිලිය: <code>%s </code> \n"
-    note_info_created: "නිර්මාණය කළේ: <code> {දිනය} </code> {user} by \n"
-    note_info_updated: "අවසන් වරට යාවත්කාලීන කළේ: <code> {date} </code> {user} \n විසින්"
-    user_blocked: "මගේ PM හි ලියන්න /start කරන්න!"
-
-    # / පුද්ගලාරෝපණ
-    private_notes_false_args: "ඔබට විකල්ප 2 ක් ඇත <code> අක්‍රීය කරන්න </code> සහ <code> සක්‍රීය කරන්න </code>!"
-    already_enabled: "පුද්ගලික සටහන් දැනටමත් %s වලින් සක්‍රීය කර ඇත"
-    current_state_info: "පුද්ගලික සටහන් දැනට <b> {chat} </b> හි <code> {state} </code> වේ!"
-    enable_successfully: "පුද්ගලික සටහන් <b> සක්‍රීය කර ඇත </b> %s හි සාර්ථකව!"
-    disabled_successfully: "පුද්ගලික සටහන් <b> අක්‍රීය කර ඇත </b> %s හි සාර්ථකව!"
-    not_enabled: "පුද්ගලික සටහන් සක්‍රීය කර නැත."
-    privateatenotes_notif: "ඔබ <b> {chat} </b> සටහන් සමඟ සාර්ථකව සම්බන්ධ වී ඇත! විසන්ධි කිරීමට කරුණාකර <code> /disconnect කරන්න </code> විධානය භාවිතා කරන්න!"
-    enabled: 'සක්‍රීය'
-    disabled: 'අක්‍රීයයි'
-
-    # / පිරිසිදු සටහන්
-    clean_notes_enable: "<b> {chat_name} </b> හි සටහන් පිරිසිදු කිරීම සාර්ථකව සක්‍රීය කර ඇත."
-    clean_notes_disable: "<b> {chat_name} </b> හි සටහන් පිරිසිදු කිරීම සාර්ථකව අක්‍රීය කර ඇත."
-    clean_notes_enabled: "සටහන් පිරිසිදු කිරීම දැනට <b> {chat_name} </b> හි <b> සක්‍රීය කර ඇත </ b>"
-    clean_notes_disabled: "සටහන් පිරිසිදු කිරීම දැනට <b> {chat_name} </b> හි <b> අක්‍රීය කර ඇත </ b>"
-
-    # පෙරහන
-    filters_title: 'සටහනක් යවන්න'
-    filters_setup_start: 'කරුණාකර සටහන් නමක් එවන්න.'
-
-    #delmsg_no_arg: "deletemsg බොත්තමට අඩංගු විය හැක්කේ 'පරිපාලක' හෝ 'පරිශීලක' තර්කය පමණි!"
-    #bot_msg: "මට කණගාටුයි, මට මෙම පණිවිඩය ලබා ගැනීමට නොහැකි විය, බොහෝ විට මෙය වෙනත් බොට් පණිවිඩයකි, එබැවින් මට එය සුරැකිය නොහැක."
-  filters:
-    no_filters_found: "<b> {chat_name} </b> හි පෙරහන් කිසිවක් හමු නොවීය!"
-
-    # / addfilter
-    anon_detected: නිර්නාමික පරිපාලක වීම නිසා ඔබට නව පෙරහන් එක් කළ නොහැක, ඒ වෙනුවට සම්බන්ධතා භාවිතා කරන්න.
-    regex_too_slow: "ඔබේ රීජෙක්ස් රටාව ඉතා සෙමින් ගැලපේ (තත්පර භාගයකට වඩා වැඩි) එය එකතු කළ නොහැක!"
-    cancel_btn: "🛑 අවලංගු කරන්න"
-    add_filter: |
-      <b> {chat_name} </b> හි <code> {handler} </code> පෙරණය එක් කිරීම
-      පහත ක්‍රියාව තෝරන්න:
-    saved: "නව පෙරණය සාර්ථකව සුරකින ලදි!"
-
-    # / පෙරහන්
-    list_filters: "<b> {chat_name} </b> හි පෙරහන්: \ n"
-
-    # / ඩෙල්ෆිල්ටර්
-    no_such_filter: <b> {chat_name} </b> හි මට එම පෙරණය සොයාගත නොහැක, ඔබට <code> /filters </code> විධානය මඟින් සක්‍රීය කර ඇති පෙරහන් මොනවාදැයි පරීක්ෂා කළ හැකිය.
-    del_filter: "හසුරුවන්නා සමඟ පෙරණය '<code> {handler} </code>' සාර්ථකව ඉවත් කරන ලදි!"
-    select_filter_to_remove: |
-      '<code> {handler} </code>' හසුරුවන්නා සමඟ මම බොහෝ පෙරහන් සොයාගෙන ඇත.
-      ඉවත් කිරීමට කරුණාකර එකක් තෝරන්න:
-
-    # / ඩෙල්ෆිල්ටර් හෝ / ඩෙලල්ෆිල්ටර්
-    not_chat_creator: මෙම විධානය භාවිතා කළ හැක්කේ චැට් නිර්මාණකරුවන්ට පමණි!
-    delall_header: මෙය මෙම සංවාදයේ ඇති සියලුම පෙරහන් මකා දමනු ඇත. මෙය ආපසු හැරවිය නොහැකි ය.
-    conf_yes: සියල්ල මකන්න
-    confirm_no: ❌ අවලංගු කරන්න
-    delall_success: මෙම සංවාදයේ ඇති සියලුම ({count}) පෙරහන් සාර්ථකව මකා දැමීය!
-
-  warns:
-    # / අවවාද කරන්න
-    warn_sofi: "හාහා මට අනතුරු ඇඟවීමට ක්‍රමයක් නැත!"
-    warn_self: "ඔබට ඔබටම අනතුරු ඇඟවීමට අවශ්‍යද? එවිට කතාබස් වලින් ඉවත් වන්න."
-    warn_admin: "හොඳයි .. ඔබ වැරදියි. ඔබට පරිපාලකයෙකුට අනතුරු ඇඟවිය නොහැක."
-    warn: "{admin}<<b> {chat_name} </b> හි {user} අනතුරු අඟවා ඇත"
-    warn_bun: "අනතුරු ඇඟවීම් ඉක්මවා ඇත! {user} banned තහනම් කර ඇත!"
-    warn_num: "අනතුරු අඟවයි: {curr_warns}/{max_warns} \n"
-    warn_rsn: "හේතුව: <code> {හේතුව} </ code> \ n"
-    max_warn_exceeded: අනතුරු ඇඟවීම් ඉක්මවා ඇත! {user} {action}!
-    max_warn_excended:tmute: අනතුරු ඇඟවීම් ඉක්මවා ඇත! {user} කාලය සඳහා tmute කර ඇත!
-
-    # rmv ඇමතුමට අනතුරු අඟවන්න
-    warn_no_admin_alert: "⚠ ඔබ පරිපාලක නොවන අතර අනතුරු ඇඟවීම් ඉවත් කළ නොහැක!"
-    warn_btn_rmvl_success: "{admin} විසින් අනතුරු ඇඟවීම ඉවත් කරන ලදි!"
-
-    # / අනතුරු අඟවයි
-    warns_header: "මෙම කතාබස් තුළ ඔබගේ අනතුරු ඇඟවීම් මෙන්න \n \n"
-    warns: "{count}: <code> {reason} </code> {admin} by \n"
-    no_warns: "හොඳයි, {user} ට කිසිදු අනතුරු ඇඟවීමක් නොමැත."
-
-    # / අනතුරු ඇඟවීම
-    warn_limit: "<b> {chat_name} </b> හි අනතුරු ඇඟවීමේ සීමාව දැනට පවතී: <code> {num} </code>"
-    warnlimit_short: 'අනතුරු ඇඟවීම අවම වශයෙන් 2 ක් විය යුතුය!'
-    warnlimit_long: 'අනතුරු ඇඟවීමේ සීමාව 1 000 ට වඩා අඩු විය යුතුය!'
-    warnlimit_updated: '✅ Warnlimit සාර්ථකව {num} වෙත යාවත්කාලීන කරන ලදි'
-
-    # / delwarns
-    purged_warns: "{admin} reset <code> {num} </code> <b> {chat_title} </b> හි {user} ගැන අනතුරු අඟවයි!"
-    usr_no_wrn: "{user} නැවත සැකසීමට කිසිදු අනතුරු ඇඟවීමක් නොමැත."
-    rst_wrn_sofi: "ඩේසි කිසි විටෙකත් නැවත සැකසීමට අනතුරු ඇඟවූයේ නැත."
-    not_digit: අනතුරු ඇඟවීම් ඉලක්කම් විය යුතුය!
-
-    # / අනතුරු ඇඟවීමේ මාදිලිය
-    same_mode: මෙය වත්මන් ප්‍රකාරයයි! මම එය වෙනස් කරන්නේ කෙසේද?
-    no_time: tmute මාදිලිය තේරීම සඳහා ඔබට කාලය සඳහන් කළ යුතුය!
-    invalid_time: අවලංගු කාලය!
-    warnmode_success: <b>%s</b> හි අනතුරු ඇඟවීමේ මාදිලිය <b> %s </b> ලෙස සාර්ථකව වෙනස් කර ඇත!
-    wrng_args: |
-      ලබා ගත හැකි විකල්ප මේවා ය:
-    mode_info: |
-      මෙම සංවාදයේ වත්මන් මාදිලිය <b> %s </b> වේ.
-    banned: තහනම්
-    muted: නිශ්ශබ්ද
-
-    filters_title: පරිශීලකයාට අවවාද කරන්න
-    filter_handle_rsn: ස්වයංක්‍රීය පෙරහන් ක්‍රියාව!
-
-  msg_deleting:
-    no_rights_purge: "මෙම කණ්ඩායම තුළ පිරිසිදු කිරීමට ඔබට ප්‍රමාණවත් අයිතිවාසිකම් නොමැත!"
-    reply_to_msg: "මකා දැමීමට පණිවිඩයකට පිළිතුරු දෙන්න!"
-    purge_error: "මට පිරිසිදු කිරීම දිගටම කරගෙන යා නොහැක, බොහෝ දුරට ඔබ දින 2 කට වඩා පැරණි පණිවිඩයකින් පිරිසිදු කිරීම ආරම්භ කළ නිසාය."
-    fast_purge_done: "<b> වේගවත් පිරිසිදු කිරීම අවසන්! </b> \n මෙම පණිවිඩය තත්පර 5 කින් ඉවත් කෙරේ."
-    purge_user_done: "{user} from වෙතින් සියලුම පණිවිඩ සාර්ථකව මකා දමන ලදි!"
-  misc:
-    your_id: "ඔබගේ හැඳුනුම්පත: <code> {id} </code> \n"
-    chat_id: "කණ්ඩායම් හැඳුනුම්පත: <code> {id} </code> \n"
-    user_id: "{පරිශීලකයාගේ හැඳුනුම්පත: <code> {id} </code> \n"
-    conn_chat_id: "දැනට සම්බන්ධිත චැට් හැඳුනුම්පත: <code> {id} </code>"
-    help_btn: "උදව් සඳහා මාව ක්ලික් කරන්න!"
-    help_txt: "උදව් සඳහා පහත බොත්තම ක්ලික් කරන්න!"
-
-    delmsg_filter_title: 'පණිවිඩය මකන්න'
-    send_text: කරුණාකර පිළිතුරු පණිවිඩය යවන්න!
-    replymsg_filter_title: 'පණිවිඩයට පිළිතුරු දෙන්න'
-
-    send_customised_reason: ඔබට ක්‍රියාකාරී පණිවිඩයට ඇතුළත් කිරීමට අවශ්‍ය <i> හේතුව </i> යවන්න. <i> <හේතුවක් නැත </i> ලබා දීමට "<code> කිසිවක් නැත </code>"!
-    expect_text: කෙටි පණිවිඩයක් බලාපොරොත්තු විය!
-
-  promotes:
-    Prom_success: "{user} සාර්ථකව {chat_name} in හි ප්‍රවර්ධනය කරන ලදි!"
-    Promot_title: "අභිරුචි භූමිකාව <code> {role} </code> සමඟ!"
-    rank_to_loong: "අභිරුචි භූමිකාව පෙළ සංකේත 16 ට වඩා වැඩි විය නොහැක."
-    Promot_failed: "ප්‍රවර්ධනය අසාර්ථකයි! මට අයිතිවාසිකම් තිබේදැයි පරීක්ෂා කරන්න."
-    demote_success: "{user} සාර්ථකව {chat_name} හි පහත හෙලනු ලැබීය."
-    demote_not_admin: "එම පරිශීලකයා පරිපාලක නොවේ."
-    demote_failed: "හැඟීම් අසාර්ථකයි. සමහර විට මට පහත් කළ නොහැක, නැතහොත් පුද්ගලයා වෙනත් අයෙකු විසින් උසස් කරනු ලැබේද?"
-    cant_get_user: "මට පරිශීලකයා ලබා ගත නොහැකි විය! ඔබ සිතන්නේ නම්, කරුණාකර ඔහුගේ පණිවිඩයට පිළිතුරු දී නැවත උත්සාහ කරන්න."
-    cant_promote_yourself: "ඔබට ඔබව ප්‍රවර්ධනය කළ නොහැක."
-    emoji_not_allowed: "මට කණගාටුයි, නමුත් පරිපාලක භූමිකාවන්ට ඉමෝජි තිබිය නොහැක 😞"
-
-  pm_menu:
-    start_hi_group: 'හේයි! මගේ නම ඩේසි '
-    start_hi: "හේයි! මගේ නම <b> ඩේසි. </b> \n මට ඔබේ කණ්ඩායම් ප්‍රයෝජනවත් අංග සමඟ කළමනාකරණය කිරීමට උදව් කළ හැකිය, \nFeel free to add me!"
-    btn_source: "📦 ප්‍රභව කේතය"
-    btn_help: "❔ උදව්"
-    btn_lang: "🇱🇰 භාෂාව"
-    btn_channel: "🙋‍♀️ ඩේසි ප්‍රවෘත්ති"
-    btn_group: "👥 ඩේසි සමූහය"
-    btn_group_help: "උදව් සඳහා මාව ක්ලික් කරන්න!"
-    back: "🏃‍♂️ ආපසු"
-
-    # /උදව්
-    help_header: "හායි ! මම <b> ඩේසි </b>. බොහෝ පහසුකම්, මෙවලම් සහ Anime තේමාවක් සහිත සුපිරි බලගතු කණ්ඩායම් කළමනාකරණ බොට් සේවාවකි. ඉතින් ඔබ බලා සිටින්නේ ඇයි? මට ඔබට උදව් කිරීමට ඉඩ දෙන්න"
-    click_btn: මෙහි ක්ලික් කරන්න
-
-  disable:
-    # / අක්‍රීය කළ හැකිය
-    disablable: "<b> අක්‍රීය කළ හැකි විධාන: </b> \ n"
-
-    # / අක්‍රීයයි
-    no_disabled_cmds: <b> {chat_name} </b> හි අක්‍රීය විධානයන් නොමැත!
-    disabled_list: "<b> {chat_name in හි අක්‍රීය කළ විධාන: </b> \ n"
-
-    # / අක්‍රීය කරන්න
-    wot_to_disable: "ඔබට අක්‍රිය කිරීමට අවශ්‍ය කුමක්ද?"
-    already_disabled: "මෙම විධානය දැනටමත් අක්‍රිය කර ඇත!"
-    disabled: "විධාන <code> {cmd} </code> <b> {chat_name} </b> හි අක්‍රීය කර ඇත!"
-
-    # / සක්‍රීය කරන්න
-    wot_to_enable: "ඔබට සක්‍රීය කිරීමට අවශ්‍ය කුමක්ද?"
-    already_enabled: "මෙම විධානය අක්‍රීය කර නැත!"
-    enabled: "විධාන <code> {cmd} </code> <b> {chat_name} </b> තුළ සක්‍රීය කර ඇත!"
-
-    # / enableall
-    not_disabled_anything: "<b> {chat_title} </b> හි කිසිවක් අක්‍රිය කර නැත!"
-    enable_all_text: "මෙය <b> {chat_name} </b> හි ඇති සියලුම විධාන සක්‍රීය කරයි. ඔබට විශ්වාසද?"
-    enable_all_btn_yes: "ඔව්. සියලුම විධාන සක්‍රීය කරන්න!"
-    enable_all_btn_no: "නැත!"
-    enable_all_done: "<b> {chat_name} </b> හි සියලුම (<code>{num}</code>) විධානයන් සක්‍රීය කර ඇත!"
-  bot_rights:
-    change_info: "කණ්ඩායම් තොරතුරු වෙනස් කිරීමට මට අයිතියක් නැත, කරුණාකර එම අයිතියෙන් මාව පරිපාලක කරන්න."
-    edit_messages: "පණිවිඩ සංස්කරණය කිරීමට මට අයිතියක් නැත!"
-    delete_messages: "මෙහි පණිවිඩ මකා දැමීමට මට අයිතියක් නැත."
-    ban_user: "පරිශීලකයින් තහනම් කිරීමට මට අයිතියක් නැත, කරුණාකර එම අයිතියෙන් මාව පරිපාලක කරන්න."
-    pin_messages: "පණිවිඩ යැවීමට මට අයිතියක් නැත, කරුණාකර එම අයිතියෙන් මාව පරිපාලක කරන්න."
-    add_admins: "මට පරිපාලකයින් එක් කිරීමට අයිතියක් නැත, කරුණාකර එම අයිතියෙන් මාව පරිපාලක කරන්න."
-
-  feds:
-    # decorators
-    need_fed_admin: "You are not an admin in <b>{name}</b> federation"
-    need_fed_owner: "You are not an owner of <b>{name}</b> federation"
-    cant_get_user: "Sorry, I can't get that user, try using their user ID"
-
-    # /fnew
-    fed_name_long: "Federation name can't be longer than 60 symbols!"
-    can_only_1_fed: "Users can only create 1 federation, please remove one."
-    name_not_avaible: "Federation with name <code>{name}</code> already exits! Please use another name."
-    created_fed: |
-      Congrats, you have successfully created a federation.
-      <b>Name:</b> {name}
-      <b>ID:</b> <code>{id}</code>
-      <b>Creator:</b> {creator}
-      Use <code>/fjoin {id}</code> to connect federation to chat\
-    disallow_anon: As an anonymous admin you cannot create new federation!
-
-    # /fjoin
-    only_creators: "You must be the chat creator to be able to connect chat to a federation."
-    fed_id_invalid: "The given federation ID is invalid! Please give me a valid ID."
-    joined_fed_already: "This chat has already joined a federation! Please use /fleave to leave that federation"
-    join_fed_success: "Great! Chat <b>{chat}</b> is now a part of <b>{fed}</b> federation!"
-    join_chat_fed_log: |
-      <b>Chat joined federation</b> #ChatJoined
-      <b>Fed:</b> {fed_name} (<code>{fed_id}</code>)
-      <b>Chat:</b> {chat_name} (<code>{chat_id}</code>)
-    # /leavefed
-    chat_not_in_fed: "This chat is not in any federation yet."
-    leave_fed_success: "Chat <b>{chat}</b> left the <b>{fed}</b> federation."
-    leave_chat_fed_log: |
-      <b>Chat left Federation</b> #ChatLeaved
-      <b>Fed:</b> {fed_name} (<code>{fed_id}</code>)
-      <b>Chat:</b> {chat_name} (<code>{chat_id}</code>)
-    # /fsub
-    already_subsed: "Federation <b>{name}</b> already subscribed to <b>{name2}</b>"
-    subsed_success: "Federation <b>{name}</b> subscribed to <b>{name2}</b>!"
-
-    # /funsub
-    not_subsed: "Federation <b>{name}</b> is not subscribed to <b>{name2}</b>"
-    unsubsed_success: "Federation <b>{name}</b> unsubscribed from <b>{name2}</b>!"
-
-    # /fpromote
-    #admin_already_in_fed: "User {user} is already a fed admin in <b>{name}</b> Federation."
-    admin_added_to_fed: "User {user} added to <b>{name}</b> federation admins."
-    promote_user_fed_log: |
-      <b>User promoted to the fed admins</b> #UserPromoted
-      <b>Fed:</b> {fed_name} (<code>{fed_id}</code>)
-      <b>User:</b> {user} (<code>{user_id}</code>)
-    restricted_user:promote: This user is restricted from being federation admin!
-
-    # /fdemote
-    #admin_not_in_fed: "User {user} is not <b>{name}</b> Federation admin."
-    admin_demoted_from_fed: "User {user} demoted from <b>{name}</b> federation admins."
-    demote_user_fed_log: |
-      <b>User demoted from the fed admins</b> #UserDemoted
-      <b>Fed:</b> {fed_name} (<code>{fed_id}</code>)
-      <b>User:</b> {user} (<code>{user_id}</code>)
-    # /fsetlog
-    already_have_chatlog: "<b>{name}</b> federation already has logging enabled in another chat/channel!"
-    set_chat_log: |
-      This chat is now logging all actions in <b>{name}</b> federation
-      Federation logging is used for internal assessment of the federation and its performance.
-      The federation should <b>NOT</b> be used as a public wall of shame thereby respecting user data and our privacy guidelines.
-    set_log_fed_log: |
-      <b>Enabled logging</b> #LoggingEnabled
-      <b>Fed:</b> {fed_name} (<code>{fed_id}</code>)
-    no_right_to_post: I don't have rights to post messages in that channel!
-
-    # /funsetlog
-    not_logging: "<b>{name}</b> federation isn't logging to any chat/channel!"
-    logging_removed: "Successfully removed logging from <b>{name}</b> federation."
-    unset_log_fed_log: |
-      <b>Disabled logging</b> #LoggingDisabled
-      <b>Fed:</b> {fed_name} (<code>{fed_id}</code>)
-    # /fchatlist
-    no_chats: "There's no chats joined this <b>{name}</b> federation"
-    chats_in_fed: "<b>Chats connected to {name} federation:</b>\n"
-    too_large: "Output too large, sending as file"
-
-    # /finfo
-    finfo_text: |
-      <b>Federation info</b>
-      <b>Name:</b> {name}
-      <b>ID:</b> <code>{fed_id}</code>
-      <b>Creator:</b> {creator}
-      <b>Chats in the fed:</b> {chats}
-      <b>Banned users in the fed:</b> {fbanned}
-    finfo_subs_title: "<b>Federations subscribed to this feds:</b>\n"
-
-    # /fadminlist
-    fadmins_header: "Admins in <b>{fed_name}</b> fed:\n"
-
-    # no_fbanned_in_fed: "There isn't any banned users in {fed_name} Federation!"
-
-    # /fban
-    user_wl: "This user is whitelisted from banning."
-    fban_self: "That's a nice show!"
-    fban_creator: "How can I ban the federation creator?! I don't think it's gonna be funny."
-    fban_fed_admin: "I'm not going to ban a federation admin from their own fed!"
-    update_fban: "This user was already fbanned therefore I am updating the reason to <code>{reason}</code>"
-    already_fbanned: "{user} already banned in this federation."
-    fbanned_header: "<b>New FedBan</b>\n"
-    fban_info: |
-      <b>Federation:</b> {fed}
-      <b>Fed admin:</b> {fadmin}
-      <b>User:</b> {user} (<code>{user_id}</code>)
-    fbanned_reason: "<b>Reason:</b> <code>{reason}</code>"
-    fbanned_process: "\n<b>Status:</b> Banning in <code>{num}</code> fed chats..."
-    fbanned_done: "\n<b>Status:</b> Done! banned in <code>{num}</code> chats!"
-
-    fbanned_silence: "This message will be purged in 5 seconds"
-
-    fbanned_subs_process: "\n<b>Status:</b> Banning in <code>{feds}</code> subscribed feds..."
-    fbanned_subs_done: "\n<b>Status:</b> Done! Banned in <code>{chats}</code> chats of this federation and <code>{subs_chats}</code> chats of <code>{feds}</code> subscribed feds"
-    fban_usr_rmvd: |
-      User {user} is currently banned in <b>{fed}</b> federation and have been removed!
-      Reason: <code>{rsn}</code>
-    fban_log_fed_log: |
-      <b>Ban user in the fed</b> #FedBan
-      <b>Fed:</b> {fed_name} (<code>{fed_id}</code>)
-      <b>User:</b> {user} ({user_id})
-      <b>By:</b> {by}
-      <b>Chats banned:</b> user banned in <code>{chat_count}</code>/<code>{all_chats}</code> chats
-    fban_reason_fed_log: "<b>Reason:</b> <code>{reason}</code>\n"
-    fban_subs_fed_log: "\n<b>Subscribed feds:</b> banned in <code>{subs_chats}</code> chats of <code>{feds}</code> federations"
-
-    # /unfban
-    unfban_self: "Think of something else to have fun with instead of this."
-    user_not_fbanned: "{user} isn't banned in this federation."
-    un_fbanned_header: "<b>New Un-FedBan</b>\n"
-    un_fbanned_process: "\n<b>Status:</b> Unbanning in <code>{num}</code> chats..."
-    un_fbanned_done: "\n<b>Status:</b> Done! Unbanned in <code>{num}</code> chats!"
-    un_fbanned_subs_process: "\n<b>Status:</b> Unbanning in <code>{feds}</code> subscribed feds..."
-    un_fbanned_subs_done: "\n<b>Status:</b> Done! Unbanned in <code>{chats}</code> chats of this federation and <code>{subs_chats}</code> chats of <code>{feds}</code> subscribed feds"
-
-    un_fban_log_fed_log: |
-      <b>Unban user in the fed</b> #FedUnBan
-      <b>Fed:</b> {fed_name} (<code>{fed_id}</code>)
-      <b>User:</b> {user} ({user_id})
-      <b>By:</b> {by}
-      <b>Chats:</b> user unbanned in <code>{chat_count}</code>/<code>{all_chats}</code> chats
-    un_fban_subs_fed_log: "\n<b>Subscribed feds:</b> unbanned in <code>{subs_chats}</code> chats of <code>{feds}</code> federations"
-
-    # /delfed
-    delfed_btn_yes: Yes. Delete federation
-    delfed_btn_no: No.
-    delfed: |
-      Are you sure you want to delete the <b>%s</b> federation?
-      <i>Disclaimer: Deleting this federation will remove all data associated with it from our database!
-      This action is permanent and cannot be reversed!</i>
-    delfed_success: Successfully deleted the federation!
-
-    # /frename
-    frename_same_name: Please enter a different name, not the same one!
-    frename_success: The federation <b>{old_name}</b> renamed to <b>{new_name}</b> successfully!
-
-    # /fbanlist
-    fbanlist_locked: Please wait until %s to use fbanlist again.
-    creating_fbanlist: Creating fban list! Please wait ..
-    fbanlist_done: Fbanlist of federation <b>%s</b>!
-
-    # /importfbans
-    send_import_file: |
-      Send the import file!
-      To cancel this process use /cancel
-    rpl_to_file: Please reply to a file!
-    importfbans_locked: Importing fbans is locked for %s in this federation.
-    big_file_csv: Only supports import csv files less {num} megabytes!
-    big_file_json: |
-      Currently json files are limited to {num} megabytes!
-      Use the csv format if you want to import bigger files.
-    invalid_file: "The file is invalid"
-    wrong_file_ext: "Wrong file format! Currently support are: json, csv"
-    importing_process: <b>Importing federation bans...</b>
-    import_done: Importing fed bans finished! {num} bans were imported.
-
-    # def
-    automatic_ban: User {user} is banned in the current federation <b>{fed_name}</b> and has been removed!
-    automatic_ban_sfed: User {user} is banned in the sub federation <b>{fed_name}</b and has been removed!
-    automatic_ban_reason: "\nReason: <code>{text}</code>"
-
-    # /fcheck
-    fcheck_header: "<b>Federation ban info:</b>\n"
-    fbanned_count_pm: "You are fbanned in {count} federation(s)!\n"
-    fban_info:fcheck: "You have been fbanned in {fed} federation on {date}, No reason was given!"
-    fban_info:fcheck:reason: "You have been fbanned in {fed} federation on {date} because of reason -\n {reason}\n"
-    fbanned_data: "{user} has been fbanned in {count} federation(s).\n"
-    fbanned_nowhere: "{user} isn't fbanned anywhere!\n"
-    fbanned_in_fed: "Including the <b>{fed}</b> federation!\n"
-    fbanned_in_fed:reason: "Including the <b>{fed}</b> federation for reason of -\n <code>{reason}</code>"
-    contact_in_pm: "\n\nFor more info on your fbans, please send me a direct message for privacy!"
-    too_long_fbaninfo: "Well! your fbaninfo requires a file!"
-    didnt_fbanned: "You aren't fbanned in this fed."
-    not_fbanned_in_fed: They aren't fbanned in the <b>{fed_name}</b> fed
-
-  reports:
-    user_user_admin: "ඔබ මෙහි පරිපාලකයෙක්, ඔබට යමෙකු වාර්තා කිරීමට අවශ්‍ය වූයේ ඇයි? .."
-    user_is_whitelisted: "ඔබ සුදු ලැයිස්තු ගත කළ පරිශීලකයෙක්, ඔබට යමෙකු වාර්තා කිරීමට අවශ්‍ය වූයේ ඇයි? .."
-    report_disabled: "වාර්තා මේ වන විට <b> අක්‍රීය කර ඇත </b>."
-    no_user_to_report: "ඔබට වාර්තා කිරීමට අවශ්‍ය පරිශීලකයා කවුද?"
-    report_admin: "ඔබට <b> පරිපාලකවරුන් වාර්තා කළ නොහැක."
-    report_whitedlisted: "ඔබට <b> සුදු ලැයිස්තු ගත කළ පරිශීලකයෙකු වාර්තා කළ නොහැක.</b>"
-    report_user: "<b> වාර්තා කර ඇත </b> {user} පරිපාලකවරුන්ට."
-    report_reason: "\n <b> හේතුව: </b> <n <code> {හේතුව} </code>"
-    report_on: "මෙම කණ්ඩායමේ වාර්තා <b> සක්‍රීය කර ඇත </b>."
-    report_off: "මෙම කණ්ඩායම තුළ වාර්තා <b> අක්‍රිය කර ඇත </b>."
-    report_already_on: "<b> වාර්තා දැනටමත් සක්‍රිය කර ඇත. </b>"
-    report_turned_on: "වාර්තා <b> සක්‍රිය කර ඇත. </b>"
-    report_already_off: "<b> වාර්තා දැනටමත් අක්‍රිය කර ඇත. </b>"
-    wrong_argument: "<b> වැරදි තර්කය. </b>"
-  language:
-    your_lang: "ඔබගේ වර්තමාන භාෂාව: <b> {lang} </b>"
-    chat_lang: "වත්මන් කතාබස් භාෂාව: <b> {lang} </b>"
-    select_pm_lang: "\n <b> ඔබගේ නව භාෂාව තෝරන්න: </b>"
-    select_chat_lang: "\n <b> නව කතාබස් භාෂාව තෝරන්න: </b>"
-    crowdin_btn: "පරිවර්තනයට අපට උදව් කරන්න"
-    help_us_translate: "\n \n <a href=\"https://crowdin.com/project/Ineruki x\"> අපගේ පරිවර්තන වැඩි දියුණු කිරීමට අපට උදව් කරන්න </a>"
-    not_supported_lang: මෙම භාෂාවට සහය නොදක්වයි!
-    lang_changed: භාෂාව <b> {lang_name} </b> ලෙස වෙනස් කරන ලදි.
-    see_translators:  පරිවර්තකයන් බලන්න
-    back: ආපසු
-  connections:
-    pm_connected: "ඔබගේ අගමැති <b> {chat_name} </b> සමඟ සාර්ථකව සම්බන්ධ වී ඇත!"
-    connect_pm_to_me: "ඔබේ අගමැති <b> {chat_name} </b> සමඟ සාර්ථකව සම්බන්ධ වී ඇත! කරුණාකර සම්බන්ධතාවය භාවිතා කිරීම ආරම්භ කිරීමට මට සවස දෙන්න."
-    chat_connection_tlt: "<b> චැට් සම්බන්ධතාවය </ b> \n"
-    connected_chat: |
-      <b> දැනට සම්බන්ධිත කතාබස්: </b>
-      {chat_name}
-      කතාබස් වලින් විසන්ධි කිරීමට ලියන්න /disconnect කරන්න
-    connect_chat:cmds: |
-      <b> දැනට සම්බන්ධිත කතාබස්: </b>
-      {chat_name}, (පාලම් විධාන {commands}),
-      ⚠ <i> ඔබට ප්‍රවේශ විය හැක්කේ සම්බන්ධිත සංවාදයේ පාලම් විධාන පමණි! අනෙක් සියලුම විධානයන් දේශීය කතාබස් ලෙස සලකනු ලැබේ </i>
-      කතාබස් වලින් විසන්ධි කිරීමට ලියන්න /disconnect කරන්න.
-    u_wasnt_connected: "ඔබ මීට පෙර කිසිදු කතාබහකට සම්බන්ධ නොවීය!"
-    select_chat_to_connect: "\n <b> සම්බන්ධ වීමට චැට් එකක් තෝරන්න: </b>"
-    disconnected: "ඔබ <b> {chat_name} </b> වෙතින් විසන්ධි විය."
-    cant_find_chat: "මට මෙම කතාබහ සොයාගත නොහැක."
-    cant_find_chat_use_id: "මට මෙම කතාබහ සොයාගත නොහැක. චැට් හැඳුනුම්පත භාවිතා කරන්න."
-    bad_arg_bool: "නරක තේරීම: සහය දක්වන්නේ <code> මත </code> / <code> ඕෆ් </code> <code> සක්‍රීය කරන්න </code> / <code> අක්‍රීය කරන්න </code>"
-
-    enabled: සක්‍රීය
-    disabled: අක්‍රීයයි
-    chat_users_connections_info: "සාමාන්‍ය පරිශීලකයින් සඳහා සම්බන්ධතා දැනට <b> {status} </b> <b> {chat_name} </b> සඳහා"
-    chat_users_connections_cng: "සාමාන්‍ය පරිශීලකයින් සඳහා සම්බන්ධතා <b> {status} </b> සඳහා <b> {chat_name} </b> සඳහා වෙනස් කර ඇත."
-
-    not_in_group: "ඔබ සම්බන්ධ වීමට, සම්බන්ධ වීමට සහ පණිවිඩයක් යැවීමට උත්සාහ කරන කණ්ඩායමේ ඔබ නොමැත."
-    history_empty: "ඔබ ඉතිහාසය සඳහා කිසිදු කතාබහකට සම්බන්ධ වී නැත,` /connect (chat id) `හරහා සම්බන්ධ වන්න."
-    not_in_chat: "ඔබ තවදුරටත් මෙම කතාබස් වල නැත, මම ඔබව විසන්ධි කරමි."
-    u_should_be_admin: "ඔබ {in හි පරිපාලකයෙකු විය යුතුය!"
-    use_only_in_groups: "භාවිතය කණ්ඩායම් වශයෙන් පමණක් සීමා වේ!"
-
-    anon_admin_conn: |
-      සම්බන්ධ වීමට කරුණාකර පහත බොත්තම ක්ලික් කරන්න!
-    click_here: මෙහි ක්ලික් කරන්න!
-  global:
-    u_not_admin: මෙය කිරීමට ඔබ පරිපාලකයෙකු විය යුතුය!
-
-    # අයිතිය
-    bot_no_right:not_admin: මම පරිපාලකයෙක් නොවේ!
-    bot_no_right: "මට මෙහි {permission} to කිරීමට අවසර නැත!"
-    user_no_right: "ඔබට මෙහි {permission} to සඳහා අවසර නැත!"
-    user_no_right:not_admin: එය කිරීමට ඔබ පරිපාලක විය යුතුය!
-
-    # චැට් නිර්මාපකයෙකි
-    able_identify_creator: "නිර්නාමික කතාබස් නිර්මාපකයෙකු හඳුනාගත නොහැක, අනුපිටපත් අත්සන (මාතෘකා) හමු විය!"
-  owner_stuff:
-    farther: "\n ඔහු මගේ මැවුම්කරු."
-    sudo_crown: "\n හේයි, බලන්න, එම පරිශීලකයාට ඔටුන්නක් තිබේ, මට එය දැකීමට ඉඩ දෙන්න ... වාව්, එහි කැටයමක් ඇත - <b> 'sudo user' </b>!"
-  stickers:
-    rpl_to_sticker: "ස්ටිකරයකට පිළිතුරු දෙන්න!"
-    ur_sticker: |
-      <b> ඉමොජි: </b> <code> {emoji} </code>
-      <b> ස්ටිකර් හැඳුනුම්පත: </b> <code> {id} </code>
-  pins:
-    no_reply_msg: "පින් කිරීමට පණිවිඩයකට පිළිතුරු දෙන්න!"
-    chat_not_modified_pin: "එම පණිවිඩය දැනටමත් ඇලවී ඇත!"
-    chat_not_modified_unpin: "ඉවත් කිරීමට කිසිදු පණිවිඩයක් නොමැත!"
-    pinned_success: "සාර්ථකව පින් කර ඇත!"
-    unpin_success: "සාර්ථකව අනාරක්ෂිතයි!"
-  users:
-    user_info: "<b> පරිශීලක තොරතුරු: </b> \ n"
-    info_id: "ID: <code> {id} </code>"
-    info_first: "\n පළමු නම: {first_name}"
-    info_last: "\n අවසාන නම: {last_name}"
-    info_username: "\n පරිශීලක නාමය: {username}"
-    info_link: "\n පරිශීලක සබැඳිය: {user_link}"
-    info_saw: "\n මම ඒවා <code> {num} </code> කණ්ඩායම් තුළ දුටුවෙමි"
-    info_sw_ban: "\nමෙම පරිශීලකයා SpamWatch හි තහනම් කර ඇත!"
-    info_sw_ban_reason: "\n හේතුව: <code> {sw_reason} </code>"
-    info_fbanned: "\n වත්මන් සම්මේලනයේ තහනම් කර ඇත:"
-    info_admeme: "\n මෙම සංවාදයේදී පරිශීලකයාට පරිපාලක අයිතිවාසිකම් ඇත."
-    update_cache: "හැඹිලිය දැන් යාවත්කාලීන කරයි ..."
-    update_cache_done: "පරිපාලක හැඹිලිය යාවත්කාලීන කරන ලදි."
-    admins: "<b> මෙම කණ්ඩායමේ පරිපාලක: </b>\n"
-  imports_exports:
-    # අපනයනය
-    start_exporting: අපනයනය ආරම්භ විය! කරුණාකර රැඳී සිටින්න...
-    export_done: <b> {chat_name from </b> වෙතින් අපනයනය කර ඇත!
-    exports_locked: නැවත අපනයන භාවිතා කිරීමට පෙර කරුණාකර %s රැඳී සිටින්න!
-
-    # ආනයනය කිරීම
-    invalid_file: "ගොනුව අවලංගුයි"
-    send_import_file: කරුණාකර ආයාත කිරීම සඳහා ගොනුවක් එවන්න!
-    rpl_to_file: කරුණාකර ගොනුවකට පිළිතුරු දෙන්න!
-    big_file: සහය දක්වන්නේ 50 MB ට අඩු ගොනු පමණි!
-    start_importing: ආනයනය කිරීම ආරම්භ විය! කරුණාකර රැඳී සිටින්න...
-    bad_file: නරක ගොනුව! අපේක්ෂිත <code> 'සාමාන්‍ය' </code> තීරුව.
-    file_version_so_new: අපනයනය කරන ලද ගොනු අනුවාදය ඩේසි දැනට සහාය දක්වන දෙයට වඩා අලුත් ය!
-    imports_locked: නැවත ආනයන භාවිතා කිරීමට පෙර කරුණාකර% s රැඳී සිටින්න!
-    import_done: ආයාත කිරීම අවසන්!
-  restrictions:
-    user_not_in_chat: පරිශීලකයා මෙම කතාබස් තුළ නොමැත!
-
-    # කික්ස්
-    kick_Ineruki : මට පයින් ගැසීමට උත්සාහ කරනවා වෙනුවට ඔබේ කාලය වඩා හොඳින් ගත කළ හැකිය. ඒක නීරසයි.
-    kick_admin: පරිපාලකයාට පයින් ගැසීම හොඳම අදහස නොවේ.
-    kick_self: ඔබට ඔබටම පයින් ගැසීමට අවශ්‍ය නම් - මෙම කතාබස් වලින් ඉවත් වන්න. ස්වයං ද .ුවම සඳහා වන මෙම දයානුකම්පිත උත්සාහයන් දෙස බැලීමට වඩා මම ඔබව දකින්නේ නැත.
-    user_kicked: "{user} {chat_name} in හි {admin} විසින් පයින් ගසා ඇත."
-
-    # නිශ්ශබ්දයි
-    mute_Ineruki : ඇත්තටම, මම ඒ වෙනුවට ඔබව වසා දැමීමට සතුටු වෙමි.
-    mute_admin: ඔබට පරිපාලකයෙකු වසා දැමිය හැකි යැයි ඔබ සිතන්නේ නම්, ඔබ වැරදියි!
-    mute_self: ඔබට නිශ්ශබ්ද කිරීමට අවශ්‍ය නම් - කතා කිරීම නවත්වන්න! ඔබේ මුඛය විවෘත කර සියලු සැකයන් දුරු කරනවාට වඩා මෝඩයෙකු යැයි සිතීම හොඳය.
-    user_muted: "{user} {chat_name} හි {admin} විසින් නිශ්ශබ්ද කරන ලදි."
-    unmute_Ineruki : ඇත්තටම මම නිශ්ශබ්ද නැහැ.
-    unmute_admin: හාහා නෑ, මුලින්ම ඔහුව නිශ්ශබ්ද කිරීමට උත්සාහ කරන්න!
-    unmute_self: මම මුලින්ම ඔබව නිශ්ශබ්ද කළ යුතුද?
-    user_unmuted: "{user} {chat_name} in හි {admin} විසින් ඉවත් කරන ලදි."
-
-    # තහනම්
-    ban_Ineruki : නෑ, මම ඒක කරන්නේ නැහැ! එය කිරීමට චැට් නිර්මාතෘගෙන් ඉල්ලා සිටින්න!
-    ban_admin: හාහා, අපි මුලින්ම ඔහුව <code> / demote </code> කරමු.
-    ban_self: ඔබ ඔබම තහනම් කිරීමට උත්සාහ කරන්නේ ඇයි?
-    user_banned: "{user} {chat_name} හි {admin} by විසින් තහනම් කරන ලදි."
-    unban_Ineruki : ඇත්තටම මාව තහනම් නැහැ.
-    unban_admin: හාහා, පළමුව ඔහුව තහනම් කිරීමට උත්සාහ කරන්න!
-    unban_self: මම මුලින්ම ඔබව තහනම් කළ යුතුද?
-    user_unband: "{user} {chat_name} හි {admin} විසින් තහනම් කරන ලදි."
-
-    invalid_time: අවලංගු කාලය!
-    enter_time: කරුණාකර වේලාවක් නියම කරන්න!
-    on_time: "\ n <code> %s </code> සඳහා"
-    reason: "ase n හේතුව: <code> %s </code>"
-    purge: තත්පර 5 කින් පණිවිඩ පිරිසිදු කරනු ලැබේ!
-
-    filter_title_ban: පරිශීලකයා තහනම් කරන්න
-    filter_action_rsn: <code> ස්වයංක්‍රීය පෙරහන් ක්‍රියාව! </code>
-    filtr_ban_success: '%s  %s සඳහා තහනම් %s'
-    filtr_mute_success: '%s %s සඳහා නිශ්ශබ්ද %s'
-    filtr_tmute_success: |
-      %s %s සඳහා නිශ්ශබ්ද %s
-      හේතුව %s වේ
-    time_setup_start: කරුණාකර වේලාවක් නියම කරන්න!
-    filtr_tban_success: |
-      %s සඳහා %s තහනම් කර ඇත
-      හේතුව %s වේ
-    filter_title_tmute: තාවකාලිකව පරිශීලකයා නිශ්ශබ්ද කරන්න
-    filter_title_mute: පරිශීලකයා නිශ්ශබ්ද කරන්න
-    filter_title_tban: තාවකාලිකව පරිශීලකයා තහනම් කරන්න
-    filter_title_kick: පරිශීලකයාට පයින් ගසන්න
-  rules:
-    # සකසන්න
-    saved: රීති <b>% s </b> තුළ සුරකින ලදි
-    updated: රීති <b>% s </b> තුළ යාවත්කාලීන කරන ලදි
-
-    # යළි පිහිටුවන්න
-    deleted: රීති මකා දමන ලදි!
-
-    not_found: රීති හමු නොවීය!
-
-    # ආපසු අමතන්න
-    user_blocked: "මගේ PM හි ලියන්න /start කරන්න!"
-    rules_was_pmed: රීති ඔබගේ අගමැතිට යවන ලදි!
-
-    # can_find_note: "මට <code> {} </code> සටහන සොයාගත නොහැක."
-    # set_note: "නීති සටහන <code> {} </code> ලෙස සාර්ථකව සකසන්න."
-    # didnt_set_note: "මෙම කණ්ඩායමට නීති සටහන් කට්ටලයක් නොමැත."
-    # can_find_set_note: "මට නීති සටහන සොයාගත නොහැක."
-    # havent_set_rules_note: "ඔබ තවමත් නීති සටහන සකස් කර නැත."
-    # success_remove_rules_note: "<b> {} </b> හි නීති රීති සාර්ථකව ඉවත් කරන ලදි."
-  greetings:
-    default_welcome: "සාදරයෙන් පිළිගනිමු {සඳහන් කරන්න}! ඔබට කොහොමද?"
-    thanks_for_add: "මාව ඔබේ කණ්ඩායමට එක් කිරීම ගැන ස්තූතියි! මගේ ප්‍රවෘත්ති නාලිකාව a ඩේසිඑක්ස් යාවත්කාලීන කිරීම් දෙස බලන්න / උදව් කරන්න."
-    default_security_note: "සාදරයෙන් පිළිගනිමු {සඳහන් කරන්න}! කරුණාකර ඔබ මිනිසෙකු බව තහවුරු කර ගැනීමට පහත බොත්තම ඔබන්න!"
-
-    bool_invalid_arg: වලංගු නොවන තර්කය, <code> මත </code> / <code> අක්‍රීය </code>.
-
-    # / setwelcome
-    saved: පිළිගැනීමේ පණිවිඩය <b>%s</b> තුළ සුරකින ලදි
-    updatedදි: පිළිගැනීමේ පණිවිඩය <b>%s</b> තුළ යාවත්කාලීන කරන ලදි
-
-    # / turnwelcome
-    turnwelcome_status: පිළිගැනීම් යනු <b> {chat_name} </b> හි <code> {status} </code> වේ.
-    turnwelcome_enabled: <b>%s</b> තුළ පිළිගැනීම් සක්‍රීය කර ඇත
-    turnwelcome_disabled: සාදරයෙන් පිළිගනිමු <b>%s</b>
-
-    # / සාදරයෙන් පිළිගනිමු
-    enabled: සක්‍රීය
-    disabled: අක්‍රීයයි
-    wlcm_security_enabled: "සක්‍රීය, {level} set ලෙස සකසා ඇත"
-    wlcm_mutes_enabled: "සක්‍රීය කර ඇත, {time} set ලෙස සකසන්න"
-    welcome_info: |
-      <b> settings chat_name in හි පිළිගැනීමේ සැකසුම්: </b>
-      පිළිගැනීම් <code> {Welcome_status} </code> වේ
-      පිළිගැනීමේ ආරක්ෂාව <code> {wlcm_security} </code> වේ
-      පිළිගැනීමේ නිශ්ශබ්දතාව <code> {wlcm_mutes} </code> වේ
-      පැරණි පිළිගැනීම් මකා දැමීම <code> {clean_welcome} </code> වේ
-      සේවා පණිවිඩ මකා දැමීම <code> {clean_service} </code> වේ
-    wlcm_note: "\n \n ආයුබෝවන් සටහන:"
-    raw_wlcm_note: "අමු පිළිගැනීමේ සටහන:"
-    security_note: "පිළිගැනීමේ ආරක්ෂක පෙළ:"
-
-    # / setsecuritynote
-    security_note_saved: "අභිරුචි ආරක්ෂක පෙළ සුරකින ලදි <b>%s</b>"
-    security_note_updated: "අභිරුචි ආරක්ෂක පෙළ යාවත්කාලීන කරන ලදි <b>%s</b>"
-
-    # / delsecuritynote
-    security_note_not_found: <b>% s </b> හි ආරක්ෂක පෙළ මීට පෙර සකසා නොමැත
-    del_security_note_ok: <b>% s </b> හි ආරක්ෂක පෙළ පෙරනිමියට යළි පිහිටුවන ලදි
-
-    # / cleanwelcome
-    cleanwelcome_enabled: <b>% s </b> හි පිරිසිදු කිරීමේ පිළිගැනීම් සක්‍රීය කර ඇත
-    cleanwelcome_disabled: පිරිසිදු කිරීම <b>% s </b> හි අක්‍රීය කර ඇත
-    cleanwelcome_status: පිළිගැනීම් පිරිසිදු කිරීම යනු <b> {chat_name} </b> හි <code> {status} </code> වේ.
-
-    # / පිරිසිදු කිරීමේ සේවය
-    cleanservice_enabled: <b>% s </b> හි සේවා පණිවිඩ පිරිසිදු කිරීම සක්‍රීය කර ඇත
-    cleanservice_disabled: <b>% s </b> හි සේවා පණිවිඩ පිරිසිදු කිරීම අක්‍රීය කර ඇත
-    cleanservice_status: සේවා පණිවිඩ පිරිසිදු කිරීම <b> {chat_name} </b> හි <code> {status} </code> වේ.
-
-    # / පිළිගැනීම
-    welcomemute_invalid_arg: අවලංගු තර්කයක්, කාලයක් බලාපොරොත්තු වේ.
-    welcomemute_enabled: පිළිගැනීමේ නිශ්ශබ්දතාව <b>% s </b> තුළ සක්‍රීය කර ඇත
-    welcomemute_disabled: පිළිගැනීමේ නිශ්ශබ්දතාව <b>% s </b> හි අක්‍රීය කර ඇත
-    welcomemute_status: පිළිගැනීමේ නිශ්ශබ්දතාවය <b> {chat_name} </b> හි <code>{status} </code> වේ.
-
-    # / පිළිගැනීමේ සුරක්ෂිතභාවය
-    Welcomeecurity_enabled: පිළිගැනීමේ ආරක්ෂාව <b>{chat_name}</b><code>{level}</code> වෙත සක්‍රීය කර ඇත.
-    Welcomeecurity_enabled:customized_time: |
-      <b> {chat_name} </b> හි <code> {level} </code> වෙත සාදරයෙන් පිළිගනිමු, සහ {කාලය} තුළ සත්‍යාපනය නොකළ පරිශීලකයින්ට පයින් ගසන්න.
-    ask_for_time_customization: |
-      සත්‍යාපනය නොකළ පරිශීලකයාට පයින් ගැසීමට කාල සීමාව රිසිකරණය කිරීමට ඔබට අවශ්‍යද? (පෙරනිමියෙන් එය {කාලය})
-    send_time: කරුණාකර වේලාවක් සඳහන් කරන්න.
-    invalid_time: "අවලංගු කාලය!"
-    Welcomeecurity_enabled_word: සක්‍රීය, level මට්ටමට සකසා ඇත
-    welcomesecurity_disabled: <b>% s </b> හි පිළිගැනීමේ ආරක්ෂාව අක්‍රීය කර ඇත.
-    welcomesecurity_invalid_arg: වලංගු නොවන තර්කය, අපේක්ෂිත <code> බොත්තම </code>/<code> කැප්චා </code>.
-    welcomesecurity_status: පිළිගැනීමේ ආරක්ෂාව යනු <b>{chat_name}</b> හි <code>{status}</code> වේ
-
-    yes_btn: "ඔව්"
-    no_btn: "නැත"
-
-    # පිළිගැනීමේ සුරක්‍ෂිතතා හසුරුවන්නා
-    click_here: මෙහි ක්ලික් කරන්න!
-    not_allowed: ඔබට මෙය භාවිතා කිරීමට අවසර නැත!
-    ws_captcha_text: හායි {user}, කරුණාකර චැට් එකෙහි නිශ්ශබ්ද වීමට කැප්චාගේ අංකය ඇතුළත් කරන්න.
-    regen_captcha_btn: කැප්චා වෙනස් කරන්න
-    num_is_not_digit: කරුණාකර අංක පමණක් ඇතුළත් කරන්න!
-    bad_num: වැරදි අංකය! කරුණාකර නැවත උත්සාහ කරන්න.
-    passed: සත්‍යාපනය සම්මත විය, ඔබ <b>%s</b> හි unmute කර ඇත!
-    pass_no_frm: සත්‍යාපනය සම්මත විය, ඔබ %s වලින් unmute කර ඇත!
-    last_chance: ඔබට කැප්චා වලට ඇතුල් වීමට අවසාන අවස්ථාව තිබේ!
-
-    btn_button_text: "කරුණාකර ඔබම ඔප්පු කිරීමට පහත බොත්තම ක්ලික් කරන්න."
-
-    btn_wc_text: |
-      කරුණාකර මෙම ප්‍රකාශනයට ගැලපෙන දකුණු බොත්තම ඔබන්න:
-      %s
-    math_wc_rtr_text: "ඔබට අවසාන අවස්ථාව තිබේ! ප්‍රවේශම් වන්න. \n"
-    math_wc_wrong: වැරදියි, කරුණාකර නැවත උත්සාහ කරන්න!
-    math_wc_sry: කණගාටුයි ඔබ අවසන් උත්සාහය භාවිතා කළා. චැට් පරිපාලකයින්ගෙන් විමසන්න.
-
-    not_admin_wm: මට මෙහි පුද්ගලයින් සීමා කළ නොහැක, එබැවින් මම පිළිගැනීමේ නිශ්ශබ්දතාවය භාවිතා නොකරමි!
-    not_admin_ws: මට මෙහි පුද්ගලයින් සීමා කළ නොහැක, එබැවින් මම පිළිගැනීමේ ආරක්ෂාව භාවිතා නොකරමි!
-    not_admin_wsr: මට මෙහි පණිවිඩ මකා දැමිය නොහැක, එබැවින් මම සේවා පණිවිඩ මකා නොදමමි!
-
-    # / යළි පිහිටුවීම
-    deleted: <b> {chat} </b> හි සුබ පැතුම් සාර්ථකව යළි පිහිටුවන්න!
-    not_found: නැවත සැකසීමට කිසිවක් නැත!
-
-    # ...
-    verification_done: සත්‍යාපනය සිදු කර ඇත! ඔබ නිශ්ශබ්ද කර ඇත .
-  locks:
-    locks_header: "Here is the current lock settings in {chat_title} \n\n"
-    no_lock_args: Give me some args to lock!
-    already_locked: This is already locked bruh
-    no_such_lock: See /locks to find out what can be locked and unlocked!
-    locked_successfully: Locked {lock} in {chat} sucessfully!
-    no_unlock_args: Give me some args to unlock!
-    not_locked: Bruh, its not locked to unlock.
-    unlocked_successfully: Unlocked {lock} in {chat} successfully!
-
-  antiflood:
-
-    # enforcer
-    flood_exceeded: "කිරීම නිසා {user} ව {action} කරා!"
-
-    # /setflood
-    invalid_args:setflood: "අංකයක් බලාපොරොත්තු විය!"
-    overflowed_count: උපරිම ගණන 200 ට වඩා අඩු විය යුතුය!
-    config_proc_1: කරුණාකර කල් ඉකුත් වීමේ කාලය යවන්න, '0' (බිංදුව) කල් ඉකුත් නොවීම සඳහා.
-    cancel: ❌ අවලංගු කරන්න
-    setup_success: ප්‍රති-ෆ්ලූඩ් සාර්ථකව වින්‍යාස කර ඇති අතර, දැන් {count} පණිවිඩ {time} තුළ send යවන අයට එරෙහිව ක්‍රියාත්මක වේ!
-    setup_success:no_exp: සාර්ථකව වින්‍යාසගත කරන ලද ප්‍රති-ෆ්ලූඩ්, පණිවිඩ {count} සඳහා අඛණ්ඩව ඉඩ දෙයි!
-    invalid_time: අවලංගු කාලය!
-
-    # /antiflood | /flood
-    not_configured: මෙම කතාබහ තුළ Antiflood තවමත් වින්‍යාස කර නොමැත!
-    turned_off: <b> {chat_title} </b> හි antiflood අක්‍රීය කර ඇත!
-    configuration_info:with_time: ප්‍රති-ෆ්ලූඩ් සාර්ථකව වින්‍යාස කර ඇති අතර, දැන් {count} පණිවිඩ {time} තුළ send යවන අයට එරෙහිව {action} ක්‍රියාත්මක වේ!
-    configuration_info: මෙම කතාබහ තුළ ඇන්ටිෆ්ලූඩ් වින්‍යාස කර ඇත, අඛණ්ඩව {count} message යවන අය {action} වනු ඇත!
-    ban: තහනම්
-    mute: නිශ්ශබ්ද
-    kick: පයින් ගැසුවා
-
-    # /setfloodaction
-    invalid_args: "සහාය නොදක්වන ක්‍රියාවකි, අපේක්ෂිත {supported_actions}!"
-    setfloodaction_success: "Antiflood ක්‍රියාව <b> {action} </b> වෙත සාර්ථකව යාවත්කාලීන කරන ලදි!"
-
-  afk:
-    is_afk: "{user} දැන් ඕෆ්ලයින්!\nහේතුව: {reason}"
-    unafk: "{user} ආපහු ඔන්ලයින් ආවා!"
-    afk_anon: "AFK නිර්නාමික පරිපාලකයෙකු හට භාවිතා කළ නොහැක."    
+XXnotes:
+XXXXnote_saved:X"🗒XසටහනX<code>{note_name}</code>XහිXsaveXකරXඇතX<b>{chat_title}</b>!"
+XXXXnote_updated:X"🗒XසටහනX<code>X{note_name}X</code>X<b>X{chat_title}X</b>XහිXයාවත්කාලීනXකරXඇත!"
+XXXXyou_can_get_note:X"\nXඔබටX<code>X/X{note_name}X</code>XහෝX<code>X#X{note_name}X</code>XභාවිතාXකිරීමෙන්XඔබටXමෙමXසටහනXලබාXගතXහැකිය."
+XXXX#Xපරිවර්තකXසටහන:XකරුණාකරXඔබටXනූල්XඅවසානයේXඉඩක්XනොමැතිXබවටXවගXබලාXගන්න
+XXXXnote_aliases:X"\nXඅන්වර්ථයන්Xසටහන්Xකරන්න:"
+XXXXblank_note:X"හිස්Xසටහනක්XසුරැකීමටXඅවසරXනැත!"
+XXXXnotename_cant_contain:X"NoteXnameXcan'tXcontainX\"<code>{symbol}</code>\"!"
+
+
+XXXX#X/get
+
+XXXXcant_find_note:XමටXමෙමXසටහනX<b>X{chat_name}X</b>XහිXසොයාගතXනොහැක!
+XXXXno_note:X"එමXසටහනXසොයාගතXනොහැක."
+XXXXno_notes_pattern:X"<code>X%sX</code>XරටාවXඅනුවXසටහන්Xකිසිවක්XහමුXනොවීය."
+XXXXu_mean:X"\XnXඔබXඅදහස්XකළේX<code>X#X{note_name}X</code>Xද?"
+
+XXXX#X/සටහන්
+XXXXnotelist_no_notes:X"<b>X{chat_title}X</b>XහිXකිසිදුXසටහනක්Xනොමැත!"
+XXXXnotelist_header:X"<b>X{chat_name}XXහිXසටහන්X</b>:"
+XXXXnotes_in_private:X"සටහන්Xලැයිස්තුවXලබාXගැනීමටXපහතXබොත්තමXක්ලික්Xකරන්න."
+XXXXnotelist_search:X|
+XXXXXX<b>Xරටාව:X</b>X<code>X{request}X</code>
+XXXXXX<b>XගැලපෙනXසටහන්:X</b>
+
+XXXX#X/පැහැදිලිව
+XXXXnote_removed:X"සටහනX<code>X#X{note_name}X</code>X<b>X{chat_name}X</b>XහිXඉවත්XකරXඇත!"
+XXXXnote_removed_multiple:X|
+XXXXXX<b>X{chat_name}X</b>XහිXබහුXසටහන්Xඉවත්XකරනXලදි
+XXXXXX<b>Xඉවත්XකරනXලදි:X</b>X<code>X{removed}X</code>
+XXXXnot_removed_multiple:X"<b>Xඉවත්XකරXනැත:X</Xb>X<code>X{not_removed}X</code>"
+
+XXXX#X/Xclearall
+XXXXclear_all_text:X"මෙයXසියලුමXසටහන්X{chat_name}Xවෙතින්Xඉවත්Xකරයි.XඔබටXවිශ්වාසද?"
+XXXXclearall_btn_yes:X"ඔව්,XමගේXසියලුXසටහන්Xඉවත්Xකරන්න!"
+XXXXclearall_btn_no:X"නැත!"
+XXXXclearall_done:X"{chat_name}XinXහිXඇතිXසියලුමX(<code>X{num}X</code>)Xසටහන්Xඉවත්XකරනXලදි!"
+
+XXXX#X/සොයන්න
+XXXXsearch_header:X|
+XXXXXX<b>XrequestXchat_nameXinXහිXසෙවුම්Xඉල්ලීමX</b>:
+XXXXXX<b>Xරටාව:X</b>X<code>X{request}X</code>
+XXXXXX<b>XගැලපෙනXසටහන්:X</b>
+
+XXXX#X/Xnoteinfo
+XXXXnote_info_title:X"<b>Xසටහන්XතොරතුරුX</Xb>X\n"
+XXXXnote_info_note:X"සටහන්Xනම්:%sX\n"
+XXXXnote_info_content:X"සටහන්Xඅන්තර්ගතය:X%sX\n"
+XXXXnote_info_parsing:X"විග්‍රහXකිරීමේXමාදිලිය:X<code>%sX</code>X\n"
+XXXXnote_info_created:X"නිර්මාණයXකළේ:X<code>X{දිනය}X</code>X{user}XbyX\n"
+XXXXnote_info_updated:X"අවසන්XවරටXයාවත්කාලීනXකළේ:X<code>X{date}X</code>X{user}X\nXවිසින්"
+XXXXuser_blocked:X"මගේXPMXහිXලියන්නX/startXකරන්න!"
+
+XXXX#X/Xපුද්ගලාරෝපණ
+XXXXprivate_notes_false_args:X"ඔබටXවිකල්පX2Xක්XඇතX<code>Xඅක්‍රීයXකරන්නX</code>XසහX<code>Xසක්‍රීයXකරන්නX</code>!"
+XXXXalready_enabled:X"පුද්ගලිකXසටහන්Xදැනටමත්X%sXවලින්Xසක්‍රීයXකරXඇත"
+XXXXcurrent_state_info:X"පුද්ගලිකXසටහන්XදැනටX<b>X{chat}X</b>XහිX<code>X{state}X</code>Xවේ!"
+XXXXenable_successfully:X"පුද්ගලිකXසටහන්X<b>Xසක්‍රීයXකරXඇතX</b>X%sXහිXසාර්ථකව!"
+XXXXdisabled_successfully:X"පුද්ගලිකXසටහන්X<b>Xඅක්‍රීයXකරXඇතX</b>X%sXහිXසාර්ථකව!"
+XXXXnot_enabled:X"පුද්ගලිකXසටහන්Xසක්‍රීයXකරXනැත."
+XXXXprivateatenotes_notif:X"ඔබX<b>X{chat}X</b>Xසටහන්XසමඟXසාර්ථකවXසම්බන්ධXවීXඇත!Xවිසන්ධිXකිරීමටXකරුණාකරX<code>X/disconnectXකරන්නX</code>XවිධානයXභාවිතාXකරන්න!"
+XXXXenabled:X'සක්‍රීය'
+XXXXdisabled:X'අක්‍රීයයි'
+
+XXXX#X/XපිරිසිදුXසටහන්
+XXXXclean_notes_enable:X"<b>X{chat_name}X</b>XහිXසටහන්XපිරිසිදුXකිරීමXසාර්ථකවXසක්‍රීයXකරXඇත."
+XXXXclean_notes_disable:X"<b>X{chat_name}X</b>XහිXසටහන්XපිරිසිදුXකිරීමXසාර්ථකවXඅක්‍රීයXකරXඇත."
+XXXXclean_notes_enabled:X"සටහන්XපිරිසිදුXකිරීමXදැනටX<b>X{chat_name}X</b>XහිX<b>Xසක්‍රීයXකරXඇතX</Xb>"
+XXXXclean_notes_disabled:X"සටහන්XපිරිසිදුXකිරීමXදැනටX<b>X{chat_name}X</b>XහිX<b>Xඅක්‍රීයXකරXඇතX</Xb>"
+
+XXXX#Xපෙරහන
+XXXXfilters_title:X'සටහනක්Xයවන්න'
+XXXXfilters_setup_start:X'කරුණාකරXසටහන්Xනමක්Xඑවන්න.'
+
+XXXX#delmsg_no_arg:X"deletemsgXබොත්තමටXඅඩංගුXවියXහැක්කේX'පරිපාලක'XහෝX'පරිශීලක'Xතර්කයXපමණි!"
+XXXX#bot_msg:X"මටXකණගාටුයි,XමටXමෙමXපණිවිඩයXලබාXගැනීමටXනොහැකිXවිය,XබොහෝXවිටXමෙයXවෙනත්Xබොට්Xපණිවිඩයකි,Xඑබැවින්XමටXඑයXසුරැකියXනොහැක."
+XXfilters:
+XXXXno_filters_found:X"<b>X{chat_name}X</b>XහිXපෙරහන්Xකිසිවක්XහමුXනොවීය!"
+
+XXXX#X/Xaddfilter
+XXXXanon_detected:Xනිර්නාමිකXපරිපාලකXවීමXනිසාXඔබටXනවXපෙරහන්Xඑක්XකළXනොහැක,XඒXවෙනුවටXසම්බන්ධතාXභාවිතාXකරන්න.
+XXXXregex_too_slow:X"ඔබේXරීජෙක්ස්XරටාවXඉතාXසෙමින්XගැලපේX(තත්පරXභාගයකටXවඩාXවැඩි)XඑයXඑකතුXකළXනොහැක!"
+XXXXcancel_btn:X"🛑XඅවලංගුXකරන්න"
+XXXXadd_filter:X|
+XXXXXX<b>X{chat_name}X</b>XහිX<code>X{handler}X</code>XපෙරණයXඑක්Xකිරීම
+XXXXXXපහතXක්‍රියාවXතෝරන්න:
+XXXXsaved:X"නවXපෙරණයXසාර්ථකවXසුරකිනXලදි!"
+
+XXXX#X/Xපෙරහන්
+XXXXlist_filters:X"<b>X{chat_name}X</b>XහිXපෙරහන්:X\Xn"
+
+XXXX#X/Xඩෙල්ෆිල්ටර්
+XXXXno_such_filter:X<b>X{chat_name}X</b>XහිXමටXඑමXපෙරණයXසොයාගතXනොහැක,XඔබටX<code>X/filtersX</code>XවිධානයXමඟින්Xසක්‍රීයXකරXඇතිXපෙරහන්XමොනවාදැයිXපරීක්ෂාXකළXහැකිය.
+XXXXdel_filter:X"හසුරුවන්නාXසමඟXපෙරණයX'<code>X{handler}X</code>'Xසාර්ථකවXඉවත්XකරනXලදි!"
+XXXXselect_filter_to_remove:X|
+XXXXXX'<code>X{handler}X</code>'Xහසුරුවන්නාXසමඟXමමXබොහෝXපෙරහන්XසොයාගෙනXඇත.
+XXXXXXඉවත්XකිරීමටXකරුණාකරXඑකක්Xතෝරන්න:
+
+XXXX#X/Xඩෙල්ෆිල්ටර්XහෝX/Xඩෙලල්ෆිල්ටර්
+XXXXnot_chat_creator:XමෙමXවිධානයXභාවිතාXකළXහැක්කේXචැට්Xනිර්මාණකරුවන්ටXපමණි!
+XXXXdelall_header:XමෙයXමෙමXසංවාදයේXඇතිXසියලුමXපෙරහන්XමකාXදමනුXඇත.XමෙයXආපසුXහැරවියXනොහැකිXය.
+XXXXconf_yes:Xසියල්ලXමකන්න
+XXXXconfirm_no:X❌XඅවලංගුXකරන්න
+XXXXdelall_success:XමෙමXසංවාදයේXඇතිXසියලුමX({count})Xපෙරහන්Xසාර්ථකවXමකාXදැමීය!
+
+XXwarns:
+XXXX#X/XඅවවාදXකරන්න
+XXXXwarn_sofi:X"හාහාXමටXඅනතුරුXඇඟවීමටXක්‍රමයක්Xනැත!"
+XXXXwarn_self:X"ඔබටXඔබටමXඅනතුරුXඇඟවීමටXඅවශ්‍යද?XඑවිටXකතාබස්Xවලින්Xඉවත්Xවන්න."
+XXXXwarn_admin:X"හොඳයිX..XඔබXවැරදියි.XඔබටXපරිපාලකයෙකුටXඅනතුරුXඇඟවියXනොහැක."
+XXXXwarn:X"{admin}<<b>X{chat_name}X</b>XහිX{user}XඅනතුරුXඅඟවාXඇත"
+XXXXwarn_bun:X"අනතුරුXඇඟවීම්Xඉක්මවාXඇත!X{user}XbannedXතහනම්XකරXඇත!"
+XXXXwarn_num:X"අනතුරුXඅඟවයි:X{curr_warns}/{max_warns}X\n"
+XXXXwarn_rsn:X"හේතුව:X<code>X{හේතුව}X</Xcode>X\Xn"
+XXXXmax_warn_exceeded:XඅනතුරුXඇඟවීම්Xඉක්මවාXඇත!X{user}X{action}!
+XXXXmax_warn_excended:tmute:XඅනතුරුXඇඟවීම්Xඉක්මවාXඇත!X{user}XකාලයXසඳහාXtmuteXකරXඇත!
+
+XXXX#XrmvXඇමතුමටXඅනතුරුXඅඟවන්න
+XXXXwarn_no_admin_alert:X"⚠XඔබXපරිපාලකXනොවනXඅතරXඅනතුරුXඇඟවීම්Xඉවත්XකළXනොහැක!"
+XXXXwarn_btn_rmvl_success:X"{admin}Xවිසින්XඅනතුරුXඇඟවීමXඉවත්XකරනXලදි!"
+
+XXXX#X/XඅනතුරුXඅඟවයි
+XXXXwarns_header:X"මෙමXකතාබස්XතුළXඔබගේXඅනතුරුXඇඟවීම්Xමෙන්නX\nX\n"
+XXXXwarns:X"{count}:X<code>X{reason}X</code>X{admin}XbyX\n"
+XXXXno_warns:X"හොඳයි,X{user}XටXකිසිදුXඅනතුරුXඇඟවීමක්Xනොමැත."
+
+XXXX#X/XඅනතුරුXඇඟවීම
+XXXXwarn_limit:X"<b>X{chat_name}X</b>XහිXඅනතුරුXඇඟවීමේXසීමාවXදැනටXපවතී:X<code>X{num}X</code>"
+XXXXwarnlimit_short:X'අනතුරුXඇඟවීමXඅවමXවශයෙන්X2Xක්XවියXයුතුය!'
+XXXXwarnlimit_long:X'අනතුරුXඇඟවීමේXසීමාවX1X000XටXවඩාXඅඩුXවියXයුතුය!'
+XXXXwarnlimit_updated:X'✅XWarnlimitXසාර්ථකවX{num}XවෙතXයාවත්කාලීනXකරනXලදි'
+
+XXXX#X/Xdelwarns
+XXXXpurged_warns:X"{admin}XresetX<code>X{num}X</code>X<b>X{chat_title}X</b>XහිX{user}XගැනXඅනතුරුXඅඟවයි!"
+XXXXusr_no_wrn:X"{user}XනැවතXසැකසීමටXකිසිදුXඅනතුරුXඇඟවීමක්Xනොමැත."
+XXXXrst_wrn_sofi:X"ඩේසිXකිසිXවිටෙකත්XනැවතXසැකසීමටXඅනතුරුXඇඟවූයේXනැත."
+XXXXnot_digit:XඅනතුරුXඇඟවීම්Xඉලක්කම්XවියXයුතුය!
+
+XXXX#X/XඅනතුරුXඇඟවීමේXමාදිලිය
+XXXXsame_mode:XමෙයXවත්මන්Xප්‍රකාරයයි!XමමXඑයXවෙනස්Xකරන්නේXකෙසේද?
+XXXXno_time:XtmuteXමාදිලියXතේරීමXසඳහාXඔබටXකාලයXසඳහන්XකළXයුතුය!
+XXXXinvalid_time:XඅවලංගුXකාලය!
+XXXXwarnmode_success:X<b>%s</b>XහිXඅනතුරුXඇඟවීමේXමාදිලියX<b>X%sX</b>XලෙසXසාර්ථකවXවෙනස්XකරXඇත!
+XXXXwrng_args:X|
+XXXXXXලබාXගතXහැකිXවිකල්පXමේවාXය:
+XXXXmode_info:X|
+XXXXXXමෙමXසංවාදයේXවත්මන්XමාදිලියX<b>X%sX</b>Xවේ.
+XXXXbanned:Xතහනම්
+XXXXmuted:Xනිශ්ශබ්ද
+
+XXXXfilters_title:XපරිශීලකයාටXඅවවාදXකරන්න
+XXXXfilter_handle_rsn:Xස්වයංක්‍රීයXපෙරහන්Xක්‍රියාව!
+
+XXmsg_deleting:
+XXXXno_rights_purge:X"මෙමXකණ්ඩායමXතුළXපිරිසිදුXකිරීමටXඔබටXප්‍රමාණවත්Xඅයිතිවාසිකම්Xනොමැත!"
+XXXXreply_to_msg:X"මකාXදැමීමටXපණිවිඩයකටXපිළිතුරුXදෙන්න!"
+XXXXpurge_error:X"මටXපිරිසිදුXකිරීමXදිගටමXකරගෙනXයාXනොහැක,XබොහෝXදුරටXඔබXදිනX2XකටXවඩාXපැරණිXපණිවිඩයකින්XපිරිසිදුXකිරීමXආරම්භXකළXනිසාය."
+XXXXfast_purge_done:X"<b>Xවේගවත්XපිරිසිදුXකිරීමXඅවසන්!X</b>X\nXමෙමXපණිවිඩයXතත්පරX5Xකින්Xඉවත්Xකෙරේ."
+XXXXpurge_user_done:X"{user}XfromXවෙතින්XසියලුමXපණිවිඩXසාර්ථකවXමකාXදමනXලදි!"
+XXmisc:
+XXXXyour_id:X"ඔබගේXහැඳුනුම්පත:X<code>X{id}X</code>X\n"
+XXXXchat_id:X"කණ්ඩායම්Xහැඳුනුම්පත:X<code>X{id}X</code>X\n"
+XXXXuser_id:X"{පරිශීලකයාගේXහැඳුනුම්පත:X<code>X{id}X</code>X\n"
+XXXXconn_chat_id:X"දැනටXසම්බන්ධිතXචැට්Xහැඳුනුම්පත:X<code>X{id}X</code>"
+XXXXhelp_btn:X"උදව්XසඳහාXමාවXක්ලික්Xකරන්න!"
+XXXXhelp_txt:X"උදව්XසඳහාXපහතXබොත්තමXක්ලික්Xකරන්න!"
+
+XXXXdelmsg_filter_title:X'පණිවිඩයXමකන්න'
+XXXXsend_text:XකරුණාකරXපිළිතුරුXපණිවිඩයXයවන්න!
+XXXXreplymsg_filter_title:X'පණිවිඩයටXපිළිතුරුXදෙන්න'
+
+XXXXsend_customised_reason:XඔබටXක්‍රියාකාරීXපණිවිඩයටXඇතුළත්XකිරීමටXඅවශ්‍යX<i>XහේතුවX</i>Xයවන්න.X<i>X<හේතුවක්XනැතX</i>XලබාXදීමටX"<code>Xකිසිවක්XනැතX</code>"!
+XXXXexpect_text:XකෙටිXපණිවිඩයක්Xබලාපොරොත්තුXවිය!
+
+XXpromotes:
+XXXXProm_success:X"{user}Xසාර්ථකවX{chat_name}XinXහිXප්‍රවර්ධනයXකරනXලදි!"
+XXXXPromot_title:X"අභිරුචිXභූමිකාවX<code>X{role}X</code>Xසමඟ!"
+XXXXrank_to_loong:X"අභිරුචිXභූමිකාවXපෙළXසංකේතX16XටXවඩාXවැඩිXවියXනොහැක."
+XXXXPromot_failed:X"ප්‍රවර්ධනයXඅසාර්ථකයි!XමටXඅයිතිවාසිකම්XතිබේදැයිXපරීක්ෂාXකරන්න."
+XXXXdemote_success:X"{user}Xසාර්ථකවX{chat_name}XහිXපහතXහෙලනුXලැබීය."
+XXXXdemote_not_admin:X"එමXපරිශීලකයාXපරිපාලකXනොවේ."
+XXXXdemote_failed:X"හැඟීම්Xඅසාර්ථකයි.XසමහරXවිටXමටXපහත්XකළXනොහැක,Xනැතහොත්Xපුද්ගලයාXවෙනත්XඅයෙකුXවිසින්Xඋසස්XකරනුXලැබේද?"
+XXXXcant_get_user:X"මටXපරිශීලකයාXලබාXගතXනොහැකිXවිය!XඔබXසිතන්නේXනම්,XකරුණාකරXඔහුගේXපණිවිඩයටXපිළිතුරුXදීXනැවතXඋත්සාහXකරන්න."
+XXXXcant_promote_yourself:X"ඔබටXඔබවXප්‍රවර්ධනයXකළXනොහැක."
+XXXXemoji_not_allowed:X"මටXකණගාටුයි,Xනමුත්XපරිපාලකXභූමිකාවන්ටXඉමෝජිXතිබියXනොහැකX😞"
+
+XXpm_menu:
+XXXXstart_hi_group:X'හේයි!XමගේXනමXඩේසිX'
+XXXXstart_hi:X"හේයි!XමගේXනමX<b>Xඩේසි.X</b>X\nXමටXඔබේXකණ්ඩායම්Xප්‍රයෝජනවත්XඅංගXසමඟXකළමනාකරණයXකිරීමටXඋදව්XකළXහැකිය,X\nFeelXfreeXtoXaddXme!"
+XXXXbtn_source:X"📦Xප්‍රභවXකේතය"
+XXXXbtn_help:X"❔Xඋදව්"
+XXXXbtn_lang:X"🇱🇰Xභාෂාව"
+XXXXbtn_channel:X"🙋‍♀️XඩේසිXප්‍රවෘත්ති"
+XXXXbtn_group:X"👥XඩේසිXසමූහය"
+XXXXbtn_group_help:X"උදව්XසඳහාXමාවXක්ලික්Xකරන්න!"
+XXXXback:X"🏃‍♂️Xආපසු"
+
+XXXX#X/උදව්
+XXXXhelp_header:X"හායිX!XමමX<b>XඩේසිX</b>.XබොහෝXපහසුකම්,Xමෙවලම්XසහXAnimeXතේමාවක්XසහිතXසුපිරිXබලගතුXකණ්ඩායම්XකළමනාකරණXබොට්Xසේවාවකි.Xඉතින්XඔබXබලාXසිටින්නේXඇයි?XමටXඔබටXඋදව්XකිරීමටXඉඩXදෙන්න"
+XXXXclick_btn:XමෙහිXක්ලික්Xකරන්න
+
+XXdisable:
+XXXX#X/Xඅක්‍රීයXකළXහැකිය
+XXXXdisablable:X"<b>Xඅක්‍රීයXකළXහැකිXවිධාන:X</b>X\Xn"
+
+XXXX#X/Xඅක්‍රීයයි
+XXXXno_disabled_cmds:X<b>X{chat_name}X</b>XහිXඅක්‍රීයXවිධානයන්Xනොමැත!
+XXXXdisabled_list:X"<b>X{chat_nameXinXහිXඅක්‍රීයXකළXවිධාන:X</b>X\Xn"
+
+XXXX#X/Xඅක්‍රීයXකරන්න
+XXXXwot_to_disable:X"ඔබටXඅක්‍රියXකිරීමටXඅවශ්‍යXකුමක්ද?"
+XXXXalready_disabled:X"මෙමXවිධානයXදැනටමත්Xඅක්‍රියXකරXඇත!"
+XXXXdisabled:X"විධානX<code>X{cmd}X</code>X<b>X{chat_name}X</b>XහිXඅක්‍රීයXකරXඇත!"
+
+XXXX#X/Xසක්‍රීයXකරන්න
+XXXXwot_to_enable:X"ඔබටXසක්‍රීයXකිරීමටXඅවශ්‍යXකුමක්ද?"
+XXXXalready_enabled:X"මෙමXවිධානයXඅක්‍රීයXකරXනැත!"
+XXXXenabled:X"විධානX<code>X{cmd}X</code>X<b>X{chat_name}X</b>XතුළXසක්‍රීයXකරXඇත!"
+
+XXXX#X/Xenableall
+XXXXnot_disabled_anything:X"<b>X{chat_title}X</b>XහිXකිසිවක්Xඅක්‍රියXකරXනැත!"
+XXXXenable_all_text:X"මෙයX<b>X{chat_name}X</b>XහිXඇතිXසියලුමXවිධානXසක්‍රීයXකරයි.XඔබටXවිශ්වාසද?"
+XXXXenable_all_btn_yes:X"ඔව්.XසියලුමXවිධානXසක්‍රීයXකරන්න!"
+XXXXenable_all_btn_no:X"නැත!"
+XXXXenable_all_done:X"<b>X{chat_name}X</b>XහිXසියලුමX(<code>{num}</code>)Xවිධානයන්Xසක්‍රීයXකරXඇත!"
+XXbot_rights:
+XXXXchange_info:X"කණ්ඩායම්XතොරතුරුXවෙනස්XකිරීමටXමටXඅයිතියක්Xනැත,XකරුණාකරXඑමXඅයිතියෙන්XමාවXපරිපාලකXකරන්න."
+XXXXedit_messages:X"පණිවිඩXසංස්කරණයXකිරීමටXමටXඅයිතියක්Xනැත!"
+XXXXdelete_messages:X"මෙහිXපණිවිඩXමකාXදැමීමටXමටXඅයිතියක්Xනැත."
+XXXXban_user:X"පරිශීලකයින්Xතහනම්XකිරීමටXමටXඅයිතියක්Xනැත,XකරුණාකරXඑමXඅයිතියෙන්XමාවXපරිපාලකXකරන්න."
+XXXXpin_messages:X"පණිවිඩXයැවීමටXමටXඅයිතියක්Xනැත,XකරුණාකරXඑමXඅයිතියෙන්XමාවXපරිපාලකXකරන්න."
+XXXXadd_admins:X"මටXපරිපාලකයින්Xඑක්XකිරීමටXඅයිතියක්Xනැත,XකරුණාකරXඑමXඅයිතියෙන්XමාවXපරිපාලකXකරන්න."
+
+XXfeds:
+XXXX#Xdecorators
+XXXXneed_fed_admin:X"YouXareXnotXanXadminXinX<b>{name}</b>Xfederation"
+XXXXneed_fed_owner:X"YouXareXnotXanXownerXofX<b>{name}</b>Xfederation"
+XXXXcant_get_user:X"Sorry,XIXcan'tXgetXthatXuser,XtryXusingXtheirXuserXID"
+
+XXXX#X/fnew
+XXXXfed_name_long:X"FederationXnameXcan'tXbeXlongerXthanX60Xsymbols!"
+XXXXcan_only_1_fed:X"UsersXcanXonlyXcreateX1Xfederation,XpleaseXremoveXone."
+XXXXname_not_avaible:X"FederationXwithXnameX<code>{name}</code>XalreadyXexits!XPleaseXuseXanotherXname."
+XXXXcreated_fed:X|
+XXXXXXCongrats,XyouXhaveXsuccessfullyXcreatedXaXfederation.
+XXXXXX<b>Name:</b>X{name}
+XXXXXX<b>ID:</b>X<code>{id}</code>
+XXXXXX<b>Creator:</b>X{creator}
+XXXXXXUseX<code>/fjoinX{id}</code>XtoXconnectXfederationXtoXchat\
+XXXXdisallow_anon:XAsXanXanonymousXadminXyouXcannotXcreateXnewXfederation!
+
+XXXX#X/fjoin
+XXXXonly_creators:X"YouXmustXbeXtheXchatXcreatorXtoXbeXableXtoXconnectXchatXtoXaXfederation."
+XXXXfed_id_invalid:X"TheXgivenXfederationXIDXisXinvalid!XPleaseXgiveXmeXaXvalidXID."
+XXXXjoined_fed_already:X"ThisXchatXhasXalreadyXjoinedXaXfederation!XPleaseXuseX/fleaveXtoXleaveXthatXfederation"
+XXXXjoin_fed_success:X"Great!XChatX<b>{chat}</b>XisXnowXaXpartXofX<b>{fed}</b>Xfederation!"
+XXXXjoin_chat_fed_log:X|
+XXXXXX<b>ChatXjoinedXfederation</b>X#ChatJoined
+XXXXXX<b>Fed:</b>X{fed_name}X(<code>{fed_id}</code>)
+XXXXXX<b>Chat:</b>X{chat_name}X(<code>{chat_id}</code>)
+XXXX#X/leavefed
+XXXXchat_not_in_fed:X"ThisXchatXisXnotXinXanyXfederationXyet."
+XXXXleave_fed_success:X"ChatX<b>{chat}</b>XleftXtheX<b>{fed}</b>Xfederation."
+XXXXleave_chat_fed_log:X|
+XXXXXX<b>ChatXleftXFederation</b>X#ChatLeaved
+XXXXXX<b>Fed:</b>X{fed_name}X(<code>{fed_id}</code>)
+XXXXXX<b>Chat:</b>X{chat_name}X(<code>{chat_id}</code>)
+XXXX#X/fsub
+XXXXalready_subsed:X"FederationX<b>{name}</b>XalreadyXsubscribedXtoX<b>{name2}</b>"
+XXXXsubsed_success:X"FederationX<b>{name}</b>XsubscribedXtoX<b>{name2}</b>!"
+
+XXXX#X/funsub
+XXXXnot_subsed:X"FederationX<b>{name}</b>XisXnotXsubscribedXtoX<b>{name2}</b>"
+XXXXunsubsed_success:X"FederationX<b>{name}</b>XunsubscribedXfromX<b>{name2}</b>!"
+
+XXXX#X/fpromote
+XXXX#admin_already_in_fed:X"UserX{user}XisXalreadyXaXfedXadminXinX<b>{name}</b>XFederation."
+XXXXadmin_added_to_fed:X"UserX{user}XaddedXtoX<b>{name}</b>XfederationXadmins."
+XXXXpromote_user_fed_log:X|
+XXXXXX<b>UserXpromotedXtoXtheXfedXadmins</b>X#UserPromoted
+XXXXXX<b>Fed:</b>X{fed_name}X(<code>{fed_id}</code>)
+XXXXXX<b>User:</b>X{user}X(<code>{user_id}</code>)
+XXXXrestricted_user:promote:XThisXuserXisXrestrictedXfromXbeingXfederationXadmin!
+
+XXXX#X/fdemote
+XXXX#admin_not_in_fed:X"UserX{user}XisXnotX<b>{name}</b>XFederationXadmin."
+XXXXadmin_demoted_from_fed:X"UserX{user}XdemotedXfromX<b>{name}</b>XfederationXadmins."
+XXXXdemote_user_fed_log:X|
+XXXXXX<b>UserXdemotedXfromXtheXfedXadmins</b>X#UserDemoted
+XXXXXX<b>Fed:</b>X{fed_name}X(<code>{fed_id}</code>)
+XXXXXX<b>User:</b>X{user}X(<code>{user_id}</code>)
+XXXX#X/fsetlog
+XXXXalready_have_chatlog:X"<b>{name}</b>XfederationXalreadyXhasXloggingXenabledXinXanotherXchat/channel!"
+XXXXset_chat_log:X|
+XXXXXXThisXchatXisXnowXloggingXallXactionsXinX<b>{name}</b>Xfederation
+XXXXXXFederationXloggingXisXusedXforXinternalXassessmentXofXtheXfederationXandXitsXperformance.
+XXXXXXTheXfederationXshouldX<b>NOT</b>XbeXusedXasXaXpublicXwallXofXshameXtherebyXrespectingXuserXdataXandXourXprivacyXguidelines.
+XXXXset_log_fed_log:X|
+XXXXXX<b>EnabledXlogging</b>X#LoggingEnabled
+XXXXXX<b>Fed:</b>X{fed_name}X(<code>{fed_id}</code>)
+XXXXno_right_to_post:XIXdon'tXhaveXrightsXtoXpostXmessagesXinXthatXchannel!
+
+XXXX#X/funsetlog
+XXXXnot_logging:X"<b>{name}</b>XfederationXisn'tXloggingXtoXanyXchat/channel!"
+XXXXlogging_removed:X"SuccessfullyXremovedXloggingXfromX<b>{name}</b>Xfederation."
+XXXXunset_log_fed_log:X|
+XXXXXX<b>DisabledXlogging</b>X#LoggingDisabled
+XXXXXX<b>Fed:</b>X{fed_name}X(<code>{fed_id}</code>)
+XXXX#X/fchatlist
+XXXXno_chats:X"There'sXnoXchatsXjoinedXthisX<b>{name}</b>Xfederation"
+XXXXchats_in_fed:X"<b>ChatsXconnectedXtoX{name}Xfederation:</b>\n"
+XXXXtoo_large:X"OutputXtooXlarge,XsendingXasXfile"
+
+XXXX#X/finfo
+XXXXfinfo_text:X|
+XXXXXX<b>FederationXinfo</b>
+XXXXXX<b>Name:</b>X{name}
+XXXXXX<b>ID:</b>X<code>{fed_id}</code>
+XXXXXX<b>Creator:</b>X{creator}
+XXXXXX<b>ChatsXinXtheXfed:</b>X{chats}
+XXXXXX<b>BannedXusersXinXtheXfed:</b>X{fbanned}
+XXXXfinfo_subs_title:X"<b>FederationsXsubscribedXtoXthisXfeds:</b>\n"
+
+XXXX#X/fadminlist
+XXXXfadmins_header:X"AdminsXinX<b>{fed_name}</b>Xfed:\n"
+
+XXXX#Xno_fbanned_in_fed:X"ThereXisn'tXanyXbannedXusersXinX{fed_name}XFederation!"
+
+XXXX#X/fban
+XXXXuser_wl:X"ThisXuserXisXwhitelistedXfromXbanning."
+XXXXfban_self:X"That'sXaXniceXshow!"
+XXXXfban_creator:X"HowXcanXIXbanXtheXfederationXcreator?!XIXdon'tXthinkXit'sXgonnaXbeXfunny."
+XXXXfban_fed_admin:X"I'mXnotXgoingXtoXbanXaXfederationXadminXfromXtheirXownXfed!"
+XXXXupdate_fban:X"ThisXuserXwasXalreadyXfbannedXthereforeXIXamXupdatingXtheXreasonXtoX<code>{reason}</code>"
+XXXXalready_fbanned:X"{user}XalreadyXbannedXinXthisXfederation."
+XXXXfbanned_header:X"<b>NewXFedBan</b>\n"
+XXXXfban_info:X|
+XXXXXX<b>Federation:</b>X{fed}
+XXXXXX<b>FedXadmin:</b>X{fadmin}
+XXXXXX<b>User:</b>X{user}X(<code>{user_id}</code>)
+XXXXfbanned_reason:X"<b>Reason:</b>X<code>{reason}</code>"
+XXXXfbanned_process:X"\n<b>Status:</b>XBanningXinX<code>{num}</code>XfedXchats..."
+XXXXfbanned_done:X"\n<b>Status:</b>XDone!XbannedXinX<code>{num}</code>Xchats!"
+
+XXXXfbanned_silence:X"ThisXmessageXwillXbeXpurgedXinX5Xseconds"
+
+XXXXfbanned_subs_process:X"\n<b>Status:</b>XBanningXinX<code>{feds}</code>XsubscribedXfeds..."
+XXXXfbanned_subs_done:X"\n<b>Status:</b>XDone!XBannedXinX<code>{chats}</code>XchatsXofXthisXfederationXandX<code>{subs_chats}</code>XchatsXofX<code>{feds}</code>XsubscribedXfeds"
+XXXXfban_usr_rmvd:X|
+XXXXXXUserX{user}XisXcurrentlyXbannedXinX<b>{fed}</b>XfederationXandXhaveXbeenXremoved!
+XXXXXXReason:X<code>{rsn}</code>
+XXXXfban_log_fed_log:X|
+XXXXXX<b>BanXuserXinXtheXfed</b>X#FedBan
+XXXXXX<b>Fed:</b>X{fed_name}X(<code>{fed_id}</code>)
+XXXXXX<b>User:</b>X{user}X({user_id})
+XXXXXX<b>By:</b>X{by}
+XXXXXX<b>ChatsXbanned:</b>XuserXbannedXinX<code>{chat_count}</code>/<code>{all_chats}</code>Xchats
+XXXXfban_reason_fed_log:X"<b>Reason:</b>X<code>{reason}</code>\n"
+XXXXfban_subs_fed_log:X"\n<b>SubscribedXfeds:</b>XbannedXinX<code>{subs_chats}</code>XchatsXofX<code>{feds}</code>Xfederations"
+
+XXXX#X/unfban
+XXXXunfban_self:X"ThinkXofXsomethingXelseXtoXhaveXfunXwithXinsteadXofXthis."
+XXXXuser_not_fbanned:X"{user}Xisn'tXbannedXinXthisXfederation."
+XXXXun_fbanned_header:X"<b>NewXUn-FedBan</b>\n"
+XXXXun_fbanned_process:X"\n<b>Status:</b>XUnbanningXinX<code>{num}</code>Xchats..."
+XXXXun_fbanned_done:X"\n<b>Status:</b>XDone!XUnbannedXinX<code>{num}</code>Xchats!"
+XXXXun_fbanned_subs_process:X"\n<b>Status:</b>XUnbanningXinX<code>{feds}</code>XsubscribedXfeds..."
+XXXXun_fbanned_subs_done:X"\n<b>Status:</b>XDone!XUnbannedXinX<code>{chats}</code>XchatsXofXthisXfederationXandX<code>{subs_chats}</code>XchatsXofX<code>{feds}</code>XsubscribedXfeds"
+
+XXXXun_fban_log_fed_log:X|
+XXXXXX<b>UnbanXuserXinXtheXfed</b>X#FedUnBan
+XXXXXX<b>Fed:</b>X{fed_name}X(<code>{fed_id}</code>)
+XXXXXX<b>User:</b>X{user}X({user_id})
+XXXXXX<b>By:</b>X{by}
+XXXXXX<b>Chats:</b>XuserXunbannedXinX<code>{chat_count}</code>/<code>{all_chats}</code>Xchats
+XXXXun_fban_subs_fed_log:X"\n<b>SubscribedXfeds:</b>XunbannedXinX<code>{subs_chats}</code>XchatsXofX<code>{feds}</code>Xfederations"
+
+XXXX#X/delfed
+XXXXdelfed_btn_yes:XYes.XDeleteXfederation
+XXXXdelfed_btn_no:XNo.
+XXXXdelfed:X|
+XXXXXXAreXyouXsureXyouXwantXtoXdeleteXtheX<b>%s</b>Xfederation?
+XXXXXX<i>Disclaimer:XDeletingXthisXfederationXwillXremoveXallXdataXassociatedXwithXitXfromXourXdatabase!
+XXXXXXThisXactionXisXpermanentXandXcannotXbeXreversed!</i>
+XXXXdelfed_success:XSuccessfullyXdeletedXtheXfederation!
+
+XXXX#X/frename
+XXXXfrename_same_name:XPleaseXenterXaXdifferentXname,XnotXtheXsameXone!
+XXXXfrename_success:XTheXfederationX<b>{old_name}</b>XrenamedXtoX<b>{new_name}</b>Xsuccessfully!
+
+XXXX#X/fbanlist
+XXXXfbanlist_locked:XPleaseXwaitXuntilX%sXtoXuseXfbanlistXagain.
+XXXXcreating_fbanlist:XCreatingXfbanXlist!XPleaseXwaitX..
+XXXXfbanlist_done:XFbanlistXofXfederationX<b>%s</b>!
+
+XXXX#X/importfbans
+XXXXsend_import_file:X|
+XXXXXXSendXtheXimportXfile!
+XXXXXXToXcancelXthisXprocessXuseX/cancel
+XXXXrpl_to_file:XPleaseXreplyXtoXaXfile!
+XXXXimportfbans_locked:XImportingXfbansXisXlockedXforX%sXinXthisXfederation.
+XXXXbig_file_csv:XOnlyXsupportsXimportXcsvXfilesXlessX{num}Xmegabytes!
+XXXXbig_file_json:X|
+XXXXXXCurrentlyXjsonXfilesXareXlimitedXtoX{num}Xmegabytes!
+XXXXXXUseXtheXcsvXformatXifXyouXwantXtoXimportXbiggerXfiles.
+XXXXinvalid_file:X"TheXfileXisXinvalid"
+XXXXwrong_file_ext:X"WrongXfileXformat!XCurrentlyXsupportXare:Xjson,Xcsv"
+XXXXimporting_process:X<b>ImportingXfederationXbans...</b>
+XXXXimport_done:XImportingXfedXbansXfinished!X{num}XbansXwereXimported.
+
+XXXX#Xdef
+XXXXautomatic_ban:XUserX{user}XisXbannedXinXtheXcurrentXfederationX<b>{fed_name}</b>XandXhasXbeenXremoved!
+XXXXautomatic_ban_sfed:XUserX{user}XisXbannedXinXtheXsubXfederationX<b>{fed_name}</bXandXhasXbeenXremoved!
+XXXXautomatic_ban_reason:X"\nReason:X<code>{text}</code>"
+
+XXXX#X/fcheck
+XXXXfcheck_header:X"<b>FederationXbanXinfo:</b>\n"
+XXXXfbanned_count_pm:X"YouXareXfbannedXinX{count}Xfederation(s)!\n"
+XXXXfban_info:fcheck:X"YouXhaveXbeenXfbannedXinX{fed}XfederationXonX{date},XNoXreasonXwasXgiven!"
+XXXXfban_info:fcheck:reason:X"YouXhaveXbeenXfbannedXinX{fed}XfederationXonX{date}XbecauseXofXreasonX-\nX{reason}\n"
+XXXXfbanned_data:X"{user}XhasXbeenXfbannedXinX{count}Xfederation(s).\n"
+XXXXfbanned_nowhere:X"{user}Xisn'tXfbannedXanywhere!\n"
+XXXXfbanned_in_fed:X"IncludingXtheX<b>{fed}</b>Xfederation!\n"
+XXXXfbanned_in_fed:reason:X"IncludingXtheX<b>{fed}</b>XfederationXforXreasonXofX-\nX<code>{reason}</code>"
+XXXXcontact_in_pm:X"\n\nForXmoreXinfoXonXyourXfbans,XpleaseXsendXmeXaXdirectXmessageXforXprivacy!"
+XXXXtoo_long_fbaninfo:X"Well!XyourXfbaninfoXrequiresXaXfile!"
+XXXXdidnt_fbanned:X"YouXaren'tXfbannedXinXthisXfed."
+XXXXnot_fbanned_in_fed:XTheyXaren'tXfbannedXinXtheX<b>{fed_name}</b>Xfed
+
+XXreports:
+XXXXuser_user_admin:X"ඔබXමෙහිXපරිපාලකයෙක්,XඔබටXයමෙකුXවාර්තාXකිරීමටXඅවශ්‍යXවූයේXඇයි?X.."
+XXXXuser_is_whitelisted:X"ඔබXසුදුXලැයිස්තුXගතXකළXපරිශීලකයෙක්,XඔබටXයමෙකුXවාර්තාXකිරීමටXඅවශ්‍යXවූයේXඇයි?X.."
+XXXXreport_disabled:X"වාර්තාXමේXවනXවිටX<b>Xඅක්‍රීයXකරXඇතX</b>."
+XXXXno_user_to_report:X"ඔබටXවාර්තාXකිරීමටXඅවශ්‍යXපරිශීලකයාXකවුද?"
+XXXXreport_admin:X"ඔබටX<b>Xපරිපාලකවරුන්Xවාර්තාXකළXනොහැක."
+XXXXreport_whitedlisted:X"ඔබටX<b>XසුදුXලැයිස්තුXගතXකළXපරිශීලකයෙකුXවාර්තාXකළXනොහැක.</b>"
+XXXXreport_user:X"<b>Xවාර්තාXකරXඇතX</b>X{user}Xපරිපාලකවරුන්ට."
+XXXXreport_reason:X"\nX<b>Xහේතුව:X</b>X<nX<code>X{හේතුව}X</code>"
+XXXXreport_on:X"මෙමXකණ්ඩායමේXවාර්තාX<b>Xසක්‍රීයXකරXඇතX</b>."
+XXXXreport_off:X"මෙමXකණ්ඩායමXතුළXවාර්තාX<b>Xඅක්‍රියXකරXඇතX</b>."
+XXXXreport_already_on:X"<b>Xවාර්තාXදැනටමත්Xසක්‍රියXකරXඇත.X</b>"
+XXXXreport_turned_on:X"වාර්තාX<b>Xසක්‍රියXකරXඇත.X</b>"
+XXXXreport_already_off:X"<b>Xවාර්තාXදැනටමත්Xඅක්‍රියXකරXඇත.X</b>"
+XXXXwrong_argument:X"<b>XවැරදිXතර්කය.X</b>"
+XXlanguage:
+XXXXyour_lang:X"ඔබගේXවර්තමානXභාෂාව:X<b>X{lang}X</b>"
+XXXXchat_lang:X"වත්මන්Xකතාබස්Xභාෂාව:X<b>X{lang}X</b>"
+XXXXselect_pm_lang:X"\nX<b>XඔබගේXනවXභාෂාවXතෝරන්න:X</b>"
+XXXXselect_chat_lang:X"\nX<b>XනවXකතාබස්XභාෂාවXතෝරන්න:X</b>"
+XXXXcrowdin_btn:X"පරිවර්තනයටXඅපටXඋදව්Xකරන්න"
+XXXXhelp_us_translate:X"\nX\nX<aXhref=\"https://crowdin.com/project/InerukiXx\">XඅපගේXපරිවර්තනXවැඩිXදියුණුXකිරීමටXඅපටXඋදව්Xකරන්නX</a>"
+XXXXnot_supported_lang:XමෙමXභාෂාවටXසහයXනොදක්වයි!
+XXXXlang_changed:XභාෂාවX<b>X{lang_name}X</b>XලෙසXවෙනස්XකරනXලදි.
+XXXXsee_translators:XXපරිවර්තකයන්Xබලන්න
+XXXXback:Xආපසු
+XXconnections:
+XXXXpm_connected:X"ඔබගේXඅගමැතිX<b>X{chat_name}X</b>XසමඟXසාර්ථකවXසම්බන්ධXවීXඇත!"
+XXXXconnect_pm_to_me:X"ඔබේXඅගමැතිX<b>X{chat_name}X</b>XසමඟXසාර්ථකවXසම්බන්ධXවීXඇත!XකරුණාකරXසම්බන්ධතාවයXභාවිතාXකිරීමXආරම්භXකිරීමටXමටXසවසXදෙන්න."
+XXXXchat_connection_tlt:X"<b>Xචැට්Xසම්බන්ධතාවයX</Xb>X\n"
+XXXXconnected_chat:X|
+XXXXXX<b>XදැනටXසම්බන්ධිතXකතාබස්:X</b>
+XXXXXX{chat_name}
+XXXXXXකතාබස්Xවලින්Xවිසන්ධිXකිරීමටXලියන්නX/disconnectXකරන්න
+XXXXconnect_chat:cmds:X|
+XXXXXX<b>XදැනටXසම්බන්ධිතXකතාබස්:X</b>
+XXXXXX{chat_name},X(පාලම්XවිධානX{commands}),
+XXXXXX⚠X<i>XඔබටXප්‍රවේශXවියXහැක්කේXසම්බන්ධිතXසංවාදයේXපාලම්XවිධානXපමණි!Xඅනෙක්XසියලුමXවිධානයන්XදේශීයXකතාබස්XලෙසXසලකනුXලැබේX</i>
+XXXXXXකතාබස්Xවලින්Xවිසන්ධිXකිරීමටXලියන්නX/disconnectXකරන්න.
+XXXXu_wasnt_connected:X"ඔබXමීටXපෙරXකිසිදුXකතාබහකටXසම්බන්ධXනොවීය!"
+XXXXselect_chat_to_connect:X"\nX<b>Xසම්බන්ධXවීමටXචැට්Xඑකක්Xතෝරන්න:X</b>"
+XXXXdisconnected:X"ඔබX<b>X{chat_name}X</b>Xවෙතින්Xවිසන්ධිXවිය."
+XXXXcant_find_chat:X"මටXමෙමXකතාබහXසොයාගතXනොහැක."
+XXXXcant_find_chat_use_id:X"මටXමෙමXකතාබහXසොයාගතXනොහැක.Xචැට්Xහැඳුනුම්පතXභාවිතාXකරන්න."
+XXXXbad_arg_bool:X"නරකXතේරීම:XසහයXදක්වන්නේX<code>XමතX</code>X/X<code>Xඕෆ්X</code>X<code>Xසක්‍රීයXකරන්නX</code>X/X<code>Xඅක්‍රීයXකරන්නX</code>"
+
+XXXXenabled:Xසක්‍රීය
+XXXXdisabled:Xඅක්‍රීයයි
+XXXXchat_users_connections_info:X"සාමාන්‍යXපරිශීලකයින්XසඳහාXසම්බන්ධතාXදැනටX<b>X{status}X</b>X<b>X{chat_name}X</b>Xසඳහා"
+XXXXchat_users_connections_cng:X"සාමාන්‍යXපරිශීලකයින්XසඳහාXසම්බන්ධතාX<b>X{status}X</b>XසඳහාX<b>X{chat_name}X</b>XසඳහාXවෙනස්XකරXඇත."
+
+XXXXnot_in_group:X"ඔබXසම්බන්ධXවීමට,Xසම්බන්ධXවීමටXසහXපණිවිඩයක්XයැවීමටXඋත්සාහXකරනXකණ්ඩායමේXඔබXනොමැත."
+XXXXhistory_empty:X"ඔබXඉතිහාසයXසඳහාXකිසිදුXකතාබහකටXසම්බන්ධXවීXනැත,`X/connectX(chatXid)X`හරහාXසම්බන්ධXවන්න."
+XXXXnot_in_chat:X"ඔබXතවදුරටත්XමෙමXකතාබස්XවලXනැත,XමමXඔබවXවිසන්ධිXකරමි."
+XXXXu_should_be_admin:X"ඔබX{inXහිXපරිපාලකයෙකුXවියXයුතුය!"
+XXXXuse_only_in_groups:X"භාවිතයXකණ්ඩායම්Xවශයෙන්Xපමණක්XසීමාXවේ!"
+
+XXXXanon_admin_conn:X|
+XXXXXXසම්බන්ධXවීමටXකරුණාකරXපහතXබොත්තමXක්ලික්Xකරන්න!
+XXXXclick_here:XමෙහිXක්ලික්Xකරන්න!
+XXglobal:
+XXXXu_not_admin:XමෙයXකිරීමටXඔබXපරිපාලකයෙකුXවියXයුතුය!
+
+XXXX#Xඅයිතිය
+XXXXbot_no_right:not_admin:XමමXපරිපාලකයෙක්Xනොවේ!
+XXXXbot_no_right:X"මටXමෙහිX{permission}XtoXකිරීමටXඅවසරXනැත!"
+XXXXuser_no_right:X"ඔබටXමෙහිX{permission}XtoXසඳහාXඅවසරXනැත!"
+XXXXuser_no_right:not_admin:XඑයXකිරීමටXඔබXපරිපාලකXවියXයුතුය!
+
+XXXX#Xචැට්Xනිර්මාපකයෙකි
+XXXXable_identify_creator:X"නිර්නාමිකXකතාබස්Xනිර්මාපකයෙකුXහඳුනාගතXනොහැක,Xඅනුපිටපත්Xඅත්සනX(මාතෘකා)XහමුXවිය!"
+XXowner_stuff:
+XXXXfarther:X"\nXඔහුXමගේXමැවුම්කරු."
+XXXXsudo_crown:X"\nXහේයි,Xබලන්න,XඑමXපරිශීලකයාටXඔටුන්නක්Xතිබේ,XමටXඑයXදැකීමටXඉඩXදෙන්නX...Xවාව්,XඑහිXකැටයමක්XඇතX-X<b>X'sudoXuser'X</b>!"
+XXstickers:
+XXXXrpl_to_sticker:X"ස්ටිකරයකටXපිළිතුරුXදෙන්න!"
+XXXXur_sticker:X|
+XXXXXX<b>Xඉමොජි:X</b>X<code>X{emoji}X</code>
+XXXXXX<b>Xස්ටිකර්Xහැඳුනුම්පත:X</b>X<code>X{id}X</code>
+XXpins:
+XXXXno_reply_msg:X"පින්XකිරීමටXපණිවිඩයකටXපිළිතුරුXදෙන්න!"
+XXXXchat_not_modified_pin:X"එමXපණිවිඩයXදැනටමත්XඇලවීXඇත!"
+XXXXchat_not_modified_unpin:X"ඉවත්XකිරීමටXකිසිදුXපණිවිඩයක්Xනොමැත!"
+XXXXpinned_success:X"සාර්ථකවXපින්XකරXඇත!"
+XXXXunpin_success:X"සාර්ථකවXඅනාරක්ෂිතයි!"
+XXusers:
+XXXXuser_info:X"<b>XපරිශීලකXතොරතුරු:X</b>X\Xn"
+XXXXinfo_id:X"ID:X<code>X{id}X</code>"
+XXXXinfo_first:X"\nXපළමුXනම:X{first_name}"
+XXXXinfo_last:X"\nXඅවසානXනම:X{last_name}"
+XXXXinfo_username:X"\nXපරිශීලකXනාමය:X{username}"
+XXXXinfo_link:X"\nXපරිශීලකXසබැඳිය:X{user_link}"
+XXXXinfo_saw:X"\nXමමXඒවාX<code>X{num}X</code>Xකණ්ඩායම්XතුළXදුටුවෙමි"
+XXXXinfo_sw_ban:X"\nමෙමXපරිශීලකයාXSpamWatchXහිXතහනම්XකරXඇත!"
+XXXXinfo_sw_ban_reason:X"\nXහේතුව:X<code>X{sw_reason}X</code>"
+XXXXinfo_fbanned:X"\nXවත්මන්Xසම්මේලනයේXතහනම්XකරXඇත:"
+XXXXinfo_admeme:X"\nXමෙමXසංවාදයේදීXපරිශීලකයාටXපරිපාලකXඅයිතිවාසිකම්Xඇත."
+XXXXupdate_cache:X"හැඹිලියXදැන්Xයාවත්කාලීනXකරයිX..."
+XXXXupdate_cache_done:X"පරිපාලකXහැඹිලියXයාවත්කාලීනXකරනXලදි."
+XXXXadmins:X"<b>XමෙමXකණ්ඩායමේXපරිපාලක:X</b>\n"
+XXimports_exports:
+XXXX#Xඅපනයනය
+XXXXstart_exporting:XඅපනයනයXආරම්භXවිය!XකරුණාකරXරැඳීXසිටින්න...
+XXXXexport_done:X<b>X{chat_nameXfromX</b>Xවෙතින්XඅපනයනයXකරXඇත!
+XXXXexports_locked:XනැවතXඅපනයනXභාවිතාXකිරීමටXපෙරXකරුණාකරX%sXරැඳීXසිටින්න!
+
+XXXX#XආනයනයXකිරීම
+XXXXinvalid_file:X"ගොනුවXඅවලංගුයි"
+XXXXsend_import_file:XකරුණාකරXආයාතXකිරීමXසඳහාXගොනුවක්Xඑවන්න!
+XXXXrpl_to_file:XකරුණාකරXගොනුවකටXපිළිතුරුXදෙන්න!
+XXXXbig_file:XසහයXදක්වන්නේX50XMBXටXඅඩුXගොනුXපමණි!
+XXXXstart_importing:XආනයනයXකිරීමXආරම්භXවිය!XකරුණාකරXරැඳීXසිටින්න...
+XXXXbad_file:XනරකXගොනුව!Xඅපේක්ෂිතX<code>X'සාමාන්‍ය'X</code>Xතීරුව.
+XXXXfile_version_so_new:XඅපනයනයXකරනXලදXගොනුXඅනුවාදයXඩේසිXදැනටXසහායXදක්වනXදෙයටXවඩාXඅලුත්Xය!
+XXXXimports_locked:XනැවතXආනයනXභාවිතාXකිරීමටXපෙරXකරුණාකර%XsXරැඳීXසිටින්න!
+XXXXimport_done:XආයාතXකිරීමXඅවසන්!
+XXrestrictions:
+XXXXuser_not_in_chat:XපරිශීලකයාXමෙමXකතාබස්XතුළXනොමැත!
+
+XXXX#Xකික්ස්
+XXXXkick_InerukiX:XමටXපයින්XගැසීමටXඋත්සාහXකරනවාXවෙනුවටXඔබේXකාලයXවඩාXහොඳින්XගතXකළXහැකිය.XඒකXනීරසයි.
+XXXXkick_admin:XපරිපාලකයාටXපයින්XගැසීමXහොඳමXඅදහසXනොවේ.
+XXXXkick_self:XඔබටXඔබටමXපයින්XගැසීමටXඅවශ්‍යXනම්X-XමෙමXකතාබස්Xවලින්Xඉවත්Xවන්න.Xස්වයංXදX.ුවමXසඳහාXවනXමෙමXදයානුකම්පිතXඋත්සාහයන්XදෙසXබැලීමටXවඩාXමමXඔබවXදකින්නේXනැත.
+XXXXuser_kicked:X"{user}X{chat_name}XinXහිX{admin}Xවිසින්Xපයින්XගසාXඇත."
+
+XXXX#Xනිශ්ශබ්දයි
+XXXXmute_InerukiX:Xඇත්තටම,XමමXඒXවෙනුවටXඔබවXවසාXදැමීමටXසතුටුXවෙමි.
+XXXXmute_admin:XඔබටXපරිපාලකයෙකුXවසාXදැමියXහැකිXයැයිXඔබXසිතන්නේXනම්,XඔබXවැරදියි!
+XXXXmute_self:XඔබටXනිශ්ශබ්දXකිරීමටXඅවශ්‍යXනම්X-XකතාXකිරීමXනවත්වන්න!XඔබේXමුඛයXවිවෘතXකරXසියලුXසැකයන්XදුරුXකරනවාටXවඩාXමෝඩයෙකුXයැයිXසිතීමXහොඳය.
+XXXXuser_muted:X"{user}X{chat_name}XහිX{admin}Xවිසින්Xනිශ්ශබ්දXකරනXලදි."
+XXXXunmute_InerukiX:Xඇත්තටමXමමXනිශ්ශබ්දXනැහැ.
+XXXXunmute_admin:XහාහාXනෑ,Xමුලින්මXඔහුවXනිශ්ශබ්දXකිරීමටXඋත්සාහXකරන්න!
+XXXXunmute_self:XමමXමුලින්මXඔබවXනිශ්ශබ්දXකළXයුතුද?
+XXXXuser_unmuted:X"{user}X{chat_name}XinXහිX{admin}Xවිසින්Xඉවත්XකරනXලදි."
+
+XXXX#Xතහනම්
+XXXXban_InerukiX:Xනෑ,XමමXඒකXකරන්නේXනැහැ!XඑයXකිරීමටXචැට්Xනිර්මාතෘගෙන්Xඉල්ලාXසිටින්න!
+XXXXban_admin:Xහාහා,XඅපිXමුලින්මXඔහුවX<code>X/XdemoteX</code>Xකරමු.
+XXXXban_self:XඔබXඔබමXතහනම්XකිරීමටXඋත්සාහXකරන්නේXඇයි?
+XXXXuser_banned:X"{user}X{chat_name}XහිX{admin}XbyXවිසින්Xතහනම්XකරනXලදි."
+XXXXunban_InerukiX:Xඇත්තටමXමාවXතහනම්Xනැහැ.
+XXXXunban_admin:Xහාහා,XපළමුවXඔහුවXතහනම්XකිරීමටXඋත්සාහXකරන්න!
+XXXXunban_self:XමමXමුලින්මXඔබවXතහනම්XකළXයුතුද?
+XXXXuser_unband:X"{user}X{chat_name}XහිX{admin}Xවිසින්Xතහනම්XකරනXලදි."
+
+XXXXinvalid_time:XඅවලංගුXකාලය!
+XXXXenter_time:XකරුණාකරXවේලාවක්XනියමXකරන්න!
+XXXXon_time:X"\XnX<code>X%sX</code>Xසඳහා"
+XXXXreason:X"aseXnXහේතුව:X<code>X%sX</code>"
+XXXXpurge:Xතත්පරX5Xකින්XපණිවිඩXපිරිසිදුXකරනුXලැබේ!
+
+XXXXfilter_title_ban:XපරිශීලකයාXතහනම්Xකරන්න
+XXXXfilter_action_rsn:X<code>Xස්වයංක්‍රීයXපෙරහන්Xක්‍රියාව!X</code>
+XXXXfiltr_ban_success:X'%sXX%sXසඳහාXතහනම්X%s'
+XXXXfiltr_mute_success:X'%sX%sXසඳහාXනිශ්ශබ්දX%s'
+XXXXfiltr_tmute_success:X|
+XXXXXX%sX%sXසඳහාXනිශ්ශබ්දX%s
+XXXXXXහේතුවX%sXවේ
+XXXXtime_setup_start:XකරුණාකරXවේලාවක්XනියමXකරන්න!
+XXXXfiltr_tban_success:X|
+XXXXXX%sXසඳහාX%sXතහනම්XකරXඇත
+XXXXXXහේතුවX%sXවේ
+XXXXfilter_title_tmute:XතාවකාලිකවXපරිශීලකයාXනිශ්ශබ්දXකරන්න
+XXXXfilter_title_mute:XපරිශීලකයාXනිශ්ශබ්දXකරන්න
+XXXXfilter_title_tban:XතාවකාලිකවXපරිශීලකයාXතහනම්Xකරන්න
+XXXXfilter_title_kick:XපරිශීලකයාටXපයින්Xගසන්න
+XXrules:
+XXXX#Xසකසන්න
+XXXXsaved:XරීතිX<b>%XsX</b>XතුළXසුරකිනXලදි
+XXXXupdated:XරීතිX<b>%XsX</b>XතුළXයාවත්කාලීනXකරනXලදි
+
+XXXX#XයළිXපිහිටුවන්න
+XXXXdeleted:XරීතිXමකාXදමනXලදි!
+
+XXXXnot_found:XරීතිXහමුXනොවීය!
+
+XXXX#XආපසුXඅමතන්න
+XXXXuser_blocked:X"මගේXPMXහිXලියන්නX/startXකරන්න!"
+XXXXrules_was_pmed:XරීතිXඔබගේXඅගමැතිටXයවනXලදි!
+
+XXXX#Xcan_find_note:X"මටX<code>X{}X</code>XසටහනXසොයාගතXනොහැක."
+XXXX#Xset_note:X"නීතිXසටහනX<code>X{}X</code>XලෙසXසාර්ථකවXසකසන්න."
+XXXX#Xdidnt_set_note:X"මෙමXකණ්ඩායමටXනීතිXසටහන්Xකට්ටලයක්Xනොමැත."
+XXXX#Xcan_find_set_note:X"මටXනීතිXසටහනXසොයාගතXනොහැක."
+XXXX#Xhavent_set_rules_note:X"ඔබXතවමත්XනීතිXසටහනXසකස්XකරXනැත."
+XXXX#Xsuccess_remove_rules_note:X"<b>X{}X</b>XහිXනීතිXරීතිXසාර්ථකවXඉවත්XකරනXලදි."
+XXgreetings:
+XXXXdefault_welcome:X"සාදරයෙන්XපිළිගනිමුX{සඳහන්Xකරන්න}!XඔබටXකොහොමද?"
+XXXXthanks_for_add:X"මාවXඔබේXකණ්ඩායමටXඑක්XකිරීමXගැනXස්තූතියි!XමගේXප්‍රවෘත්තිXනාලිකාවXaXඩේසිඑක්ස්Xයාවත්කාලීනXකිරීම්XදෙසXබලන්නX/Xඋදව්Xකරන්න."
+XXXXdefault_security_note:X"සාදරයෙන්XපිළිගනිමුX{සඳහන්Xකරන්න}!XකරුණාකරXඔබXමිනිසෙකුXබවXතහවුරුXකරXගැනීමටXපහතXබොත්තමXඔබන්න!"
+
+XXXXbool_invalid_arg:XවලංගුXනොවනXතර්කය,X<code>XමතX</code>X/X<code>Xඅක්‍රීයX</code>.
+
+XXXX#X/Xsetwelcome
+XXXXsaved:XපිළිගැනීමේXපණිවිඩයX<b>%s</b>XතුළXසුරකිනXලදි
+XXXXupdatedදි:XපිළිගැනීමේXපණිවිඩයX<b>%s</b>XතුළXයාවත්කාලීනXකරනXලදි
+
+XXXX#X/Xturnwelcome
+XXXXturnwelcome_status:Xපිළිගැනීම්XයනුX<b>X{chat_name}X</b>XහිX<code>X{status}X</code>Xවේ.
+XXXXturnwelcome_enabled:X<b>%s</b>XතුළXපිළිගැනීම්Xසක්‍රීයXකරXඇත
+XXXXturnwelcome_disabled:Xසාදරයෙන්XපිළිගනිමුX<b>%s</b>
+
+XXXX#X/Xසාදරයෙන්Xපිළිගනිමු
+XXXXenabled:Xසක්‍රීය
+XXXXdisabled:Xඅක්‍රීයයි
+XXXXwlcm_security_enabled:X"සක්‍රීය,X{level}XsetXලෙසXසකසාXඇත"
+XXXXwlcm_mutes_enabled:X"සක්‍රීයXකරXඇත,X{time}XsetXලෙසXසකසන්න"
+XXXXwelcome_info:X|
+XXXXXX<b>XsettingsXchat_nameXinXහිXපිළිගැනීමේXසැකසුම්:X</b>
+XXXXXXපිළිගැනීම්X<code>X{Welcome_status}X</code>Xවේ
+XXXXXXපිළිගැනීමේXආරක්ෂාවX<code>X{wlcm_security}X</code>Xවේ
+XXXXXXපිළිගැනීමේXනිශ්ශබ්දතාවX<code>X{wlcm_mutes}X</code>Xවේ
+XXXXXXපැරණිXපිළිගැනීම්XමකාXදැමීමX<code>X{clean_welcome}X</code>Xවේ
+XXXXXXසේවාXපණිවිඩXමකාXදැමීමX<code>X{clean_service}X</code>Xවේ
+XXXXwlcm_note:X"\nX\nXආයුබෝවන්Xසටහන:"
+XXXXraw_wlcm_note:X"අමුXපිළිගැනීමේXසටහන:"
+XXXXsecurity_note:X"පිළිගැනීමේXආරක්ෂකXපෙළ:"
+
+XXXX#X/Xsetsecuritynote
+XXXXsecurity_note_saved:X"අභිරුචිXආරක්ෂකXපෙළXසුරකිනXලදිX<b>%s</b>"
+XXXXsecurity_note_updated:X"අභිරුචිXආරක්ෂකXපෙළXයාවත්කාලීනXකරනXලදිX<b>%s</b>"
+
+XXXX#X/Xdelsecuritynote
+XXXXsecurity_note_not_found:X<b>%XsX</b>XහිXආරක්ෂකXපෙළXමීටXපෙරXසකසාXනොමැත
+XXXXdel_security_note_ok:X<b>%XsX</b>XහිXආරක්ෂකXපෙළXපෙරනිමියටXයළිXපිහිටුවනXලදි
+
+XXXX#X/Xcleanwelcome
+XXXXcleanwelcome_enabled:X<b>%XsX</b>XහිXපිරිසිදුXකිරීමේXපිළිගැනීම්Xසක්‍රීයXකරXඇත
+XXXXcleanwelcome_disabled:XපිරිසිදුXකිරීමX<b>%XsX</b>XහිXඅක්‍රීයXකරXඇත
+XXXXcleanwelcome_status:Xපිළිගැනීම්XපිරිසිදුXකිරීමXයනුX<b>X{chat_name}X</b>XහිX<code>X{status}X</code>Xවේ.
+
+XXXX#X/XපිරිසිදුXකිරීමේXසේවය
+XXXXcleanservice_enabled:X<b>%XsX</b>XහිXසේවාXපණිවිඩXපිරිසිදුXකිරීමXසක්‍රීයXකරXඇත
+XXXXcleanservice_disabled:X<b>%XsX</b>XහිXසේවාXපණිවිඩXපිරිසිදුXකිරීමXඅක්‍රීයXකරXඇත
+XXXXcleanservice_status:XසේවාXපණිවිඩXපිරිසිදුXකිරීමX<b>X{chat_name}X</b>XහිX<code>X{status}X</code>Xවේ.
+
+XXXX#X/Xපිළිගැනීම
+XXXXwelcomemute_invalid_arg:XඅවලංගුXතර්කයක්,Xකාලයක්Xබලාපොරොත්තුXවේ.
+XXXXwelcomemute_enabled:XපිළිගැනීමේXනිශ්ශබ්දතාවX<b>%XsX</b>XතුළXසක්‍රීයXකරXඇත
+XXXXwelcomemute_disabled:XපිළිගැනීමේXනිශ්ශබ්දතාවX<b>%XsX</b>XහිXඅක්‍රීයXකරXඇත
+XXXXwelcomemute_status:XපිළිගැනීමේXනිශ්ශබ්දතාවයX<b>X{chat_name}X</b>XහිX<code>{status}X</code>Xවේ.
+
+XXXX#X/XපිළිගැනීමේXසුරක්ෂිතභාවය
+XXXXWelcomeecurity_enabled:XපිළිගැනීමේXආරක්ෂාවX<b>{chat_name}</b><code>{level}</code>XවෙතXසක්‍රීයXකරXඇත.
+XXXXWelcomeecurity_enabled:customized_time:X|
+XXXXXX<b>X{chat_name}X</b>XහිX<code>X{level}X</code>XවෙතXසාදරයෙන්Xපිළිගනිමු,XසහX{කාලය}XතුළXසත්‍යාපනයXනොකළXපරිශීලකයින්ටXපයින්Xගසන්න.
+XXXXask_for_time_customization:X|
+XXXXXXසත්‍යාපනයXනොකළXපරිශීලකයාටXපයින්XගැසීමටXකාලXසීමාවXරිසිකරණයXකිරීමටXඔබටXඅවශ්‍යද?X(පෙරනිමියෙන්XඑයX{කාලය})
+XXXXsend_time:XකරුණාකරXවේලාවක්Xසඳහන්Xකරන්න.
+XXXXinvalid_time:X"අවලංගුXකාලය!"
+XXXXWelcomeecurity_enabled_word:Xසක්‍රීය,XlevelXමට්ටමටXසකසාXඇත
+XXXXwelcomesecurity_disabled:X<b>%XsX</b>XහිXපිළිගැනීමේXආරක්ෂාවXඅක්‍රීයXකරXඇත.
+XXXXwelcomesecurity_invalid_arg:XවලංගුXනොවනXතර්කය,Xඅපේක්ෂිතX<code>Xබොත්තමX</code>/<code>Xකැප්චාX</code>.
+XXXXwelcomesecurity_status:XපිළිගැනීමේXආරක්ෂාවXයනුX<b>{chat_name}</b>XහිX<code>{status}</code>Xවේ
+
+XXXXyes_btn:X"ඔව්"
+XXXXno_btn:X"නැත"
+
+XXXX#XපිළිගැනීමේXසුරක්‍ෂිතතාXහසුරුවන්නා
+XXXXclick_here:XමෙහිXක්ලික්Xකරන්න!
+XXXXnot_allowed:XඔබටXමෙයXභාවිතාXකිරීමටXඅවසරXනැත!
+XXXXws_captcha_text:XහායිX{user},XකරුණාකරXචැට්XඑකෙහිXනිශ්ශබ්දXවීමටXකැප්චාගේXඅංකයXඇතුළත්Xකරන්න.
+XXXXregen_captcha_btn:Xකැප්චාXවෙනස්Xකරන්න
+XXXXnum_is_not_digit:XකරුණාකරXඅංකXපමණක්Xඇතුළත්Xකරන්න!
+XXXXbad_num:XවැරදිXඅංකය!XකරුණාකරXනැවතXඋත්සාහXකරන්න.
+XXXXpassed:Xසත්‍යාපනයXසම්මතXවිය,XඔබX<b>%s</b>XහිXunmuteXකරXඇත!
+XXXXpass_no_frm:Xසත්‍යාපනයXසම්මතXවිය,XඔබX%sXවලින්XunmuteXකරXඇත!
+XXXXlast_chance:XඔබටXකැප්චාXවලටXඇතුල්XවීමටXඅවසානXඅවස්ථාවXතිබේ!
+
+XXXXbtn_button_text:X"කරුණාකරXඔබමXඔප්පුXකිරීමටXපහතXබොත්තමXක්ලික්Xකරන්න."
+
+XXXXbtn_wc_text:X|
+XXXXXXකරුණාකරXමෙමXප්‍රකාශනයටXගැලපෙනXදකුණුXබොත්තමXඔබන්න:
+XXXXXX%s
+XXXXmath_wc_rtr_text:X"ඔබටXඅවසානXඅවස්ථාවXතිබේ!Xප්‍රවේශම්Xවන්න.X\n"
+XXXXmath_wc_wrong:Xවැරදියි,XකරුණාකරXනැවතXඋත්සාහXකරන්න!
+XXXXmath_wc_sry:XකණගාටුයිXඔබXඅවසන්Xඋත්සාහයXභාවිතාXකළා.Xචැට්Xපරිපාලකයින්ගෙන්Xවිමසන්න.
+
+XXXXnot_admin_wm:XමටXමෙහිXපුද්ගලයින්XසීමාXකළXනොහැක,Xඑබැවින්XමමXපිළිගැනීමේXනිශ්ශබ්දතාවයXභාවිතාXනොකරමි!
+XXXXnot_admin_ws:XමටXමෙහිXපුද්ගලයින්XසීමාXකළXනොහැක,Xඑබැවින්XමමXපිළිගැනීමේXආරක්ෂාවXභාවිතාXනොකරමි!
+XXXXnot_admin_wsr:XමටXමෙහිXපණිවිඩXමකාXදැමියXනොහැක,Xඑබැවින්XමමXසේවාXපණිවිඩXමකාXනොදමමි!
+
+XXXX#X/XයළිXපිහිටුවීම
+XXXXdeleted:X<b>X{chat}X</b>XහිXසුබXපැතුම්Xසාර්ථකවXයළිXපිහිටුවන්න!
+XXXXnot_found:XනැවතXසැකසීමටXකිසිවක්Xනැත!
+
+XXXX#X...
+XXXXverification_done:Xසත්‍යාපනයXසිදුXකරXඇත!XඔබXනිශ්ශබ්දXකරXඇතX.
+XXlocks:
+XXXXlocks_header:X"HereXisXtheXcurrentXlockXsettingsXinX{chat_title}X\n\n"
+XXXXno_lock_args:XGiveXmeXsomeXargsXtoXlock!
+XXXXalready_locked:XThisXisXalreadyXlockedXbruh
+XXXXno_such_lock:XSeeX/locksXtoXfindXoutXwhatXcanXbeXlockedXandXunlocked!
+XXXXlocked_successfully:XLockedX{lock}XinX{chat}Xsucessfully!
+XXXXno_unlock_args:XGiveXmeXsomeXargsXtoXunlock!
+XXXXnot_locked:XBruh,XitsXnotXlockedXtoXunlock.
+XXXXunlocked_successfully:XUnlockedX{lock}XinX{chat}Xsuccessfully!
+
+XXantiflood:
+
+XXXX#Xenforcer
+XXXXflood_exceeded:X"කිරීමXනිසාX{user}XවX{action}Xකරා!"
+
+XXXX#X/setflood
+XXXXinvalid_args:setflood:X"අංකයක්Xබලාපොරොත්තුXවිය!"
+XXXXoverflowed_count:XඋපරිමXගණනX200XටXවඩාXඅඩුXවියXයුතුය!
+XXXXconfig_proc_1:XකරුණාකරXකල්Xඉකුත්XවීමේXකාලයXයවන්න,X'0'X(බිංදුව)Xකල්Xඉකුත්XනොවීමXසඳහා.
+XXXXcancel:X❌XඅවලංගුXකරන්න
+XXXXsetup_success:Xප්‍රති-ෆ්ලූඩ්Xසාර්ථකවXවින්‍යාසXකරXඇතිXඅතර,Xදැන්X{count}XපණිවිඩX{time}XතුළXsendXයවනXඅයටXඑරෙහිවXක්‍රියාත්මකXවේ!
+XXXXsetup_success:no_exp:Xසාර්ථකවXවින්‍යාසගතXකරනXලදXප්‍රති-ෆ්ලූඩ්,XපණිවිඩX{count}XසඳහාXඅඛණ්ඩවXඉඩXදෙයි!
+XXXXinvalid_time:XඅවලංගුXකාලය!
+
+XXXX#X/antifloodX|X/flood
+XXXXnot_configured:XමෙමXකතාබහXතුළXAntifloodXතවමත්Xවින්‍යාසXකරXනොමැත!
+XXXXturned_off:X<b>X{chat_title}X</b>XහිXantifloodXඅක්‍රීයXකරXඇත!
+XXXXconfiguration_info:with_time:Xප්‍රති-ෆ්ලූඩ්Xසාර්ථකවXවින්‍යාසXකරXඇතිXඅතර,Xදැන්X{count}XපණිවිඩX{time}XතුළXsendXයවනXඅයටXඑරෙහිවX{action}Xක්‍රියාත්මකXවේ!
+XXXXconfiguration_info:XමෙමXකතාබහXතුළXඇන්ටිෆ්ලූඩ්Xවින්‍යාසXකරXඇත,Xඅඛණ්ඩවX{count}XmessageXයවනXඅයX{action}XවනුXඇත!
+XXXXban:Xතහනම්
+XXXXmute:Xනිශ්ශබ්ද
+XXXXkick:Xපයින්Xගැසුවා
+
+XXXX#X/setfloodaction
+XXXXinvalid_args:X"සහායXනොදක්වනXක්‍රියාවකි,Xඅපේක්ෂිතX{supported_actions}!"
+XXXXsetfloodaction_success:X"AntifloodXක්‍රියාවX<b>X{action}X</b>XවෙතXසාර්ථකවXයාවත්කාලීනXකරනXලදි!"
+
+XXafk:
+XXXXis_afk:X"{user}Xදැන්Xඕෆ්ලයින්!\nහේතුව:X{reason}"
+XXXXunafk:X"{user}XආපහුXඔන්ලයින්Xආවා!"
+XXXXafk_anon:X"AFKXනිර්නාමිකXපරිපාලකයෙකුXහටXභාවිතාXකළXනොහැක."XXXX

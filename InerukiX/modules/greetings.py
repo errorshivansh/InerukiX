@@ -1,1139 +1,1139 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2021Xerrorshivansh
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import io
-import random
-import re
-from contextlib import suppress
-from datetime import datetime
-from typing import Optional, Union
+importXio
+importXrandom
+importXre
+fromXcontextlibXimportXsuppress
+fromXdatetimeXimportXdatetime
+fromXtypingXimportXOptional,XUnion
 
-from aiogram.dispatcher.filters.builtin import CommandStart
-from aiogram.dispatcher.filters.state import State, StatesGroup
-from aiogram.types import CallbackQuery, ContentType, Message
-from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
-from aiogram.types.input_media import InputMediaPhoto
-from aiogram.utils.callback_data import CallbackData
-from aiogram.utils.exceptions import (
-    BadRequest,
-    ChatAdminRequired,
-    MessageCantBeDeleted,
-    MessageToDeleteNotFound,
+fromXaiogram.dispatcher.filters.builtinXimportXCommandStart
+fromXaiogram.dispatcher.filters.stateXimportXState,XStatesGroup
+fromXaiogram.typesXimportXCallbackQuery,XContentType,XMessage
+fromXaiogram.types.inline_keyboardXimportXInlineKeyboardButton,XInlineKeyboardMarkup
+fromXaiogram.types.input_mediaXimportXInputMediaPhoto
+fromXaiogram.utils.callback_dataXimportXCallbackData
+fromXaiogram.utils.exceptionsXimportX(
+XXXXBadRequest,
+XXXXChatAdminRequired,
+XXXXMessageCantBeDeleted,
+XXXXMessageToDeleteNotFound,
 )
-from apscheduler.jobstores.base import JobLookupError
-from babel.dates import format_timedelta
-from captcha.image import ImageCaptcha
-from telethon.tl.custom import Button
+fromXapscheduler.jobstores.baseXimportXJobLookupError
+fromXbabel.datesXimportXformat_timedelta
+fromXcaptcha.imageXimportXImageCaptcha
+fromXtelethon.tl.customXimportXButton
 
-from Ineruki  import BOT_ID, BOT_USERNAME, bot, dp
-from Ineruki .config import get_str_key
-from Ineruki .decorator import register
-from Ineruki .services.apscheduller import scheduler
-from Ineruki .services.mongo import db
-from Ineruki .services.redis import redis
-from Ineruki .services.telethon import tbot
-from Ineruki .stuff.fonts import ALL_FONTS
+fromXInerukiXXimportXBOT_ID,XBOT_USERNAME,Xbot,Xdp
+fromXInerukiX.configXimportXget_str_key
+fromXInerukiX.decoratorXimportXregister
+fromXInerukiX.services.apschedullerXimportXscheduler
+fromXInerukiX.services.mongoXimportXdb
+fromXInerukiX.services.redisXimportXredis
+fromXInerukiX.services.telethonXimportXtbot
+fromXInerukiX.stuff.fontsXimportXALL_FONTS
 
-from ..utils.cached import cached
-from .utils.connections import chat_connection
-from .utils.language import get_strings_dec
-from .utils.message import convert_time, need_args_dec
-from .utils.notes import get_parsed_note_list, send_note, t_unparse_note_item
-from .utils.restrictions import kick_user, mute_user, restrict_user, unmute_user
-from .utils.user_details import check_admin_rights, get_user_link, is_user_admin
+fromX..utils.cachedXimportXcached
+fromX.utils.connectionsXimportXchat_connection
+fromX.utils.languageXimportXget_strings_dec
+fromX.utils.messageXimportXconvert_time,Xneed_args_dec
+fromX.utils.notesXimportXget_parsed_note_list,Xsend_note,Xt_unparse_note_item
+fromX.utils.restrictionsXimportXkick_user,Xmute_user,Xrestrict_user,Xunmute_user
+fromX.utils.user_detailsXimportXcheck_admin_rights,Xget_user_link,Xis_user_admin
 
 
-class WelcomeSecurityState(StatesGroup):
-    button = State()
-    captcha = State()
-    math = State()
+classXWelcomeSecurityState(StatesGroup):
+XXXXbuttonX=XState()
+XXXXcaptchaX=XState()
+XXXXmathX=XState()
 
 
 @register(cmds="welcome")
 @chat_connection(only_groups=True)
 @get_strings_dec("greetings")
-async def welcome(message, chat, strings):
-    chat_id = chat["chat_id"]
-    send_id = message.chat.id
+asyncXdefXwelcome(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
+XXXXsend_idX=Xmessage.chat.id
 
-    if len(args := message.get_args().split()) > 0:
-        no_format = True if "no_format" == args[0] or "raw" == args[0] else False
-    else:
-        no_format = None
+XXXXifXlen(argsX:=Xmessage.get_args().split())X>X0:
+XXXXXXXXno_formatX=XTrueXifX"no_format"X==Xargs[0]XorX"raw"X==Xargs[0]XelseXFalse
+XXXXelse:
+XXXXXXXXno_formatX=XNone
 
-    if not (db_item := await get_greetings_data(chat_id)):
-        db_item = {}
-    if "note" not in db_item:
-        db_item["note"] = {"text": strings["default_welcome"]}
+XXXXifXnotX(db_itemX:=XawaitXget_greetings_data(chat_id)):
+XXXXXXXXdb_itemX=X{}
+XXXXifX"note"XnotXinXdb_item:
+XXXXXXXXdb_item["note"]X=X{"text":Xstrings["default_welcome"]}
 
-    if no_format:
-        await message.reply(strings["raw_wlcm_note"])
-        text, kwargs = await t_unparse_note_item(
-            message, db_item["note"], chat_id, noformat=True
-        )
-        await send_note(send_id, text, **kwargs)
-        return
+XXXXifXno_format:
+XXXXXXXXawaitXmessage.reply(strings["raw_wlcm_note"])
+XXXXXXXXtext,XkwargsX=XawaitXt_unparse_note_item(
+XXXXXXXXXXXXmessage,Xdb_item["note"],Xchat_id,Xnoformat=True
+XXXXXXXX)
+XXXXXXXXawaitXsend_note(send_id,Xtext,X**kwargs)
+XXXXXXXXreturn
 
-    text = strings["welcome_info"]
+XXXXtextX=Xstrings["welcome_info"]
 
-    text = text.format(
-        chat_name=chat["chat_title"],
-        welcomes_status=strings["disabled"]
-        if "welcome_disabled" in db_item and db_item["welcome_disabled"] is True
-        else strings["enabled"],
-        wlcm_security=strings["disabled"]
-        if "welcome_security" not in db_item
-        or db_item["welcome_security"]["enabled"] is False
-        else strings["wlcm_security_enabled"].format(
-            level=db_item["welcome_security"]["level"]
-        ),
-        wlcm_mutes=strings["disabled"]
-        if "welcome_mute" not in db_item or db_item["welcome_mute"]["enabled"] is False
-        else strings["wlcm_mutes_enabled"].format(time=db_item["welcome_mute"]["time"]),
-        clean_welcomes=strings["enabled"]
-        if "clean_welcome" in db_item and db_item["clean_welcome"]["enabled"] is True
-        else strings["disabled"],
-        clean_service=strings["enabled"]
-        if "clean_service" in db_item and db_item["clean_service"]["enabled"] is True
-        else strings["disabled"],
-    )
-    if "welcome_disabled" not in db_item:
-        text += strings["wlcm_note"]
-        await message.reply(text)
-        text, kwargs = await t_unparse_note_item(message, db_item["note"], chat_id)
-        await send_note(send_id, text, **kwargs)
-    else:
-        await message.reply(text)
+XXXXtextX=Xtext.format(
+XXXXXXXXchat_name=chat["chat_title"],
+XXXXXXXXwelcomes_status=strings["disabled"]
+XXXXXXXXifX"welcome_disabled"XinXdb_itemXandXdb_item["welcome_disabled"]XisXTrue
+XXXXXXXXelseXstrings["enabled"],
+XXXXXXXXwlcm_security=strings["disabled"]
+XXXXXXXXifX"welcome_security"XnotXinXdb_item
+XXXXXXXXorXdb_item["welcome_security"]["enabled"]XisXFalse
+XXXXXXXXelseXstrings["wlcm_security_enabled"].format(
+XXXXXXXXXXXXlevel=db_item["welcome_security"]["level"]
+XXXXXXXX),
+XXXXXXXXwlcm_mutes=strings["disabled"]
+XXXXXXXXifX"welcome_mute"XnotXinXdb_itemXorXdb_item["welcome_mute"]["enabled"]XisXFalse
+XXXXXXXXelseXstrings["wlcm_mutes_enabled"].format(time=db_item["welcome_mute"]["time"]),
+XXXXXXXXclean_welcomes=strings["enabled"]
+XXXXXXXXifX"clean_welcome"XinXdb_itemXandXdb_item["clean_welcome"]["enabled"]XisXTrue
+XXXXXXXXelseXstrings["disabled"],
+XXXXXXXXclean_service=strings["enabled"]
+XXXXXXXXifX"clean_service"XinXdb_itemXandXdb_item["clean_service"]["enabled"]XisXTrue
+XXXXXXXXelseXstrings["disabled"],
+XXXX)
+XXXXifX"welcome_disabled"XnotXinXdb_item:
+XXXXXXXXtextX+=Xstrings["wlcm_note"]
+XXXXXXXXawaitXmessage.reply(text)
+XXXXXXXXtext,XkwargsX=XawaitXt_unparse_note_item(message,Xdb_item["note"],Xchat_id)
+XXXXXXXXawaitXsend_note(send_id,Xtext,X**kwargs)
+XXXXelse:
+XXXXXXXXawaitXmessage.reply(text)
 
-    if "welcome_security" in db_item:
-        if "security_note" not in db_item:
-            db_item["security_note"] = {"text": strings["default_security_note"]}
-        await message.reply(strings["security_note"])
-        text, kwargs = await t_unparse_note_item(
-            message, db_item["security_note"], chat_id
-        )
-        await send_note(send_id, text, **kwargs)
+XXXXifX"welcome_security"XinXdb_item:
+XXXXXXXXifX"security_note"XnotXinXdb_item:
+XXXXXXXXXXXXdb_item["security_note"]X=X{"text":Xstrings["default_security_note"]}
+XXXXXXXXawaitXmessage.reply(strings["security_note"])
+XXXXXXXXtext,XkwargsX=XawaitXt_unparse_note_item(
+XXXXXXXXXXXXmessage,Xdb_item["security_note"],Xchat_id
+XXXXXXXX)
+XXXXXXXXawaitXsend_note(send_id,Xtext,X**kwargs)
 
 
-@register(cmds=["setwelcome", "savewelcome"], user_admin=True)
-@chat_connection(admin=True, only_groups=True)
+@register(cmds=["setwelcome",X"savewelcome"],Xuser_admin=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_strings_dec("greetings")
-async def set_welcome(message, chat, strings):
-    chat_id = chat["chat_id"]
+asyncXdefXset_welcome(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
 
-    if len(args := message.get_args().lower().split()) < 1:
-        db_item = await get_greetings_data(chat_id)
+XXXXifXlen(argsX:=Xmessage.get_args().lower().split())X<X1:
+XXXXXXXXdb_itemX=XawaitXget_greetings_data(chat_id)
 
-        if (
-            db_item
-            and "welcome_disabled" in db_item
-            and db_item["welcome_disabled"] is True
-        ):
-            status = strings["disabled"]
-        else:
-            status = strings["enabled"]
+XXXXXXXXifX(
+XXXXXXXXXXXXdb_item
+XXXXXXXXXXXXandX"welcome_disabled"XinXdb_item
+XXXXXXXXXXXXandXdb_item["welcome_disabled"]XisXTrue
+XXXXXXXX):
+XXXXXXXXXXXXstatusX=Xstrings["disabled"]
+XXXXXXXXelse:
+XXXXXXXXXXXXstatusX=Xstrings["enabled"]
 
-        await message.reply(
-            strings["turnwelcome_status"].format(
-                status=status, chat_name=chat["chat_title"]
-            )
-        )
-        return
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["turnwelcome_status"].format(
+XXXXXXXXXXXXXXXXstatus=status,Xchat_name=chat["chat_title"]
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturn
 
-    no = ["no", "off", "0", "false", "disable"]
+XXXXnoX=X["no",X"off",X"0",X"false",X"disable"]
 
-    if args[0] in no:
-        await db.greetings.update_one(
-            {"chat_id": chat_id},
-            {"$set": {"chat_id": chat_id, "welcome_disabled": True}},
-            upsert=True,
-        )
-        await get_greetings_data.reset_cache(chat_id)
-        await message.reply(strings["turnwelcome_disabled"] % chat["chat_title"])
-        return
-    else:
-        note = await get_parsed_note_list(message, split_args=-1)
+XXXXifXargs[0]XinXno:
+XXXXXXXXawaitXdb.greetings.update_one(
+XXXXXXXXXXXX{"chat_id":Xchat_id},
+XXXXXXXXXXXX{"$set":X{"chat_id":Xchat_id,X"welcome_disabled":XTrue}},
+XXXXXXXXXXXXupsert=True,
+XXXXXXXX)
+XXXXXXXXawaitXget_greetings_data.reset_cache(chat_id)
+XXXXXXXXawaitXmessage.reply(strings["turnwelcome_disabled"]X%Xchat["chat_title"])
+XXXXXXXXreturn
+XXXXelse:
+XXXXXXXXnoteX=XawaitXget_parsed_note_list(message,Xsplit_args=-1)
 
-        if (
-            await db.greetings.update_one(
-                {"chat_id": chat_id},
-                {
-                    "$set": {"chat_id": chat_id, "note": note},
-                    "$unset": {"welcome_disabled": 1},
-                },
-                upsert=True,
-            )
-        ).modified_count > 0:
-            text = strings["updated"]
-        else:
-            text = strings["saved"]
+XXXXXXXXifX(
+XXXXXXXXXXXXawaitXdb.greetings.update_one(
+XXXXXXXXXXXXXXXX{"chat_id":Xchat_id},
+XXXXXXXXXXXXXXXX{
+XXXXXXXXXXXXXXXXXXXX"$set":X{"chat_id":Xchat_id,X"note":Xnote},
+XXXXXXXXXXXXXXXXXXXX"$unset":X{"welcome_disabled":X1},
+XXXXXXXXXXXXXXXX},
+XXXXXXXXXXXXXXXXupsert=True,
+XXXXXXXXXXXX)
+XXXXXXXX).modified_countX>X0:
+XXXXXXXXXXXXtextX=Xstrings["updated"]
+XXXXXXXXelse:
+XXXXXXXXXXXXtextX=Xstrings["saved"]
 
-        await get_greetings_data.reset_cache(chat_id)
-        await message.reply(text % chat["chat_title"])
+XXXXXXXXawaitXget_greetings_data.reset_cache(chat_id)
+XXXXXXXXawaitXmessage.reply(textX%Xchat["chat_title"])
 
 
-@register(cmds="resetwelcome", user_admin=True)
-@chat_connection(admin=True, only_groups=True)
+@register(cmds="resetwelcome",Xuser_admin=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_strings_dec("greetings")
-async def reset_welcome(message, chat, strings):
-    chat_id = chat["chat_id"]
+asyncXdefXreset_welcome(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
 
-    if (await db.greetings.delete_one({"chat_id": chat_id})).deleted_count < 1:
-        await get_greetings_data.reset_cache(chat_id)
-        await message.reply(strings["not_found"])
-        return
+XXXXifX(awaitXdb.greetings.delete_one({"chat_id":Xchat_id})).deleted_countX<X1:
+XXXXXXXXawaitXget_greetings_data.reset_cache(chat_id)
+XXXXXXXXawaitXmessage.reply(strings["not_found"])
+XXXXXXXXreturn
 
-    await get_greetings_data.reset_cache(chat_id)
-    await message.reply(strings["deleted"].format(chat=chat["chat_title"]))
+XXXXawaitXget_greetings_data.reset_cache(chat_id)
+XXXXawaitXmessage.reply(strings["deleted"].format(chat=chat["chat_title"]))
 
 
-@register(cmds="cleanwelcome", user_admin=True)
-@chat_connection(admin=True, only_groups=True)
+@register(cmds="cleanwelcome",Xuser_admin=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_strings_dec("greetings")
-async def clean_welcome(message, chat, strings):
-    chat_id = chat["chat_id"]
+asyncXdefXclean_welcome(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
 
-    if len(args := message.get_args().lower().split()) < 1:
-        db_item = await get_greetings_data(chat_id)
+XXXXifXlen(argsX:=Xmessage.get_args().lower().split())X<X1:
+XXXXXXXXdb_itemX=XawaitXget_greetings_data(chat_id)
 
-        if (
-            db_item
-            and "clean_welcome" in db_item
-            and db_item["clean_welcome"]["enabled"] is True
-        ):
-            status = strings["enabled"]
-        else:
-            status = strings["disabled"]
+XXXXXXXXifX(
+XXXXXXXXXXXXdb_item
+XXXXXXXXXXXXandX"clean_welcome"XinXdb_item
+XXXXXXXXXXXXandXdb_item["clean_welcome"]["enabled"]XisXTrue
+XXXXXXXX):
+XXXXXXXXXXXXstatusX=Xstrings["enabled"]
+XXXXXXXXelse:
+XXXXXXXXXXXXstatusX=Xstrings["disabled"]
 
-        await message.reply(
-            strings["cleanwelcome_status"].format(
-                status=status, chat_name=chat["chat_title"]
-            )
-        )
-        return
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["cleanwelcome_status"].format(
+XXXXXXXXXXXXXXXXstatus=status,Xchat_name=chat["chat_title"]
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturn
 
-    yes = ["yes", "on", "1", "true", "enable"]
-    no = ["no", "off", "0", "false", "disable"]
+XXXXyesX=X["yes",X"on",X"1",X"true",X"enable"]
+XXXXnoX=X["no",X"off",X"0",X"false",X"disable"]
 
-    if args[0] in yes:
-        await db.greetings.update_one(
-            {"chat_id": chat_id},
-            {"$set": {"chat_id": chat_id, "clean_welcome": {"enabled": True}}},
-            upsert=True,
-        )
-        await get_greetings_data.reset_cache(chat_id)
-        await message.reply(strings["cleanwelcome_enabled"] % chat["chat_title"])
-    elif args[0] in no:
-        await db.greetings.update_one(
-            {"chat_id": chat_id}, {"$unset": {"clean_welcome": 1}}, upsert=True
-        )
-        await get_greetings_data.reset_cache(chat_id)
-        await message.reply(strings["cleanwelcome_disabled"] % chat["chat_title"])
-    else:
-        await message.reply(strings["bool_invalid_arg"])
+XXXXifXargs[0]XinXyes:
+XXXXXXXXawaitXdb.greetings.update_one(
+XXXXXXXXXXXX{"chat_id":Xchat_id},
+XXXXXXXXXXXX{"$set":X{"chat_id":Xchat_id,X"clean_welcome":X{"enabled":XTrue}}},
+XXXXXXXXXXXXupsert=True,
+XXXXXXXX)
+XXXXXXXXawaitXget_greetings_data.reset_cache(chat_id)
+XXXXXXXXawaitXmessage.reply(strings["cleanwelcome_enabled"]X%Xchat["chat_title"])
+XXXXelifXargs[0]XinXno:
+XXXXXXXXawaitXdb.greetings.update_one(
+XXXXXXXXXXXX{"chat_id":Xchat_id},X{"$unset":X{"clean_welcome":X1}},Xupsert=True
+XXXXXXXX)
+XXXXXXXXawaitXget_greetings_data.reset_cache(chat_id)
+XXXXXXXXawaitXmessage.reply(strings["cleanwelcome_disabled"]X%Xchat["chat_title"])
+XXXXelse:
+XXXXXXXXawaitXmessage.reply(strings["bool_invalid_arg"])
 
 
-@register(cmds="cleanservice", user_admin=True)
-@chat_connection(admin=True, only_groups=True)
+@register(cmds="cleanservice",Xuser_admin=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_strings_dec("greetings")
-async def clean_service(message, chat, strings):
-    chat_id = chat["chat_id"]
+asyncXdefXclean_service(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
 
-    if len(args := message.get_args().lower().split()) < 1:
-        db_item = await get_greetings_data(chat_id)
+XXXXifXlen(argsX:=Xmessage.get_args().lower().split())X<X1:
+XXXXXXXXdb_itemX=XawaitXget_greetings_data(chat_id)
 
-        if (
-            db_item
-            and "clean_service" in db_item
-            and db_item["clean_service"]["enabled"] is True
-        ):
-            status = strings["enabled"]
-        else:
-            status = strings["disabled"]
+XXXXXXXXifX(
+XXXXXXXXXXXXdb_item
+XXXXXXXXXXXXandX"clean_service"XinXdb_item
+XXXXXXXXXXXXandXdb_item["clean_service"]["enabled"]XisXTrue
+XXXXXXXX):
+XXXXXXXXXXXXstatusX=Xstrings["enabled"]
+XXXXXXXXelse:
+XXXXXXXXXXXXstatusX=Xstrings["disabled"]
 
-        await message.reply(
-            strings["cleanservice_status"].format(
-                status=status, chat_name=chat["chat_title"]
-            )
-        )
-        return
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["cleanservice_status"].format(
+XXXXXXXXXXXXXXXXstatus=status,Xchat_name=chat["chat_title"]
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturn
 
-    yes = ["yes", "on", "1", "true", "enable"]
-    no = ["no", "off", "0", "false", "disable"]
+XXXXyesX=X["yes",X"on",X"1",X"true",X"enable"]
+XXXXnoX=X["no",X"off",X"0",X"false",X"disable"]
 
-    if args[0] in yes:
-        await db.greetings.update_one(
-            {"chat_id": chat_id},
-            {"$set": {"chat_id": chat_id, "clean_service": {"enabled": True}}},
-            upsert=True,
-        )
-        await get_greetings_data.reset_cache(chat_id)
-        await message.reply(strings["cleanservice_enabled"] % chat["chat_title"])
-    elif args[0] in no:
-        await db.greetings.update_one(
-            {"chat_id": chat_id}, {"$unset": {"clean_service": 1}}, upsert=True
-        )
-        await get_greetings_data.reset_cache(chat_id)
-        await message.reply(strings["cleanservice_disabled"] % chat["chat_title"])
-    else:
-        await message.reply(strings["bool_invalid_arg"])
+XXXXifXargs[0]XinXyes:
+XXXXXXXXawaitXdb.greetings.update_one(
+XXXXXXXXXXXX{"chat_id":Xchat_id},
+XXXXXXXXXXXX{"$set":X{"chat_id":Xchat_id,X"clean_service":X{"enabled":XTrue}}},
+XXXXXXXXXXXXupsert=True,
+XXXXXXXX)
+XXXXXXXXawaitXget_greetings_data.reset_cache(chat_id)
+XXXXXXXXawaitXmessage.reply(strings["cleanservice_enabled"]X%Xchat["chat_title"])
+XXXXelifXargs[0]XinXno:
+XXXXXXXXawaitXdb.greetings.update_one(
+XXXXXXXXXXXX{"chat_id":Xchat_id},X{"$unset":X{"clean_service":X1}},Xupsert=True
+XXXXXXXX)
+XXXXXXXXawaitXget_greetings_data.reset_cache(chat_id)
+XXXXXXXXawaitXmessage.reply(strings["cleanservice_disabled"]X%Xchat["chat_title"])
+XXXXelse:
+XXXXXXXXawaitXmessage.reply(strings["bool_invalid_arg"])
 
 
-@register(cmds="welcomemute", user_admin=True)
-@chat_connection(admin=True, only_groups=True)
+@register(cmds="welcomemute",Xuser_admin=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_strings_dec("greetings")
-async def welcome_mute(message, chat, strings):
-    chat_id = chat["chat_id"]
+asyncXdefXwelcome_mute(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
 
-    if len(args := message.get_args().lower().split()) < 1:
-        db_item = await get_greetings_data(chat_id)
+XXXXifXlen(argsX:=Xmessage.get_args().lower().split())X<X1:
+XXXXXXXXdb_itemX=XawaitXget_greetings_data(chat_id)
 
-        if (
-            db_item
-            and "welcome_mute" in db_item
-            and db_item["welcome_mute"]["enabled"] is True
-        ):
-            status = strings["enabled"]
-        else:
-            status = strings["disabled"]
+XXXXXXXXifX(
+XXXXXXXXXXXXdb_item
+XXXXXXXXXXXXandX"welcome_mute"XinXdb_item
+XXXXXXXXXXXXandXdb_item["welcome_mute"]["enabled"]XisXTrue
+XXXXXXXX):
+XXXXXXXXXXXXstatusX=Xstrings["enabled"]
+XXXXXXXXelse:
+XXXXXXXXXXXXstatusX=Xstrings["disabled"]
 
-        await message.reply(
-            strings["welcomemute_status"].format(
-                status=status, chat_name=chat["chat_title"]
-            )
-        )
-        return
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["welcomemute_status"].format(
+XXXXXXXXXXXXXXXXstatus=status,Xchat_name=chat["chat_title"]
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturn
 
-    no = ["no", "off", "0", "false", "disable"]
+XXXXnoX=X["no",X"off",X"0",X"false",X"disable"]
 
-    if args[0].endswith(("m", "h", "d")):
-        await db.greetings.update_one(
-            {"chat_id": chat_id},
-            {
-                "$set": {
-                    "chat_id": chat_id,
-                    "welcome_mute": {"enabled": True, "time": args[0]},
-                }
-            },
-            upsert=True,
-        )
-        await get_greetings_data.reset_cache(chat_id)
-        text = strings["welcomemute_enabled"] % chat["chat_title"]
-        try:
-            await message.reply(text)
-        except BadRequest:
-            await message.answer(text)
-    elif args[0] in no:
-        text = strings["welcomemute_disabled"] % chat["chat_title"]
-        await db.greetings.update_one(
-            {"chat_id": chat_id}, {"$unset": {"welcome_mute": 1}}, upsert=True
-        )
-        await get_greetings_data.reset_cache(chat_id)
-        try:
-            await message.reply(text)
-        except BadRequest:
-            await message.answer(text)
-    else:
-        text = strings["welcomemute_invalid_arg"]
-        try:
-            await message.reply(text)
-        except BadRequest:
-            await message.answer(text)
-
-
-# Welcome Security
-
-wlcm_sec_config_proc = CallbackData("wlcm_sec_proc", "chat_id", "user_id", "level")
-wlcm_sec_config_cancel = CallbackData("wlcm_sec_cancel", "user_id", "level")
+XXXXifXargs[0].endswith(("m",X"h",X"d")):
+XXXXXXXXawaitXdb.greetings.update_one(
+XXXXXXXXXXXX{"chat_id":Xchat_id},
+XXXXXXXXXXXX{
+XXXXXXXXXXXXXXXX"$set":X{
+XXXXXXXXXXXXXXXXXXXX"chat_id":Xchat_id,
+XXXXXXXXXXXXXXXXXXXX"welcome_mute":X{"enabled":XTrue,X"time":Xargs[0]},
+XXXXXXXXXXXXXXXX}
+XXXXXXXXXXXX},
+XXXXXXXXXXXXupsert=True,
+XXXXXXXX)
+XXXXXXXXawaitXget_greetings_data.reset_cache(chat_id)
+XXXXXXXXtextX=Xstrings["welcomemute_enabled"]X%Xchat["chat_title"]
+XXXXXXXXtry:
+XXXXXXXXXXXXawaitXmessage.reply(text)
+XXXXXXXXexceptXBadRequest:
+XXXXXXXXXXXXawaitXmessage.answer(text)
+XXXXelifXargs[0]XinXno:
+XXXXXXXXtextX=Xstrings["welcomemute_disabled"]X%Xchat["chat_title"]
+XXXXXXXXawaitXdb.greetings.update_one(
+XXXXXXXXXXXX{"chat_id":Xchat_id},X{"$unset":X{"welcome_mute":X1}},Xupsert=True
+XXXXXXXX)
+XXXXXXXXawaitXget_greetings_data.reset_cache(chat_id)
+XXXXXXXXtry:
+XXXXXXXXXXXXawaitXmessage.reply(text)
+XXXXXXXXexceptXBadRequest:
+XXXXXXXXXXXXawaitXmessage.answer(text)
+XXXXelse:
+XXXXXXXXtextX=Xstrings["welcomemute_invalid_arg"]
+XXXXXXXXtry:
+XXXXXXXXXXXXawaitXmessage.reply(text)
+XXXXXXXXexceptXBadRequest:
+XXXXXXXXXXXXawaitXmessage.answer(text)
 
 
-class WelcomeSecurityConf(StatesGroup):
-    send_time = State()
+#XWelcomeXSecurity
+
+wlcm_sec_config_procX=XCallbackData("wlcm_sec_proc",X"chat_id",X"user_id",X"level")
+wlcm_sec_config_cancelX=XCallbackData("wlcm_sec_cancel",X"user_id",X"level")
 
 
-@register(cmds="welcomesecurity", user_admin=True)
-@chat_connection(admin=True, only_groups=True)
+classXWelcomeSecurityConf(StatesGroup):
+XXXXsend_timeX=XState()
+
+
+@register(cmds="welcomesecurity",Xuser_admin=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_strings_dec("greetings")
-async def welcome_security(message, chat, strings):
-    chat_id = chat["chat_id"]
+asyncXdefXwelcome_security(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
 
-    if len(args := message.get_args().lower().split()) < 1:
-        db_item = await get_greetings_data(chat_id)
+XXXXifXlen(argsX:=Xmessage.get_args().lower().split())X<X1:
+XXXXXXXXdb_itemX=XawaitXget_greetings_data(chat_id)
 
-        if (
-            db_item
-            and "welcome_security" in db_item
-            and db_item["welcome_security"]["enabled"] is True
-        ):
-            status = strings["welcomesecurity_enabled_word"].format(
-                level=db_item["welcome_security"]["level"]
-            )
-        else:
-            status = strings["disabled"]
+XXXXXXXXifX(
+XXXXXXXXXXXXdb_item
+XXXXXXXXXXXXandX"welcome_security"XinXdb_item
+XXXXXXXXXXXXandXdb_item["welcome_security"]["enabled"]XisXTrue
+XXXXXXXX):
+XXXXXXXXXXXXstatusX=Xstrings["welcomesecurity_enabled_word"].format(
+XXXXXXXXXXXXXXXXlevel=db_item["welcome_security"]["level"]
+XXXXXXXXXXXX)
+XXXXXXXXelse:
+XXXXXXXXXXXXstatusX=Xstrings["disabled"]
 
-        await message.reply(
-            strings["welcomesecurity_status"].format(
-                status=status, chat_name=chat["chat_title"]
-            )
-        )
-        return
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["welcomesecurity_status"].format(
+XXXXXXXXXXXXXXXXstatus=status,Xchat_name=chat["chat_title"]
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturn
 
-    no = ["no", "off", "0", "false", "disable"]
+XXXXnoX=X["no",X"off",X"0",X"false",X"disable"]
 
-    if args[0].lower() in ["button", "math", "captcha"]:
-        level = args[0].lower()
-    elif args[0] in no:
-        await db.greetings.update_one(
-            {"chat_id": chat_id}, {"$unset": {"welcome_security": 1}}, upsert=True
-        )
-        await get_greetings_data.reset_cache(chat_id)
-        await message.reply(strings["welcomesecurity_disabled"] % chat["chat_title"])
-        return
-    else:
-        await message.reply(strings["welcomesecurity_invalid_arg"])
-        return
+XXXXifXargs[0].lower()XinX["button",X"math",X"captcha"]:
+XXXXXXXXlevelX=Xargs[0].lower()
+XXXXelifXargs[0]XinXno:
+XXXXXXXXawaitXdb.greetings.update_one(
+XXXXXXXXXXXX{"chat_id":Xchat_id},X{"$unset":X{"welcome_security":X1}},Xupsert=True
+XXXXXXXX)
+XXXXXXXXawaitXget_greetings_data.reset_cache(chat_id)
+XXXXXXXXawaitXmessage.reply(strings["welcomesecurity_disabled"]X%Xchat["chat_title"])
+XXXXXXXXreturn
+XXXXelse:
+XXXXXXXXawaitXmessage.reply(strings["welcomesecurity_invalid_arg"])
+XXXXXXXXreturn
 
-    await db.greetings.update_one(
-        {"chat_id": chat_id},
-        {
-            "$set": {
-                "chat_id": chat_id,
-                "welcome_security": {"enabled": True, "level": level},
-            }
-        },
-        upsert=True,
-    )
-    await get_greetings_data.reset_cache(chat_id)
-    buttons = InlineKeyboardMarkup()
-    buttons.add(
-        InlineKeyboardButton(
-            strings["no_btn"],
-            callback_data=wlcm_sec_config_cancel.new(
-                user_id=message.from_user.id, level=level
-            ),
-        ),
-        InlineKeyboardButton(
-            strings["yes_btn"],
-            callback_data=wlcm_sec_config_proc.new(
-                chat_id=chat_id, user_id=message.from_user.id, level=level
-            ),
-        ),
-    )
-    await message.reply(
-        strings["ask_for_time_customization"].format(
-            time=format_timedelta(
-                convert_time(get_str_key("JOIN_CONFIRM_DURATION")),
-                locale=strings["language_info"]["babel"],
-            )
-        ),
-        reply_markup=buttons,
-    )
+XXXXawaitXdb.greetings.update_one(
+XXXXXXXX{"chat_id":Xchat_id},
+XXXXXXXX{
+XXXXXXXXXXXX"$set":X{
+XXXXXXXXXXXXXXXX"chat_id":Xchat_id,
+XXXXXXXXXXXXXXXX"welcome_security":X{"enabled":XTrue,X"level":Xlevel},
+XXXXXXXXXXXX}
+XXXXXXXX},
+XXXXXXXXupsert=True,
+XXXX)
+XXXXawaitXget_greetings_data.reset_cache(chat_id)
+XXXXbuttonsX=XInlineKeyboardMarkup()
+XXXXbuttons.add(
+XXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXstrings["no_btn"],
+XXXXXXXXXXXXcallback_data=wlcm_sec_config_cancel.new(
+XXXXXXXXXXXXXXXXuser_id=message.from_user.id,Xlevel=level
+XXXXXXXXXXXX),
+XXXXXXXX),
+XXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXstrings["yes_btn"],
+XXXXXXXXXXXXcallback_data=wlcm_sec_config_proc.new(
+XXXXXXXXXXXXXXXXchat_id=chat_id,Xuser_id=message.from_user.id,Xlevel=level
+XXXXXXXXXXXX),
+XXXXXXXX),
+XXXX)
+XXXXawaitXmessage.reply(
+XXXXXXXXstrings["ask_for_time_customization"].format(
+XXXXXXXXXXXXtime=format_timedelta(
+XXXXXXXXXXXXXXXXconvert_time(get_str_key("JOIN_CONFIRM_DURATION")),
+XXXXXXXXXXXXXXXXlocale=strings["language_info"]["babel"],
+XXXXXXXXXXXX)
+XXXXXXXX),
+XXXXXXXXreply_markup=buttons,
+XXXX)
 
 
-@register(wlcm_sec_config_cancel.filter(), f="cb", allow_kwargs=True)
+@register(wlcm_sec_config_cancel.filter(),Xf="cb",Xallow_kwargs=True)
 @chat_connection(admin=True)
 @get_strings_dec("greetings")
-async def welcome_security_config_cancel(
-    event: CallbackQuery, chat: dict, strings: dict, callback_data: dict, **_
+asyncXdefXwelcome_security_config_cancel(
+XXXXevent:XCallbackQuery,Xchat:Xdict,Xstrings:Xdict,Xcallback_data:Xdict,X**_
 ):
-    if int(callback_data["user_id"]) == event.from_user.id and is_user_admin(
-        chat["chat_id"], event.from_user.id
-    ):
-        await event.message.edit_text(
-            text=strings["welcomesecurity_enabled"].format(
-                chat_name=chat["chat_title"], level=callback_data["level"]
-            )
-        )
+XXXXifXint(callback_data["user_id"])X==Xevent.from_user.idXandXis_user_admin(
+XXXXXXXXchat["chat_id"],Xevent.from_user.id
+XXXX):
+XXXXXXXXawaitXevent.message.edit_text(
+XXXXXXXXXXXXtext=strings["welcomesecurity_enabled"].format(
+XXXXXXXXXXXXXXXXchat_name=chat["chat_title"],Xlevel=callback_data["level"]
+XXXXXXXXXXXX)
+XXXXXXXX)
 
 
-@register(wlcm_sec_config_proc.filter(), f="cb", allow_kwargs=True)
+@register(wlcm_sec_config_proc.filter(),Xf="cb",Xallow_kwargs=True)
 @chat_connection(admin=True)
 @get_strings_dec("greetings")
-async def welcome_security_config_proc(
-    event: CallbackQuery, chat: dict, strings: dict, callback_data: dict, **_
+asyncXdefXwelcome_security_config_proc(
+XXXXevent:XCallbackQuery,Xchat:Xdict,Xstrings:Xdict,Xcallback_data:Xdict,X**_
 ):
-    if int(callback_data["user_id"]) != event.from_user.id and is_user_admin(
-        chat["chat_id"], event.from_user.id
-    ):
-        return
+XXXXifXint(callback_data["user_id"])X!=Xevent.from_user.idXandXis_user_admin(
+XXXXXXXXchat["chat_id"],Xevent.from_user.id
+XXXX):
+XXXXXXXXreturn
 
-    await WelcomeSecurityConf.send_time.set()
-    async with dp.get_current().current_state().proxy() as data:
-        data["level"] = callback_data["level"]
-    await event.message.edit_text(strings["send_time"])
+XXXXawaitXWelcomeSecurityConf.send_time.set()
+XXXXasyncXwithXdp.get_current().current_state().proxy()XasXdata:
+XXXXXXXXdata["level"]X=Xcallback_data["level"]
+XXXXawaitXevent.message.edit_text(strings["send_time"])
 
 
 @register(
-    state=WelcomeSecurityConf.send_time,
-    content_types=ContentType.TE T,
-    allow_kwargs=True,
+XXXXstate=WelcomeSecurityConf.send_time,
+XXXXcontent_types=ContentType.TEXT,
+XXXXallow_kwargs=True,
 )
 @chat_connection(admin=True)
 @get_strings_dec("greetings")
-async def wlcm_sec_time_state(message: Message, chat: dict, strings: dict, state, **_):
-    async with state.proxy() as data:
-        level = data["level"]
-    try:
-        con_time = convert_time(message.text)
-    except (ValueError, TypeError):
-        await message.reply(strings["invalid_time"])
-    else:
-        await db.greetings.update_one(
-            {"chat_id": chat["chat_id"]},
-            {"$set": {"welcome_security.expire": message.text}},
-        )
-        await get_greetings_data.reset_cache(chat["chat_id"])
-        await message.reply(
-            strings["welcomesecurity_enabled:customized_time"].format(
-                chat_name=chat["chat_title"],
-                level=level,
-                time=format_timedelta(
-                    con_time, locale=strings["language_info"]["babel"]
-                ),
-            )
-        )
-    finally:
-        await state.finish()
+asyncXdefXwlcm_sec_time_state(message:XMessage,Xchat:Xdict,Xstrings:Xdict,Xstate,X**_):
+XXXXasyncXwithXstate.proxy()XasXdata:
+XXXXXXXXlevelX=Xdata["level"]
+XXXXtry:
+XXXXXXXXcon_timeX=Xconvert_time(message.text)
+XXXXexceptX(ValueError,XTypeError):
+XXXXXXXXawaitXmessage.reply(strings["invalid_time"])
+XXXXelse:
+XXXXXXXXawaitXdb.greetings.update_one(
+XXXXXXXXXXXX{"chat_id":Xchat["chat_id"]},
+XXXXXXXXXXXX{"$set":X{"welcome_security.expire":Xmessage.text}},
+XXXXXXXX)
+XXXXXXXXawaitXget_greetings_data.reset_cache(chat["chat_id"])
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["welcomesecurity_enabled:customized_time"].format(
+XXXXXXXXXXXXXXXXchat_name=chat["chat_title"],
+XXXXXXXXXXXXXXXXlevel=level,
+XXXXXXXXXXXXXXXXtime=format_timedelta(
+XXXXXXXXXXXXXXXXXXXXcon_time,Xlocale=strings["language_info"]["babel"]
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXfinally:
+XXXXXXXXawaitXstate.finish()
 
 
-@register(cmds=["setsecuritynote", "sevesecuritynote"], user_admin=True)
+@register(cmds=["setsecuritynote",X"sevesecuritynote"],Xuser_admin=True)
 @need_args_dec()
-@chat_connection(admin=True, only_groups=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_strings_dec("greetings")
-async def set_security_note(message, chat, strings):
-    chat_id = chat["chat_id"]
+asyncXdefXset_security_note(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
 
-    if message.get_args().lower().split()[0] in ["raw", "noformat"]:
-        db_item = await get_greetings_data(chat_id)
-        if "security_note" not in db_item:
-            db_item = {"security_note": {}}
-            db_item["security_note"]["text"] = strings["default_security_note"]
-            db_item["security_note"]["parse_mode"] = "md"
+XXXXifXmessage.get_args().lower().split()[0]XinX["raw",X"noformat"]:
+XXXXXXXXdb_itemX=XawaitXget_greetings_data(chat_id)
+XXXXXXXXifX"security_note"XnotXinXdb_item:
+XXXXXXXXXXXXdb_itemX=X{"security_note":X{}}
+XXXXXXXXXXXXdb_item["security_note"]["text"]X=Xstrings["default_security_note"]
+XXXXXXXXXXXXdb_item["security_note"]["parse_mode"]X=X"md"
 
-        text, kwargs = await t_unparse_note_item(
-            message, db_item["security_note"], chat_id, noformat=True
-        )
-        kwargs["reply_to"] = message.message_id
+XXXXXXXXtext,XkwargsX=XawaitXt_unparse_note_item(
+XXXXXXXXXXXXmessage,Xdb_item["security_note"],Xchat_id,Xnoformat=True
+XXXXXXXX)
+XXXXXXXXkwargs["reply_to"]X=Xmessage.message_id
 
-        await send_note(chat_id, text, **kwargs)
-        return
+XXXXXXXXawaitXsend_note(chat_id,Xtext,X**kwargs)
+XXXXXXXXreturn
 
-    note = await get_parsed_note_list(message, split_args=-1)
+XXXXnoteX=XawaitXget_parsed_note_list(message,Xsplit_args=-1)
 
-    if (
-        await db.greetings.update_one(
-            {"chat_id": chat_id},
-            {"$set": {"chat_id": chat_id, "security_note": note}},
-            upsert=True,
-        )
-    ).modified_count > 0:
-        await get_greetings_data.reset_cache(chat_id)
-        text = strings["security_note_updated"]
-    else:
-        text = strings["security_note_saved"]
+XXXXifX(
+XXXXXXXXawaitXdb.greetings.update_one(
+XXXXXXXXXXXX{"chat_id":Xchat_id},
+XXXXXXXXXXXX{"$set":X{"chat_id":Xchat_id,X"security_note":Xnote}},
+XXXXXXXXXXXXupsert=True,
+XXXXXXXX)
+XXXX).modified_countX>X0:
+XXXXXXXXawaitXget_greetings_data.reset_cache(chat_id)
+XXXXXXXXtextX=Xstrings["security_note_updated"]
+XXXXelse:
+XXXXXXXXtextX=Xstrings["security_note_saved"]
 
-    await message.reply(text % chat["chat_title"])
+XXXXawaitXmessage.reply(textX%Xchat["chat_title"])
 
 
-@register(cmds="delsecuritynote", user_admin=True)
-@chat_connection(admin=True, only_groups=True)
+@register(cmds="delsecuritynote",Xuser_admin=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_strings_dec("greetings")
-async def reset_security_note(message, chat, strings):
-    chat_id = chat["chat_id"]
+asyncXdefXreset_security_note(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
 
-    if (
-        await db.greetings.update_one(
-            {"chat_id": chat_id}, {"$unset": {"security_note": 1}}, upsert=True
-        )
-    ).modified_count > 0:
-        await get_greetings_data.reset_cache(chat_id)
-        text = strings["security_note_updated"]
-    else:
-        text = strings["del_security_note_ok"]
+XXXXifX(
+XXXXXXXXawaitXdb.greetings.update_one(
+XXXXXXXXXXXX{"chat_id":Xchat_id},X{"$unset":X{"security_note":X1}},Xupsert=True
+XXXXXXXX)
+XXXX).modified_countX>X0:
+XXXXXXXXawaitXget_greetings_data.reset_cache(chat_id)
+XXXXXXXXtextX=Xstrings["security_note_updated"]
+XXXXelse:
+XXXXXXXXtextX=Xstrings["del_security_note_ok"]
 
-    await message.reply(text % chat["chat_title"])
+XXXXawaitXmessage.reply(textX%Xchat["chat_title"])
 
 
-@register(only_groups=True, f="welcome")
+@register(only_groups=True,Xf="welcome")
 @get_strings_dec("greetings")
-async def welcome_security_handler(message: Message, strings):
-    if len(message.new_chat_members) > 1:
-        # FI ME: AllMightRobot doesnt support adding multiple users currently
-        return
+asyncXdefXwelcome_security_handler(message:XMessage,Xstrings):
+XXXXifXlen(message.new_chat_members)X>X1:
+XXXXXXXX#XFIXME:XAllMightRobotXdoesntXsupportXaddingXmultipleXusersXcurrently
+XXXXXXXXreturn
 
-    new_user = message.new_chat_members[0]
-    chat_id = message.chat.id
-    user_id = new_user.id
+XXXXnew_userX=Xmessage.new_chat_members[0]
+XXXXchat_idX=Xmessage.chat.id
+XXXXuser_idX=Xnew_user.id
 
-    if user_id == BOT_ID:
-        return
+XXXXifXuser_idX==XBOT_ID:
+XXXXXXXXreturn
 
-    db_item = await get_greetings_data(message.chat.id)
-    if not db_item or "welcome_security" not in db_item:
-        return
+XXXXdb_itemX=XawaitXget_greetings_data(message.chat.id)
+XXXXifXnotXdb_itemXorX"welcome_security"XnotXinXdb_item:
+XXXXXXXXreturn
 
-    if not await check_admin_rights(message, chat_id, BOT_ID, ["can_restrict_members"]):
-        await message.reply(strings["not_admin_ws"])
-        return
+XXXXifXnotXawaitXcheck_admin_rights(message,Xchat_id,XBOT_ID,X["can_restrict_members"]):
+XXXXXXXXawaitXmessage.reply(strings["not_admin_ws"])
+XXXXXXXXreturn
 
-    user = await message.chat.get_member(user_id)
-    # Check if user was muted before
-    if user["status"] == "restricted":
-        if user["can_send_messages"] is False:
-            return
+XXXXuserX=XawaitXmessage.chat.get_member(user_id)
+XXXX#XCheckXifXuserXwasXmutedXbefore
+XXXXifXuser["status"]X==X"restricted":
+XXXXXXXXifXuser["can_send_messages"]XisXFalse:
+XXXXXXXXXXXXreturn
 
-    # Check on OPs and chat owner
-    if await is_user_admin(chat_id, user_id):
-        return
+XXXX#XCheckXonXOPsXandXchatXowner
+XXXXifXawaitXis_user_admin(chat_id,Xuser_id):
+XXXXXXXXreturn
 
-    # check if user added is a bot
-    if new_user.is_bot and await is_user_admin(chat_id, message.from_user.id):
-        return
+XXXX#XcheckXifXuserXaddedXisXaXbot
+XXXXifXnew_user.is_botXandXawaitXis_user_admin(chat_id,Xmessage.from_user.id):
+XXXXXXXXreturn
 
-    if "security_note" not in db_item:
-        db_item["security_note"] = {}
-        db_item["security_note"]["text"] = strings["default_security_note"]
-        db_item["security_note"]["parse_mode"] = "md"
+XXXXifX"security_note"XnotXinXdb_item:
+XXXXXXXXdb_item["security_note"]X=X{}
+XXXXXXXXdb_item["security_note"]["text"]X=Xstrings["default_security_note"]
+XXXXXXXXdb_item["security_note"]["parse_mode"]X=X"md"
 
-    text, kwargs = await t_unparse_note_item(message, db_item["security_note"], chat_id)
+XXXXtext,XkwargsX=XawaitXt_unparse_note_item(message,Xdb_item["security_note"],Xchat_id)
 
-    kwargs["reply_to"] = (
-        None
-        if "clean_service" in db_item and db_item["clean_service"]["enabled"] is True
-        else message.message_id
-    )
+XXXXkwargs["reply_to"]X=X(
+XXXXXXXXNone
+XXXXXXXXifX"clean_service"XinXdb_itemXandXdb_item["clean_service"]["enabled"]XisXTrue
+XXXXXXXXelseXmessage.message_id
+XXXX)
 
-    kwargs["buttons"] = [] if not kwargs["buttons"] else kwargs["buttons"]
-    kwargs["buttons"] += [
-        Button.inline(strings["click_here"], f"ws_{chat_id}_{user_id}")
-    ]
+XXXXkwargs["buttons"]X=X[]XifXnotXkwargs["buttons"]XelseXkwargs["buttons"]
+XXXXkwargs["buttons"]X+=X[
+XXXXXXXXButton.inline(strings["click_here"],Xf"ws_{chat_id}_{user_id}")
+XXXX]
 
-    # FI ME: Better workaround
-    if not (msg := await send_note(chat_id, text, **kwargs)):
-        # Wasn't able to sent message
-        return
+XXXX#XFIXME:XBetterXworkaround
+XXXXifXnotX(msgX:=XawaitXsend_note(chat_id,Xtext,X**kwargs)):
+XXXXXXXX#XWasn'tXableXtoXsentXmessage
+XXXXXXXXreturn
 
-    # Mute user
-    try:
-        await mute_user(chat_id, user_id)
-    except BadRequest as error:
-        # TODO: Delete the "sent" message ^
-        return await message.reply(f"welcome security failed due to {error.args[0]}")
+XXXX#XMuteXuser
+XXXXtry:
+XXXXXXXXawaitXmute_user(chat_id,Xuser_id)
+XXXXexceptXBadRequestXasXerror:
+XXXXXXXX#XTODO:XDeleteXtheX"sent"XmessageX^
+XXXXXXXXreturnXawaitXmessage.reply(f"welcomeXsecurityXfailedXdueXtoX{error.args[0]}")
 
-    redis.set(f"welcome_security_users:{user_id}:{chat_id}", msg.id)
+XXXXredis.set(f"welcome_security_users:{user_id}:{chat_id}",Xmsg.id)
 
-    if raw_time := db_item["welcome_security"].get("expire", None):
-        time = convert_time(raw_time)
-    else:
-        time = convert_time(get_str_key("JOIN_CONFIRM_DURATION"))
+XXXXifXraw_timeX:=Xdb_item["welcome_security"].get("expire",XNone):
+XXXXXXXXtimeX=Xconvert_time(raw_time)
+XXXXelse:
+XXXXXXXXtimeX=Xconvert_time(get_str_key("JOIN_CONFIRM_DURATION"))
 
-    scheduler.add_job(
-        join_expired,
-        "date",
-        id=f"wc_expire:{chat_id}:{user_id}",
-        run_date=datetime.utcnow() + time,
-        kwargs={
-            "chat_id": chat_id,
-            "user_id": user_id,
-            "message_id": msg.id,
-            "wlkm_msg_id": message.message_id,
-        },
-        replace_existing=True,
-    )
-
-
-async def join_expired(chat_id, user_id, message_id, wlkm_msg_id):
-    user = await bot.get_chat_member(chat_id, user_id)
-    if user.status != "restricted":
-        return
-
-    bot_user = await bot.get_chat_member(chat_id, BOT_ID)
-    if (
-        "can_restrict_members" not in bot_user
-        or bot_user["can_restrict_members"] is False
-    ):
-        return
-
-    key = "leave_silent:" + str(chat_id)
-    redis.set(key, user_id)
-
-    await unmute_user(chat_id, user_id)
-    await kick_user(chat_id, user_id)
-    await tbot.delete_messages(chat_id, [message_id, wlkm_msg_id])
+XXXXscheduler.add_job(
+XXXXXXXXjoin_expired,
+XXXXXXXX"date",
+XXXXXXXXid=f"wc_expire:{chat_id}:{user_id}",
+XXXXXXXXrun_date=datetime.utcnow()X+Xtime,
+XXXXXXXXkwargs={
+XXXXXXXXXXXX"chat_id":Xchat_id,
+XXXXXXXXXXXX"user_id":Xuser_id,
+XXXXXXXXXXXX"message_id":Xmsg.id,
+XXXXXXXXXXXX"wlkm_msg_id":Xmessage.message_id,
+XXXXXXXX},
+XXXXXXXXreplace_existing=True,
+XXXX)
 
 
-@register(regexp=re.compile(r"ws_"), f="cb")
+asyncXdefXjoin_expired(chat_id,Xuser_id,Xmessage_id,Xwlkm_msg_id):
+XXXXuserX=XawaitXbot.get_chat_member(chat_id,Xuser_id)
+XXXXifXuser.statusX!=X"restricted":
+XXXXXXXXreturn
+
+XXXXbot_userX=XawaitXbot.get_chat_member(chat_id,XBOT_ID)
+XXXXifX(
+XXXXXXXX"can_restrict_members"XnotXinXbot_user
+XXXXXXXXorXbot_user["can_restrict_members"]XisXFalse
+XXXX):
+XXXXXXXXreturn
+
+XXXXkeyX=X"leave_silent:"X+Xstr(chat_id)
+XXXXredis.set(key,Xuser_id)
+
+XXXXawaitXunmute_user(chat_id,Xuser_id)
+XXXXawaitXkick_user(chat_id,Xuser_id)
+XXXXawaitXtbot.delete_messages(chat_id,X[message_id,Xwlkm_msg_id])
+
+
+@register(regexp=re.compile(r"ws_"),Xf="cb")
 @get_strings_dec("greetings")
-async def ws_redirecter(message, strings):
-    payload = message.data.split("_")[1:]
-    chat_id = int(payload[0])
-    real_user_id = int(payload[1])
-    called_user_id = message.from_user.id
+asyncXdefXws_redirecter(message,Xstrings):
+XXXXpayloadX=Xmessage.data.split("_")[1:]
+XXXXchat_idX=Xint(payload[0])
+XXXXreal_user_idX=Xint(payload[1])
+XXXXcalled_user_idX=Xmessage.from_user.id
 
-    url = f"https://t.me/{BOT_USERNAME}?start=ws_{chat_id}_{called_user_id}_{message.message.message_id}"
-    if not called_user_id == real_user_id:
-        # The persons which are muted before wont have their signatures registered on cache
-        if not redis.exists(f"welcome_security_users:{called_user_id}:{chat_id}"):
-            await message.answer(strings["not_allowed"], show_alert=True)
-            return
-        else:
-            # For those who lost their buttons
-            url = f"https://t.me/{BOT_USERNAME}?start=ws_{chat_id}_{called_user_id}_{message.message.message_id}_0"
-    await message.answer(url=url)
+XXXXurlX=Xf"https://t.me/{BOT_USERNAME}?start=ws_{chat_id}_{called_user_id}_{message.message.message_id}"
+XXXXifXnotXcalled_user_idX==Xreal_user_id:
+XXXXXXXX#XTheXpersonsXwhichXareXmutedXbeforeXwontXhaveXtheirXsignaturesXregisteredXonXcache
+XXXXXXXXifXnotXredis.exists(f"welcome_security_users:{called_user_id}:{chat_id}"):
+XXXXXXXXXXXXawaitXmessage.answer(strings["not_allowed"],Xshow_alert=True)
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXX#XForXthoseXwhoXlostXtheirXbuttons
+XXXXXXXXXXXXurlX=Xf"https://t.me/{BOT_USERNAME}?start=ws_{chat_id}_{called_user_id}_{message.message.message_id}_0"
+XXXXawaitXmessage.answer(url=url)
 
 
-@register(CommandStart(re.compile(r"ws_")), allow_kwargs=True)
+@register(CommandStart(re.compile(r"ws_")),Xallow_kwargs=True)
 @get_strings_dec("greetings")
-async def welcome_security_handler_pm(
-    message: Message, strings, regexp=None, state=None, **kwargs
+asyncXdefXwelcome_security_handler_pm(
+XXXXmessage:XMessage,Xstrings,Xregexp=None,Xstate=None,X**kwargs
 ):
-    args = message.get_args().split("_")
-    chat_id = int(args[1])
+XXXXargsX=Xmessage.get_args().split("_")
+XXXXchat_idX=Xint(args[1])
 
-    async with state.proxy() as data:
-        data["chat_id"] = chat_id
-        data["msg_id"] = int(args[3])
-        data["to_delete"] = bool(int(args[4])) if len(args) > 4 else True
+XXXXasyncXwithXstate.proxy()XasXdata:
+XXXXXXXXdata["chat_id"]X=Xchat_id
+XXXXXXXXdata["msg_id"]X=Xint(args[3])
+XXXXXXXXdata["to_delete"]X=Xbool(int(args[4]))XifXlen(args)X>X4XelseXTrue
 
-    db_item = await get_greetings_data(chat_id)
+XXXXdb_itemX=XawaitXget_greetings_data(chat_id)
 
-    level = db_item["welcome_security"]["level"]
+XXXXlevelX=Xdb_item["welcome_security"]["level"]
 
-    if level == "button":
-        await WelcomeSecurityState.button.set()
-        await send_button(message, state)
+XXXXifXlevelX==X"button":
+XXXXXXXXawaitXWelcomeSecurityState.button.set()
+XXXXXXXXawaitXsend_button(message,Xstate)
 
-    elif level == "math":
-        await WelcomeSecurityState.math.set()
-        await send_btn_math(message, state)
+XXXXelifXlevelX==X"math":
+XXXXXXXXawaitXWelcomeSecurityState.math.set()
+XXXXXXXXawaitXsend_btn_math(message,Xstate)
 
-    elif level == "captcha":
-        await WelcomeSecurityState.captcha.set()
-        await send_captcha(message, state)
+XXXXelifXlevelX==X"captcha":
+XXXXXXXXawaitXWelcomeSecurityState.captcha.set()
+XXXXXXXXawaitXsend_captcha(message,Xstate)
 
 
 @get_strings_dec("greetings")
-async def send_button(message, state, strings):
-    text = strings["btn_button_text"]
-    buttons = InlineKeyboardMarkup().add(
-        InlineKeyboardButton(strings["click_here"], callback_data="wc_button_btn")
-    )
-    verify_msg_id = (await message.reply(text, reply_markup=buttons)).message_id
-    async with state.proxy() as data:
-        data["verify_msg_id"] = verify_msg_id
+asyncXdefXsend_button(message,Xstate,Xstrings):
+XXXXtextX=Xstrings["btn_button_text"]
+XXXXbuttonsX=XInlineKeyboardMarkup().add(
+XXXXXXXXInlineKeyboardButton(strings["click_here"],Xcallback_data="wc_button_btn")
+XXXX)
+XXXXverify_msg_idX=X(awaitXmessage.reply(text,Xreply_markup=buttons)).message_id
+XXXXasyncXwithXstate.proxy()XasXdata:
+XXXXXXXXdata["verify_msg_id"]X=Xverify_msg_id
 
 
 @register(
-    regexp="wc_button_btn", f="cb", state=WelcomeSecurityState.button, allow_kwargs=True
+XXXXregexp="wc_button_btn",Xf="cb",Xstate=WelcomeSecurityState.button,Xallow_kwargs=True
 )
-async def wc_button_btn_cb(event, state=None, **kwargs):
-    await welcome_security_passed(event, state)
+asyncXdefXwc_button_btn_cb(event,Xstate=None,X**kwargs):
+XXXXawaitXwelcome_security_passed(event,Xstate)
 
 
-def generate_captcha(number=None):
-    if not number:
-        number = str(random.randint(10001, 99999))
-    captcha = ImageCaptcha(fonts=ALL_FONTS, width=200, height=100).generate_image(
-        number
-    )
-    img = io.BytesIO()
-    captcha.save(img, "PNG")
-    img.seek(0)
-    return img, number
+defXgenerate_captcha(number=None):
+XXXXifXnotXnumber:
+XXXXXXXXnumberX=Xstr(random.randint(10001,X99999))
+XXXXcaptchaX=XImageCaptcha(fonts=ALL_FONTS,Xwidth=200,Xheight=100).generate_image(
+XXXXXXXXnumber
+XXXX)
+XXXXimgX=Xio.BytesIO()
+XXXXcaptcha.save(img,X"PNG")
+XXXXimg.seek(0)
+XXXXreturnXimg,Xnumber
 
 
 @get_strings_dec("greetings")
-async def send_captcha(message, state, strings):
-    img, num = generate_captcha()
-    async with state.proxy() as data:
-        data["captcha_num"] = num
-    text = strings["ws_captcha_text"].format(
-        user=await get_user_link(message.from_user.id)
-    )
+asyncXdefXsend_captcha(message,Xstate,Xstrings):
+XXXXimg,XnumX=Xgenerate_captcha()
+XXXXasyncXwithXstate.proxy()XasXdata:
+XXXXXXXXdata["captcha_num"]X=Xnum
+XXXXtextX=Xstrings["ws_captcha_text"].format(
+XXXXXXXXuser=awaitXget_user_link(message.from_user.id)
+XXXX)
 
-    buttons = InlineKeyboardMarkup().add(
-        InlineKeyboardButton(
-            strings["regen_captcha_btn"], callback_data="regen_captcha"
-        )
-    )
+XXXXbuttonsX=XInlineKeyboardMarkup().add(
+XXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXstrings["regen_captcha_btn"],Xcallback_data="regen_captcha"
+XXXXXXXX)
+XXXX)
 
-    verify_msg_id = (
-        await message.answer_photo(img, caption=text, reply_markup=buttons)
-    ).message_id
-    async with state.proxy() as data:
-        data["verify_msg_id"] = verify_msg_id
+XXXXverify_msg_idX=X(
+XXXXXXXXawaitXmessage.answer_photo(img,Xcaption=text,Xreply_markup=buttons)
+XXXX).message_id
+XXXXasyncXwithXstate.proxy()XasXdata:
+XXXXXXXXdata["verify_msg_id"]X=Xverify_msg_id
 
 
 @register(
-    regexp="regen_captcha",
-    f="cb",
-    state=WelcomeSecurityState.captcha,
-    allow_kwargs=True,
+XXXXregexp="regen_captcha",
+XXXXf="cb",
+XXXXstate=WelcomeSecurityState.captcha,
+XXXXallow_kwargs=True,
 )
 @get_strings_dec("greetings")
-async def change_captcha(event, strings, state=None, **kwargs):
-    message = event.message
-    async with state.proxy() as data:
-        data["regen_num"] = 1 if "regen_num" not in data else data["regen_num"] + 1
-        regen_num = data["regen_num"]
+asyncXdefXchange_captcha(event,Xstrings,Xstate=None,X**kwargs):
+XXXXmessageX=Xevent.message
+XXXXasyncXwithXstate.proxy()XasXdata:
+XXXXXXXXdata["regen_num"]X=X1XifX"regen_num"XnotXinXdataXelseXdata["regen_num"]X+X1
+XXXXXXXXregen_numX=Xdata["regen_num"]
 
-        if regen_num > 3:
-            img, num = generate_captcha(number=data["captcha_num"])
-            text = strings["last_chance"]
-            await message.edit_media(InputMediaPhoto(img, caption=text))
-            return
+XXXXXXXXifXregen_numX>X3:
+XXXXXXXXXXXXimg,XnumX=Xgenerate_captcha(number=data["captcha_num"])
+XXXXXXXXXXXXtextX=Xstrings["last_chance"]
+XXXXXXXXXXXXawaitXmessage.edit_media(InputMediaPhoto(img,Xcaption=text))
+XXXXXXXXXXXXreturn
 
-        img, num = generate_captcha()
-        data["captcha_num"] = num
+XXXXXXXXimg,XnumX=Xgenerate_captcha()
+XXXXXXXXdata["captcha_num"]X=Xnum
 
-    text = strings["ws_captcha_text"].format(
-        user=await get_user_link(event.from_user.id)
-    )
+XXXXtextX=Xstrings["ws_captcha_text"].format(
+XXXXXXXXuser=awaitXget_user_link(event.from_user.id)
+XXXX)
 
-    buttons = InlineKeyboardMarkup().add(
-        InlineKeyboardButton(
-            strings["regen_captcha_btn"], callback_data="regen_captcha"
-        )
-    )
+XXXXbuttonsX=XInlineKeyboardMarkup().add(
+XXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXstrings["regen_captcha_btn"],Xcallback_data="regen_captcha"
+XXXXXXXX)
+XXXX)
 
-    await message.edit_media(InputMediaPhoto(img, caption=text), reply_markup=buttons)
+XXXXawaitXmessage.edit_media(InputMediaPhoto(img,Xcaption=text),Xreply_markup=buttons)
 
 
-@register(f="text", state=WelcomeSecurityState.captcha, allow_kwargs=True)
+@register(f="text",Xstate=WelcomeSecurityState.captcha,Xallow_kwargs=True)
 @get_strings_dec("greetings")
-async def check_captcha_text(message, strings, state=None, **kwargs):
-    num = message.text.split(" ")[0]
+asyncXdefXcheck_captcha_text(message,Xstrings,Xstate=None,X**kwargs):
+XXXXnumX=Xmessage.text.split("X")[0]
 
-    if not num.isdigit():
-        await message.reply(strings["num_is_not_digit"])
-        return
+XXXXifXnotXnum.isdigit():
+XXXXXXXXawaitXmessage.reply(strings["num_is_not_digit"])
+XXXXXXXXreturn
 
-    async with state.proxy() as data:
-        captcha_num = data["captcha_num"]
+XXXXasyncXwithXstate.proxy()XasXdata:
+XXXXXXXXcaptcha_numX=Xdata["captcha_num"]
 
-    if not int(num) == int(captcha_num):
-        await message.reply(strings["bad_num"])
-        return
+XXXXifXnotXint(num)X==Xint(captcha_num):
+XXXXXXXXawaitXmessage.reply(strings["bad_num"])
+XXXXXXXXreturn
 
-    await welcome_security_passed(message, state)
-
-
-# Btns
+XXXXawaitXwelcome_security_passed(message,Xstate)
 
 
-def gen_expression():
-    a = random.randint(1, 10)
-    b = random.randint(1, 10)
-    if random.getrandbits(1):
-        while a < b:
-            b = random.randint(1, 10)
-        answr = a - b
-        expr = f"{a} - {b}"
-    else:
-        b = random.randint(1, 10)
-
-        answr = a + b
-        expr = f"{a} + {b}"
-
-    return expr, answr
+#XBtns
 
 
-def gen_int_btns(answer):
-    buttons = []
+defXgen_expression():
+XXXXaX=Xrandom.randint(1,X10)
+XXXXbX=Xrandom.randint(1,X10)
+XXXXifXrandom.getrandbits(1):
+XXXXXXXXwhileXaX<Xb:
+XXXXXXXXXXXXbX=Xrandom.randint(1,X10)
+XXXXXXXXanswrX=XaX-Xb
+XXXXXXXXexprX=Xf"{a}X-X{b}"
+XXXXelse:
+XXXXXXXXbX=Xrandom.randint(1,X10)
 
-    for a in [random.randint(1, 20) for _ in range(3)]:
-        while a == answer:
-            a = random.randint(1, 20)
-        buttons.append(Button.inline(str(a), data="wc_int_btn:" + str(a)))
+XXXXXXXXanswrX=XaX+Xb
+XXXXXXXXexprX=Xf"{a}X+X{b}"
 
-    buttons.insert(
-        random.randint(0, 3),
-        Button.inline(str(answer), data="wc_int_btn:" + str(answer)),
-    )
+XXXXreturnXexpr,Xanswr
 
-    return buttons
+
+defXgen_int_btns(answer):
+XXXXbuttonsX=X[]
+
+XXXXforXaXinX[random.randint(1,X20)XforX_XinXrange(3)]:
+XXXXXXXXwhileXaX==Xanswer:
+XXXXXXXXXXXXaX=Xrandom.randint(1,X20)
+XXXXXXXXbuttons.append(Button.inline(str(a),Xdata="wc_int_btn:"X+Xstr(a)))
+
+XXXXbuttons.insert(
+XXXXXXXXrandom.randint(0,X3),
+XXXXXXXXButton.inline(str(answer),Xdata="wc_int_btn:"X+Xstr(answer)),
+XXXX)
+
+XXXXreturnXbuttons
 
 
 @get_strings_dec("greetings")
-async def send_btn_math(message, state, strings, msg_id=False):
-    chat_id = message.chat.id
-    expr, answer = gen_expression()
+asyncXdefXsend_btn_math(message,Xstate,Xstrings,Xmsg_id=False):
+XXXXchat_idX=Xmessage.chat.id
+XXXXexpr,XanswerX=Xgen_expression()
 
-    async with state.proxy() as data:
-        data["num"] = answer
+XXXXasyncXwithXstate.proxy()XasXdata:
+XXXXXXXXdata["num"]X=Xanswer
 
-    btns = gen_int_btns(answer)
+XXXXbtnsX=Xgen_int_btns(answer)
 
-    if msg_id:
-        async with state.proxy() as data:
-            data["last"] = True
-        text = strings["math_wc_rtr_text"] + strings["btn_wc_text"] % expr
-    else:
-        text = strings["btn_wc_text"] % expr
-        msg_id = (await message.reply(text)).message_id
+XXXXifXmsg_id:
+XXXXXXXXasyncXwithXstate.proxy()XasXdata:
+XXXXXXXXXXXXdata["last"]X=XTrue
+XXXXXXXXtextX=Xstrings["math_wc_rtr_text"]X+Xstrings["btn_wc_text"]X%Xexpr
+XXXXelse:
+XXXXXXXXtextX=Xstrings["btn_wc_text"]X%Xexpr
+XXXXXXXXmsg_idX=X(awaitXmessage.reply(text)).message_id
 
-    async with state.proxy() as data:
-        data["verify_msg_id"] = msg_id
+XXXXasyncXwithXstate.proxy()XasXdata:
+XXXXXXXXdata["verify_msg_id"]X=Xmsg_id
 
-    await tbot.edit_message(
-        chat_id, msg_id, text, buttons=btns
-    )  # TODO: change to aiogram
+XXXXawaitXtbot.edit_message(
+XXXXXXXXchat_id,Xmsg_id,Xtext,Xbuttons=btns
+XXXX)XX#XTODO:XchangeXtoXaiogram
 
 
 @register(
-    regexp="wc_int_btn:", f="cb", state=WelcomeSecurityState.math, allow_kwargs=True
+XXXXregexp="wc_int_btn:",Xf="cb",Xstate=WelcomeSecurityState.math,Xallow_kwargs=True
 )
 @get_strings_dec("greetings")
-async def wc_math_check_cb(event, strings, state=None, **kwargs):
-    num = int(event.data.split(":")[1])
+asyncXdefXwc_math_check_cb(event,Xstrings,Xstate=None,X**kwargs):
+XXXXnumX=Xint(event.data.split(":")[1])
 
-    async with state.proxy() as data:
-        answer = data["num"]
-        if "last" in data:
-            await state.finish()
-            await event.answer(strings["math_wc_sry"], show_alert=True)
-            await event.message.delete()
-            return
+XXXXasyncXwithXstate.proxy()XasXdata:
+XXXXXXXXanswerX=Xdata["num"]
+XXXXXXXXifX"last"XinXdata:
+XXXXXXXXXXXXawaitXstate.finish()
+XXXXXXXXXXXXawaitXevent.answer(strings["math_wc_sry"],Xshow_alert=True)
+XXXXXXXXXXXXawaitXevent.message.delete()
+XXXXXXXXXXXXreturn
 
-    if not num == answer:
-        await send_btn_math(event.message, state, msg_id=event.message.message_id)
-        await event.answer(strings["math_wc_wrong"], show_alert=True)
-        return
+XXXXifXnotXnumX==Xanswer:
+XXXXXXXXawaitXsend_btn_math(event.message,Xstate,Xmsg_id=event.message.message_id)
+XXXXXXXXawaitXevent.answer(strings["math_wc_wrong"],Xshow_alert=True)
+XXXXXXXXreturn
 
-    await welcome_security_passed(event, state)
+XXXXawaitXwelcome_security_passed(event,Xstate)
 
 
 @get_strings_dec("greetings")
-async def welcome_security_passed(
-    message: Union[CallbackQuery, Message], state, strings
+asyncXdefXwelcome_security_passed(
+XXXXmessage:XUnion[CallbackQuery,XMessage],Xstate,Xstrings
 ):
-    user_id = message.from_user.id
-    async with state.proxy() as data:
-        chat_id = data["chat_id"]
-        msg_id = data["msg_id"]
-        verify_msg_id = data["verify_msg_id"]
-        to_delete = data["to_delete"]
+XXXXuser_idX=Xmessage.from_user.id
+XXXXasyncXwithXstate.proxy()XasXdata:
+XXXXXXXXchat_idX=Xdata["chat_id"]
+XXXXXXXXmsg_idX=Xdata["msg_id"]
+XXXXXXXXverify_msg_idX=Xdata["verify_msg_id"]
+XXXXXXXXto_deleteX=Xdata["to_delete"]
 
-    with suppress(ChatAdminRequired):
-        await unmute_user(chat_id, user_id)
+XXXXwithXsuppress(ChatAdminRequired):
+XXXXXXXXawaitXunmute_user(chat_id,Xuser_id)
 
-    with suppress(MessageToDeleteNotFound, MessageCantBeDeleted):
-        if to_delete:
-            await bot.delete_message(chat_id, msg_id)
-        await bot.delete_message(user_id, verify_msg_id)
-    await state.finish()
+XXXXwithXsuppress(MessageToDeleteNotFound,XMessageCantBeDeleted):
+XXXXXXXXifXto_delete:
+XXXXXXXXXXXXawaitXbot.delete_message(chat_id,Xmsg_id)
+XXXXXXXXawaitXbot.delete_message(user_id,Xverify_msg_id)
+XXXXawaitXstate.finish()
 
-    with suppress(MessageToDeleteNotFound, MessageCantBeDeleted):
-        message_id = redis.get(f"welcome_security_users:{user_id}:{chat_id}")
-        # Delete the person's real security button if exists!
-        if message_id:
-            await bot.delete_message(chat_id, message_id)
+XXXXwithXsuppress(MessageToDeleteNotFound,XMessageCantBeDeleted):
+XXXXXXXXmessage_idX=Xredis.get(f"welcome_security_users:{user_id}:{chat_id}")
+XXXXXXXX#XDeleteXtheXperson'sXrealXsecurityXbuttonXifXexists!
+XXXXXXXXifXmessage_id:
+XXXXXXXXXXXXawaitXbot.delete_message(chat_id,Xmessage_id)
 
-    redis.delete(f"welcome_security_users:{user_id}:{chat_id}")
+XXXXredis.delete(f"welcome_security_users:{user_id}:{chat_id}")
 
-    with suppress(JobLookupError):
-        scheduler.remove_job(f"wc_expire:{chat_id}:{user_id}")
+XXXXwithXsuppress(JobLookupError):
+XXXXXXXXscheduler.remove_job(f"wc_expire:{chat_id}:{user_id}")
 
-    title = (await db.chat_list.find_one({"chat_id": chat_id}))["chat_title"]
+XXXXtitleX=X(awaitXdb.chat_list.find_one({"chat_id":Xchat_id}))["chat_title"]
 
-    if "data" in message:
-        await message.answer(strings["passed_no_frm"] % title, show_alert=True)
-    else:
-        await message.reply(strings["passed"] % title)
+XXXXifX"data"XinXmessage:
+XXXXXXXXawaitXmessage.answer(strings["passed_no_frm"]X%Xtitle,Xshow_alert=True)
+XXXXelse:
+XXXXXXXXawaitXmessage.reply(strings["passed"]X%Xtitle)
 
-    db_item = await get_greetings_data(chat_id)
+XXXXdb_itemX=XawaitXget_greetings_data(chat_id)
 
-    if "message" in message:
-        message = message.message
+XXXXifX"message"XinXmessage:
+XXXXXXXXmessageX=Xmessage.message
 
-    # Welcome
-    if "note" in db_item and not db_item.get("welcome_disabled", False):
-        text, kwargs = await t_unparse_note_item(
-            message.reply_to_message
-            if message.reply_to_message is not None
-            else message,
-            db_item["note"],
-            chat_id,
-        )
-        await send_note(user_id, text, **kwargs)
+XXXX#XWelcome
+XXXXifX"note"XinXdb_itemXandXnotXdb_item.get("welcome_disabled",XFalse):
+XXXXXXXXtext,XkwargsX=XawaitXt_unparse_note_item(
+XXXXXXXXXXXXmessage.reply_to_message
+XXXXXXXXXXXXifXmessage.reply_to_messageXisXnotXNone
+XXXXXXXXXXXXelseXmessage,
+XXXXXXXXXXXXdb_item["note"],
+XXXXXXXXXXXXchat_id,
+XXXXXXXX)
+XXXXXXXXawaitXsend_note(user_id,Xtext,X**kwargs)
 
-    # Welcome mute
-    if "welcome_mute" in db_item and db_item["welcome_mute"]["enabled"] is not False:
-        user = await bot.get_chat_member(chat_id, user_id)
-        if "can_send_messages" not in user or user["can_send_messages"] is True:
-            await restrict_user(
-                chat_id,
-                user_id,
-                until_date=convert_time(db_item["welcome_mute"]["time"]),
-            )
+XXXX#XWelcomeXmute
+XXXXifX"welcome_mute"XinXdb_itemXandXdb_item["welcome_mute"]["enabled"]XisXnotXFalse:
+XXXXXXXXuserX=XawaitXbot.get_chat_member(chat_id,Xuser_id)
+XXXXXXXXifX"can_send_messages"XnotXinXuserXorXuser["can_send_messages"]XisXTrue:
+XXXXXXXXXXXXawaitXrestrict_user(
+XXXXXXXXXXXXXXXXchat_id,
+XXXXXXXXXXXXXXXXuser_id,
+XXXXXXXXXXXXXXXXuntil_date=convert_time(db_item["welcome_mute"]["time"]),
+XXXXXXXXXXXX)
 
-    chat = await db.chat_list.find_one({"chat_id": chat_id})
+XXXXchatX=XawaitXdb.chat_list.find_one({"chat_id":Xchat_id})
 
-    buttons = None
-    if chat_nick := chat["chat_nick"] if chat.get("chat_nick", None) else None:
-        buttons = InlineKeyboardMarkup().add(
-            InlineKeyboardButton(text=strings["click_here"], url=f"t.me/{chat_nick}")
-        )
+XXXXbuttonsX=XNone
+XXXXifXchat_nickX:=Xchat["chat_nick"]XifXchat.get("chat_nick",XNone)XelseXNone:
+XXXXXXXXbuttonsX=XInlineKeyboardMarkup().add(
+XXXXXXXXXXXXInlineKeyboardButton(text=strings["click_here"],Xurl=f"t.me/{chat_nick}")
+XXXXXXXX)
 
-    await bot.send_message(user_id, strings["verification_done"], reply_markup=buttons)
+XXXXawaitXbot.send_message(user_id,Xstrings["verification_done"],Xreply_markup=buttons)
 
 
-# End Welcome Security
+#XEndXWelcomeXSecurity
 
-# Welcomes
-@register(only_groups=True, f="welcome")
+#XWelcomes
+@register(only_groups=True,Xf="welcome")
 @get_strings_dec("greetings")
-async def welcome_trigger(message: Message, strings):
-    if len(message.new_chat_members) > 1:
-        # FI ME: AllMightRobot doesnt support adding multiple users currently
-        return
+asyncXdefXwelcome_trigger(message:XMessage,Xstrings):
+XXXXifXlen(message.new_chat_members)X>X1:
+XXXXXXXX#XFIXME:XAllMightRobotXdoesntXsupportXaddingXmultipleXusersXcurrently
+XXXXXXXXreturn
 
-    chat_id = message.chat.id
-    user_id = message.new_chat_members[0].id
+XXXXchat_idX=Xmessage.chat.id
+XXXXuser_idX=Xmessage.new_chat_members[0].id
 
-    if user_id == BOT_ID:
-        return
+XXXXifXuser_idX==XBOT_ID:
+XXXXXXXXreturn
 
-    if not (db_item := await get_greetings_data(message.chat.id)):
-        db_item = {}
+XXXXifXnotX(db_itemX:=XawaitXget_greetings_data(message.chat.id)):
+XXXXXXXXdb_itemX=X{}
 
-    if "welcome_disabled" in db_item and db_item["welcome_disabled"] is True:
-        return
+XXXXifX"welcome_disabled"XinXdb_itemXandXdb_item["welcome_disabled"]XisXTrue:
+XXXXXXXXreturn
 
-    if "welcome_security" in db_item and db_item["welcome_security"]["enabled"]:
-        return
+XXXXifX"welcome_security"XinXdb_itemXandXdb_item["welcome_security"]["enabled"]:
+XXXXXXXXreturn
 
-    # Welcome
-    if "note" not in db_item:
-        db_item["note"] = {"text": strings["default_welcome"], "parse_mode": "md"}
-    reply_to = (
-        message.message_id
-        if "clean_welcome" in db_item
-        and db_item["clean_welcome"]["enabled"] is not False
-        else None
-    )
-    text, kwargs = await t_unparse_note_item(message, db_item["note"], chat_id)
-    msg = await send_note(chat_id, text, reply_to=reply_to, **kwargs)
-    # Clean welcome
-    if "clean_welcome" in db_item and db_item["clean_welcome"]["enabled"] is not False:
-        if "last_msg" in db_item["clean_welcome"]:
-            with suppress(MessageToDeleteNotFound, MessageCantBeDeleted):
-                if value := redis.get(_clean_welcome.format(chat=chat_id)):
-                    await bot.delete_message(chat_id, value)
-        redis.set(_clean_welcome.format(chat=chat_id), msg.id)
+XXXX#XWelcome
+XXXXifX"note"XnotXinXdb_item:
+XXXXXXXXdb_item["note"]X=X{"text":Xstrings["default_welcome"],X"parse_mode":X"md"}
+XXXXreply_toX=X(
+XXXXXXXXmessage.message_id
+XXXXXXXXifX"clean_welcome"XinXdb_item
+XXXXXXXXandXdb_item["clean_welcome"]["enabled"]XisXnotXFalse
+XXXXXXXXelseXNone
+XXXX)
+XXXXtext,XkwargsX=XawaitXt_unparse_note_item(message,Xdb_item["note"],Xchat_id)
+XXXXmsgX=XawaitXsend_note(chat_id,Xtext,Xreply_to=reply_to,X**kwargs)
+XXXX#XCleanXwelcome
+XXXXifX"clean_welcome"XinXdb_itemXandXdb_item["clean_welcome"]["enabled"]XisXnotXFalse:
+XXXXXXXXifX"last_msg"XinXdb_item["clean_welcome"]:
+XXXXXXXXXXXXwithXsuppress(MessageToDeleteNotFound,XMessageCantBeDeleted):
+XXXXXXXXXXXXXXXXifXvalueX:=Xredis.get(_clean_welcome.format(chat=chat_id)):
+XXXXXXXXXXXXXXXXXXXXawaitXbot.delete_message(chat_id,Xvalue)
+XXXXXXXXredis.set(_clean_welcome.format(chat=chat_id),Xmsg.id)
 
-    # Welcome mute
-    if user_id == BOT_ID:
-        return
-    if "welcome_mute" in db_item and db_item["welcome_mute"]["enabled"] is not False:
-        user = await bot.get_chat_member(chat_id, user_id)
-        if "can_send_messages" not in user or user["can_send_messages"] is True:
-            if not await check_admin_rights(
-                message, chat_id, BOT_ID, ["can_restrict_members"]
-            ):
-                await message.reply(strings["not_admin_wm"])
-                return
+XXXX#XWelcomeXmute
+XXXXifXuser_idX==XBOT_ID:
+XXXXXXXXreturn
+XXXXifX"welcome_mute"XinXdb_itemXandXdb_item["welcome_mute"]["enabled"]XisXnotXFalse:
+XXXXXXXXuserX=XawaitXbot.get_chat_member(chat_id,Xuser_id)
+XXXXXXXXifX"can_send_messages"XnotXinXuserXorXuser["can_send_messages"]XisXTrue:
+XXXXXXXXXXXXifXnotXawaitXcheck_admin_rights(
+XXXXXXXXXXXXXXXXmessage,Xchat_id,XBOT_ID,X["can_restrict_members"]
+XXXXXXXXXXXX):
+XXXXXXXXXXXXXXXXawaitXmessage.reply(strings["not_admin_wm"])
+XXXXXXXXXXXXXXXXreturn
 
-            await restrict_user(
-                chat_id,
-                user_id,
-                until_date=convert_time(db_item["welcome_mute"]["time"]),
-            )
+XXXXXXXXXXXXawaitXrestrict_user(
+XXXXXXXXXXXXXXXXchat_id,
+XXXXXXXXXXXXXXXXuser_id,
+XXXXXXXXXXXXXXXXuntil_date=convert_time(db_item["welcome_mute"]["time"]),
+XXXXXXXXXXXX)
 
 
-# Clean service trigger
-@register(only_groups=True, f="service")
+#XCleanXserviceXtrigger
+@register(only_groups=True,Xf="service")
 @get_strings_dec("greetings")
-async def clean_service_trigger(message, strings):
-    chat_id = message.chat.id
+asyncXdefXclean_service_trigger(message,Xstrings):
+XXXXchat_idX=Xmessage.chat.id
 
-    if message.new_chat_members[0].id == BOT_ID:
-        return
+XXXXifXmessage.new_chat_members[0].idX==XBOT_ID:
+XXXXXXXXreturn
 
-    if not (db_item := await get_greetings_data(chat_id)):
-        return
+XXXXifXnotX(db_itemX:=XawaitXget_greetings_data(chat_id)):
+XXXXXXXXreturn
 
-    if "clean_service" not in db_item or db_item["clean_service"]["enabled"] is False:
-        return
+XXXXifX"clean_service"XnotXinXdb_itemXorXdb_item["clean_service"]["enabled"]XisXFalse:
+XXXXXXXXreturn
 
-    if not await check_admin_rights(message, chat_id, BOT_ID, ["can_delete_messages"]):
-        await bot.send_message(chat_id, strings["not_admin_wsr"])
-        return
+XXXXifXnotXawaitXcheck_admin_rights(message,Xchat_id,XBOT_ID,X["can_delete_messages"]):
+XXXXXXXXawaitXbot.send_message(chat_id,Xstrings["not_admin_wsr"])
+XXXXXXXXreturn
 
-    with suppress(MessageToDeleteNotFound, MessageCantBeDeleted):
-        await message.delete()
+XXXXwithXsuppress(MessageToDeleteNotFound,XMessageCantBeDeleted):
+XXXXXXXXawaitXmessage.delete()
 
 
-_clean_welcome = "cleanwelcome:{chat}"
+_clean_welcomeX=X"cleanwelcome:{chat}"
 
 
 @cached()
-async def get_greetings_data(chat: int) -> Optional[dict]:
-    return await db.greetings.find_one({"chat_id": chat})
+asyncXdefXget_greetings_data(chat:Xint)X->XOptional[dict]:
+XXXXreturnXawaitXdb.greetings.find_one({"chat_id":Xchat})
 
 
-async def __export__(chat_id):
-    if greetings := await get_greetings_data(chat_id):
-        del greetings["_id"]
-        del greetings["chat_id"]
+asyncXdefX__export__(chat_id):
+XXXXifXgreetingsX:=XawaitXget_greetings_data(chat_id):
+XXXXXXXXdelXgreetings["_id"]
+XXXXXXXXdelXgreetings["chat_id"]
 
-        return {"greetings": greetings}
-
-
-async def __import__(chat_id, data):
-    await db.greetings.update_one({"chat_id": chat_id}, {"$set": data}, upsert=True)
-    await get_greetings_data.reset_cache(chat_id)
+XXXXXXXXreturnX{"greetings":Xgreetings}
 
 
-__mod_name__ = "Greetings"
+asyncXdefX__import__(chat_id,Xdata):
+XXXXawaitXdb.greetings.update_one({"chat_id":Xchat_id},X{"$set":Xdata},Xupsert=True)
+XXXXawaitXget_greetings_data.reset_cache(chat_id)
 
-__help__ = """
-<b>Available commands:</b>
+
+__mod_name__X=X"Greetings"
+
+__help__X=X"""
+<b>AvailableXcommands:</b>
 <b>General:</b>
-- /setwelcome or /savewelcome: Set welcome
-- /setwelcome (on/off): Disable/enabled welcomes in your chat
-- /welcome: Shows current welcomes settings and welcome text
-- /resetwelcome: Reset welcomes settings
-<b>Welcome security:</b>
-- /welcomesecurity (level)
-Turns on welcome security with specified level, either button or captcha.
-Setting up welcome security will give you a choice to customize join expiration time aka minimum time given to user to verify themselves not a bot, users who do not verify within this time would be kicked!
-- /welcomesecurity (off/no/0): Disable welcome security
-- /setsecuritynote: Customise the "Please press button below to verify themself as human!" text
-- /delsecuritynote: Reset security text to defaults
-<b>Available levels:</b>
-- <code>button</code>: Ask user to press "I'm not a bot" button
-- <code>math</code>: Asking to solve simple math query, few buttons with answers will be provided, only one will have right answer
-- <code>captcha</code>: Ask user to enter captcha
-<b>Welcome mutes:</b>
-- /welcomemute (time): Set welcome mute (no media) for   time
-- /welcomemute (off/no): Disable welcome mute
+-X/setwelcomeXorX/savewelcome:XSetXwelcome
+-X/setwelcomeX(on/off):XDisable/enabledXwelcomesXinXyourXchat
+-X/welcome:XShowsXcurrentXwelcomesXsettingsXandXwelcomeXtext
+-X/resetwelcome:XResetXwelcomesXsettings
+<b>WelcomeXsecurity:</b>
+-X/welcomesecurityX(level)
+TurnsXonXwelcomeXsecurityXwithXspecifiedXlevel,XeitherXbuttonXorXcaptcha.
+SettingXupXwelcomeXsecurityXwillXgiveXyouXaXchoiceXtoXcustomizeXjoinXexpirationXtimeXakaXminimumXtimeXgivenXtoXuserXtoXverifyXthemselvesXnotXaXbot,XusersXwhoXdoXnotXverifyXwithinXthisXtimeXwouldXbeXkicked!
+-X/welcomesecurityX(off/no/0):XDisableXwelcomeXsecurity
+-X/setsecuritynote:XCustomiseXtheX"PleaseXpressXbuttonXbelowXtoXverifyXthemselfXasXhuman!"Xtext
+-X/delsecuritynote:XResetXsecurityXtextXtoXdefaults
+<b>AvailableXlevels:</b>
+-X<code>button</code>:XAskXuserXtoXpressX"I'mXnotXaXbot"Xbutton
+-X<code>math</code>:XAskingXtoXsolveXsimpleXmathXquery,XfewXbuttonsXwithXanswersXwillXbeXprovided,XonlyXoneXwillXhaveXrightXanswer
+-X<code>captcha</code>:XAskXuserXtoXenterXcaptcha
+<b>WelcomeXmutes:</b>
+-X/welcomemuteX(time):XSetXwelcomeXmuteX(noXmedia)XforXXXtime
+-X/welcomemuteX(off/no):XDisableXwelcomeXmute
 <b>Purges:</b>
-- /cleanwelcome (on/off): Deletes old welcome messages and last one after 45 mintes
-- /cleanservice (on/off): Cleans service messages (user   joined)
-If welcome security is enabled, user will be welcomed with security text, if user successfully verify self as user, he/she will be welcomed also with welcome text in his PM (to prevent spamming in chat).
-If user didn't verified self for 24 hours he/she will be kicked from chat.
-<b>Addings buttons and variables to welcomes or security text:</b>
-Buttons and variables syntax is same as notes buttons and variables.
-Send /buttonshelp and /variableshelp to get started with using it.
-<b>Settings images, gifs, videos or stickers as welcome:</b>
-Saving attachments on welcome is same as saving notes with it, read the notes help about it. But keep in mind what you have to replace /save to /setwelcome
+-X/cleanwelcomeX(on/off):XDeletesXoldXwelcomeXmessagesXandXlastXoneXafterX45Xmintes
+-X/cleanserviceX(on/off):XCleansXserviceXmessagesX(userXXXjoined)
+IfXwelcomeXsecurityXisXenabled,XuserXwillXbeXwelcomedXwithXsecurityXtext,XifXuserXsuccessfullyXverifyXselfXasXuser,Xhe/sheXwillXbeXwelcomedXalsoXwithXwelcomeXtextXinXhisXPMX(toXpreventXspammingXinXchat).
+IfXuserXdidn'tXverifiedXselfXforX24XhoursXhe/sheXwillXbeXkickedXfromXchat.
+<b>AddingsXbuttonsXandXvariablesXtoXwelcomesXorXsecurityXtext:</b>
+ButtonsXandXvariablesXsyntaxXisXsameXasXnotesXbuttonsXandXvariables.
+SendX/buttonshelpXandX/variableshelpXtoXgetXstartedXwithXusingXit.
+<b>SettingsXimages,Xgifs,XvideosXorXstickersXasXwelcome:</b>
+SavingXattachmentsXonXwelcomeXisXsameXasXsavingXnotesXwithXit,XreadXtheXnotesXhelpXaboutXit.XButXkeepXinXmindXwhatXyouXhaveXtoXreplaceX/saveXtoX/setwelcome
 <b>Examples:</b>
-<code>- Get the welcome message without any formatting
--> /welcome raw</code>
+<code>-XGetXtheXwelcomeXmessageXwithoutXanyXformatting
+->X/welcomeXraw</code>
 """

@@ -1,188 +1,188 @@
-# Ported from @MissJuliaRobot
+#XPortedXfromX@MissJuliaRobot
 
-# Copyright (C) 2021 errorshivansh
-
-
-# This file is part of Ineruki (Telegram Bot)
-
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
-
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-import os
-import subprocess
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-import requests
-from gtts import gTTS, gTTSError
-from requests import get
-from telethon.tl import functions, types
-from telethon.tl.types import *
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-from Ineruki .config import get_str_key
-from Ineruki .services.events import register
-from Ineruki .services.telethon import tbot
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-IBM_WATSON_CRED_PASSWORD = get_str_key("IBM_WATSON_CRED_PASSWORD", None)
-IBM_WATSON_CRED_URL = get_str_key("IBM_WATSON_CRED_URL", None)
-WOLFRAM_ID = get_str_key("WOLFRAM_ID", None)
-TEMP_DOWNLOAD_DIRECTORY = "./"
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
 
-async def is_register_admin(chat, user):
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
+importXos
+importXsubprocess
 
-        return isinstance(
-            (
-                await tbot(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    if isinstance(chat, types.InputPeerChat):
+importXrequests
+fromXgttsXimportXgTTS,XgTTSError
+fromXrequestsXimportXget
+fromXtelethon.tlXimportXfunctions,Xtypes
+fromXtelethon.tl.typesXimportX*
 
-        ui = await tbot.get_peer_id(user)
-        ps = (
-            await tbot(functions.messages.GetFullChatRequest(chat.chat_id))
-        ).full_chat.participants.participants
-        return isinstance(
-            next((p for p in ps if p.user_id == ui), None),
-            (types.ChatParticipantAdmin, types.ChatParticipantCreator),
-        )
-    return None
+fromXInerukiX.configXimportXget_str_key
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.telethonXimportXtbot
+
+IBM_WATSON_CRED_PASSWORDX=Xget_str_key("IBM_WATSON_CRED_PASSWORD",XNone)
+IBM_WATSON_CRED_URLX=Xget_str_key("IBM_WATSON_CRED_URL",XNone)
+WOLFRAM_IDX=Xget_str_key("WOLFRAM_ID",XNone)
+TEMP_DOWNLOAD_DIRECTORYX=X"./"
 
 
-@register(pattern=r"^/ask(?: |$)([\s\S]*)")
-async def _(event):
-    if event.fwd_from:
-        return
-    if event.is_group:
-        if await is_register_admin(event.input_chat, event.message.sender_id):
-            pass
-        else:
-            return
-    if not event.reply_to_msg_id:
-        i = event.pattern_match.group(1)
-        appid = WOLFRAM_ID
-        server = f"https://api.wolframalpha.com/v1/spoken?appid={appid}&i={i}"
-        res = get(server)
-        if "Wolfram Alpha did not understand" in res.text:
-            await event.reply(
-                "Sorry, Ineruki's AI systems could't recognized your question.."
-            )
-            return
-        await event.reply(f"**{i}**\n\n" + res.text, parse_mode="markdown")
+asyncXdefXis_register_admin(chat,Xuser):
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
 
-    if event.reply_to_msg_id:
-        previous_message = await event.get_reply_message()
-        required_file_name = await tbot.download_media(
-            previous_message, TEMP_DOWNLOAD_DIRECTORY
-        )
-        if IBM_WATSON_CRED_URL is None or IBM_WATSON_CRED_PASSWORD is None:
-            await event.reply(
-                "You need to set the required ENV variables for this module. \nModule stopping"
-            )
-        else:
-            headers = {
-                "Content-Type": previous_message.media.document.mime_type,
-            }
-            data = open(required_file_name, "rb").read()
-            response = requests.post(
-                IBM_WATSON_CRED_URL + "/v1/recognize",
-                headers=headers,
-                data=data,
-                auth=("apikey", IBM_WATSON_CRED_PASSWORD),
-            )
-            r = response.json()
-            if "results" in r:
-                # process the json to appropriate string format
-                results = r["results"]
-                transcript_response = ""
-                for alternative in results:
-                    alternatives = alternative["alternatives"][0]
-                    transcript_response += " " + str(alternatives["transcript"])
-                if transcript_response != "":
-                    string_to_show = "{}".format(transcript_response)
-                    appid = WOLFRAM_ID
-                    server = f"https://api.wolframalpha.com/v1/spoken?appid={appid}&i={string_to_show}"
-                    res = get(server)
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXtbot(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXifXisinstance(chat,Xtypes.InputPeerChat):
 
-                    if "Wolfram Alpha did not understand" in res:
-                        answer = (
-                            "I'm sorry Ineruki's AI system can't undestand your problem"
-                        )
-                    else:
-                        answer = res.text
-                    try:
-                        tts = gTTS(answer, tld="com", lang="en")
-                        tts.save("results.mp3")
-                    except AssertionError:
-                        return
-                    except ValueError:
-                        return
-                    except RuntimeError:
-                        return
-                    except gTTSError:
-                        return
-                    with open("results.mp3", "r"):
-                        await tbot.send_file(
-                            event.chat_id,
-                            "results.mp3",
-                            voice_note=True,
-                            reply_to=event.id,
-                        )
-                    os.remove("results.mp3")
-                    os.remove(required_file_name)
-                elif (
-                    transcript_response == "Wolfram Alpha did not understand your input"
-                ):
-                    try:
-                        answer = "Sorry, Ineruki's AI system can't understand you.."
-                        tts = gTTS(answer, tld="com", lang="en")
-                        tts.save("results.mp3")
-                    except AssertionError:
-                        return
-                    except ValueError:
-                        return
-                    except RuntimeError:
-                        return
-                    except gTTSError:
-                        return
-                    with open("results.mp3", "r"):
-                        await tbot.send_file(
-                            event.chat_id,
-                            "results.mp3",
-                            voice_note=True,
-                            reply_to=event.id,
-                        )
-                    os.remove("results.mp3")
-                    os.remove(required_file_name)
-            else:
-                await event.reply("API Failure !")
-                os.remove(required_file_name)
+XXXXXXXXuiX=XawaitXtbot.get_peer_id(user)
+XXXXXXXXpsX=X(
+XXXXXXXXXXXXawaitXtbot(functions.messages.GetFullChatRequest(chat.chat_id))
+XXXXXXXX).full_chat.participants.participants
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXXnext((pXforXpXinXpsXifXp.user_idX==Xui),XNone),
+XXXXXXXXXXXX(types.ChatParticipantAdmin,Xtypes.ChatParticipantCreator),
+XXXXXXXX)
+XXXXreturnXNone
 
 
-@register(pattern="^/howdoi (.*)")
-async def howdoi(event):
-    if event.fwd_from:
-        return
-    if event.is_group:
-        if await is_register_admin(event.input_chat, event.message.sender_id):
-            pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
-            return
+@register(pattern=r"^/ask(?:X|$)([\s\S]*)")
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXifXevent.is_group:
+XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+XXXXifXnotXevent.reply_to_msg_id:
+XXXXXXXXiX=Xevent.pattern_match.group(1)
+XXXXXXXXappidX=XWOLFRAM_ID
+XXXXXXXXserverX=Xf"https://api.wolframalpha.com/v1/spoken?appid={appid}&i={i}"
+XXXXXXXXresX=Xget(server)
+XXXXXXXXifX"WolframXAlphaXdidXnotXunderstand"XinXres.text:
+XXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXX"Sorry,XIneruki'sXAIXsystemsXcould'tXrecognizedXyourXquestion.."
+XXXXXXXXXXXX)
+XXXXXXXXXXXXreturn
+XXXXXXXXawaitXevent.reply(f"**{i}**\n\n"X+Xres.text,Xparse_mode="markdown")
 
-    str = event.pattern_match.group(1)
-    jit = subprocess.check_output(["howdoi", f"{str}"])
-    pit = jit.decode()
-    await event.reply(pit)
+XXXXifXevent.reply_to_msg_id:
+XXXXXXXXprevious_messageX=XawaitXevent.get_reply_message()
+XXXXXXXXrequired_file_nameX=XawaitXtbot.download_media(
+XXXXXXXXXXXXprevious_message,XTEMP_DOWNLOAD_DIRECTORY
+XXXXXXXX)
+XXXXXXXXifXIBM_WATSON_CRED_URLXisXNoneXorXIBM_WATSON_CRED_PASSWORDXisXNone:
+XXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXX"YouXneedXtoXsetXtheXrequiredXENVXvariablesXforXthisXmodule.X\nModuleXstopping"
+XXXXXXXXXXXX)
+XXXXXXXXelse:
+XXXXXXXXXXXXheadersX=X{
+XXXXXXXXXXXXXXXX"Content-Type":Xprevious_message.media.document.mime_type,
+XXXXXXXXXXXX}
+XXXXXXXXXXXXdataX=Xopen(required_file_name,X"rb").read()
+XXXXXXXXXXXXresponseX=Xrequests.post(
+XXXXXXXXXXXXXXXXIBM_WATSON_CRED_URLX+X"/v1/recognize",
+XXXXXXXXXXXXXXXXheaders=headers,
+XXXXXXXXXXXXXXXXdata=data,
+XXXXXXXXXXXXXXXXauth=("apikey",XIBM_WATSON_CRED_PASSWORD),
+XXXXXXXXXXXX)
+XXXXXXXXXXXXrX=Xresponse.json()
+XXXXXXXXXXXXifX"results"XinXr:
+XXXXXXXXXXXXXXXX#XprocessXtheXjsonXtoXappropriateXstringXformat
+XXXXXXXXXXXXXXXXresultsX=Xr["results"]
+XXXXXXXXXXXXXXXXtranscript_responseX=X""
+XXXXXXXXXXXXXXXXforXalternativeXinXresults:
+XXXXXXXXXXXXXXXXXXXXalternativesX=Xalternative["alternatives"][0]
+XXXXXXXXXXXXXXXXXXXXtranscript_responseX+=X"X"X+Xstr(alternatives["transcript"])
+XXXXXXXXXXXXXXXXifXtranscript_responseX!=X"":
+XXXXXXXXXXXXXXXXXXXXstring_to_showX=X"{}".format(transcript_response)
+XXXXXXXXXXXXXXXXXXXXappidX=XWOLFRAM_ID
+XXXXXXXXXXXXXXXXXXXXserverX=Xf"https://api.wolframalpha.com/v1/spoken?appid={appid}&i={string_to_show}"
+XXXXXXXXXXXXXXXXXXXXresX=Xget(server)
+
+XXXXXXXXXXXXXXXXXXXXifX"WolframXAlphaXdidXnotXunderstand"XinXres:
+XXXXXXXXXXXXXXXXXXXXXXXXanswerX=X(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXX"I'mXsorryXIneruki'sXAIXsystemXcan'tXundestandXyourXproblem"
+XXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXXXXXanswerX=Xres.text
+XXXXXXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXXXXXttsX=XgTTS(answer,Xtld="com",Xlang="en")
+XXXXXXXXXXXXXXXXXXXXXXXXtts.save("results.mp3")
+XXXXXXXXXXXXXXXXXXXXexceptXAssertionError:
+XXXXXXXXXXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXXXXXXXXXexceptXValueError:
+XXXXXXXXXXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXXXXXXXXXexceptXRuntimeError:
+XXXXXXXXXXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXXXXXXXXXexceptXgTTSError:
+XXXXXXXXXXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXXXXXXXXXwithXopen("results.mp3",X"r"):
+XXXXXXXXXXXXXXXXXXXXXXXXawaitXtbot.send_file(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXevent.chat_id,
+XXXXXXXXXXXXXXXXXXXXXXXXXXXX"results.mp3",
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXvoice_note=True,
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXreply_to=event.id,
+XXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXos.remove("results.mp3")
+XXXXXXXXXXXXXXXXXXXXos.remove(required_file_name)
+XXXXXXXXXXXXXXXXelifX(
+XXXXXXXXXXXXXXXXXXXXtranscript_responseX==X"WolframXAlphaXdidXnotXunderstandXyourXinput"
+XXXXXXXXXXXXXXXX):
+XXXXXXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXXXXXanswerX=X"Sorry,XIneruki'sXAIXsystemXcan'tXunderstandXyou.."
+XXXXXXXXXXXXXXXXXXXXXXXXttsX=XgTTS(answer,Xtld="com",Xlang="en")
+XXXXXXXXXXXXXXXXXXXXXXXXtts.save("results.mp3")
+XXXXXXXXXXXXXXXXXXXXexceptXAssertionError:
+XXXXXXXXXXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXXXXXXXXXexceptXValueError:
+XXXXXXXXXXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXXXXXXXXXexceptXRuntimeError:
+XXXXXXXXXXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXXXXXXXXXexceptXgTTSError:
+XXXXXXXXXXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXXXXXXXXXwithXopen("results.mp3",X"r"):
+XXXXXXXXXXXXXXXXXXXXXXXXawaitXtbot.send_file(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXevent.chat_id,
+XXXXXXXXXXXXXXXXXXXXXXXXXXXX"results.mp3",
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXvoice_note=True,
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXreply_to=event.id,
+XXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXos.remove("results.mp3")
+XXXXXXXXXXXXXXXXXXXXos.remove(required_file_name)
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXawaitXevent.reply("APIXFailureX!")
+XXXXXXXXXXXXXXXXos.remove(required_file_name)
+
+
+@register(pattern="^/howdoiX(.*)")
+asyncXdefXhowdoi(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXifXevent.is_group:
+XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
+XXXXXXXXXXXXpass
+XXXXXXXXelifXevent.chat_idX==XiidXandXevent.sender_idX==Xuserss:
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+
+XXXXstrX=Xevent.pattern_match.group(1)
+XXXXjitX=Xsubprocess.check_output(["howdoi",Xf"{str}"])
+XXXXpitX=Xjit.decode()
+XXXXawaitXevent.reply(pit)

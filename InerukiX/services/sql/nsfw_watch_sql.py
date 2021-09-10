@@ -1,55 +1,55 @@
-#    Copyright (C) Midhun KM 2020-2021
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
+#XXXXCopyrightX(C)XMidhunXKMX2020-2021
+#XXXXThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XXXXitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXasXpublishedXby
+#XXXXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXtheXLicense,Xor
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
+#XXXXThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XXXXbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XXXXMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XXXXGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 #
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#XXXXYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XXXXalongXwithXthisXprogram.XXIfXnot,XseeX<https://www.gnu.org/licenses/>.
 
-from sqlalchemy import Column, String
+fromXsqlalchemyXimportXColumn,XString
 
-from Ineruki .services.sql import BASE, SESSION
+fromXInerukiX.services.sqlXimportXBASE,XSESSION
 
 
-class Nsfwatch(BASE):
-    __tablename__ = "nsfwatch"
-    chat_id = Column(String(14), primary_key=True)
+classXNsfwatch(BASE):
+XXXX__tablename__X=X"nsfwatch"
+XXXXchat_idX=XColumn(String(14),Xprimary_key=True)
 
-    def __init__(self, chat_id):
-        self.chat_id = chat_id
+XXXXdefX__init__(self,Xchat_id):
+XXXXXXXXself.chat_idX=Xchat_id
 
 
 Nsfwatch.__table__.create(checkfirst=True)
 
 
-def add_nsfwatch(chat_id: str):
-    nsfws = Nsfwatch(str(chat_id))
-    SESSION.add(nsfws)
-    SESSION.commit()
+defXadd_nsfwatch(chat_id:Xstr):
+XXXXnsfwsX=XNsfwatch(str(chat_id))
+XXXXSESSION.add(nsfws)
+XXXXSESSION.commit()
 
 
-def rmnsfwatch(chat_id: str):
-    nsfwm = SESSION.query(Nsfwatch).get(str(chat_id))
-    if nsfwm:
-        SESSION.delete(nsfwm)
-        SESSION.commit()
+defXrmnsfwatch(chat_id:Xstr):
+XXXXnsfwmX=XSESSION.query(Nsfwatch).get(str(chat_id))
+XXXXifXnsfwm:
+XXXXXXXXSESSION.delete(nsfwm)
+XXXXXXXXSESSION.commit()
 
 
-def get_all_nsfw_enabled_chat():
-    stark = SESSION.query(Nsfwatch).all()
-    SESSION.close()
-    return stark
+defXget_all_nsfw_enabled_chat():
+XXXXstarkX=XSESSION.query(Nsfwatch).all()
+XXXXSESSION.close()
+XXXXreturnXstark
 
 
-def is_nsfwatch_indb(chat_id: str):
-    try:
-        s__ = SESSION.query(Nsfwatch).get(str(chat_id))
-        if s__:
-            return str(s__.chat_id)
-    finally:
-        SESSION.close()
+defXis_nsfwatch_indb(chat_id:Xstr):
+XXXXtry:
+XXXXXXXXs__X=XSESSION.query(Nsfwatch).get(str(chat_id))
+XXXXXXXXifXs__:
+XXXXXXXXXXXXreturnXstr(s__.chat_id)
+XXXXfinally:
+XXXXXXXXSESSION.close()

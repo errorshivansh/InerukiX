@@ -1,1798 +1,1798 @@
-# This file is copied from @Missjuliarobot
-# Full credits to original author
+#XThisXfileXisXcopiedXfromX@Missjuliarobot
+#XFullXcreditsXtoXoriginalXauthor
 
-import asyncio
-import io
-import json
-import os
-import random
-import re
-import string
-import subprocess
-import textwrap
-import urllib.request
-from random import randint, randrange, uniform
+importXasyncio
+importXio
+importXjson
+importXos
+importXrandom
+importXre
+importXstring
+importXsubprocess
+importXtextwrap
+importXurllib.request
+fromXrandomXimportXrandint,Xrandrange,Xuniform
 
-import emoji
-import nltk
-from cowpy import cow
-from fontTools.ttLib import TTFont
-from PIL import Image, ImageDraw, ImageEnhance, ImageFont, ImageOps
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from telethon import *
-from telethon.tl import functions
-from telethon.tl.types import *
-from zalgo_text import zalgo
+importXemoji
+importXnltk
+fromXcowpyXimportXcow
+fromXfontTools.ttLibXimportXTTFont
+fromXPILXimportXImage,XImageDraw,XImageEnhance,XImageFont,XImageOps
+fromXseleniumXimportXwebdriver
+fromXselenium.webdriver.chrome.optionsXimportXOptions
+fromXtelethonXimportX*
+fromXtelethon.tlXimportXfunctions
+fromXtelethon.tl.typesXimportX*
+fromXzalgo_textXimportXzalgo
 
-from Ineruki  import *
-from Ineruki .services.events import register
-from Ineruki .services.telethon import tbot
-from Ineruki .services.telethonuserbot import ubot
+fromXInerukiXXimportX*
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.telethonXimportXtbot
+fromXInerukiX.services.telethonuserbotXimportXubot
 
 nltk.download("punkt")
 nltk.download("averaged_perceptron_tagger")
 
-WIDE_MAP = {i: i + 0xFEE0 for i in range(0x21, 0x7F)}
-WIDE_MAP[0x20] = 0x3000
+WIDE_MAPX=X{i:XiX+X0xFEE0XforXiXinXrange(0x21,X0x7F)}
+WIDE_MAP[0x20]X=X0x3000
 
 
 @register(pattern="^/owu$")
-async def msg(event):
+asyncXdefXmsg(event):
 
-    reply_tex = await event.get_reply_message()
-    reply_text = reply_tex.text
-    if reply_text is None:
-        await event.reply("Reply to a message to make meme.")
-        return
-    faces = [
-        "(・`ω´・)",
-        ";;w;;",
-        "owo",
-        "UwU",
-        ">w<",
-        "^w^",
-        r"\(^o\) (/o^)/",
-        "( ^ _ ^)∠☆",
-        "(ô_ô)",
-        "~:o",
-        ";____;",
-        "(*^*)",
-        "(>_",
-        "(♥_♥)",
-        "*(^O^)*",
-        "((+_+))",
-    ]
-    text = re.sub(r"[rl]", "w", reply_text)
-    text = re.sub(r"[ｒｌ]", "ｗ", reply_text)
-    text = re.sub(r"[RL]", "W", text)
-    text = re.sub(r"[ＲＬ]", "Ｗ", text)
-    text = re.sub(r"n([aeiouａｅｉｏｕ])", r"ny\1", text)
-    text = re.sub(r"ｎ([ａｅｉｏｕ])", r"ｎｙ\1", text)
-    text = re.sub(r"N([aeiouAEIOU])", r"Ny\1", text)
-    text = re.sub(r"Ｎ([ａｅｉｏｕＡＥＩＯＵ])", r"Ｎｙ\1", text)
-    text = re.sub(r"\!+", " " + random.choice(faces), text)
-    text = re.sub(r"！+", " " + random.choice(faces), text)
-    text = text.replace("ove", "uv")
-    text = text.replace("ｏｖｅ", "ｕｖ")
-    text += " " + random.choice(faces)
-    await event.reply(text)
+XXXXreply_texX=XawaitXevent.get_reply_message()
+XXXXreply_textX=Xreply_tex.text
+XXXXifXreply_textXisXNone:
+XXXXXXXXawaitXevent.reply("ReplyXtoXaXmessageXtoXmakeXmeme.")
+XXXXXXXXreturn
+XXXXfacesX=X[
+XXXXXXXX"(・`ω´・)",
+XXXXXXXX";;w;;",
+XXXXXXXX"owo",
+XXXXXXXX"UwU",
+XXXXXXXX">w<",
+XXXXXXXX"^w^",
+XXXXXXXXr"\(^o\)X(/o^)/",
+XXXXXXXX"(X^X_X^)∠☆",
+XXXXXXXX"(ô_ô)",
+XXXXXXXX"~:o",
+XXXXXXXX";____;",
+XXXXXXXX"(*^*)",
+XXXXXXXX"(>_",
+XXXXXXXX"(♥_♥)",
+XXXXXXXX"*(^O^)*",
+XXXXXXXX"((+_+))",
+XXXX]
+XXXXtextX=Xre.sub(r"[rl]",X"w",Xreply_text)
+XXXXtextX=Xre.sub(r"[ｒｌ]",X"ｗ",Xreply_text)
+XXXXtextX=Xre.sub(r"[RL]",X"W",Xtext)
+XXXXtextX=Xre.sub(r"[ＲＬ]",X"Ｗ",Xtext)
+XXXXtextX=Xre.sub(r"n([aeiouａｅｉｏｕ])",Xr"ny\1",Xtext)
+XXXXtextX=Xre.sub(r"ｎ([ａｅｉｏｕ])",Xr"ｎｙ\1",Xtext)
+XXXXtextX=Xre.sub(r"N([aeiouAEIOU])",Xr"Ny\1",Xtext)
+XXXXtextX=Xre.sub(r"Ｎ([ａｅｉｏｕＡＥＩＯＵ])",Xr"Ｎｙ\1",Xtext)
+XXXXtextX=Xre.sub(r"\!+",X"X"X+Xrandom.choice(faces),Xtext)
+XXXXtextX=Xre.sub(r"！+",X"X"X+Xrandom.choice(faces),Xtext)
+XXXXtextX=Xtext.replace("ove",X"uv")
+XXXXtextX=Xtext.replace("ｏｖｅ",X"ｕｖ")
+XXXXtextX+=X"X"X+Xrandom.choice(faces)
+XXXXawaitXevent.reply(text)
 
 
 @register(pattern="^/copypasta$")
-async def msg(event):
+asyncXdefXmsg(event):
 
-    rtex = await event.get_reply_message()
-    rtext = rtex.text
-    if rtext is None:
-        await event.reply("Reply to a message tto make meme.")
-        return
-    emojis = [
-        "😂",
-        "😂",
-        "👌",
-        "✌",
-        "💞",
-        "👍",
-        "👌",
-        "💯",
-        "🎶",
-        "👀",
-        "😂",
-        "👓",
-        "👏",
-        "👐",
-        "🍕",
-        "💥",
-        "🍴",
-        "💦",
-        "💦",
-        "🍑",
-        "🍆",
-        "😩",
-        "😏",
-        "👉👌",
-        "👀",
-        "👅",
-        "😩",
-        "🚰",
-    ]
-    reply_text = random.choice(emojis)
-    b_char = random.choice(rtext).lower()
-    for c in rtext:
-        if c == " ":
-            reply_text += random.choice(emojis)
-        elif c in emojis:
-            reply_text += c
-            reply_text += random.choice(emojis)
-        elif c.lower() == b_char:
-            reply_text += "🅱️"
-        else:
-            if bool(random.getrandbits(1)):
-                reply_text += c.upper()
-            else:
-                reply_text += c.lower()
-    reply_text += random.choice(emojis)
-    await event.reply(reply_text)
+XXXXrtexX=XawaitXevent.get_reply_message()
+XXXXrtextX=Xrtex.text
+XXXXifXrtextXisXNone:
+XXXXXXXXawaitXevent.reply("ReplyXtoXaXmessageXttoXmakeXmeme.")
+XXXXXXXXreturn
+XXXXemojisX=X[
+XXXXXXXX"😂",
+XXXXXXXX"😂",
+XXXXXXXX"👌",
+XXXXXXXX"✌",
+XXXXXXXX"💞",
+XXXXXXXX"👍",
+XXXXXXXX"👌",
+XXXXXXXX"💯",
+XXXXXXXX"🎶",
+XXXXXXXX"👀",
+XXXXXXXX"😂",
+XXXXXXXX"👓",
+XXXXXXXX"👏",
+XXXXXXXX"👐",
+XXXXXXXX"🍕",
+XXXXXXXX"💥",
+XXXXXXXX"🍴",
+XXXXXXXX"💦",
+XXXXXXXX"💦",
+XXXXXXXX"🍑",
+XXXXXXXX"🍆",
+XXXXXXXX"😩",
+XXXXXXXX"😏",
+XXXXXXXX"👉👌",
+XXXXXXXX"👀",
+XXXXXXXX"👅",
+XXXXXXXX"😩",
+XXXXXXXX"🚰",
+XXXX]
+XXXXreply_textX=Xrandom.choice(emojis)
+XXXXb_charX=Xrandom.choice(rtext).lower()
+XXXXforXcXinXrtext:
+XXXXXXXXifXcX==X"X":
+XXXXXXXXXXXXreply_textX+=Xrandom.choice(emojis)
+XXXXXXXXelifXcXinXemojis:
+XXXXXXXXXXXXreply_textX+=Xc
+XXXXXXXXXXXXreply_textX+=Xrandom.choice(emojis)
+XXXXXXXXelifXc.lower()X==Xb_char:
+XXXXXXXXXXXXreply_textX+=X"🅱️"
+XXXXXXXXelse:
+XXXXXXXXXXXXifXbool(random.getrandbits(1)):
+XXXXXXXXXXXXXXXXreply_textX+=Xc.upper()
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXreply_textX+=Xc.lower()
+XXXXreply_textX+=Xrandom.choice(emojis)
+XXXXawaitXevent.reply(reply_text)
 
 
 @register(pattern="^/bmoji$")
-async def msg(event):
+asyncXdefXmsg(event):
 
-    rtex = await event.get_reply_message()
-    rtext = rtex.text
-    if rtext is None:
-        await event.reply("Reply to a message to make meme.")
-        return
-    b_char = random.choice(rtext).lower()
-    reply_text = rtext.replace(b_char, "🅱️").replace(b_char.upper(), "🅱️")
-    await event.reply(reply_text)
+XXXXrtexX=XawaitXevent.get_reply_message()
+XXXXrtextX=Xrtex.text
+XXXXifXrtextXisXNone:
+XXXXXXXXawaitXevent.reply("ReplyXtoXaXmessageXtoXmakeXmeme.")
+XXXXXXXXreturn
+XXXXb_charX=Xrandom.choice(rtext).lower()
+XXXXreply_textX=Xrtext.replace(b_char,X"🅱️").replace(b_char.upper(),X"🅱️")
+XXXXawaitXevent.reply(reply_text)
 
 
 @register(pattern="^/clapmoji$")
-async def msg(event):
+asyncXdefXmsg(event):
 
-    rtex = await event.get_reply_message()
-    rtext = rtex.text
-    if rtext is None:
-        await event.reply("Reply to a message to make meme.")
-        return
-    reply_text = "👏 "
-    reply_text += rtext.replace(" ", " 👏 ")
-    reply_text += " 👏"
-    await event.reply(reply_text)
+XXXXrtexX=XawaitXevent.get_reply_message()
+XXXXrtextX=Xrtex.text
+XXXXifXrtextXisXNone:
+XXXXXXXXawaitXevent.reply("ReplyXtoXaXmessageXtoXmakeXmeme.")
+XXXXXXXXreturn
+XXXXreply_textX=X"👏X"
+XXXXreply_textX+=Xrtext.replace("X",X"X👏X")
+XXXXreply_textX+=X"X👏"
+XXXXawaitXevent.reply(reply_text)
 
 
 @register(pattern="^/stretch$")
-async def msg(event):
+asyncXdefXmsg(event):
 
-    rtex = await event.get_reply_message()
-    rtext = rtex.text
-    if rtext is None:
-        await event.reply("Reply to a message to make meme.")
-        return
-    count = random.randint(3, 10)
-    reply_text = re.sub(r"([aeiouAEIOUａｅｉｏｕＡＥＩＯＵ])", (r"\1" * count), rtext)
-    await event.reply(reply_text)
+XXXXrtexX=XawaitXevent.get_reply_message()
+XXXXrtextX=Xrtex.text
+XXXXifXrtextXisXNone:
+XXXXXXXXawaitXevent.reply("ReplyXtoXaXmessageXtoXmakeXmeme.")
+XXXXXXXXreturn
+XXXXcountX=Xrandom.randint(3,X10)
+XXXXreply_textX=Xre.sub(r"([aeiouAEIOUａｅｉｏｕＡＥＩＯＵ])",X(r"\1"X*Xcount),Xrtext)
+XXXXawaitXevent.reply(reply_text)
 
 
-@register(pattern="^/vapor(?: |$)(.*)")
-async def msg(event):
+@register(pattern="^/vapor(?:X|$)(.*)")
+asyncXdefXmsg(event):
 
-    rtex = await event.get_reply_message()
-    rtext = rtex.text
-    if rtext:
-        data = rtext
-    else:
-        data = event.pattern_match.group(1)
-    if data is None:
-        await event.reply("Either provide some input or reply to a message.")
-        return
+XXXXrtexX=XawaitXevent.get_reply_message()
+XXXXrtextX=Xrtex.text
+XXXXifXrtext:
+XXXXXXXXdataX=Xrtext
+XXXXelse:
+XXXXXXXXdataX=Xevent.pattern_match.group(1)
+XXXXifXdataXisXNone:
+XXXXXXXXawaitXevent.reply("EitherXprovideXsomeXinputXorXreplyXtoXaXmessage.")
+XXXXXXXXreturn
 
-    reply_text = str(data).translate(WIDE_MAP)
-    await event.reply(reply_text)
+XXXXreply_textX=Xstr(data).translate(WIDE_MAP)
+XXXXawaitXevent.reply(reply_text)
 
 
 @register(pattern="^/zalgofy$")
-async def msg(event):
+asyncXdefXmsg(event):
 
-    rtex = await event.get_reply_message()
-    rtext = rtex.text
-    if rtext is None:
-        await event.reply("Reply to a message to make meme.")
-        return
-    reply_text = zalgo.zalgo().zalgofy(rtext)
-    await event.reply(reply_text)
+XXXXrtexX=XawaitXevent.get_reply_message()
+XXXXrtextX=Xrtex.text
+XXXXifXrtextXisXNone:
+XXXXXXXXawaitXevent.reply("ReplyXtoXaXmessageXtoXmakeXmeme.")
+XXXXXXXXreturn
+XXXXreply_textX=Xzalgo.zalgo().zalgofy(rtext)
+XXXXawaitXevent.reply(reply_text)
 
 
 @register(pattern="^/forbesify$")
-async def msg(event):
+asyncXdefXmsg(event):
 
-    rtex = await event.get_reply_message()
-    rtext = rtex.text
-    if rtext is None:
-        await event.reply("Reply to a message to make meme.")
-        return
-    data = rtext
+XXXXrtexX=XawaitXevent.get_reply_message()
+XXXXrtextX=Xrtex.text
+XXXXifXrtextXisXNone:
+XXXXXXXXawaitXevent.reply("ReplyXtoXaXmessageXtoXmakeXmeme.")
+XXXXXXXXreturn
+XXXXdataX=Xrtext
 
-    data = data.lower()
-    accidentals = ["VB", "VBD", "VBG", "VBN"]
-    reply_text = data.split()
-    offset = 0
+XXXXdataX=Xdata.lower()
+XXXXaccidentalsX=X["VB",X"VBD",X"VBG",X"VBN"]
+XXXXreply_textX=Xdata.split()
+XXXXoffsetX=X0
 
-    tagged = dict(nltk.pos_tag(reply_text))
+XXXXtaggedX=Xdict(nltk.pos_tag(reply_text))
 
-    for k in range(len(reply_text)):
-        i = reply_text[k + offset]
-        if tagged.get(i) in accidentals:
-            reply_text.insert(k + offset, "accidentally")
-            offset += 1
+XXXXforXkXinXrange(len(reply_text)):
+XXXXXXXXiX=Xreply_text[kX+Xoffset]
+XXXXXXXXifXtagged.get(i)XinXaccidentals:
+XXXXXXXXXXXXreply_text.insert(kX+Xoffset,X"accidentally")
+XXXXXXXXXXXXoffsetX+=X1
 
-    reply_text = string.capwords(" ".join(reply_text))
-    await event.reply(reply_text)
+XXXXreply_textX=Xstring.capwords("X".join(reply_text))
+XXXXawaitXevent.reply(reply_text)
 
 
-@register(pattern="^/shout (.*)")
-async def msg(event):
+@register(pattern="^/shoutX(.*)")
+asyncXdefXmsg(event):
 
-    rtext = event.pattern_match.group(1)
+XXXXrtextX=Xevent.pattern_match.group(1)
 
-    args = rtext
+XXXXargsX=Xrtext
 
-    if len(args) == 0:
-        await event.reply("Where is text?")
-        return
+XXXXifXlen(args)X==X0:
+XXXXXXXXawaitXevent.reply("WhereXisXtext?")
+XXXXXXXXreturn
 
-    msg = "```"
-    text = " ".join(args)
-    result = []
-    result.append(" ".join(list(text)))
-    for pos, symbol in enumerate(text[1:]):
-        result.append(symbol + " " + "  " * pos + symbol)
-    result = list("\n".join(result))
-    result[0] = text[0]
-    result = "".join(result)
-    msg = "```\n" + result + "```"
-    await event.reply(msg)
+XXXXmsgX=X"```"
+XXXXtextX=X"X".join(args)
+XXXXresultX=X[]
+XXXXresult.append("X".join(list(text)))
+XXXXforXpos,XsymbolXinXenumerate(text[1:]):
+XXXXXXXXresult.append(symbolX+X"X"X+X"XX"X*XposX+Xsymbol)
+XXXXresultX=Xlist("\n".join(result))
+XXXXresult[0]X=Xtext[0]
+XXXXresultX=X"".join(result)
+XXXXmsgX=X"```\n"X+XresultX+X"```"
+XXXXawaitXevent.reply(msg)
 
 
 @register(pattern="^/angrymoji$")
-async def msg(event):
+asyncXdefXmsg(event):
 
-    rtex = await event.get_reply_message()
-    rtext = rtex.text
-    if rtext is None:
-        await event.reply("Reply to a message to make meme.")
-        return
-    reply_text = "😡 "
-    for i in rtext:
-        if i == " ":
-            reply_text += " 😡 "
-        else:
-            reply_text += i
-    reply_text += " 😡"
-    await event.reply(reply_text)
+XXXXrtexX=XawaitXevent.get_reply_message()
+XXXXrtextX=Xrtex.text
+XXXXifXrtextXisXNone:
+XXXXXXXXawaitXevent.reply("ReplyXtoXaXmessageXtoXmakeXmeme.")
+XXXXXXXXreturn
+XXXXreply_textX=X"😡X"
+XXXXforXiXinXrtext:
+XXXXXXXXifXiX==X"X":
+XXXXXXXXXXXXreply_textX+=X"X😡X"
+XXXXXXXXelse:
+XXXXXXXXXXXXreply_textX+=Xi
+XXXXreply_textX+=X"X😡"
+XXXXawaitXevent.reply(reply_text)
 
 
 @register(pattern="^/crymoji$")
-async def msg(event):
+asyncXdefXmsg(event):
 
-    rtex = await event.get_reply_message()
-    rtext = rtex.text
-    if rtext is None:
-        await event.reply("Reply to a message to make meme.")
-        return
-    reply_text = "😭 "
-    for i in rtext:
-        if i == " ":
-            reply_text += " 😭 "
-        else:
-            reply_text += i
-    reply_text += " 😭"
-    await event.reply(reply_text)
-
-
-CARBONLANG = "en"
+XXXXrtexX=XawaitXevent.get_reply_message()
+XXXXrtextX=Xrtex.text
+XXXXifXrtextXisXNone:
+XXXXXXXXawaitXevent.reply("ReplyXtoXaXmessageXtoXmakeXmeme.")
+XXXXXXXXreturn
+XXXXreply_textX=X"😭X"
+XXXXforXiXinXrtext:
+XXXXXXXXifXiX==X"X":
+XXXXXXXXXXXXreply_textX+=X"X😭X"
+XXXXXXXXelse:
+XXXXXXXXXXXXreply_textX+=Xi
+XXXXreply_textX+=X"X😭"
+XXXXawaitXevent.reply(reply_text)
 
 
-@register(pattern="^/carbon (.*)")
-async def carbon_api(e):
-
-    jj = "`Processing..`"
-    gg = await e.reply(jj)
-    CARBON = "https://carbon.now.sh/?bg=rgba(239%2C40%2C44%2C1)&t=one-light&wt=none&l=application%2Ftypescript&ds=true&dsyoff=20px&dsblur=68px&wc=true&wa=true&pv=56px&ph=56px&ln=false&fl=1&fm=Hack&fs=14px&lh=143%25&si=false&es=2x&wm=false&code={code}"
-    global CARBONLANG
-    code = e.pattern_match.group(1)
-    await gg.edit("`Processing..\n25%`")
-    os.chdir("./")
-    if os.path.isfile("./carbon.png"):
-        os.remove("./carbon.png")
-    url = CARBON.format(code=code, lang=CARBONLANG)
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.binary_location = GOOGLE_CHROME_BIN
-    chrome_options.add_argument("--window-size=1920x1080")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-gpu")
-    prefs = {"download.default_directory": "./"}
-    chrome_options.add_experimental_option("prefs", prefs)
-    driver = webdriver.Chrome(executable_path=CHROME_DRIVER, options=chrome_options)
-    driver.get(url)
-    await gg.edit("`Processing..\n50%`")
-    download_path = "./"
-    driver.command_executor._commands["send_command"] = (
-        "POST",
-        "/session/$sessionId/chromium/send_command",
-    )
-    params = {
-        "cmd": "Page.setDownloadBehavior",
-        "params": {"behavior": "allow", "downloadPath": download_path},
-    }
-    driver.execute("send_command", params)
-    driver.find_element_by_xpath("//button[contains(text(),'Export')]").click()
-    await gg.edit("`Processing..\n75%`")
-    while not os.path.isfile("./carbon.png"):
-        await asyncio.sleep(1)
-    await gg.edit("`Processing..\n100%`")
-    file = "./carbon.png"
-    await e.edit("`Uploading..`")
-    await tbot.send_file(
-        e.chat_id,
-        file,
-        caption="Made using [Carbon](https://carbon.now.sh/about/),\
-        \na project by [Dawn Labs](https://dawnlabs.io/)",
-        force_document=True,
-    )
-    os.remove("./carbon.png")
-    driver.quit()
+CARBONLANGX=X"en"
 
 
-@register(pattern="^/deepfry(?: |$)(.*)")
-async def deepfryer(event):
+@register(pattern="^/carbonX(.*)")
+asyncXdefXcarbon_api(e):
 
-    try:
-        frycount = int(event.pattern_match.group(1))
-        if frycount < 1:
-            raise ValueError
-    except ValueError:
-        frycount = 1
-    if event.is_reply:
-        reply_message = await event.get_reply_message()
-        data = await check_media(reply_message)
-        if isinstance(data, bool):
-            await event.reply("`I can't deep fry that!`")
-            return
-    else:
-        await event.reply("`Reply to an image or sticker to deep fry it!`")
-        return
-
-    image = io.BytesIO()
-    await tbot.download_media(data, image)
-    image = Image.open(image)
-
-    for _ in range(frycount):
-        image = await deepfry(image)
-    fried_io = io.BytesIO()
-    fried_io.name = "image.jpeg"
-    image.save(fried_io, "JPEG")
-    fried_io.seek(0)
-    await event.reply(file=fried_io)
-
-
-async def deepfry(img: Image) -> Image:
-    colours = (
-        (randint(50, 200), randint(40, 170), randint(40, 190)),
-        (randint(190, 255), randint(170, 240), randint(180, 250)),
-    )
-    img = img.copy().convert("RGB")
-    img = img.convert("RGB")
-    width, height = img.width, img.height
-    img = img.resize(
-        (int(width ** uniform(0.8, 0.9)), int(height ** uniform(0.8, 0.9))),
-        resample=Image.LANCZOS,
-    )
-    img = img.resize(
-        (int(width ** uniform(0.85, 0.95)), int(height ** uniform(0.85, 0.95))),
-        resample=Image.BILINEAR,
-    )
-    img = img.resize(
-        (int(width ** uniform(0.89, 0.98)), int(height ** uniform(0.89, 0.98))),
-        resample=Image.BICUBIC,
-    )
-    img = img.resize((width, height), resample=Image.BICUBIC)
-    img = ImageOps.posterize(img, randint(3, 7))
-    overlay = img.split()[0]
-    overlay = ImageEnhance.Contrast(overlay).enhance(uniform(1.0, 2.0))
-    overlay = ImageEnhance.Brightness(overlay).enhance(uniform(1.0, 2.0))
-    overlay = ImageOps.colorize(overlay, colours[0], colours[1])
-    img = Image.blend(img, overlay, uniform(0.1, 0.4))
-    img = ImageEnhance.Sharpness(img).enhance(randint(5, 300))
-    return img
+XXXXjjX=X"`Processing..`"
+XXXXggX=XawaitXe.reply(jj)
+XXXXCARBONX=X"https://carbon.now.sh/?bg=rgba(239%2C40%2C44%2C1)&t=one-light&wt=none&l=application%2Ftypescript&ds=true&dsyoff=20px&dsblur=68px&wc=true&wa=true&pv=56px&ph=56px&ln=false&fl=1&fm=Hack&fs=14px&lh=143%25&si=false&es=2x&wm=false&code={code}"
+XXXXglobalXCARBONLANG
+XXXXcodeX=Xe.pattern_match.group(1)
+XXXXawaitXgg.edit("`Processing..\n25%`")
+XXXXos.chdir("./")
+XXXXifXos.path.isfile("./carbon.png"):
+XXXXXXXXos.remove("./carbon.png")
+XXXXurlX=XCARBON.format(code=code,Xlang=CARBONLANG)
+XXXXchrome_optionsX=XOptions()
+XXXXchrome_options.add_argument("--headless")
+XXXXchrome_options.binary_locationX=XGOOGLE_CHROME_BIN
+XXXXchrome_options.add_argument("--window-size=1920x1080")
+XXXXchrome_options.add_argument("--disable-dev-shm-usage")
+XXXXchrome_options.add_argument("--no-sandbox")
+XXXXchrome_options.add_argument("--disable-gpu")
+XXXXprefsX=X{"download.default_directory":X"./"}
+XXXXchrome_options.add_experimental_option("prefs",Xprefs)
+XXXXdriverX=Xwebdriver.Chrome(executable_path=CHROME_DRIVER,Xoptions=chrome_options)
+XXXXdriver.get(url)
+XXXXawaitXgg.edit("`Processing..\n50%`")
+XXXXdownload_pathX=X"./"
+XXXXdriver.command_executor._commands["send_command"]X=X(
+XXXXXXXX"POST",
+XXXXXXXX"/session/$sessionId/chromium/send_command",
+XXXX)
+XXXXparamsX=X{
+XXXXXXXX"cmd":X"Page.setDownloadBehavior",
+XXXXXXXX"params":X{"behavior":X"allow",X"downloadPath":Xdownload_path},
+XXXX}
+XXXXdriver.execute("send_command",Xparams)
+XXXXdriver.find_element_by_xpath("//button[contains(text(),'Export')]").click()
+XXXXawaitXgg.edit("`Processing..\n75%`")
+XXXXwhileXnotXos.path.isfile("./carbon.png"):
+XXXXXXXXawaitXasyncio.sleep(1)
+XXXXawaitXgg.edit("`Processing..\n100%`")
+XXXXfileX=X"./carbon.png"
+XXXXawaitXe.edit("`Uploading..`")
+XXXXawaitXtbot.send_file(
+XXXXXXXXe.chat_id,
+XXXXXXXXfile,
+XXXXXXXXcaption="MadeXusingX[Carbon](https://carbon.now.sh/about/),\
+XXXXXXXX\naXprojectXbyX[DawnXLabs](https://dawnlabs.io/)",
+XXXXXXXXforce_document=True,
+XXXX)
+XXXXos.remove("./carbon.png")
+XXXXdriver.quit()
 
 
-async def check_media(reply_message):
-    if reply_message and reply_message.media:
-        if reply_message.photo:
-            data = reply_message.photo
-        elif reply_message.document:
-            if (
-                DocumentAttributeFilename(file_name="AnimatedSticker.tgs")
-                in reply_message.media.document.attributes
-            ):
-                return False
-            if (
-                reply_message.gif
-                or reply_message.video
-                or reply_message.audio
-                or reply_message.voice
-            ):
-                return False
-            data = reply_message.media.document
-        else:
-            return False
-    else:
-        return False
-    if not data or data is None:
-        return False
-    return data
+@register(pattern="^/deepfry(?:X|$)(.*)")
+asyncXdefXdeepfryer(event):
+
+XXXXtry:
+XXXXXXXXfrycountX=Xint(event.pattern_match.group(1))
+XXXXXXXXifXfrycountX<X1:
+XXXXXXXXXXXXraiseXValueError
+XXXXexceptXValueError:
+XXXXXXXXfrycountX=X1
+XXXXifXevent.is_reply:
+XXXXXXXXreply_messageX=XawaitXevent.get_reply_message()
+XXXXXXXXdataX=XawaitXcheck_media(reply_message)
+XXXXXXXXifXisinstance(data,Xbool):
+XXXXXXXXXXXXawaitXevent.reply("`IXcan'tXdeepXfryXthat!`")
+XXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXawaitXevent.reply("`ReplyXtoXanXimageXorXstickerXtoXdeepXfryXit!`")
+XXXXXXXXreturn
+
+XXXXimageX=Xio.BytesIO()
+XXXXawaitXtbot.download_media(data,Ximage)
+XXXXimageX=XImage.open(image)
+
+XXXXforX_XinXrange(frycount):
+XXXXXXXXimageX=XawaitXdeepfry(image)
+XXXXfried_ioX=Xio.BytesIO()
+XXXXfried_io.nameX=X"image.jpeg"
+XXXXimage.save(fried_io,X"JPEG")
+XXXXfried_io.seek(0)
+XXXXawaitXevent.reply(file=fried_io)
 
 
-@register(pattern="^/type (.*)")
-async def typewriter(typew):
-
-    message = typew.pattern_match.group(1)
-    if message:
-        pass
-    else:
-        await typew.reply("`Give a text to type!`")
-        return
-    typing_symbol = "|"
-    old_text = ""
-    now = await typew.reply(typing_symbol)
-    await asyncio.sleep(2)
-    for character in message:
-        old_text = old_text + "" + character
-        typing_text = old_text + "" + typing_symbol
-        await now.edit(typing_text)
-        await asyncio.sleep(2)
-        await now.edit(old_text)
-        await asyncio.sleep(2)
-
-
-@register(pattern="^/sticklet (.*)")
-async def sticklet(event):
-
-    R = random.randint(0, 256)
-    G = random.randint(0, 256)
-    B = random.randint(0, 256)
-
-    # get the input text
-    # the text on which we would like to do the magic on
-    sticktext = event.pattern_match.group(1)
-
-    # delete the userbot command,
-    # i don't know why this is required
-    # await event.delete()
-
-    # https://docs.python.org/3/library/textwrap.html#textwrap.wrap
-    sticktext = textwrap.wrap(sticktext, width=10)
-    # converts back the list to a string
-    sticktext = "\n".join(sticktext)
-
-    image = Image.new("RGBA", (512, 512), (255, 255, 255, 0))
-    draw = ImageDraw.Draw(image)
-    fontsize = 230
-
-    FONT_FILE = await get_font_file(ubot, "@IndianBot_Fonts")
-
-    font = ImageFont.truetype(FONT_FILE, size=fontsize)
-
-    while draw.multiline_textsize(sticktext, font=font) > (512, 512):
-        fontsize -= 3
-        font = ImageFont.truetype(FONT_FILE, size=fontsize)
-
-    width, height = draw.multiline_textsize(sticktext, font=font)
-    draw.multiline_text(
-        ((512 - width) / 2, (512 - height) / 2), sticktext, font=font, fill=(R, G, B)
-    )
-
-    image_stream = io.BytesIO()
-    image_stream.name = "@Julia.webp"
-    image.save(image_stream, "WebP")
-    image_stream.seek(0)
-
-    # finally, reply the sticker
-    await event.reply(file=image_stream, reply_to=event.message.reply_to_msg_id)
-    # replacing upper line with this to get reply tags
-
-    # cleanup
-    try:
-        os.remove(FONT_FILE)
-    except BaseException:
-        pass
+asyncXdefXdeepfry(img:XImage)X->XImage:
+XXXXcoloursX=X(
+XXXXXXXX(randint(50,X200),Xrandint(40,X170),Xrandint(40,X190)),
+XXXXXXXX(randint(190,X255),Xrandint(170,X240),Xrandint(180,X250)),
+XXXX)
+XXXXimgX=Ximg.copy().convert("RGB")
+XXXXimgX=Ximg.convert("RGB")
+XXXXwidth,XheightX=Ximg.width,Ximg.height
+XXXXimgX=Ximg.resize(
+XXXXXXXX(int(widthX**Xuniform(0.8,X0.9)),Xint(heightX**Xuniform(0.8,X0.9))),
+XXXXXXXXresample=Image.LANCZOS,
+XXXX)
+XXXXimgX=Ximg.resize(
+XXXXXXXX(int(widthX**Xuniform(0.85,X0.95)),Xint(heightX**Xuniform(0.85,X0.95))),
+XXXXXXXXresample=Image.BILINEAR,
+XXXX)
+XXXXimgX=Ximg.resize(
+XXXXXXXX(int(widthX**Xuniform(0.89,X0.98)),Xint(heightX**Xuniform(0.89,X0.98))),
+XXXXXXXXresample=Image.BICUBIC,
+XXXX)
+XXXXimgX=Ximg.resize((width,Xheight),Xresample=Image.BICUBIC)
+XXXXimgX=XImageOps.posterize(img,Xrandint(3,X7))
+XXXXoverlayX=Ximg.split()[0]
+XXXXoverlayX=XImageEnhance.Contrast(overlay).enhance(uniform(1.0,X2.0))
+XXXXoverlayX=XImageEnhance.Brightness(overlay).enhance(uniform(1.0,X2.0))
+XXXXoverlayX=XImageOps.colorize(overlay,Xcolours[0],Xcolours[1])
+XXXXimgX=XImage.blend(img,Xoverlay,Xuniform(0.1,X0.4))
+XXXXimgX=XImageEnhance.Sharpness(img).enhance(randint(5,X300))
+XXXXreturnXimg
 
 
-async def get_font_file(client, channel_id):
-    # first get the font messages
-    font_file_message_s = await client.get_messages(
-        entity=channel_id,
-        filter=InputMessagesFilterDocument,
-        # this might cause FLOOD WAIT,
-        # if used too many times
-        limit=None,
-    )
-    # get a random font from the list of fonts
-    # https://docs.python.org/3/library/random.html#random.choice
-    font_file_message = random.choice(font_file_message_s)
-    # download and return the file path
-    return await client.download_media(font_file_message)
+asyncXdefXcheck_media(reply_message):
+XXXXifXreply_messageXandXreply_message.media:
+XXXXXXXXifXreply_message.photo:
+XXXXXXXXXXXXdataX=Xreply_message.photo
+XXXXXXXXelifXreply_message.document:
+XXXXXXXXXXXXifX(
+XXXXXXXXXXXXXXXXDocumentAttributeFilename(file_name="AnimatedSticker.tgs")
+XXXXXXXXXXXXXXXXinXreply_message.media.document.attributes
+XXXXXXXXXXXX):
+XXXXXXXXXXXXXXXXreturnXFalse
+XXXXXXXXXXXXifX(
+XXXXXXXXXXXXXXXXreply_message.gif
+XXXXXXXXXXXXXXXXorXreply_message.video
+XXXXXXXXXXXXXXXXorXreply_message.audio
+XXXXXXXXXXXXXXXXorXreply_message.voice
+XXXXXXXXXXXX):
+XXXXXXXXXXXXXXXXreturnXFalse
+XXXXXXXXXXXXdataX=Xreply_message.media.document
+XXXXXXXXelse:
+XXXXXXXXXXXXreturnXFalse
+XXXXelse:
+XXXXXXXXreturnXFalse
+XXXXifXnotXdataXorXdataXisXNone:
+XXXXXXXXreturnXFalse
+XXXXreturnXdata
 
 
-@register(pattern=r"^/(\w+)say (.*)")
-async def univsaye(cowmsg):
+@register(pattern="^/typeX(.*)")
+asyncXdefXtypewriter(typew):
 
-    """For .cowsay module, uniborg wrapper for cow which says things."""
-    if not cowmsg.text[0].isalpha() and cowmsg.text[0] not in ("#", "@"):
-        arg = cowmsg.pattern_match.group(1).lower()
-        text = cowmsg.pattern_match.group(2)
+XXXXmessageX=Xtypew.pattern_match.group(1)
+XXXXifXmessage:
+XXXXXXXXpass
+XXXXelse:
+XXXXXXXXawaitXtypew.reply("`GiveXaXtextXtoXtype!`")
+XXXXXXXXreturn
+XXXXtyping_symbolX=X"|"
+XXXXold_textX=X""
+XXXXnowX=XawaitXtypew.reply(typing_symbol)
+XXXXawaitXasyncio.sleep(2)
+XXXXforXcharacterXinXmessage:
+XXXXXXXXold_textX=Xold_textX+X""X+Xcharacter
+XXXXXXXXtyping_textX=Xold_textX+X""X+Xtyping_symbol
+XXXXXXXXawaitXnow.edit(typing_text)
+XXXXXXXXawaitXasyncio.sleep(2)
+XXXXXXXXawaitXnow.edit(old_text)
+XXXXXXXXawaitXasyncio.sleep(2)
 
-        if arg == "cow":
-            arg = "default"
-        if arg not in cow.COWACTERS:
-            return
-        cheese = cow.get_cow(arg)
-        cheese = cheese()
 
-        await cowmsg.reply(f"`{cheese.milk(text).replace('`', '´')}`")
+@register(pattern="^/stickletX(.*)")
+asyncXdefXsticklet(event):
+
+XXXXRX=Xrandom.randint(0,X256)
+XXXXGX=Xrandom.randint(0,X256)
+XXXXBX=Xrandom.randint(0,X256)
+
+XXXX#XgetXtheXinputXtext
+XXXX#XtheXtextXonXwhichXweXwouldXlikeXtoXdoXtheXmagicXon
+XXXXsticktextX=Xevent.pattern_match.group(1)
+
+XXXX#XdeleteXtheXuserbotXcommand,
+XXXX#XiXdon'tXknowXwhyXthisXisXrequired
+XXXX#XawaitXevent.delete()
+
+XXXX#Xhttps://docs.python.org/3/library/textwrap.html#textwrap.wrap
+XXXXsticktextX=Xtextwrap.wrap(sticktext,Xwidth=10)
+XXXX#XconvertsXbackXtheXlistXtoXaXstring
+XXXXsticktextX=X"\n".join(sticktext)
+
+XXXXimageX=XImage.new("RGBA",X(512,X512),X(255,X255,X255,X0))
+XXXXdrawX=XImageDraw.Draw(image)
+XXXXfontsizeX=X230
+
+XXXXFONT_FILEX=XawaitXget_font_file(ubot,X"@IndianBot_Fonts")
+
+XXXXfontX=XImageFont.truetype(FONT_FILE,Xsize=fontsize)
+
+XXXXwhileXdraw.multiline_textsize(sticktext,Xfont=font)X>X(512,X512):
+XXXXXXXXfontsizeX-=X3
+XXXXXXXXfontX=XImageFont.truetype(FONT_FILE,Xsize=fontsize)
+
+XXXXwidth,XheightX=Xdraw.multiline_textsize(sticktext,Xfont=font)
+XXXXdraw.multiline_text(
+XXXXXXXX((512X-Xwidth)X/X2,X(512X-Xheight)X/X2),Xsticktext,Xfont=font,Xfill=(R,XG,XB)
+XXXX)
+
+XXXXimage_streamX=Xio.BytesIO()
+XXXXimage_stream.nameX=X"@Julia.webp"
+XXXXimage.save(image_stream,X"WebP")
+XXXXimage_stream.seek(0)
+
+XXXX#Xfinally,XreplyXtheXsticker
+XXXXawaitXevent.reply(file=image_stream,Xreply_to=event.message.reply_to_msg_id)
+XXXX#XreplacingXupperXlineXwithXthisXtoXgetXreplyXtags
+
+XXXX#Xcleanup
+XXXXtry:
+XXXXXXXXos.remove(FONT_FILE)
+XXXXexceptXBaseException:
+XXXXXXXXpass
+
+
+asyncXdefXget_font_file(client,Xchannel_id):
+XXXX#XfirstXgetXtheXfontXmessages
+XXXXfont_file_message_sX=XawaitXclient.get_messages(
+XXXXXXXXentity=channel_id,
+XXXXXXXXfilter=InputMessagesFilterDocument,
+XXXXXXXX#XthisXmightXcauseXFLOODXWAIT,
+XXXXXXXX#XifXusedXtooXmanyXtimes
+XXXXXXXXlimit=None,
+XXXX)
+XXXX#XgetXaXrandomXfontXfromXtheXlistXofXfonts
+XXXX#Xhttps://docs.python.org/3/library/random.html#random.choice
+XXXXfont_file_messageX=Xrandom.choice(font_file_message_s)
+XXXX#XdownloadXandXreturnXtheXfileXpath
+XXXXreturnXawaitXclient.download_media(font_file_message)
+
+
+@register(pattern=r"^/(\w+)sayX(.*)")
+asyncXdefXunivsaye(cowmsg):
+
+XXXX"""ForX.cowsayXmodule,XuniborgXwrapperXforXcowXwhichXsaysXthings."""
+XXXXifXnotXcowmsg.text[0].isalpha()XandXcowmsg.text[0]XnotXinX("#",X"@"):
+XXXXXXXXargX=Xcowmsg.pattern_match.group(1).lower()
+XXXXXXXXtextX=Xcowmsg.pattern_match.group(2)
+
+XXXXXXXXifXargX==X"cow":
+XXXXXXXXXXXXargX=X"default"
+XXXXXXXXifXargXnotXinXcow.COWACTERS:
+XXXXXXXXXXXXreturn
+XXXXXXXXcheeseX=Xcow.get_cow(arg)
+XXXXXXXXcheeseX=Xcheese()
+
+XXXXXXXXawaitXcowmsg.reply(f"`{cheese.milk(text).replace('`',X'´')}`")
 
 
 @register(pattern="^/basketball$")
-async def _(event):
-    if event.fwd_from:
-        return
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
 
-    input_str = print(randrange(6))
-    r = await event.reply(file=InputMediaDice("🏀"))
-    if input_str:
-        try:
-            required_number = int(input_str)
-            while not r.media.value == required_number:
-                await r.delete()
-                r = await event.reply(file=InputMediaDice("🏀"))
-        except BaseException:
-            pass
+XXXXinput_strX=Xprint(randrange(6))
+XXXXrX=XawaitXevent.reply(file=InputMediaDice("🏀"))
+XXXXifXinput_str:
+XXXXXXXXtry:
+XXXXXXXXXXXXrequired_numberX=Xint(input_str)
+XXXXXXXXXXXXwhileXnotXr.media.valueX==Xrequired_number:
+XXXXXXXXXXXXXXXXawaitXr.delete()
+XXXXXXXXXXXXXXXXrX=XawaitXevent.reply(file=InputMediaDice("🏀"))
+XXXXXXXXexceptXBaseException:
+XXXXXXXXXXXXpass
 
 
 @register(pattern="^/jackpot$")
-async def _(event):
-    if event.fwd_from:
-        return
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
 
-    await event.reply(file=InputMediaDice("🎰"))
+XXXXawaitXevent.reply(file=InputMediaDice("🎰"))
 
 
 @register(pattern="^/dart$")
-async def _(event):
-    if event.fwd_from:
-        return
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
 
-    input_str = print(randrange(7))
-    r = await event.reply(file=InputMediaDice("🎯"))
-    if input_str:
-        try:
-            required_number = int(input_str)
-            while not r.media.value == required_number:
-                await r.delete()
-                r = await event.reply(file=InputMediaDice("🎯"))
-        except BaseException:
-            pass
+XXXXinput_strX=Xprint(randrange(7))
+XXXXrX=XawaitXevent.reply(file=InputMediaDice("🎯"))
+XXXXifXinput_str:
+XXXXXXXXtry:
+XXXXXXXXXXXXrequired_numberX=Xint(input_str)
+XXXXXXXXXXXXwhileXnotXr.media.valueX==Xrequired_number:
+XXXXXXXXXXXXXXXXawaitXr.delete()
+XXXXXXXXXXXXXXXXrX=XawaitXevent.reply(file=InputMediaDice("🎯"))
+XXXXXXXXexceptXBaseException:
+XXXXXXXXXXXXpass
 
 
-# Oringinal Source from Nicegrill: https://github.com/erenmetesar/NiceGrill/
-# Ported to Lynda by: @pokurt
+#XOringinalXSourceXfromXNicegrill:Xhttps://github.com/erenmetesar/NiceGrill/
+#XPortedXtoXLyndaXby:X@pokurt
 
-COLORS = [
-    "#F07975",
-    "#F49F69",
-    "#F9C84A",
-    "#8CC56E",
-    "#6CC7DC",
-    "#80C1FA",
-    "#BCB3F9",
-    "#E181AC",
+COLORSX=X[
+XXXX"#F07975",
+XXXX"#F49F69",
+XXXX"#F9C84A",
+XXXX"#8CC56E",
+XXXX"#6CC7DC",
+XXXX"#80C1FA",
+XXXX"#BCB3F9",
+XXXX"#E181AC",
 ]
 
 
-async def process(msg, user, client, reply, replied=None):
-    if not os.path.isdir("resources"):
-        os.mkdir("resources", 0o755)
-        urllib.request.urlretrieve(
-            "https://github.com/erenmetesar/modules-repo/raw/master/Roboto-Regular.ttf",
-            "resources/Roboto-Regular.ttf",
-        )
-        urllib.request.urlretrieve(
-            "https://github.com/erenmetesar/modules-repo/raw/master/Quivira.otf",
-            "resources/Quivira.otf",
-        )
-        urllib.request.urlretrieve(
-            "https://github.com/erenmetesar/modules-repo/raw/master/Roboto-Medium.ttf",
-            "resources/Roboto-Medium.ttf",
-        )
-        urllib.request.urlretrieve(
-            "https://github.com/erenmetesar/modules-repo/raw/master/DroidSansMono.ttf",
-            "resources/DroidSansMono.ttf",
-        )
-        urllib.request.urlretrieve(
-            "https://github.com/erenmetesar/modules-repo/raw/master/Roboto-Italic.ttf",
-            "resources/Roboto-Italic.ttf",
-        )
+asyncXdefXprocess(msg,Xuser,Xclient,Xreply,Xreplied=None):
+XXXXifXnotXos.path.isdir("resources"):
+XXXXXXXXos.mkdir("resources",X0o755)
+XXXXXXXXurllib.request.urlretrieve(
+XXXXXXXXXXXX"https://github.com/erenmetesar/modules-repo/raw/master/Roboto-Regular.ttf",
+XXXXXXXXXXXX"resources/Roboto-Regular.ttf",
+XXXXXXXX)
+XXXXXXXXurllib.request.urlretrieve(
+XXXXXXXXXXXX"https://github.com/erenmetesar/modules-repo/raw/master/Quivira.otf",
+XXXXXXXXXXXX"resources/Quivira.otf",
+XXXXXXXX)
+XXXXXXXXurllib.request.urlretrieve(
+XXXXXXXXXXXX"https://github.com/erenmetesar/modules-repo/raw/master/Roboto-Medium.ttf",
+XXXXXXXXXXXX"resources/Roboto-Medium.ttf",
+XXXXXXXX)
+XXXXXXXXurllib.request.urlretrieve(
+XXXXXXXXXXXX"https://github.com/erenmetesar/modules-repo/raw/master/DroidSansMono.ttf",
+XXXXXXXXXXXX"resources/DroidSansMono.ttf",
+XXXXXXXX)
+XXXXXXXXurllib.request.urlretrieve(
+XXXXXXXXXXXX"https://github.com/erenmetesar/modules-repo/raw/master/Roboto-Italic.ttf",
+XXXXXXXXXXXX"resources/Roboto-Italic.ttf",
+XXXXXXXX)
 
-    # Importıng fonts and gettings the size of text
-    font = ImageFont.truetype("resources/Roboto-Medium.ttf", 43, encoding="utf-16")
-    font2 = ImageFont.truetype("resources/Roboto-Regular.ttf", 33, encoding="utf-16")
-    mono = ImageFont.truetype("resources/DroidSansMono.ttf", 30, encoding="utf-16")
-    italic = ImageFont.truetype("resources/Roboto-Italic.ttf", 33, encoding="utf-16")
-    fallback = ImageFont.truetype("resources/Quivira.otf", 43, encoding="utf-16")
+XXXX#XImportıngXfontsXandXgettingsXtheXsizeXofXtext
+XXXXfontX=XImageFont.truetype("resources/Roboto-Medium.ttf",X43,Xencoding="utf-16")
+XXXXfont2X=XImageFont.truetype("resources/Roboto-Regular.ttf",X33,Xencoding="utf-16")
+XXXXmonoX=XImageFont.truetype("resources/DroidSansMono.ttf",X30,Xencoding="utf-16")
+XXXXitalicX=XImageFont.truetype("resources/Roboto-Italic.ttf",X33,Xencoding="utf-16")
+XXXXfallbackX=XImageFont.truetype("resources/Quivira.otf",X43,Xencoding="utf-16")
 
-    # Splitting text
-    maxlength = 0
-    width = 0
-    text = []
-    for line in msg.split("\n"):
-        length = len(line)
-        if length > 43:
-            text += textwrap.wrap(line, 43)
-            maxlength = 43
-            if width < fallback.getsize(line[:43])[0]:
-                if "MessageEntityCode" in str(reply.entities):
-                    width = mono.getsize(line[:43])[0] + 30
-                else:
-                    width = fallback.getsize(line[:43])[0]
-            next
-        else:
-            text.append(line + "\n")
-            if width < fallback.getsize(line)[0]:
-                if "MessageEntityCode" in str(reply.entities):
-                    width = mono.getsize(line)[0] + 30
-                else:
-                    width = fallback.getsize(line)[0]
-            if maxlength < length:
-                maxlength = length
+XXXX#XSplittingXtext
+XXXXmaxlengthX=X0
+XXXXwidthX=X0
+XXXXtextX=X[]
+XXXXforXlineXinXmsg.split("\n"):
+XXXXXXXXlengthX=Xlen(line)
+XXXXXXXXifXlengthX>X43:
+XXXXXXXXXXXXtextX+=Xtextwrap.wrap(line,X43)
+XXXXXXXXXXXXmaxlengthX=X43
+XXXXXXXXXXXXifXwidthX<Xfallback.getsize(line[:43])[0]:
+XXXXXXXXXXXXXXXXifX"MessageEntityCode"XinXstr(reply.entities):
+XXXXXXXXXXXXXXXXXXXXwidthX=Xmono.getsize(line[:43])[0]X+X30
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXwidthX=Xfallback.getsize(line[:43])[0]
+XXXXXXXXXXXXnext
+XXXXXXXXelse:
+XXXXXXXXXXXXtext.append(lineX+X"\n")
+XXXXXXXXXXXXifXwidthX<Xfallback.getsize(line)[0]:
+XXXXXXXXXXXXXXXXifX"MessageEntityCode"XinXstr(reply.entities):
+XXXXXXXXXXXXXXXXXXXXwidthX=Xmono.getsize(line)[0]X+X30
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXwidthX=Xfallback.getsize(line)[0]
+XXXXXXXXXXXXifXmaxlengthX<Xlength:
+XXXXXXXXXXXXXXXXmaxlengthX=Xlength
 
-    title = ""
-    try:
-        details = await client(
-            functions.channels.GetParticipantRequest(reply.chat_id, user.id)
-        )
-        if isinstance(details.participant, types.ChannelParticipantCreator):
-            title = details.participant.rank if details.participant.rank else "Creator"
-        elif isinstance(details.participant, types.ChannelParticipantAdmin):
-            title = details.participant.rank if details.participant.rank else "Admin"
-    except TypeError:
-        pass
-    titlewidth = font2.getsize(title)[0]
+XXXXtitleX=X""
+XXXXtry:
+XXXXXXXXdetailsX=XawaitXclient(
+XXXXXXXXXXXXfunctions.channels.GetParticipantRequest(reply.chat_id,Xuser.id)
+XXXXXXXX)
+XXXXXXXXifXisinstance(details.participant,Xtypes.ChannelParticipantCreator):
+XXXXXXXXXXXXtitleX=Xdetails.participant.rankXifXdetails.participant.rankXelseX"Creator"
+XXXXXXXXelifXisinstance(details.participant,Xtypes.ChannelParticipantAdmin):
+XXXXXXXXXXXXtitleX=Xdetails.participant.rankXifXdetails.participant.rankXelseX"Admin"
+XXXXexceptXTypeError:
+XXXXXXXXpass
+XXXXtitlewidthX=Xfont2.getsize(title)[0]
 
-    # Get user name
-    lname = "" if not user.last_name else user.last_name
-    tot = user.first_name + " " + lname
+XXXX#XGetXuserXname
+XXXXlnameX=X""XifXnotXuser.last_nameXelseXuser.last_name
+XXXXtotX=Xuser.first_nameX+X"X"X+Xlname
 
-    namewidth = fallback.getsize(tot)[0] + 10
+XXXXnamewidthX=Xfallback.getsize(tot)[0]X+X10
 
-    if namewidth > width:
-        width = namewidth
-    width += titlewidth + 30 if titlewidth > width - namewidth else -(titlewidth - 30)
-    height = len(text) * 40
+XXXXifXnamewidthX>Xwidth:
+XXXXXXXXwidthX=Xnamewidth
+XXXXwidthX+=XtitlewidthX+X30XifXtitlewidthX>XwidthX-XnamewidthXelseX-(titlewidthX-X30)
+XXXXheightX=Xlen(text)X*X40
 
-    # Profile Photo BG
-    pfpbg = Image.new("RGBA", (125, 600), (0, 0, 0, 0))
+XXXX#XProfileXPhotoXBG
+XXXXpfpbgX=XImage.new("RGBA",X(125,X600),X(0,X0,X0,X0))
 
-    # Draw Template
-    top, middle, bottom = await drawer(width, height)
-    # Profile Photo Check and Fetch
-    yes = False
-    color = random.choice(COLORS)
-    async for photo in client.iter_profile_photos(user, limit=1):
-        yes = True
-    if yes:
-        pfp = await client.download_profile_photo(user)
-        paste = Image.open(pfp)
-        os.remove(pfp)
-        paste.thumbnail((105, 105))
+XXXX#XDrawXTemplate
+XXXXtop,Xmiddle,XbottomX=XawaitXdrawer(width,Xheight)
+XXXX#XProfileXPhotoXCheckXandXFetch
+XXXXyesX=XFalse
+XXXXcolorX=Xrandom.choice(COLORS)
+XXXXasyncXforXphotoXinXclient.iter_profile_photos(user,Xlimit=1):
+XXXXXXXXyesX=XTrue
+XXXXifXyes:
+XXXXXXXXpfpX=XawaitXclient.download_profile_photo(user)
+XXXXXXXXpasteX=XImage.open(pfp)
+XXXXXXXXos.remove(pfp)
+XXXXXXXXpaste.thumbnail((105,X105))
 
-        # Mask
-        mask_im = Image.new("L", paste.size, 0)
-        draw = ImageDraw.Draw(mask_im)
-        draw.ellipse((0, 0, 105, 105), fill=255)
+XXXXXXXX#XMask
+XXXXXXXXmask_imX=XImage.new("L",Xpaste.size,X0)
+XXXXXXXXdrawX=XImageDraw.Draw(mask_im)
+XXXXXXXXdraw.ellipse((0,X0,X105,X105),Xfill=255)
 
-        # Apply Mask
-        pfpbg.paste(paste, (0, 0), mask_im)
-    else:
-        paste, color = await no_photo(user, tot)
-        pfpbg.paste(paste, (0, 0))
+XXXXXXXX#XApplyXMask
+XXXXXXXXpfpbg.paste(paste,X(0,X0),Xmask_im)
+XXXXelse:
+XXXXXXXXpaste,XcolorX=XawaitXno_photo(user,Xtot)
+XXXXXXXXpfpbg.paste(paste,X(0,X0))
 
-    # Creating a big canvas to gather all the elements
-    canvassize = (
-        middle.width + pfpbg.width,
-        top.height + middle.height + bottom.height,
-    )
-    canvas = Image.new("RGBA", canvassize)
-    draw = ImageDraw.Draw(canvas)
+XXXX#XCreatingXaXbigXcanvasXtoXgatherXallXtheXelements
+XXXXcanvassizeX=X(
+XXXXXXXXmiddle.widthX+Xpfpbg.width,
+XXXXXXXXtop.heightX+Xmiddle.heightX+Xbottom.height,
+XXXX)
+XXXXcanvasX=XImage.new("RGBA",Xcanvassize)
+XXXXdrawX=XImageDraw.Draw(canvas)
 
-    y = 80
-    if replied:
-        # Creating a big canvas to gather all the elements
-        replname = "" if not replied.sender.last_name else replied.sender.last_name
-        reptot = replied.sender.first_name + " " + replname
-        font2.getsize(reptot)[0]
-        if reply.sticker:
-            sticker = await reply.download_media()
-            stimg = Image.open(sticker)
-            canvas = canvas.resize((stimg.width + pfpbg.width, stimg.height + 160))
-            top = Image.new("RGBA", (200 + stimg.width, 300), (29, 29, 29, 255))
-            draw = ImageDraw.Draw(top)
-            await replied_user(draw, reptot, replied.message.replace("\n", " "), 20)
-            top = top.crop((135, 70, top.width, 300))
-            canvas.paste(pfpbg, (0, 0))
-            canvas.paste(top, (pfpbg.width + 10, 0))
-            canvas.paste(stimg, (pfpbg.width + 10, 140))
-            os.remove(sticker)
-            return True, canvas
-        canvas = canvas.resize((canvas.width + 60, canvas.height + 120))
-        top, middle, bottom = await drawer(middle.width + 60, height + 105)
-        canvas.paste(pfpbg, (0, 0))
-        canvas.paste(top, (pfpbg.width, 0))
-        canvas.paste(middle, (pfpbg.width, top.height))
-        canvas.paste(bottom, (pfpbg.width, top.height + middle.height))
-        draw = ImageDraw.Draw(canvas)
-        if replied.sticker:
-            replied.text = "Sticker"
-        elif replied.photo:
-            replied.text = "Photo"
-        elif replied.audio:
-            replied.text = "Audio"
-        elif replied.voice:
-            replied.text = "Voice Message"
-        elif replied.document:
-            replied.text = "Document"
-        await replied_user(
-            draw,
-            reptot,
-            replied.message.replace("\n", " "),
-            maxlength + len(title),
-            len(title),
-        )
-        y = 200
-    elif reply.sticker:
-        sticker = await reply.download_media()
-        stimg = Image.open(sticker)
-        canvas = canvas.resize((stimg.width + pfpbg.width + 30, stimg.height + 10))
-        canvas.paste(pfpbg, (0, 0))
-        canvas.paste(stimg, (pfpbg.width + 10, 10))
-        os.remove(sticker)
-        return True, canvas
-    elif reply.document and not reply.audio and not reply.audio:
-        docname = ".".join(reply.document.attributes[-1].file_name.split(".")[:-1])
-        doctype = reply.document.attributes[-1].file_name.split(".")[-1].upper()
-        if reply.document.size < 1024:
-            docsize = str(reply.document.size) + " Bytes"
-        elif reply.document.size < 1048576:
-            docsize = str(round(reply.document.size / 1024, 2)) + " KB "
-        elif reply.document.size < 1073741824:
-            docsize = str(round(reply.document.size / 1024 ** 2, 2)) + " MB "
-        else:
-            docsize = str(round(reply.document.size / 1024 ** 3, 2)) + " GB "
-        docbglen = (
-            font.getsize(docsize)[0]
-            if font.getsize(docsize)[0] > font.getsize(docname)[0]
-            else font.getsize(docname)[0]
-        )
-        canvas = canvas.resize((pfpbg.width + width + docbglen, 160 + height))
-        top, middle, bottom = await drawer(width + docbglen, height + 30)
-        canvas.paste(pfpbg, (0, 0))
-        canvas.paste(top, (pfpbg.width, 0))
-        canvas.paste(middle, (pfpbg.width, top.height))
-        canvas.paste(bottom, (pfpbg.width, top.height + middle.height))
-        canvas = await doctype(docname, docsize, doctype, canvas)
-        y = 80 if text else 0
-    else:
-        canvas.paste(pfpbg, (0, 0))
-        canvas.paste(top, (pfpbg.width, 0))
-        canvas.paste(middle, (pfpbg.width, top.height))
-        canvas.paste(bottom, (pfpbg.width, top.height + middle.height))
-        y = 85
+XXXXyX=X80
+XXXXifXreplied:
+XXXXXXXX#XCreatingXaXbigXcanvasXtoXgatherXallXtheXelements
+XXXXXXXXreplnameX=X""XifXnotXreplied.sender.last_nameXelseXreplied.sender.last_name
+XXXXXXXXreptotX=Xreplied.sender.first_nameX+X"X"X+Xreplname
+XXXXXXXXfont2.getsize(reptot)[0]
+XXXXXXXXifXreply.sticker:
+XXXXXXXXXXXXstickerX=XawaitXreply.download_media()
+XXXXXXXXXXXXstimgX=XImage.open(sticker)
+XXXXXXXXXXXXcanvasX=Xcanvas.resize((stimg.widthX+Xpfpbg.width,Xstimg.heightX+X160))
+XXXXXXXXXXXXtopX=XImage.new("RGBA",X(200X+Xstimg.width,X300),X(29,X29,X29,X255))
+XXXXXXXXXXXXdrawX=XImageDraw.Draw(top)
+XXXXXXXXXXXXawaitXreplied_user(draw,Xreptot,Xreplied.message.replace("\n",X"X"),X20)
+XXXXXXXXXXXXtopX=Xtop.crop((135,X70,Xtop.width,X300))
+XXXXXXXXXXXXcanvas.paste(pfpbg,X(0,X0))
+XXXXXXXXXXXXcanvas.paste(top,X(pfpbg.widthX+X10,X0))
+XXXXXXXXXXXXcanvas.paste(stimg,X(pfpbg.widthX+X10,X140))
+XXXXXXXXXXXXos.remove(sticker)
+XXXXXXXXXXXXreturnXTrue,Xcanvas
+XXXXXXXXcanvasX=Xcanvas.resize((canvas.widthX+X60,Xcanvas.heightX+X120))
+XXXXXXXXtop,Xmiddle,XbottomX=XawaitXdrawer(middle.widthX+X60,XheightX+X105)
+XXXXXXXXcanvas.paste(pfpbg,X(0,X0))
+XXXXXXXXcanvas.paste(top,X(pfpbg.width,X0))
+XXXXXXXXcanvas.paste(middle,X(pfpbg.width,Xtop.height))
+XXXXXXXXcanvas.paste(bottom,X(pfpbg.width,Xtop.heightX+Xmiddle.height))
+XXXXXXXXdrawX=XImageDraw.Draw(canvas)
+XXXXXXXXifXreplied.sticker:
+XXXXXXXXXXXXreplied.textX=X"Sticker"
+XXXXXXXXelifXreplied.photo:
+XXXXXXXXXXXXreplied.textX=X"Photo"
+XXXXXXXXelifXreplied.audio:
+XXXXXXXXXXXXreplied.textX=X"Audio"
+XXXXXXXXelifXreplied.voice:
+XXXXXXXXXXXXreplied.textX=X"VoiceXMessage"
+XXXXXXXXelifXreplied.document:
+XXXXXXXXXXXXreplied.textX=X"Document"
+XXXXXXXXawaitXreplied_user(
+XXXXXXXXXXXXdraw,
+XXXXXXXXXXXXreptot,
+XXXXXXXXXXXXreplied.message.replace("\n",X"X"),
+XXXXXXXXXXXXmaxlengthX+Xlen(title),
+XXXXXXXXXXXXlen(title),
+XXXXXXXX)
+XXXXXXXXyX=X200
+XXXXelifXreply.sticker:
+XXXXXXXXstickerX=XawaitXreply.download_media()
+XXXXXXXXstimgX=XImage.open(sticker)
+XXXXXXXXcanvasX=Xcanvas.resize((stimg.widthX+Xpfpbg.widthX+X30,Xstimg.heightX+X10))
+XXXXXXXXcanvas.paste(pfpbg,X(0,X0))
+XXXXXXXXcanvas.paste(stimg,X(pfpbg.widthX+X10,X10))
+XXXXXXXXos.remove(sticker)
+XXXXXXXXreturnXTrue,Xcanvas
+XXXXelifXreply.documentXandXnotXreply.audioXandXnotXreply.audio:
+XXXXXXXXdocnameX=X".".join(reply.document.attributes[-1].file_name.split(".")[:-1])
+XXXXXXXXdoctypeX=Xreply.document.attributes[-1].file_name.split(".")[-1].upper()
+XXXXXXXXifXreply.document.sizeX<X1024:
+XXXXXXXXXXXXdocsizeX=Xstr(reply.document.size)X+X"XBytes"
+XXXXXXXXelifXreply.document.sizeX<X1048576:
+XXXXXXXXXXXXdocsizeX=Xstr(round(reply.document.sizeX/X1024,X2))X+X"XKBX"
+XXXXXXXXelifXreply.document.sizeX<X1073741824:
+XXXXXXXXXXXXdocsizeX=Xstr(round(reply.document.sizeX/X1024X**X2,X2))X+X"XMBX"
+XXXXXXXXelse:
+XXXXXXXXXXXXdocsizeX=Xstr(round(reply.document.sizeX/X1024X**X3,X2))X+X"XGBX"
+XXXXXXXXdocbglenX=X(
+XXXXXXXXXXXXfont.getsize(docsize)[0]
+XXXXXXXXXXXXifXfont.getsize(docsize)[0]X>Xfont.getsize(docname)[0]
+XXXXXXXXXXXXelseXfont.getsize(docname)[0]
+XXXXXXXX)
+XXXXXXXXcanvasX=Xcanvas.resize((pfpbg.widthX+XwidthX+Xdocbglen,X160X+Xheight))
+XXXXXXXXtop,Xmiddle,XbottomX=XawaitXdrawer(widthX+Xdocbglen,XheightX+X30)
+XXXXXXXXcanvas.paste(pfpbg,X(0,X0))
+XXXXXXXXcanvas.paste(top,X(pfpbg.width,X0))
+XXXXXXXXcanvas.paste(middle,X(pfpbg.width,Xtop.height))
+XXXXXXXXcanvas.paste(bottom,X(pfpbg.width,Xtop.heightX+Xmiddle.height))
+XXXXXXXXcanvasX=XawaitXdoctype(docname,Xdocsize,Xdoctype,Xcanvas)
+XXXXXXXXyX=X80XifXtextXelseX0
+XXXXelse:
+XXXXXXXXcanvas.paste(pfpbg,X(0,X0))
+XXXXXXXXcanvas.paste(top,X(pfpbg.width,X0))
+XXXXXXXXcanvas.paste(middle,X(pfpbg.width,Xtop.height))
+XXXXXXXXcanvas.paste(bottom,X(pfpbg.width,Xtop.heightX+Xmiddle.height))
+XXXXXXXXyX=X85
 
-    # Writing User's Name
-    space = pfpbg.width + 30
-    namefallback = ImageFont.truetype("resources/Quivira.otf", 43, encoding="utf-16")
-    for letter in tot:
-        if letter in emoji.UNICODE_EMOJI:
-            newemoji, mask = await emoji_fetch(letter)
-            canvas.paste(newemoji, (space, 24), mask)
-            space += 40
-        else:
-            if not await fontTest(letter):
-                draw.text((space, 20), letter, font=namefallback, fill=color)
-                space += namefallback.getsize(letter)[0]
-            else:
-                draw.text((space, 20), letter, font=font, fill=color)
-                space += font.getsize(letter)[0]
+XXXX#XWritingXUser'sXName
+XXXXspaceX=Xpfpbg.widthX+X30
+XXXXnamefallbackX=XImageFont.truetype("resources/Quivira.otf",X43,Xencoding="utf-16")
+XXXXforXletterXinXtot:
+XXXXXXXXifXletterXinXemoji.UNICODE_EMOJI:
+XXXXXXXXXXXXnewemoji,XmaskX=XawaitXemoji_fetch(letter)
+XXXXXXXXXXXXcanvas.paste(newemoji,X(space,X24),Xmask)
+XXXXXXXXXXXXspaceX+=X40
+XXXXXXXXelse:
+XXXXXXXXXXXXifXnotXawaitXfontTest(letter):
+XXXXXXXXXXXXXXXXdraw.text((space,X20),Xletter,Xfont=namefallback,Xfill=color)
+XXXXXXXXXXXXXXXXspaceX+=Xnamefallback.getsize(letter)[0]
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXdraw.text((space,X20),Xletter,Xfont=font,Xfill=color)
+XXXXXXXXXXXXXXXXspaceX+=Xfont.getsize(letter)[0]
 
-    if title:
-        draw.text(
-            (canvas.width - titlewidth - 20, 25), title, font=font2, fill="#898989"
-        )
+XXXXifXtitle:
+XXXXXXXXdraw.text(
+XXXXXXXXXXXX(canvas.widthX-XtitlewidthX-X20,X25),Xtitle,Xfont=font2,Xfill="#898989"
+XXXXXXXX)
 
-    # Writing all separating emojis and regular texts
-    x = pfpbg.width + 30
-    bold, mono, italic, link = await get_entity(reply)
-    index = 0
-    emojicount = 0
-    textfallback = ImageFont.truetype("resources/Quivira.otf", 33, encoding="utf-16")
-    textcolor = "white"
-    for line in text:
-        for letter in line:
-            index = (
-                msg.find(letter) if emojicount == 0 else msg.find(letter) + emojicount
-            )
-            for offset, length in bold.items():
-                if index in range(offset, length):
-                    font2 = ImageFont.truetype(
-                        "resources/Roboto-Medium.ttf", 33, encoding="utf-16"
-                    )
-                    textcolor = "white"
-            for offset, length in italic.items():
-                if index in range(offset, length):
-                    font2 = ImageFont.truetype(
-                        "resources/Roboto-Italic.ttf", 33, encoding="utf-16"
-                    )
-                    textcolor = "white"
-            for offset, length in mono.items():
-                if index in range(offset, length):
-                    font2 = ImageFont.truetype(
-                        "resources/DroidSansMono.ttf", 30, encoding="utf-16"
-                    )
-                    textcolor = "white"
-            for offset, length in link.items():
-                if index in range(offset, length):
-                    font2 = ImageFont.truetype(
-                        "resources/Roboto-Regular.ttf", 30, encoding="utf-16"
-                    )
-                    textcolor = "#898989"
-            if letter in emoji.UNICODE_EMOJI:
-                newemoji, mask = await emoji_fetch(letter)
-                canvas.paste(newemoji, (x, y - 2), mask)
-                x += 45
-                emojicount += 1
-            else:
-                if not await fontTest(letter):
-                    draw.text((x, y), letter, font=textfallback, fill=textcolor)
-                    x += textfallback.getsize(letter)[0]
-                else:
-                    draw.text((x, y), letter, font=font2, fill=textcolor)
-                    x += font2.getsize(letter)[0]
-            msg = msg.replace(letter, "¶", 1)
-        y += 40
-        x = pfpbg.width + 30
-    return True, canvas
-
-
-async def drawer(width, height):
-    # Top part
-    top = Image.new("RGBA", (width, 20), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(top)
-    draw.line((10, 0, top.width - 20, 0), fill=(29, 29, 29, 255), width=50)
-    draw.pieslice((0, 0, 30, 50), 180, 270, fill=(29, 29, 29, 255))
-    draw.pieslice((top.width - 75, 0, top.width, 50), 270, 360, fill=(29, 29, 29, 255))
-
-    # Middle part
-    middle = Image.new("RGBA", (top.width, height + 75), (29, 29, 29, 255))
-
-    # Bottom part
-    bottom = ImageOps.flip(top)
-
-    return top, middle, bottom
+XXXX#XWritingXallXseparatingXemojisXandXregularXtexts
+XXXXxX=Xpfpbg.widthX+X30
+XXXXbold,Xmono,Xitalic,XlinkX=XawaitXget_entity(reply)
+XXXXindexX=X0
+XXXXemojicountX=X0
+XXXXtextfallbackX=XImageFont.truetype("resources/Quivira.otf",X33,Xencoding="utf-16")
+XXXXtextcolorX=X"white"
+XXXXforXlineXinXtext:
+XXXXXXXXforXletterXinXline:
+XXXXXXXXXXXXindexX=X(
+XXXXXXXXXXXXXXXXmsg.find(letter)XifXemojicountX==X0XelseXmsg.find(letter)X+Xemojicount
+XXXXXXXXXXXX)
+XXXXXXXXXXXXforXoffset,XlengthXinXbold.items():
+XXXXXXXXXXXXXXXXifXindexXinXrange(offset,Xlength):
+XXXXXXXXXXXXXXXXXXXXfont2X=XImageFont.truetype(
+XXXXXXXXXXXXXXXXXXXXXXXX"resources/Roboto-Medium.ttf",X33,Xencoding="utf-16"
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXtextcolorX=X"white"
+XXXXXXXXXXXXforXoffset,XlengthXinXitalic.items():
+XXXXXXXXXXXXXXXXifXindexXinXrange(offset,Xlength):
+XXXXXXXXXXXXXXXXXXXXfont2X=XImageFont.truetype(
+XXXXXXXXXXXXXXXXXXXXXXXX"resources/Roboto-Italic.ttf",X33,Xencoding="utf-16"
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXtextcolorX=X"white"
+XXXXXXXXXXXXforXoffset,XlengthXinXmono.items():
+XXXXXXXXXXXXXXXXifXindexXinXrange(offset,Xlength):
+XXXXXXXXXXXXXXXXXXXXfont2X=XImageFont.truetype(
+XXXXXXXXXXXXXXXXXXXXXXXX"resources/DroidSansMono.ttf",X30,Xencoding="utf-16"
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXtextcolorX=X"white"
+XXXXXXXXXXXXforXoffset,XlengthXinXlink.items():
+XXXXXXXXXXXXXXXXifXindexXinXrange(offset,Xlength):
+XXXXXXXXXXXXXXXXXXXXfont2X=XImageFont.truetype(
+XXXXXXXXXXXXXXXXXXXXXXXX"resources/Roboto-Regular.ttf",X30,Xencoding="utf-16"
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXtextcolorX=X"#898989"
+XXXXXXXXXXXXifXletterXinXemoji.UNICODE_EMOJI:
+XXXXXXXXXXXXXXXXnewemoji,XmaskX=XawaitXemoji_fetch(letter)
+XXXXXXXXXXXXXXXXcanvas.paste(newemoji,X(x,XyX-X2),Xmask)
+XXXXXXXXXXXXXXXXxX+=X45
+XXXXXXXXXXXXXXXXemojicountX+=X1
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXifXnotXawaitXfontTest(letter):
+XXXXXXXXXXXXXXXXXXXXdraw.text((x,Xy),Xletter,Xfont=textfallback,Xfill=textcolor)
+XXXXXXXXXXXXXXXXXXXXxX+=Xtextfallback.getsize(letter)[0]
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXdraw.text((x,Xy),Xletter,Xfont=font2,Xfill=textcolor)
+XXXXXXXXXXXXXXXXXXXXxX+=Xfont2.getsize(letter)[0]
+XXXXXXXXXXXXmsgX=Xmsg.replace(letter,X"¶",X1)
+XXXXXXXXyX+=X40
+XXXXXXXXxX=Xpfpbg.widthX+X30
+XXXXreturnXTrue,Xcanvas
 
 
-async def fontTest(letter):
-    test = TTFont("resources/Roboto-Medium.ttf")
-    for table in test["cmap"].tables:
-        if ord(letter) in table.cmap.keys():
-            return True
+asyncXdefXdrawer(width,Xheight):
+XXXX#XTopXpart
+XXXXtopX=XImage.new("RGBA",X(width,X20),X(0,X0,X0,X0))
+XXXXdrawX=XImageDraw.Draw(top)
+XXXXdraw.line((10,X0,Xtop.widthX-X20,X0),Xfill=(29,X29,X29,X255),Xwidth=50)
+XXXXdraw.pieslice((0,X0,X30,X50),X180,X270,Xfill=(29,X29,X29,X255))
+XXXXdraw.pieslice((top.widthX-X75,X0,Xtop.width,X50),X270,X360,Xfill=(29,X29,X29,X255))
+
+XXXX#XMiddleXpart
+XXXXmiddleX=XImage.new("RGBA",X(top.width,XheightX+X75),X(29,X29,X29,X255))
+
+XXXX#XBottomXpart
+XXXXbottomX=XImageOps.flip(top)
+
+XXXXreturnXtop,Xmiddle,Xbottom
 
 
-async def get_entity(msg):
-    bold = {0: 0}
-    italic = {0: 0}
-    mono = {0: 0}
-    link = {0: 0}
-    if not msg.entities:
-        return bold, mono, italic, link
-    for entity in msg.entities:
-        if isinstance(entity, types.MessageEntityBold):
-            bold[entity.offset] = entity.offset + entity.length
-        elif isinstance(entity, types.MessageEntityItalic):
-            italic[entity.offset] = entity.offset + entity.length
-        elif isinstance(entity, types.MessageEntityCode):
-            mono[entity.offset] = entity.offset + entity.length
-        elif isinstance(entity, types.MessageEntityUrl):
-            link[entity.offset] = entity.offset + entity.length
-        elif isinstance(entity, types.MessageEntityTextUrl):
-            link[entity.offset] = entity.offset + entity.length
-        elif isinstance(entity, types.MessageEntityMention):
-            link[entity.offset] = entity.offset + entity.length
-    return bold, mono, italic, link
+asyncXdefXfontTest(letter):
+XXXXtestX=XTTFont("resources/Roboto-Medium.ttf")
+XXXXforXtableXinXtest["cmap"].tables:
+XXXXXXXXifXord(letter)XinXtable.cmap.keys():
+XXXXXXXXXXXXreturnXTrue
 
 
-async def doctype(name, size, type, canvas):
-    font = ImageFont.truetype("resources/Roboto-Medium.ttf", 38)
-    doc = Image.new("RGBA", (130, 130), (29, 29, 29, 255))
-    draw = ImageDraw.Draw(doc)
-    draw.ellipse((0, 0, 130, 130), fill="#434343")
-    draw.line((66, 28, 66, 53), width=14, fill="white")
-    draw.polygon([(67, 77), (90, 53), (42, 53)], fill="white")
-    draw.line((40, 87, 90, 87), width=8, fill="white")
-    canvas.paste(doc, (160, 23))
-    draw2 = ImageDraw.Draw(canvas)
-    draw2.text((320, 40), name, font=font, fill="white")
-    draw2.text((320, 97), size + type, font=font, fill="#AAAAAA")
-    return canvas
+asyncXdefXget_entity(msg):
+XXXXboldX=X{0:X0}
+XXXXitalicX=X{0:X0}
+XXXXmonoX=X{0:X0}
+XXXXlinkX=X{0:X0}
+XXXXifXnotXmsg.entities:
+XXXXXXXXreturnXbold,Xmono,Xitalic,Xlink
+XXXXforXentityXinXmsg.entities:
+XXXXXXXXifXisinstance(entity,Xtypes.MessageEntityBold):
+XXXXXXXXXXXXbold[entity.offset]X=Xentity.offsetX+Xentity.length
+XXXXXXXXelifXisinstance(entity,Xtypes.MessageEntityItalic):
+XXXXXXXXXXXXitalic[entity.offset]X=Xentity.offsetX+Xentity.length
+XXXXXXXXelifXisinstance(entity,Xtypes.MessageEntityCode):
+XXXXXXXXXXXXmono[entity.offset]X=Xentity.offsetX+Xentity.length
+XXXXXXXXelifXisinstance(entity,Xtypes.MessageEntityUrl):
+XXXXXXXXXXXXlink[entity.offset]X=Xentity.offsetX+Xentity.length
+XXXXXXXXelifXisinstance(entity,Xtypes.MessageEntityTextUrl):
+XXXXXXXXXXXXlink[entity.offset]X=Xentity.offsetX+Xentity.length
+XXXXXXXXelifXisinstance(entity,Xtypes.MessageEntityMention):
+XXXXXXXXXXXXlink[entity.offset]X=Xentity.offsetX+Xentity.length
+XXXXreturnXbold,Xmono,Xitalic,Xlink
 
 
-async def no_photo(reply, tot):
-    pfp = Image.new("RGBA", (105, 105), (0, 0, 0, 0))
-    pen = ImageDraw.Draw(pfp)
-    color = random.choice(COLORS)
-    pen.ellipse((0, 0, 105, 105), fill=color)
-    letter = "" if not tot else tot[0]
-    font = ImageFont.truetype("resources/Roboto-Regular.ttf", 60)
-    pen.text((32, 17), letter, font=font, fill="white")
-    return pfp, color
+asyncXdefXdoctype(name,Xsize,Xtype,Xcanvas):
+XXXXfontX=XImageFont.truetype("resources/Roboto-Medium.ttf",X38)
+XXXXdocX=XImage.new("RGBA",X(130,X130),X(29,X29,X29,X255))
+XXXXdrawX=XImageDraw.Draw(doc)
+XXXXdraw.ellipse((0,X0,X130,X130),Xfill="#434343")
+XXXXdraw.line((66,X28,X66,X53),Xwidth=14,Xfill="white")
+XXXXdraw.polygon([(67,X77),X(90,X53),X(42,X53)],Xfill="white")
+XXXXdraw.line((40,X87,X90,X87),Xwidth=8,Xfill="white")
+XXXXcanvas.paste(doc,X(160,X23))
+XXXXdraw2X=XImageDraw.Draw(canvas)
+XXXXdraw2.text((320,X40),Xname,Xfont=font,Xfill="white")
+XXXXdraw2.text((320,X97),XsizeX+Xtype,Xfont=font,Xfill="#AAAAAA")
+XXXXreturnXcanvas
 
 
-async def emoji_fetch(emoji):
-    emojis = json.loads(
-        urllib.request.urlopen(
-            "https://github.com/erenmetesar/modules-repo/raw/master/emojis.txt"
-        )
-        .read()
-        .decode()
-    )
-    if emoji in emojis:
-        img = emojis[emoji]
-        return await transparent(
-            urllib.request.urlretrieve(img, "resources/emoji.png")[0]
-        )
-    img = emojis["⛔"]
-    return await transparent(urllib.request.urlretrieve(img, "resources/emoji.png")[0])
+asyncXdefXno_photo(reply,Xtot):
+XXXXpfpX=XImage.new("RGBA",X(105,X105),X(0,X0,X0,X0))
+XXXXpenX=XImageDraw.Draw(pfp)
+XXXXcolorX=Xrandom.choice(COLORS)
+XXXXpen.ellipse((0,X0,X105,X105),Xfill=color)
+XXXXletterX=X""XifXnotXtotXelseXtot[0]
+XXXXfontX=XImageFont.truetype("resources/Roboto-Regular.ttf",X60)
+XXXXpen.text((32,X17),Xletter,Xfont=font,Xfill="white")
+XXXXreturnXpfp,Xcolor
 
 
-async def transparent(emoji):
-    emoji = Image.open(emoji).convert("RGBA")
-    emoji.thumbnail((40, 40))
+asyncXdefXemoji_fetch(emoji):
+XXXXemojisX=Xjson.loads(
+XXXXXXXXurllib.request.urlopen(
+XXXXXXXXXXXX"https://github.com/erenmetesar/modules-repo/raw/master/emojis.txt"
+XXXXXXXX)
+XXXXXXXX.read()
+XXXXXXXX.decode()
+XXXX)
+XXXXifXemojiXinXemojis:
+XXXXXXXXimgX=Xemojis[emoji]
+XXXXXXXXreturnXawaitXtransparent(
+XXXXXXXXXXXXurllib.request.urlretrieve(img,X"resources/emoji.png")[0]
+XXXXXXXX)
+XXXXimgX=Xemojis["⛔"]
+XXXXreturnXawaitXtransparent(urllib.request.urlretrieve(img,X"resources/emoji.png")[0])
 
-    # Mask
-    mask = Image.new("L", (40, 40), 0)
-    draw = ImageDraw.Draw(mask)
-    draw.ellipse((0, 0, 40, 40), fill=255)
-    return emoji, mask
+
+asyncXdefXtransparent(emoji):
+XXXXemojiX=XImage.open(emoji).convert("RGBA")
+XXXXemoji.thumbnail((40,X40))
+
+XXXX#XMask
+XXXXmaskX=XImage.new("L",X(40,X40),X0)
+XXXXdrawX=XImageDraw.Draw(mask)
+XXXXdraw.ellipse((0,X0,X40,X40),Xfill=255)
+XXXXreturnXemoji,Xmask
 
 
-async def replied_user(draw, tot, text, maxlength, title):
-    namefont = ImageFont.truetype("resources/Roboto-Medium.ttf", 38)
-    namefallback = ImageFont.truetype("resources/Quivira.otf", 38)
-    textfont = ImageFont.truetype("resources/Roboto-Regular.ttf", 32)
-    textfallback = ImageFont.truetype("resources/Roboto-Medium.ttf", 38)
-    maxlength = maxlength + 7 if maxlength < 10 else maxlength
-    text = text[: maxlength - 2] + ".." if len(text) > maxlength else text
-    draw.line((165, 90, 165, 170), width=5, fill="white")
-    space = 0
-    for letter in tot:
-        if not await fontTest(letter):
-            draw.text((180 + space, 86), letter, font=namefallback, fill="#888888")
-            space += namefallback.getsize(letter)[0]
-        else:
-            draw.text((180 + space, 86), letter, font=namefont, fill="#888888")
-            space += namefont.getsize(letter)[0]
-    space = 0
-    for letter in text:
-        if not await fontTest(letter):
-            draw.text((180 + space, 132), letter, font=textfallback, fill="#888888")
-            space += textfallback.getsize(letter)[0]
-        else:
-            draw.text((180 + space, 132), letter, font=textfont, fill="white")
-            space += textfont.getsize(letter)[0]
+asyncXdefXreplied_user(draw,Xtot,Xtext,Xmaxlength,Xtitle):
+XXXXnamefontX=XImageFont.truetype("resources/Roboto-Medium.ttf",X38)
+XXXXnamefallbackX=XImageFont.truetype("resources/Quivira.otf",X38)
+XXXXtextfontX=XImageFont.truetype("resources/Roboto-Regular.ttf",X32)
+XXXXtextfallbackX=XImageFont.truetype("resources/Roboto-Medium.ttf",X38)
+XXXXmaxlengthX=XmaxlengthX+X7XifXmaxlengthX<X10XelseXmaxlength
+XXXXtextX=Xtext[:XmaxlengthX-X2]X+X".."XifXlen(text)X>XmaxlengthXelseXtext
+XXXXdraw.line((165,X90,X165,X170),Xwidth=5,Xfill="white")
+XXXXspaceX=X0
+XXXXforXletterXinXtot:
+XXXXXXXXifXnotXawaitXfontTest(letter):
+XXXXXXXXXXXXdraw.text((180X+Xspace,X86),Xletter,Xfont=namefallback,Xfill="#888888")
+XXXXXXXXXXXXspaceX+=Xnamefallback.getsize(letter)[0]
+XXXXXXXXelse:
+XXXXXXXXXXXXdraw.text((180X+Xspace,X86),Xletter,Xfont=namefont,Xfill="#888888")
+XXXXXXXXXXXXspaceX+=Xnamefont.getsize(letter)[0]
+XXXXspaceX=X0
+XXXXforXletterXinXtext:
+XXXXXXXXifXnotXawaitXfontTest(letter):
+XXXXXXXXXXXXdraw.text((180X+Xspace,X132),Xletter,Xfont=textfallback,Xfill="#888888")
+XXXXXXXXXXXXspaceX+=Xtextfallback.getsize(letter)[0]
+XXXXXXXXelse:
+XXXXXXXXXXXXdraw.text((180X+Xspace,X132),Xletter,Xfont=textfont,Xfill="white")
+XXXXXXXXXXXXspaceX+=Xtextfont.getsize(letter)[0]
 
 
 @register(pattern="^/quotly$")
-async def _(event):
-    if event.fwd_from:
-        return
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
 
-    reply = await event.get_reply_message()
-    msg = reply.message
-    repliedreply = await reply.get_reply_message()
-    user = (
-        await event.client.get_entity(reply.forward.sender)
-        if reply.fwd_from
-        else reply.sender
-    )
-    res, canvas = await process(msg, user, event.client, reply, repliedreply)
-    if not res:
-        return
-    canvas.save("sticker.webp")
-    await event.client.send_file(
-        event.chat_id, "sticker.webp", reply_to=event.reply_to_msg_id
-    )
-    os.remove("sticker.webp")
+XXXXreplyX=XawaitXevent.get_reply_message()
+XXXXmsgX=Xreply.message
+XXXXrepliedreplyX=XawaitXreply.get_reply_message()
+XXXXuserX=X(
+XXXXXXXXawaitXevent.client.get_entity(reply.forward.sender)
+XXXXXXXXifXreply.fwd_from
+XXXXXXXXelseXreply.sender
+XXXX)
+XXXXres,XcanvasX=XawaitXprocess(msg,Xuser,Xevent.client,Xreply,Xrepliedreply)
+XXXXifXnotXres:
+XXXXXXXXreturn
+XXXXcanvas.save("sticker.webp")
+XXXXawaitXevent.client.send_file(
+XXXXXXXXevent.chat_id,X"sticker.webp",Xreply_to=event.reply_to_msg_id
+XXXX)
+XXXXos.remove("sticker.webp")
 
 
-EMOJI_PATTERN = re.compile(
-    "["
-    "\U0001F1E0-\U0001F1FF"  # flags (iOS)
-    "\U0001F300-\U0001F5FF"  # symbols & pictographs
-    "\U0001F600-\U0001F64F"  # emoticons
-    "\U0001F680-\U0001F6FF"  # transport & map symbols
-    "\U0001F700-\U0001F77F"  # alchemical symbols
-    "\U0001F780-\U0001F7FF"  # Geometric Shapes Extended
-    "\U0001F800-\U0001F8FF"  # Supplemental Arrows-C
-    "\U0001F900-\U0001F9FF"  # Supplemental Symbols and Pictographs
-    "\U0001FA00-\U0001FA6F"  # Chess Symbols
-    "\U0001FA70-\U0001FAFF"  # Symbols and Pictographs Extended-A
-    "\U00002702-\U000027B0"  # Dingbats
-    "]+"
+EMOJI_PATTERNX=Xre.compile(
+XXXX"["
+XXXX"\U0001F1E0-\U0001F1FF"XX#XflagsX(iOS)
+XXXX"\U0001F300-\U0001F5FF"XX#XsymbolsX&Xpictographs
+XXXX"\U0001F600-\U0001F64F"XX#Xemoticons
+XXXX"\U0001F680-\U0001F6FF"XX#XtransportX&XmapXsymbols
+XXXX"\U0001F700-\U0001F77F"XX#XalchemicalXsymbols
+XXXX"\U0001F780-\U0001F7FF"XX#XGeometricXShapesXExtended
+XXXX"\U0001F800-\U0001F8FF"XX#XSupplementalXArrows-C
+XXXX"\U0001F900-\U0001F9FF"XX#XSupplementalXSymbolsXandXPictographs
+XXXX"\U0001FA00-\U0001FA6F"XX#XChessXSymbols
+XXXX"\U0001FA70-\U0001FAFF"XX#XSymbolsXandXPictographsXExtended-A
+XXXX"\U00002702-\U000027B0"XX#XDingbats
+XXXX"]+"
 )
 
 
-def deEmojify(inputString: str) -> str:
-    """Remove emojis and other non-safe characters from string"""
-    return re.sub(EMOJI_PATTERN, "", inputString)
+defXdeEmojify(inputString:Xstr)X->Xstr:
+XXXX"""RemoveXemojisXandXotherXnon-safeXcharactersXfromXstring"""
+XXXXreturnXre.sub(EMOJI_PATTERN,X"",XinputString)
 
 
-# Made By @MissJulia_Robot
+#XMadeXByX@MissJulia_Robot
 
 
-@register(pattern="^/animate (.*)")
-async def stickerizer(event):
+@register(pattern="^/animateX(.*)")
+asyncXdefXstickerizer(event):
 
-    newtext = event.pattern_match.group(1)
-    animus = [20, 32, 33, 40, 41, 42, 58]
-    sticcers = await ubot.inline_query(
-        "stickerizerbot", f"#{random.choice(animus)}{(deEmojify(newtext))}"
-    )
-    null = await sticcers[0].download_media(TEMP_DOWNLOAD_DIRECTORY)
-    bara = str(null)
-    await event.client.send_file(event.chat_id, bara, reply_to=event.id)
-    os.remove(bara)
+XXXXnewtextX=Xevent.pattern_match.group(1)
+XXXXanimusX=X[20,X32,X33,X40,X41,X42,X58]
+XXXXsticcersX=XawaitXubot.inline_query(
+XXXXXXXX"stickerizerbot",Xf"#{random.choice(animus)}{(deEmojify(newtext))}"
+XXXX)
+XXXXnullX=XawaitXsticcers[0].download_media(TEMP_DOWNLOAD_DIRECTORY)
+XXXXbaraX=Xstr(null)
+XXXXawaitXevent.client.send_file(event.chat_id,Xbara,Xreply_to=event.id)
+XXXXos.remove(bara)
 
 
 @register(pattern="^/dice$")
-async def _(event):
-    if event.fwd_from:
-        return
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
 
-    input_str = print(randrange(7))
-    r = await event.reply(file=InputMediaDice(""))
-    if input_str:
-        try:
-            required_number = int(input_str)
-            while not r.media.value == required_number:
-                await r.delete()
-                r = await event.reply(file=InputMediaDice(""))
-        except BaseException:
-            pass
+XXXXinput_strX=Xprint(randrange(7))
+XXXXrX=XawaitXevent.reply(file=InputMediaDice(""))
+XXXXifXinput_str:
+XXXXXXXXtry:
+XXXXXXXXXXXXrequired_numberX=Xint(input_str)
+XXXXXXXXXXXXwhileXnotXr.media.valueX==Xrequired_number:
+XXXXXXXXXXXXXXXXawaitXr.delete()
+XXXXXXXXXXXXXXXXrX=XawaitXevent.reply(file=InputMediaDice(""))
+XXXXXXXXexceptXBaseException:
+XXXXXXXXXXXXpass
 
 
 @register(pattern="^/fortune$")
-async def fortunate(event):
-    if event.fwd_from:
-        return
+asyncXdefXfortunate(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
 
-    jit = subprocess.check_output(["python", "fortune.py"])
-    pit = jit.decode()
-    await event.reply(pit)
+XXXXjitX=Xsubprocess.check_output(["python",X"fortune.py"])
+XXXXpitX=Xjit.decode()
+XXXXawaitXevent.reply(pit)
 
 
-ABUSE_STRINGS = (
-    "Fuck off",
-    "Stfu go fuck yourself",
-    "Ur mum gey",
-    "Ur dad lesbo",
-    "You Assfucker",
-    "Nigga",
-    "Ur granny tranny",
-    "you noob",
-    "Relax your Rear,ders nothing to fear,The Rape train is finally here",
-    "Stfu bc",
-    "Stfu and Gtfo U nub",
-    "GTFO bsdk",
-    "CUnt",
-    "Madharchod",
-    " Gay is here",
-    "Ur dad gey bc ",
+ABUSE_STRINGSX=X(
+XXXX"FuckXoff",
+XXXX"StfuXgoXfuckXyourself",
+XXXX"UrXmumXgey",
+XXXX"UrXdadXlesbo",
+XXXX"YouXAssfucker",
+XXXX"Nigga",
+XXXX"UrXgrannyXtranny",
+XXXX"youXnoob",
+XXXX"RelaxXyourXRear,dersXnothingXtoXfear,TheXRapeXtrainXisXfinallyXhere",
+XXXX"StfuXbc",
+XXXX"StfuXandXGtfoXUXnub",
+XXXX"GTFOXbsdk",
+XXXX"CUnt",
+XXXX"Madharchod",
+XXXX"XGayXisXhere",
+XXXX"UrXdadXgeyXbcX",
 )
 
-EYES = [
-    ["⌐■", "■"],
-    [" ͠°", " °"],
-    ["⇀", "↼"],
-    ["´• ", " •`"],
-    ["´", "`"],
-    ["`", "´"],
-    ["ó", "ò"],
-    ["ò", "ó"],
-    ["⸌", "⸍"],
-    [">", "<"],
-    ["Ƹ̵̡", "Ʒ"],
-    ["ᗒ", "ᗕ"],
-    ["⟃", "⟄"],
-    ["⪧", "⪦"],
-    ["⪦", "⪧"],
-    ["⪩", "⪨"],
-    ["⪨", "⪩"],
-    ["⪰", "⪯"],
-    ["⫑", "⫒"],
-    ["⨴", "⨵"],
-    ["⩿", "⪀"],
-    ["⩾", "⩽"],
-    ["⩺", "⩹"],
-    ["⩹", "⩺"],
-    ["◥▶", "◀◤"],
-    ["◍", "◎"],
-    ["/͠-", "┐͡-\\"],
-    ["⌣", "⌣”"],
-    [" ͡⎚", " ͡⎚"],
-    ["≋"],
-    ["૦ઁ"],
-    ["  ͯ"],
-    ["  ͌"],
-    ["ළ"],
-    ["◉"],
-    ["☉"],
-    ["・"],
-    ["▰"],
-    ["ᵔ"],
-    [" ﾟ"],
-    ["□"],
-    ["☼"],
-    ["*"],
-    ["`"],
-    ["⚆"],
-    ["⊜"],
-    [">"],
-    ["❍"],
-    ["￣"],
-    ["─"],
-    ["✿"],
-    ["•"],
-    ["T"],
-    ["^"],
-    ["ⱺ"],
-    ["@"],
-    ["ȍ"],
-    ["  "],
-    ["  "],
-    ["x"],
-    ["-"],
-    ["$"],
-    ["Ȍ"],
-    ["ʘ"],
-    ["Ꝋ"],
-    [""],
-    ["⸟"],
-    ["๏"],
-    ["ⴲ"],
-    ["◕"],
-    ["◔"],
-    ["✧"],
-    ["■"],
-    ["♥"],
-    [" ͡°"],
-    ["¬"],
-    [" º "],
-    ["⨶"],
-    ["⨱"],
-    ["⏓"],
-    ["⏒"],
-    ["⍜"],
-    ["⍤"],
-    ["ᚖ"],
-    ["ᴗ"],
-    ["ಠ"],
-    ["σ"],
-    ["☯"],
+EYESX=X[
+XXXX["⌐■",X"■"],
+XXXX["X͠°",X"X°"],
+XXXX["⇀",X"↼"],
+XXXX["´•X",X"X•`"],
+XXXX["´",X"`"],
+XXXX["`",X"´"],
+XXXX["ó",X"ò"],
+XXXX["ò",X"ó"],
+XXXX["⸌",X"⸍"],
+XXXX[">",X"<"],
+XXXX["Ƹ̵̡",X"Ʒ"],
+XXXX["ᗒ",X"ᗕ"],
+XXXX["⟃",X"⟄"],
+XXXX["⪧",X"⪦"],
+XXXX["⪦",X"⪧"],
+XXXX["⪩",X"⪨"],
+XXXX["⪨",X"⪩"],
+XXXX["⪰",X"⪯"],
+XXXX["⫑",X"⫒"],
+XXXX["⨴",X"⨵"],
+XXXX["⩿",X"⪀"],
+XXXX["⩾",X"⩽"],
+XXXX["⩺",X"⩹"],
+XXXX["⩹",X"⩺"],
+XXXX["◥▶",X"◀◤"],
+XXXX["◍",X"◎"],
+XXXX["/͠-",X"┐͡-\\"],
+XXXX["⌣",X"⌣”"],
+XXXX["X͡⎚",X"X͡⎚"],
+XXXX["≋"],
+XXXX["૦ઁ"],
+XXXX["XXͯ"],
+XXXX["XX͌"],
+XXXX["ළ"],
+XXXX["◉"],
+XXXX["☉"],
+XXXX["・"],
+XXXX["▰"],
+XXXX["ᵔ"],
+XXXX["Xﾟ"],
+XXXX["□"],
+XXXX["☼"],
+XXXX["*"],
+XXXX["`"],
+XXXX["⚆"],
+XXXX["⊜"],
+XXXX[">"],
+XXXX["❍"],
+XXXX["￣"],
+XXXX["─"],
+XXXX["✿"],
+XXXX["•"],
+XXXX["T"],
+XXXX["^"],
+XXXX["ⱺ"],
+XXXX["@"],
+XXXX["ȍ"],
+XXXX["XX"],
+XXXX["XX"],
+XXXX["x"],
+XXXX["-"],
+XXXX["$"],
+XXXX["Ȍ"],
+XXXX["ʘ"],
+XXXX["Ꝋ"],
+XXXX[""],
+XXXX["⸟"],
+XXXX["๏"],
+XXXX["ⴲ"],
+XXXX["◕"],
+XXXX["◔"],
+XXXX["✧"],
+XXXX["■"],
+XXXX["♥"],
+XXXX["X͡°"],
+XXXX["¬"],
+XXXX["XºX"],
+XXXX["⨶"],
+XXXX["⨱"],
+XXXX["⏓"],
+XXXX["⏒"],
+XXXX["⍜"],
+XXXX["⍤"],
+XXXX["ᚖ"],
+XXXX["ᴗ"],
+XXXX["ಠ"],
+XXXX["σ"],
+XXXX["☯"],
 ]
 
-MOUTHS = [
-    ["v"],
-    ["ᴥ"],
-    ["ᗝ"],
-    ["Ѡ"],
-    ["ᗜ"],
-    ["Ꮂ"],
-    ["ᨓ"],
-    ["ᨎ"],
-    ["ヮ"],
-    ["╭͜ʖ╮"],
-    [" ͟ل͜"],
-    [" ͜ʖ"],
-    [" ͟ʖ"],
-    [" ʖ̯"],
-    ["ω"],
-    [" ³"],
-    [" ε "],
-    ["﹏"],
-    ["□"],
-    ["ل͜"],
-    ["‿"],
-    ["╭╮"],
-    ["‿‿"],
-    ["▾"],
-    ["‸"],
-    ["Д"],
-    ["∀"],
-    ["!"],
-    ["人"],
-    ["."],
-    ["ロ"],
-    ["_"],
-    ["෴"],
-    ["ѽ"],
-    ["ഌ"],
-    ["⏠"],
-    ["⏏"],
-    ["⍊"],
-    ["⍘"],
-    ["ツ"],
-    ["益"],
-    ["╭∩╮"],
-    ["Ĺ̯"],
-    ["◡"],
-    [" ͜つ"],
+MOUTHSX=X[
+XXXX["v"],
+XXXX["ᴥ"],
+XXXX["ᗝ"],
+XXXX["Ѡ"],
+XXXX["ᗜ"],
+XXXX["Ꮂ"],
+XXXX["ᨓ"],
+XXXX["ᨎ"],
+XXXX["ヮ"],
+XXXX["╭͜ʖ╮"],
+XXXX["X͟ل͜"],
+XXXX["X͜ʖ"],
+XXXX["X͟ʖ"],
+XXXX["Xʖ̯"],
+XXXX["ω"],
+XXXX["X³"],
+XXXX["XεX"],
+XXXX["﹏"],
+XXXX["□"],
+XXXX["ل͜"],
+XXXX["‿"],
+XXXX["╭╮"],
+XXXX["‿‿"],
+XXXX["▾"],
+XXXX["‸"],
+XXXX["Д"],
+XXXX["∀"],
+XXXX["!"],
+XXXX["人"],
+XXXX["."],
+XXXX["ロ"],
+XXXX["_"],
+XXXX["෴"],
+XXXX["ѽ"],
+XXXX["ഌ"],
+XXXX["⏠"],
+XXXX["⏏"],
+XXXX["⍊"],
+XXXX["⍘"],
+XXXX["ツ"],
+XXXX["益"],
+XXXX["╭∩╮"],
+XXXX["Ĺ̯"],
+XXXX["◡"],
+XXXX["X͜つ"],
 ]
 
-EARS = [
-    ["q", "p"],
-    ["ʢ", "ʡ"],
-    ["⸮", "?"],
-    ["ʕ", "ʔ"],
-    ["ᖗ", "ᖘ"],
-    ["ᕦ", "ᕥ"],
-    ["ᕦ(", ")ᕥ"],
-    ["ᕙ(", ")ᕗ"],
-    ["ᘳ", "ᘰ"],
-    ["ᕮ", "ᕭ"],
-    ["ᕳ", "ᕲ"],
-    ["(", ")"],
-    ["[", "]"],
-    ["¯\\_", "_/¯"],
-    ["୧", "୨"],
-    ["୨", "୧"],
-    ["⤜(", ")⤏"],
-    ["☞", "☞"],
-    ["ᑫ", "ᑷ"],
-    ["ᑴ", "ᑷ"],
-    ["ヽ(", ")ﾉ"],
-    ["\\(", ")/"],
-    ["乁(", ")ㄏ"],
-    ["└[", "]┘"],
-    ["(づ", ")づ"],
-    ["(ง", ")ง"],
-    ["⎝", "⎠"],
-    ["ლ(", "ლ)"],
-    ["ᕕ(", ")ᕗ"],
-    ["(∩", ")⊃━☆ﾟ.*"],
+EARSX=X[
+XXXX["q",X"p"],
+XXXX["ʢ",X"ʡ"],
+XXXX["⸮",X"?"],
+XXXX["ʕ",X"ʔ"],
+XXXX["ᖗ",X"ᖘ"],
+XXXX["ᕦ",X"ᕥ"],
+XXXX["ᕦ(",X")ᕥ"],
+XXXX["ᕙ(",X")ᕗ"],
+XXXX["ᘳ",X"ᘰ"],
+XXXX["ᕮ",X"ᕭ"],
+XXXX["ᕳ",X"ᕲ"],
+XXXX["(",X")"],
+XXXX["[",X"]"],
+XXXX["¯\\_",X"_/¯"],
+XXXX["୧",X"୨"],
+XXXX["୨",X"୧"],
+XXXX["⤜(",X")⤏"],
+XXXX["☞",X"☞"],
+XXXX["ᑫ",X"ᑷ"],
+XXXX["ᑴ",X"ᑷ"],
+XXXX["ヽ(",X")ﾉ"],
+XXXX["\\(",X")/"],
+XXXX["乁(",X")ㄏ"],
+XXXX["└[",X"]┘"],
+XXXX["(づ",X")づ"],
+XXXX["(ง",X")ง"],
+XXXX["⎝",X"⎠"],
+XXXX["ლ(",X"ლ)"],
+XXXX["ᕕ(",X")ᕗ"],
+XXXX["(∩",X")⊃━☆ﾟ.*"],
 ]
 
-TOSS = (
-    "Heads",
-    "Tails",
+TOSSX=X(
+XXXX"Heads",
+XXXX"Tails",
 )
 
 
 @register(pattern="^/roll$")
-async def msg(event):
+asyncXdefXmsg(event):
 
-    await event.reply(str(random.choice(range(1, 7))))
+XXXXawaitXevent.reply(str(random.choice(range(1,X7))))
 
 
 @register(pattern="^/toss$")
-async def msg(event):
-    await event.reply(random.choice(TOSS))
+asyncXdefXmsg(event):
+XXXXawaitXevent.reply(random.choice(TOSS))
 
 
 @register(pattern="^/abuse$")
-async def msg(event):
+asyncXdefXmsg(event):
 
-    if event.reply_to_msg_id:
-        reply = await event.get_reply_message()
-        replyto = reply.sender_id
-    else:
-        replyto = event.sender_id
-    await tbot.send_message(
-        event.chat_id, random.choice(ABUSE_STRINGS), reply_to=replyto
-    )
+XXXXifXevent.reply_to_msg_id:
+XXXXXXXXreplyX=XawaitXevent.get_reply_message()
+XXXXXXXXreplytoX=Xreply.sender_id
+XXXXelse:
+XXXXXXXXreplytoX=Xevent.sender_id
+XXXXawaitXtbot.send_message(
+XXXXXXXXevent.chat_id,Xrandom.choice(ABUSE_STRINGS),Xreply_to=replyto
+XXXX)
 
 
 @register(pattern="^/bluetext$")
-async def msg(event):
+asyncXdefXmsg(event):
 
-    if event.reply_to_msg_id:
-        reply = await event.get_reply_message()
-        replyto = reply.sender_id
-    else:
-        replyto = event.sender_id
-    await tbot.send_message(
-        event.chat_id,
-        "/BLUE /TE T /MUST /CLICK /I /AM /A /STUPID /ANIMAL /THAT /IS /ATTRACTED /TO /COLORS",
-        reply_to=replyto,
-    )
+XXXXifXevent.reply_to_msg_id:
+XXXXXXXXreplyX=XawaitXevent.get_reply_message()
+XXXXXXXXreplytoX=Xreply.sender_id
+XXXXelse:
+XXXXXXXXreplytoX=Xevent.sender_id
+XXXXawaitXtbot.send_message(
+XXXXXXXXevent.chat_id,
+XXXXXXXX"/BLUEX/TEXTX/MUSTX/CLICKX/IX/AMX/AX/STUPIDX/ANIMALX/THATX/ISX/ATTRACTEDX/TOX/COLORS",
+XXXXXXXXreply_to=replyto,
+XXXX)
 
 
 @register(pattern="^/rlg$")
-async def _(event):
+asyncXdefX_(event):
 
-    eyes = random.choice(EYES)
-    mouth = random.choice(MOUTHS)
-    ears = random.choice(EARS)
-    repl = format(ears + eyes + mouth + eyes + ears)
-    await event.reply(repl)
+XXXXeyesX=Xrandom.choice(EYES)
+XXXXmouthX=Xrandom.choice(MOUTHS)
+XXXXearsX=Xrandom.choice(EARS)
+XXXXreplX=Xformat(earsX+XeyesX+XmouthX+XeyesX+Xears)
+XXXXawaitXevent.reply(repl)
 
 
 @register(pattern="^/decide$")
-async def _(event):
+asyncXdefX_(event):
 
-    r = randint(1, 100)
-    if r <= 65:
-        await event.reply("Yes.")
-    elif r <= 90:
-        await event.reply("NoU.")
-    else:
-        await event.reply("Maybe.")
+XXXXrX=Xrandint(1,X100)
+XXXXifXrX<=X65:
+XXXXXXXXawaitXevent.reply("Yes.")
+XXXXelifXrX<=X90:
+XXXXXXXXawaitXevent.reply("NoU.")
+XXXXelse:
+XXXXXXXXawaitXevent.reply("Maybe.")
 
 
 @register(pattern="^/table$")
-async def _(event):
+asyncXdefX_(event):
 
-    r = randint(1, 100)
-    if r <= 45:
-        await event.reply("(╯°□°）╯彡 ┻━┻")
-    elif r <= 90:
-        await event.reply("Send money to buy new table to flip")
-    else:
-        await event.reply("Go do some work instead of flipping tables ma boy.")
+XXXXrX=Xrandint(1,X100)
+XXXXifXrX<=X45:
+XXXXXXXXawaitXevent.reply("(╯°□°）╯彡X┻━┻")
+XXXXelifXrX<=X90:
+XXXXXXXXawaitXevent.reply("SendXmoneyXtoXbuyXnewXtableXtoXflip")
+XXXXelse:
+XXXXXXXXawaitXevent.reply("GoXdoXsomeXworkXinsteadXofXflippingXtablesXmaXboy.")
 
 
-SFW_STRINGS = (
-    "Owww ... Such a stupid idiot.",
-    "Don't drink and type.",
-    "I think you should go home or better a mental asylum.",
-    "Command not found. Just like your brain.",
-    "Do you realize you are making a fool of yourself? Apparently not.",
-    "You can type better than that.",
-    "Bot rule 544 section 9 prevents me from replying to stupid humans like you.",
-    "Sorry, we do not sell brains.",
-    "Believe me you are not normal.",
-    "I bet your brain feels as good as new, seeing that you never use it.",
-    "If I wanted to kill myself I'd climb your ego and jump to your IQ.",
-    "Zombies eat brains... you're safe.",
-    "You didn't evolve from apes, they evolved from you.",
-    "Come back and talk to me when your I.Q. exceeds your age.",
-    "I'm not saying you're stupid, I'm just saying you've got bad luck when it comes to thinking.",
-    "What language are you speaking? Cause it sounds like bullshit.",
-    "Stupidity is not a crime so you are free to go.",
-    "You are proof that evolution CAN go in reverse.",
-    "I would ask you how old you are but I know you can't count that high.",
-    "As an outsider, what do you think of the human race?",
-    "Brains aren't everything. In your case they're nothing.",
-    "Ordinarily people live and learn. You just live.",
-    "I don't know what makes you so stupid, but it really works.",
-    "Keep talking, someday you'll say something intelligent! (I doubt it though)",
-    "Shock me, say something intelligent.",
-    "Your IQ's lower than your shoe size.",
-    "Alas! Your neurotransmitters are no more working.",
-    "Are you crazy you fool.",
-    "Everyone has the right to be stupid but you are abusing the privilege.",
-    "I'm sorry I hurt your feelings when I called you stupid. I thought you already knew that.",
-    "You should try tasting cyanide.",
-    "Your enzymes are meant to digest rat poison.",
-    "You should try sleeping forever.",
-    "Pick up a gun and shoot yourself.",
-    "You could make a world record by jumping from a plane without parachute.",
-    "Stop talking BS and jump in front of a running bullet train.",
-    "Try bathing with Hydrochloric Acid instead of water.",
-    "Try this: if you hold your breath underwater for an hour, you can then hold it forever.",
-    "Go Green! Stop inhaling Oxygen.",
-    "God was searching for you. You should leave to meet him.",
-    "give your 100%. Now, go donate blood.",
-    "Try jumping from a hundred story building but you can do it only once.",
-    "You should donate your brain seeing that you never used it.",
-    "Volunteer for target in an firing range.",
-    "Head shots are fun. Get yourself one.",
-    "You should try swimming with great white sharks.",
-    "You should paint yourself red and run in a bull marathon.",
-    "You can stay underwater for the rest of your life without coming back up.",
-    "How about you stop breathing for like 1 day? That'll be great.",
-    "Try provoking a tiger while you both are in a cage.",
-    "Have you tried shooting yourself as high as 100m using a canon.",
-    "You should try holding TNT in your mouth and igniting it.",
-    "Try playing catch and throw with RD  its fun.",
-    "I heard phogine is poisonous but i guess you wont mind inhaling it for fun.",
-    "Launch yourself into outer space while forgetting oxygen on Earth.",
-    "You should try playing snake and ladders, with real snakes and no ladders.",
-    "Dance naked on a couple of HT wires.",
-    "Active Volcano is the best swimming pool for you.",
-    "You should try hot bath in a volcano.",
-    "Try to spend one day in a coffin and it will be yours forever.",
-    "Hit Uranium with a slow moving neutron in your presence. It will be a worthwhile experience.",
-    "You can be the first person to step on sun. Have a try.",
-    "People like you are the reason we have middle fingers.",
-    "When your mom dropped you off at the school, she got a ticket for littering.",
-    "You’re so ugly that when you cry, the tears roll down the back of your head…just to avoid your face.",
-    "If you’re talking behind my back then you’re in a perfect position to kiss my a**!.",
-    "Stupidity is not a crime so you are free to go.",
+SFW_STRINGSX=X(
+XXXX"OwwwX...XSuchXaXstupidXidiot.",
+XXXX"Don'tXdrinkXandXtype.",
+XXXX"IXthinkXyouXshouldXgoXhomeXorXbetterXaXmentalXasylum.",
+XXXX"CommandXnotXfound.XJustXlikeXyourXbrain.",
+XXXX"DoXyouXrealizeXyouXareXmakingXaXfoolXofXyourself?XApparentlyXnot.",
+XXXX"YouXcanXtypeXbetterXthanXthat.",
+XXXX"BotXruleX544XsectionX9XpreventsXmeXfromXreplyingXtoXstupidXhumansXlikeXyou.",
+XXXX"Sorry,XweXdoXnotXsellXbrains.",
+XXXX"BelieveXmeXyouXareXnotXnormal.",
+XXXX"IXbetXyourXbrainXfeelsXasXgoodXasXnew,XseeingXthatXyouXneverXuseXit.",
+XXXX"IfXIXwantedXtoXkillXmyselfXI'dXclimbXyourXegoXandXjumpXtoXyourXIQ.",
+XXXX"ZombiesXeatXbrains...Xyou'reXsafe.",
+XXXX"YouXdidn'tXevolveXfromXapes,XtheyXevolvedXfromXyou.",
+XXXX"ComeXbackXandXtalkXtoXmeXwhenXyourXI.Q.XexceedsXyourXage.",
+XXXX"I'mXnotXsayingXyou'reXstupid,XI'mXjustXsayingXyou'veXgotXbadXluckXwhenXitXcomesXtoXthinking.",
+XXXX"WhatXlanguageXareXyouXspeaking?XCauseXitXsoundsXlikeXbullshit.",
+XXXX"StupidityXisXnotXaXcrimeXsoXyouXareXfreeXtoXgo.",
+XXXX"YouXareXproofXthatXevolutionXCANXgoXinXreverse.",
+XXXX"IXwouldXaskXyouXhowXoldXyouXareXbutXIXknowXyouXcan'tXcountXthatXhigh.",
+XXXX"AsXanXoutsider,XwhatXdoXyouXthinkXofXtheXhumanXrace?",
+XXXX"BrainsXaren'tXeverything.XInXyourXcaseXthey'reXnothing.",
+XXXX"OrdinarilyXpeopleXliveXandXlearn.XYouXjustXlive.",
+XXXX"IXdon'tXknowXwhatXmakesXyouXsoXstupid,XbutXitXreallyXworks.",
+XXXX"KeepXtalking,XsomedayXyou'llXsayXsomethingXintelligent!X(IXdoubtXitXthough)",
+XXXX"ShockXme,XsayXsomethingXintelligent.",
+XXXX"YourXIQ'sXlowerXthanXyourXshoeXsize.",
+XXXX"Alas!XYourXneurotransmittersXareXnoXmoreXworking.",
+XXXX"AreXyouXcrazyXyouXfool.",
+XXXX"EveryoneXhasXtheXrightXtoXbeXstupidXbutXyouXareXabusingXtheXprivilege.",
+XXXX"I'mXsorryXIXhurtXyourXfeelingsXwhenXIXcalledXyouXstupid.XIXthoughtXyouXalreadyXknewXthat.",
+XXXX"YouXshouldXtryXtastingXcyanide.",
+XXXX"YourXenzymesXareXmeantXtoXdigestXratXpoison.",
+XXXX"YouXshouldXtryXsleepingXforever.",
+XXXX"PickXupXaXgunXandXshootXyourself.",
+XXXX"YouXcouldXmakeXaXworldXrecordXbyXjumpingXfromXaXplaneXwithoutXparachute.",
+XXXX"StopXtalkingXBSXandXjumpXinXfrontXofXaXrunningXbulletXtrain.",
+XXXX"TryXbathingXwithXHydrochloricXAcidXinsteadXofXwater.",
+XXXX"TryXthis:XifXyouXholdXyourXbreathXunderwaterXforXanXhour,XyouXcanXthenXholdXitXforever.",
+XXXX"GoXGreen!XStopXinhalingXOxygen.",
+XXXX"GodXwasXsearchingXforXyou.XYouXshouldXleaveXtoXmeetXhim.",
+XXXX"giveXyourX100%.XNow,XgoXdonateXblood.",
+XXXX"TryXjumpingXfromXaXhundredXstoryXbuildingXbutXyouXcanXdoXitXonlyXonce.",
+XXXX"YouXshouldXdonateXyourXbrainXseeingXthatXyouXneverXusedXit.",
+XXXX"VolunteerXforXtargetXinXanXfiringXrange.",
+XXXX"HeadXshotsXareXfun.XGetXyourselfXone.",
+XXXX"YouXshouldXtryXswimmingXwithXgreatXwhiteXsharks.",
+XXXX"YouXshouldXpaintXyourselfXredXandXrunXinXaXbullXmarathon.",
+XXXX"YouXcanXstayXunderwaterXforXtheXrestXofXyourXlifeXwithoutXcomingXbackXup.",
+XXXX"HowXaboutXyouXstopXbreathingXforXlikeX1Xday?XThat'llXbeXgreat.",
+XXXX"TryXprovokingXaXtigerXwhileXyouXbothXareXinXaXcage.",
+XXXX"HaveXyouXtriedXshootingXyourselfXasXhighXasX100mXusingXaXcanon.",
+XXXX"YouXshouldXtryXholdingXTNTXinXyourXmouthXandXignitingXit.",
+XXXX"TryXplayingXcatchXandXthrowXwithXRDXXitsXfun.",
+XXXX"IXheardXphogineXisXpoisonousXbutXiXguessXyouXwontXmindXinhalingXitXforXfun.",
+XXXX"LaunchXyourselfXintoXouterXspaceXwhileXforgettingXoxygenXonXEarth.",
+XXXX"YouXshouldXtryXplayingXsnakeXandXladders,XwithXrealXsnakesXandXnoXladders.",
+XXXX"DanceXnakedXonXaXcoupleXofXHTXwires.",
+XXXX"ActiveXVolcanoXisXtheXbestXswimmingXpoolXforXyou.",
+XXXX"YouXshouldXtryXhotXbathXinXaXvolcano.",
+XXXX"TryXtoXspendXoneXdayXinXaXcoffinXandXitXwillXbeXyoursXforever.",
+XXXX"HitXUraniumXwithXaXslowXmovingXneutronXinXyourXpresence.XItXwillXbeXaXworthwhileXexperience.",
+XXXX"YouXcanXbeXtheXfirstXpersonXtoXstepXonXsun.XHaveXaXtry.",
+XXXX"PeopleXlikeXyouXareXtheXreasonXweXhaveXmiddleXfingers.",
+XXXX"WhenXyourXmomXdroppedXyouXoffXatXtheXschool,XsheXgotXaXticketXforXlittering.",
+XXXX"You’reXsoXuglyXthatXwhenXyouXcry,XtheXtearsXrollXdownXtheXbackXofXyourXhead…justXtoXavoidXyourXface.",
+XXXX"IfXyou’reXtalkingXbehindXmyXbackXthenXyou’reXinXaXperfectXpositionXtoXkissXmyXa**!.",
+XXXX"StupidityXisXnotXaXcrimeXsoXyouXareXfreeXtoXgo.",
 )
 
 
 @register(pattern="^/insult$")
-async def _(event):
+asyncXdefX_(event):
 
-    if event.reply_to_msg_id:
-        reply = await event.get_reply_message()
-        replyto = reply.sender_id
-    else:
-        replyto = event.sender_id
-    await tbot.send_message(event.chat_id, random.choice(SFW_STRINGS), reply_to=replyto)
+XXXXifXevent.reply_to_msg_id:
+XXXXXXXXreplyX=XawaitXevent.get_reply_message()
+XXXXXXXXreplytoX=Xreply.sender_id
+XXXXelse:
+XXXXXXXXreplytoX=Xevent.sender_id
+XXXXawaitXtbot.send_message(event.chat_id,Xrandom.choice(SFW_STRINGS),Xreply_to=replyto)
 
 
-reactionhappy = [
-    "''̵͇З= ( ▀ ͜͞ʖ▀) =Ε/̵͇/’’",
-    "ʕ•ᴥ•ʔ",
-    "(づ｡◕‿‿◕｡)づ",
-    "(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧ ✧ﾟ･: *ヽ(◕ヮ◕ヽ)",
-    "(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧",
-    "(☞ﾟ∀ﾟ)☞",
-    "| (• ◡•)| (❍ᴥ❍Ʋ)",
-    "(◕‿◕✿)",
-    "(ᵔᴥᵔ)",
-    "(☞ﾟヮﾟ)☞ ☜(ﾟヮﾟ☜)",
-    "(づ￣ ³￣)づ",
-    "♪~ ᕕ(ᐛ)ᕗ",
-    "♥️‿♥️",
-    "༼ つ ͡° ͜ʖ ͡° ༽つ",
-    "༼ つ ಥ_ಥ ༽つ",
-    "ヾ(⌐■_■)ノ♪",
-    "~(˘▾˘~)",
-    "◉_◉",
-    "(•◡•) /",
-    "(~˘▾˘)~",
-    "(｡◕‿‿◕｡)",
-    "☜(˚▽˚)☞",
-    "(•Ω•)",
-    "(｡◕‿◕｡)",
-    "(っ˘ڡ˘Σ)",
-    "｡◕‿‿◕｡",
-    "☜(⌒▽⌒)☞",
-    "｡◕‿◕｡",
-    "(ღ˘⌣˘ღ)",
-    "(▰˘◡˘▰)",
-    "^̮^",
-    "^̮^",
-    ">_>",
-    "(^̮^)",
-    "^̮^",
-    "^̮^",
+reactionhappyX=X[
+XXXX"''̵͇З=X(X▀X͜͞ʖ▀)X=Ε/̵͇/’’",
+XXXX"ʕ•ᴥ•ʔ",
+XXXX"(づ｡◕‿‿◕｡)づ",
+XXXX"(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧X✧ﾟ･:X*ヽ(◕ヮ◕ヽ)",
+XXXX"(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧",
+XXXX"(☞ﾟ∀ﾟ)☞",
+XXXX"|X(•X◡•)|X(❍ᴥ❍Ʋ)",
+XXXX"(◕‿◕✿)",
+XXXX"(ᵔᴥᵔ)",
+XXXX"(☞ﾟヮﾟ)☞X☜(ﾟヮﾟ☜)",
+XXXX"(づ￣X³￣)づ",
+XXXX"♪~Xᕕ(ᐛ)ᕗ",
+XXXX"♥️‿♥️",
+XXXX"༼XつX͡°X͜ʖX͡°X༽つ",
+XXXX"༼XつXಥ_ಥX༽つ",
+XXXX"ヾ(⌐■_■)ノ♪",
+XXXX"~(˘▾˘~)",
+XXXX"◉_◉",
+XXXX"(•◡•)X/",
+XXXX"(~˘▾˘)~",
+XXXX"(｡◕‿‿◕｡)",
+XXXX"☜(˚▽˚)☞",
+XXXX"(•Ω•)",
+XXXX"(｡◕‿◕｡)",
+XXXX"(っ˘ڡ˘Σ)",
+XXXX"｡◕‿‿◕｡",
+XXXX"☜(⌒▽⌒)☞",
+XXXX"｡◕‿◕｡",
+XXXX"(ღ˘⌣˘ღ)",
+XXXX"(▰˘◡˘▰)",
+XXXX"^̮^",
+XXXX"^̮^",
+XXXX">_>",
+XXXX"(^̮^)",
+XXXX"^̮^",
+XXXX"^̮^",
 ]
-reactionangry = [
-    "▄︻̷┻═━一",
-    "(▀Ĺ̯▀ )",
-    "(ง ͠° ͟ل͜ ͡°)ง",
-    "༼ つ ◕_◕ ༽つ",
-    "ಠ_ಠ",
-    "''̵͇З=( ͠° ͟ʖ ͡°)=Ε/̵͇/'",
-    "(ง'̀-'́)ง",
-    "(ノಠ益ಠ)ノ彡┻━┻",
-    "(╯°□°)╯︵ ꞰOOQƎƆⱯɟ",
-    "ლ(ಠ益ಠლ)",
-    "ಠ╭╮ಠ",
-    "''̵͇З=(•_•)=Ε/̵͇/''",
-    "(╯°□°）╯︵ ┻━┻",
-    "┻━┻ ︵ヽ(Д´)ﾉ︵ ┻━┻",
-    "⌐╦╦═─",
-    "（╯°□°）╯︵( .O.)",
-    ":')",
-    "┬──┬ ノ( ゜-゜ノ)",
-    "ლ(´ڡლ)",
-    "(°ロ°)☝️",
-    "ლ,ᔑ•ﺪ͟͠•ᔐ.ლ",
-    "┬─┬ノ( º _ ºノ)",
-    "┬─┬﻿ ︵ /(.□. ）",
+reactionangryX=X[
+XXXX"▄︻̷┻═━一",
+XXXX"(▀Ĺ̯▀X)",
+XXXX"(งX͠°X͟ل͜X͡°)ง",
+XXXX"༼XつX◕_◕X༽つ",
+XXXX"ಠ_ಠ",
+XXXX"''̵͇З=(X͠°X͟ʖX͡°)=Ε/̵͇/'",
+XXXX"(ง'̀-'́)ง",
+XXXX"(ノಠ益ಠ)ノ彡┻━┻",
+XXXX"(╯°□°)╯︵XꞰOOQƎƆⱯɟ",
+XXXX"ლ(ಠ益ಠლ)",
+XXXX"ಠ╭╮ಠ",
+XXXX"''̵͇З=(•_•)=Ε/̵͇/''",
+XXXX"(╯°□°）╯︵X┻━┻",
+XXXX"┻━┻X︵ヽ(Д´)ﾉ︵X┻━┻",
+XXXX"⌐╦╦═─",
+XXXX"（╯°□°）╯︵(X.O.)",
+XXXX":')",
+XXXX"┬──┬Xノ(X゜-゜ノ)",
+XXXX"ლ(´ڡლ)",
+XXXX"(°ロ°)☝️",
+XXXX"ლ,ᔑ•ﺪ͟͠•ᔐ.ლ",
+XXXX"┬─┬ノ(XºX_Xºノ)",
+XXXX"┬─┬﻿X︵X/(.□.X）",
 ]
 
-reactions = [
-    "( ͡° ͜ʖ ͡°)",
-    "( . •́ _ʖ •̀ .)",
-    "( ಠ ͜ʖ ಠ)",
-    "( ͡ ͜ʖ ͡ )",
-    "(ʘ ͜ʖ ʘ)",
-    "ヾ(´〇`)ﾉ♪♪♪",
-    "ヽ(o´∀`)ﾉ♪♬",
-    "♪♬((d⌒ω⌒b))♬♪",
-    "└(＾＾)┐",
-    "(￣▽￣)/♫•*¨*•.¸¸♪",
-    "ヾ(⌐■_■)ノ♪",
-    "乁( • ω •乁)",
-    "♬♫♪◖(● o ●)◗♪♫♬",
-    "(っ˘ڡ˘ς)",
-    "( ˘▽˘)っ♨",
-    "(　・ω・)⊃-[二二]",
-    "(*´ー`)旦 旦(￣ω￣*)",
-    "( ￣▽￣)[] [](≧▽≦ )",
-    "(*￣▽￣)旦 且(´∀`*)",
-    "(ノ ˘_˘)ノ　ζ|||ζ　ζ|||ζ　ζ|||ζ",
-    "(ノ°∀°)ノ⌒･*:.｡. .｡.:*･゜ﾟ･*☆",
-    "(⊃｡•́‿•̀｡)⊃━✿✿✿✿✿✿",
-    "(∩` ﾛ ´)⊃━炎炎炎炎炎",
-    "( ・∀・)・・・--------☆",
-    "( -ω-)／占~~~~~",
-    "○∞∞∞∞ヽ(^ー^ )",
-    "(*＾＾)/~~~~~~~~~~◎",
-    "((( ￣□)_／",
-    "(ﾒ￣▽￣)︻┳═一",
-    "ヽ( ･∀･)ﾉ_θ彡☆Σ(ノ `Д´)ノ",
-    "(*`0´)θ☆(メ°皿°)ﾉ",
-    "(; -_-)――――――C<―_-)",
-    "ヽ(>_<ヽ) ―⊂|=0ヘ(^‿^ )",
-    "(҂` ﾛ ´)︻デ═一 ＼(º □ º l|l)/",
-    "/( .□.)＼ ︵╰(°益°)╯︵ /(.□. /)",
-    "(`⌒*)O-(`⌒´Q)",
-    "(っ•﹏•)っ ✴==≡눈٩(`皿´҂)ง",
-    "ヾ(・ω・)メ(・ω・)ノ",
-    "(*^ω^)八(⌒▽⌒)八(-‿‿- )ヽ",
-    "ヽ( ⌒ω⌒)人(=^‥^= )ﾉ",
-    "｡*:☆(・ω・人・ω・)｡:゜☆｡",
-    "(°(°ω(°ω°(☆ω☆)°ω°)ω°)°)",
-    "(っ˘▽˘)(˘▽˘)˘▽˘ς)",
-    "(*＾ω＾)人(＾ω＾*)",
-    r"＼(▽￣ \ (￣▽￣) / ￣▽)／",
-    "(￣Θ￣)",
-    "＼( ˋ Θ ´ )／",
-    "( ´(00)ˋ )",
-    "＼(￣(oo)￣)／",
-    "／(≧ x ≦)＼",
-    "／(=･ x ･=)＼",
-    "(=^･ω･^=)",
-    "(= ; ｪ ; =)",
-    "(=⌒‿‿⌒=)",
-    "(＾• ω •＾)",
-    "ଲ(ⓛ ω ⓛ)ଲ",
-    "ଲ(ⓛ ω ⓛ)ଲ",
-    "(^◔ᴥ◔^)",
-    "[(－－)]..zzZ",
-    "(￣o￣) zzZZzzZZ",
-    "(＿ ＿*) Z z z",
-    "☆ﾐ(o*･ω･)ﾉ",
-    "ε=ε=ε=ε=┌(;￣▽￣)┘",
-    "ε===(っ≧ω≦)っ",
-    "__φ(．．)",
-    "ヾ( `ー´)シφ__",
-    "( ^▽^)ψ__",
-    "|･ω･)",
-    "|д･)",
-    "┬┴┬┴┤･ω･)ﾉ",
-    "|･д･)ﾉ",
-    "(*￣ii￣)",
-    "(＾〃＾)",
-    "m(_ _)m",
-    "人(_ _*)",
-    "(シ. .)シ",
-    "(^_~)",
-    "(>ω^)",
-    "(^_<)〜☆",
-    "(^_<)",
-    "(づ￣ ³￣)づ",
-    "(⊃｡•́‿•̀｡)⊃",
-    "⊂(´• ω •`⊂)",
-    "(*・ω・)ﾉ",
-    "(^-^*)/",
-    "ヾ(*'▽'*)",
-    "(^０^)ノ",
-    "(*°ｰ°)ﾉ",
-    "(￣ω￣)/",
-    "(≧▽≦)/",
-    "w(°ｏ°)w",
-    "(⊙_⊙)",
-    "(°ロ°) !",
-    "∑(O_O;)",
-    "(￢_￢)",
-    "(¬_¬ )",
-    "(↼_↼)",
-    "(￣ω￣;)",
-    "┐('～`;)┌",
-    "(・_・;)",
-    "(＠_＠)",
-    "(•ิ_•ิ)?",
-    "ヽ(ー_ー )ノ",
-    "┐(￣ヘ￣)┌",
-    "┐(￣～￣)┌",
-    "┐( ´ д ` )┌",
-    "╮(︶▽︶)╭",
-    "ᕕ( ᐛ )ᕗ",
-    "(ノωヽ)",
-    "(″ロ゛)",
-    "(/ω＼)",
-    "(((＞＜)))",
-    "~(>_<~)",
-    "(×_×)",
-    "(×﹏×)",
-    "(ノ_<。)",
-    "(μ_μ)",
-    "o(TヘTo)",
-    "( ﾟ，_ゝ｀)",
-    "( ╥ω╥ )",
-    "(／ˍ・、)",
-    "(つω`｡)",
-    "(T_T)",
-    "o(〒﹏〒)o",
-    "(＃`Д´)",
-    "(・`ω´・)",
-    "( `ε´ )",
-    "(ﾒ` ﾛ ´)",
-    "Σ(▼□▼メ)",
-    "(҂ `з´ )",
-    "٩(╬ʘ益ʘ╬)۶",
-    "↑_(ΦwΦ)Ψ",
-    "(ﾉಥ益ಥ)ﾉ",
-    "(＃＞＜)",
-    "(；￣Д￣)",
-    "(￢_￢;)",
-    "(＾＾＃)",
-    "(￣︿￣)",
-    "ヾ( ￣O￣)ツ",
-    "(ᗒᗣᗕ)՞",
-    "(ノ_<。)ヾ(´ ▽ ` )",
-    "ヽ(￣ω￣(。。 )ゝ",
-    "(ﾉ_；)ヾ(´ ∀ ` )",
-    "(´-ω-`( _ _ )",
-    "(⌒_⌒;)",
-    "(*/_＼)",
-    "( ◡‿◡ *)",
-    "(//ω//)",
-    "(￣▽￣*)ゞ",
-    "(„ಡωಡ„)",
-    "(ﾉ´ з `)ノ",
-    "(♡-_-♡)",
-    "(─‿‿─)♡",
-    "(´ ω `♡)",
-    "(ღ˘⌣˘ღ)",
-    "(´• ω •`) ♡",
-    "╰(*´︶`*)╯♡",
-    "(≧◡≦) ♡",
-    "♡ (˘▽˘>ԅ( ˘⌣˘)",
-    "σ(≧ε≦σ) ♡",
-    "(˘∀˘)/(μ‿μ) ❤",
-    "Σ>―(〃°ω°〃)♡→",
-    "(* ^ ω ^)",
-    "(o^▽^o)",
-    "ヽ(・∀・)ﾉ",
-    "(o･ω･o)",
-    "(^人^)",
-    "( ´ ω ` )",
-    "(´• ω •`)",
-    "╰(▔∀▔)╯",
-    "(✯◡✯)",
-    "(⌒‿⌒)",
-    "(*°▽°*)",
-    "(´｡• ᵕ •｡`)",
-    "ヽ(>∀<☆)ノ",
-    "＼(￣▽￣)／",
-    "(o˘◡˘o)",
-    "(╯✧▽✧)╯",
-    "( ‾́ ◡ ‾́ )",
-    "(๑˘︶˘๑)",
-    "(´･ᴗ･ ` )",
-    "( ͡° ʖ̯ ͡°)",
-    "( ఠ ͟ʖ ఠ)",
-    "( ಥ ʖ̯ ಥ)",
-    "(≖ ͜ʖ≖)",
-    "ヘ(￣ω￣ヘ)",
-    "(ﾉ≧∀≦)ﾉ",
-    "└(￣-￣└))",
-    "┌(＾＾)┘",
-    "(^_^♪)",
-    "(〜￣△￣)〜",
-    "(｢• ω •)｢",
-    "( ˘ ɜ˘) ♬♪♫",
-    "( o˘◡˘o) ┌iii┐",
-    "♨o(>_<)o♨",
-    "( ・・)つ―{}@{}@{}-",
-    "(*´з`)口ﾟ｡ﾟ口(・∀・ )",
-    "( *^^)o∀*∀o(^^* )",
-    "-●●●-ｃ(・・ )",
-    "(ﾉ≧∀≦)ﾉ ‥…━━━★",
-    "╰( ͡° ͜ʖ ͡° )つ──☆*:・ﾟ",
-    "(∩ᄑ_ᄑ)⊃━☆ﾟ*･｡*･:≡( ε:)",
+reactionsX=X[
+XXXX"(X͡°X͜ʖX͡°)",
+XXXX"(X.X•́X_ʖX•̀X.)",
+XXXX"(XಠX͜ʖXಠ)",
+XXXX"(X͡X͜ʖX͡X)",
+XXXX"(ʘX͜ʖXʘ)",
+XXXX"ヾ(´〇`)ﾉ♪♪♪",
+XXXX"ヽ(o´∀`)ﾉ♪♬",
+XXXX"♪♬((d⌒ω⌒b))♬♪",
+XXXX"└(＾＾)┐",
+XXXX"(￣▽￣)/♫•*¨*•.¸¸♪",
+XXXX"ヾ(⌐■_■)ノ♪",
+XXXX"乁(X•XωX•乁)",
+XXXX"♬♫♪◖(●XoX●)◗♪♫♬",
+XXXX"(っ˘ڡ˘ς)",
+XXXX"(X˘▽˘)っ♨",
+XXXX"(　・ω・)⊃-[二二]",
+XXXX"(*´ー`)旦X旦(￣ω￣*)",
+XXXX"(X￣▽￣)[]X[](≧▽≦X)",
+XXXX"(*￣▽￣)旦X且(´∀`*)",
+XXXX"(ノX˘_˘)ノ　ζ|||ζ　ζ|||ζ　ζ|||ζ",
+XXXX"(ノ°∀°)ノ⌒･*:.｡.X.｡.:*･゜ﾟ･*☆",
+XXXX"(⊃｡•́‿•̀｡)⊃━✿✿✿✿✿✿",
+XXXX"(∩`XﾛX´)⊃━炎炎炎炎炎",
+XXXX"(X・∀・)・・・--------☆",
+XXXX"(X-ω-)／占~~~~~",
+XXXX"○∞∞∞∞ヽ(^ー^X)",
+XXXX"(*＾＾)/~~~~~~~~~~◎",
+XXXX"(((X￣□)_／",
+XXXX"(ﾒ￣▽￣)︻┳═一",
+XXXX"ヽ(X･∀･)ﾉ_θ彡☆Σ(ノX`Д´)ノ",
+XXXX"(*`0´)θ☆(メ°皿°)ﾉ",
+XXXX"(;X-_-)――――――C<―_-)",
+XXXX"ヽ(>_<ヽ)X―⊂|=0ヘ(^‿^X)",
+XXXX"(҂`XﾛX´)︻デ═一X＼(ºX□XºXl|l)/",
+XXXX"/(X.□.)＼X︵╰(°益°)╯︵X/(.□.X/)",
+XXXX"(`⌒*)O-(`⌒´Q)",
+XXXX"(っ•﹏•)っX✴==≡눈٩(`皿´҂)ง",
+XXXX"ヾ(・ω・)メ(・ω・)ノ",
+XXXX"(*^ω^)八(⌒▽⌒)八(-‿‿-X)ヽ",
+XXXX"ヽ(X⌒ω⌒)人(=^‥^=X)ﾉ",
+XXXX"｡*:☆(・ω・人・ω・)｡:゜☆｡",
+XXXX"(°(°ω(°ω°(☆ω☆)°ω°)ω°)°)",
+XXXX"(っ˘▽˘)(˘▽˘)˘▽˘ς)",
+XXXX"(*＾ω＾)人(＾ω＾*)",
+XXXXr"＼(▽￣X\X(￣▽￣)X/X￣▽)／",
+XXXX"(￣Θ￣)",
+XXXX"＼(XˋXΘX´X)／",
+XXXX"(X´(00)ˋX)",
+XXXX"＼(￣(oo)￣)／",
+XXXX"／(≧XxX≦)＼",
+XXXX"／(=･XxX･=)＼",
+XXXX"(=^･ω･^=)",
+XXXX"(=X;XｪX;X=)",
+XXXX"(=⌒‿‿⌒=)",
+XXXX"(＾•XωX•＾)",
+XXXX"ଲ(ⓛXωXⓛ)ଲ",
+XXXX"ଲ(ⓛXωXⓛ)ଲ",
+XXXX"(^◔ᴥ◔^)",
+XXXX"[(－－)]..zzZ",
+XXXX"(￣o￣)XzzZZzzZZ",
+XXXX"(＿X＿*)XZXzXz",
+XXXX"☆ﾐ(o*･ω･)ﾉ",
+XXXX"ε=ε=ε=ε=┌(;￣▽￣)┘",
+XXXX"ε===(っ≧ω≦)っ",
+XXXX"__φ(．．)",
+XXXX"ヾ(X`ー´)シφ__",
+XXXX"(X^▽^)ψ__",
+XXXX"|･ω･)",
+XXXX"|д･)",
+XXXX"┬┴┬┴┤･ω･)ﾉ",
+XXXX"|･д･)ﾉ",
+XXXX"(*￣ii￣)",
+XXXX"(＾〃＾)",
+XXXX"m(_X_)m",
+XXXX"人(_X_*)",
+XXXX"(シ.X.)シ",
+XXXX"(^_~)",
+XXXX"(>ω^)",
+XXXX"(^_<)〜☆",
+XXXX"(^_<)",
+XXXX"(づ￣X³￣)づ",
+XXXX"(⊃｡•́‿•̀｡)⊃",
+XXXX"⊂(´•XωX•`⊂)",
+XXXX"(*・ω・)ﾉ",
+XXXX"(^-^*)/",
+XXXX"ヾ(*'▽'*)",
+XXXX"(^０^)ノ",
+XXXX"(*°ｰ°)ﾉ",
+XXXX"(￣ω￣)/",
+XXXX"(≧▽≦)/",
+XXXX"w(°ｏ°)w",
+XXXX"(⊙_⊙)",
+XXXX"(°ロ°)X!",
+XXXX"∑(O_O;)",
+XXXX"(￢_￢)",
+XXXX"(¬_¬X)",
+XXXX"(↼_↼)",
+XXXX"(￣ω￣;)",
+XXXX"┐('～`;)┌",
+XXXX"(・_・;)",
+XXXX"(＠_＠)",
+XXXX"(•ิ_•ิ)?",
+XXXX"ヽ(ー_ーX)ノ",
+XXXX"┐(￣ヘ￣)┌",
+XXXX"┐(￣～￣)┌",
+XXXX"┐(X´XдX`X)┌",
+XXXX"╮(︶▽︶)╭",
+XXXX"ᕕ(XᐛX)ᕗ",
+XXXX"(ノωヽ)",
+XXXX"(″ロ゛)",
+XXXX"(/ω＼)",
+XXXX"(((＞＜)))",
+XXXX"~(>_<~)",
+XXXX"(×_×)",
+XXXX"(×﹏×)",
+XXXX"(ノ_<。)",
+XXXX"(μ_μ)",
+XXXX"o(TヘTo)",
+XXXX"(Xﾟ，_ゝ｀)",
+XXXX"(X╥ω╥X)",
+XXXX"(／ˍ・、)",
+XXXX"(つω`｡)",
+XXXX"(T_T)",
+XXXX"o(〒﹏〒)o",
+XXXX"(＃`Д´)",
+XXXX"(・`ω´・)",
+XXXX"(X`ε´X)",
+XXXX"(ﾒ`XﾛX´)",
+XXXX"Σ(▼□▼メ)",
+XXXX"(҂X`з´X)",
+XXXX"٩(╬ʘ益ʘ╬)۶",
+XXXX"↑_(ΦwΦ)Ψ",
+XXXX"(ﾉಥ益ಥ)ﾉ",
+XXXX"(＃＞＜)",
+XXXX"(；￣Д￣)",
+XXXX"(￢_￢;)",
+XXXX"(＾＾＃)",
+XXXX"(￣︿￣)",
+XXXX"ヾ(X￣O￣)ツ",
+XXXX"(ᗒᗣᗕ)՞",
+XXXX"(ノ_<。)ヾ(´X▽X`X)",
+XXXX"ヽ(￣ω￣(。。X)ゝ",
+XXXX"(ﾉ_；)ヾ(´X∀X`X)",
+XXXX"(´-ω-`(X_X_X)",
+XXXX"(⌒_⌒;)",
+XXXX"(*/_＼)",
+XXXX"(X◡‿◡X*)",
+XXXX"(//ω//)",
+XXXX"(￣▽￣*)ゞ",
+XXXX"(„ಡωಡ„)",
+XXXX"(ﾉ´XзX`)ノ",
+XXXX"(♡-_-♡)",
+XXXX"(─‿‿─)♡",
+XXXX"(´XωX`♡)",
+XXXX"(ღ˘⌣˘ღ)",
+XXXX"(´•XωX•`)X♡",
+XXXX"╰(*´︶`*)╯♡",
+XXXX"(≧◡≦)X♡",
+XXXX"♡X(˘▽˘>ԅ(X˘⌣˘)",
+XXXX"σ(≧ε≦σ)X♡",
+XXXX"(˘∀˘)/(μ‿μ)X❤",
+XXXX"Σ>―(〃°ω°〃)♡→",
+XXXX"(*X^XωX^)",
+XXXX"(o^▽^o)",
+XXXX"ヽ(・∀・)ﾉ",
+XXXX"(o･ω･o)",
+XXXX"(^人^)",
+XXXX"(X´XωX`X)",
+XXXX"(´•XωX•`)",
+XXXX"╰(▔∀▔)╯",
+XXXX"(✯◡✯)",
+XXXX"(⌒‿⌒)",
+XXXX"(*°▽°*)",
+XXXX"(´｡•XᵕX•｡`)",
+XXXX"ヽ(>∀<☆)ノ",
+XXXX"＼(￣▽￣)／",
+XXXX"(o˘◡˘o)",
+XXXX"(╯✧▽✧)╯",
+XXXX"(X‾́X◡X‾́X)",
+XXXX"(๑˘︶˘๑)",
+XXXX"(´･ᴗ･X`X)",
+XXXX"(X͡°Xʖ̯X͡°)",
+XXXX"(XఠX͟ʖXఠ)",
+XXXX"(XಥXʖ̯Xಥ)",
+XXXX"(≖X͜ʖ≖)",
+XXXX"ヘ(￣ω￣ヘ)",
+XXXX"(ﾉ≧∀≦)ﾉ",
+XXXX"└(￣-￣└))",
+XXXX"┌(＾＾)┘",
+XXXX"(^_^♪)",
+XXXX"(〜￣△￣)〜",
+XXXX"(｢•XωX•)｢",
+XXXX"(X˘Xɜ˘)X♬♪♫",
+XXXX"(Xo˘◡˘o)X┌iii┐",
+XXXX"♨o(>_<)o♨",
+XXXX"(X・・)つ―{}@{}@{}-",
+XXXX"(*´з`)口ﾟ｡ﾟ口(・∀・X)",
+XXXX"(X*^^)o∀*∀o(^^*X)",
+XXXX"-●●●-ｃ(・・X)",
+XXXX"(ﾉ≧∀≦)ﾉX‥…━━━★",
+XXXX"╰(X͡°X͜ʖX͡°X)つ──☆*:・ﾟ",
+XXXX"(∩ᄑ_ᄑ)⊃━☆ﾟ*･｡*･:≡(Xε:)",
 ]
 
 
 @register(pattern="^/react$")
-async def _(event):
+asyncXdefX_(event):
 
-    if event.reply_to_msg_id:
-        reply = await event.get_reply_message()
-        replyto = reply.sender_id
-    else:
-        replyto = event.sender_id
-    react = random.choice(reactions)
-    await event.reply(react, reply_to=replyto)
+XXXXifXevent.reply_to_msg_id:
+XXXXXXXXreplyX=XawaitXevent.get_reply_message()
+XXXXXXXXreplytoX=Xreply.sender_id
+XXXXelse:
+XXXXXXXXreplytoX=Xevent.sender_id
+XXXXreactX=Xrandom.choice(reactions)
+XXXXawaitXevent.reply(react,Xreply_to=replyto)
 
 
 @register(pattern="^/rhappy$")
-async def _(event):
+asyncXdefX_(event):
 
-    if event.reply_to_msg_id:
-        reply = await event.get_reply_message()
-        replyto = reply.sender_id
-    else:
-        replyto = event.sender_id
-    rhappy = random.choice(reactionhappy)
-    await event.reply(rhappy, reply_to=replyto)
+XXXXifXevent.reply_to_msg_id:
+XXXXXXXXreplyX=XawaitXevent.get_reply_message()
+XXXXXXXXreplytoX=Xreply.sender_id
+XXXXelse:
+XXXXXXXXreplytoX=Xevent.sender_id
+XXXXrhappyX=Xrandom.choice(reactionhappy)
+XXXXawaitXevent.reply(rhappy,Xreply_to=replyto)
 
 
 @register(pattern="^/rangry$")
-async def _(event):
+asyncXdefX_(event):
 
-    if event.reply_to_msg_id:
-        reply = await event.get_reply_message()
-        replyto = reply.sender_id
-    else:
-        replyto = event.sender_id
-    rangry = random.choice(reactionangry)
-    await event.reply(rangry, reply_to=replyto)
+XXXXifXevent.reply_to_msg_id:
+XXXXXXXXreplyX=XawaitXevent.get_reply_message()
+XXXXXXXXreplytoX=Xreply.sender_id
+XXXXelse:
+XXXXXXXXreplytoX=Xevent.sender_id
+XXXXrangryX=Xrandom.choice(reactionangry)
+XXXXawaitXevent.reply(rangry,Xreply_to=replyto)
 
 
-file_help = os.path.basename(__file__)
-file_help = file_help.replace(".py", "")
-file_helpo = file_help.replace("_", " ")
+file_helpX=Xos.path.basename(__file__)
+file_helpX=Xfile_help.replace(".py",X"")
+file_helpoX=Xfile_help.replace("_",X"X")
 
-__help__ = """
-**Some memes command, find it all out yourself !**
+__help__X=X"""
+**SomeXmemesXcommand,XfindXitXallXoutXyourselfX!**
 
- - /owo: OWO de text
- - /stretch: STRETCH de text
- - /clapmoji: Type in reply to a message and see magic
- - /bmoji: Type in reply to a message and see magic
- - /copypasta: Type in reply to a message and see magic
- - /vapor: owo vapor dis
- - /shout <i>text</i>: Write anything that u want it to should
- - /zalgofy: reply to a message to glitch it out!
- - /table: get flip/unflip :v.
- - /decide: Randomly answers yes/no/maybe
- - /bluetext: Must type for fun
- - /toss: Tosses A coin
- - /abuse: Abuses the cunt
- - /insult: Insult the cunt
- - /slap: Slaps the cunt
- - /roll: Roll a dice.
- - /rlg: Join ears,nose,mouth and create an emo ;-;
- - /react: Check on your own
- - /rhappy: Check on your own
- - /rangry: Check on your own
- - /angrymoji: Check on your own
- - /crymoji: Check on your own
- - /cowsay, /tuxsay , /milksay , /kisssay , /wwwsay , /defaultsay , /bunnysay , /moosesay , /sheepsay , /rensay , /cheesesay , /ghostbusterssay , /skeletonsay <i>text</i>: Returns a stylish art text from the given text
- - /deepfry: Type this in reply to an image/sticker to roast the image/sticker
- - /figlet: Another Style art
- - /dice: Roll A dice
- - /dart: Throw a dart and try your luck
- - /basketball: Try your luck if you can enter the ball in the ring
- - /type <i>text</i>: Make the bot type something for you in a professional way
- - /carbon <i>text</i>: Beautifies your text and enwraps inside a terminal image [ENGLISH ONLY]
- - /sticklet <i>text</i>: Turn a text into a sticker
- - /fortune: gets a random fortune quote
- - /quotly: Type /quotly in reply to a message to make a sticker of that
- - /animate: Enwrap your text in a beautiful anime
- 
+X-X/owo:XOWOXdeXtext
+X-X/stretch:XSTRETCHXdeXtext
+X-X/clapmoji:XTypeXinXreplyXtoXaXmessageXandXseeXmagic
+X-X/bmoji:XTypeXinXreplyXtoXaXmessageXandXseeXmagic
+X-X/copypasta:XTypeXinXreplyXtoXaXmessageXandXseeXmagic
+X-X/vapor:XowoXvaporXdis
+X-X/shoutX<i>text</i>:XWriteXanythingXthatXuXwantXitXtoXshould
+X-X/zalgofy:XreplyXtoXaXmessageXtoXglitchXitXout!
+X-X/table:XgetXflip/unflipX:v.
+X-X/decide:XRandomlyXanswersXyes/no/maybe
+X-X/bluetext:XMustXtypeXforXfun
+X-X/toss:XTossesXAXcoin
+X-X/abuse:XAbusesXtheXcunt
+X-X/insult:XInsultXtheXcunt
+X-X/slap:XSlapsXtheXcunt
+X-X/roll:XRollXaXdice.
+X-X/rlg:XJoinXears,nose,mouthXandXcreateXanXemoX;-;
+X-X/react:XCheckXonXyourXown
+X-X/rhappy:XCheckXonXyourXown
+X-X/rangry:XCheckXonXyourXown
+X-X/angrymoji:XCheckXonXyourXown
+X-X/crymoji:XCheckXonXyourXown
+X-X/cowsay,X/tuxsayX,X/milksayX,X/kisssayX,X/wwwsayX,X/defaultsayX,X/bunnysayX,X/moosesayX,X/sheepsayX,X/rensayX,X/cheesesayX,X/ghostbusterssayX,X/skeletonsayX<i>text</i>:XReturnsXaXstylishXartXtextXfromXtheXgivenXtext
+X-X/deepfry:XTypeXthisXinXreplyXtoXanXimage/stickerXtoXroastXtheXimage/sticker
+X-X/figlet:XAnotherXStyleXart
+X-X/dice:XRollXAXdice
+X-X/dart:XThrowXaXdartXandXtryXyourXluck
+X-X/basketball:XTryXyourXluckXifXyouXcanXenterXtheXballXinXtheXring
+X-X/typeX<i>text</i>:XMakeXtheXbotXtypeXsomethingXforXyouXinXaXprofessionalXway
+X-X/carbonX<i>text</i>:XBeautifiesXyourXtextXandXenwrapsXinsideXaXterminalXimageX[ENGLISHXONLY]
+X-X/stickletX<i>text</i>:XTurnXaXtextXintoXaXsticker
+X-X/fortune:XgetsXaXrandomXfortuneXquote
+X-X/quotly:XTypeX/quotlyXinXreplyXtoXaXmessageXtoXmakeXaXstickerXofXthat
+X-X/animate:XEnwrapXyourXtextXinXaXbeautifulXanime
+X
 """
 
-__mod_name__ = "Memes"
+__mod_name__X=X"Memes"

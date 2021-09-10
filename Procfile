@@ -1,2 +1,2 @@
-INERUKI : python3 -m Ineruki 
-ps:scale INERUKI =1
+INERUKIX:Xpython3X-mXInerukiX
+ps:scaleXINERUKIX=1

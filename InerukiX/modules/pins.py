@@ -1,77 +1,77 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-from aiogram.utils.exceptions import BadRequest
+fromXaiogram.utils.exceptionsXimportXBadRequest
 
-from Ineruki  import bot
-from Ineruki .decorator import register
+fromXInerukiXXimportXbot
+fromXInerukiX.decoratorXimportXregister
 
-from .utils.connections import chat_connection
-from .utils.language import get_strings_dec
-from .utils.message import get_arg
+fromX.utils.connectionsXimportXchat_connection
+fromX.utils.languageXimportXget_strings_dec
+fromX.utils.messageXimportXget_arg
 
 
-@register(cmds="unpin", user_can_pin_messages=True, bot_can_pin_messages=True)
+@register(cmds="unpin",Xuser_can_pin_messages=True,Xbot_can_pin_messages=True)
 @chat_connection(admin=True)
 @get_strings_dec("pins")
-async def unpin_message(message, chat, strings):
-    # support unpinning all
-    if get_arg(message) in {"all"}:
-        return await bot.unpin_all_chat_messages(chat["chat_id"])
+asyncXdefXunpin_message(message,Xchat,Xstrings):
+XXXX#XsupportXunpinningXall
+XXXXifXget_arg(message)XinX{"all"}:
+XXXXXXXXreturnXawaitXbot.unpin_all_chat_messages(chat["chat_id"])
 
-    try:
-        await bot.unpin_chat_message(chat["chat_id"])
-    except BadRequest:
-        await message.reply(strings["chat_not_modified_unpin"])
-        return
+XXXXtry:
+XXXXXXXXawaitXbot.unpin_chat_message(chat["chat_id"])
+XXXXexceptXBadRequest:
+XXXXXXXXawaitXmessage.reply(strings["chat_not_modified_unpin"])
+XXXXXXXXreturn
 
 
-@register(cmds="pin", user_can_pin_messages=True, bot_can_pin_messages=True)
+@register(cmds="pin",Xuser_can_pin_messages=True,Xbot_can_pin_messages=True)
 @get_strings_dec("pins")
-async def pin_message(message, strings):
-    if "reply_to_message" not in message:
-        await message.reply(strings["no_reply_msg"])
-        return
-    msg = message.reply_to_message.message_id
-    arg = get_arg(message).lower()
+asyncXdefXpin_message(message,Xstrings):
+XXXXifX"reply_to_message"XnotXinXmessage:
+XXXXXXXXawaitXmessage.reply(strings["no_reply_msg"])
+XXXXXXXXreturn
+XXXXmsgX=Xmessage.reply_to_message.message_id
+XXXXargX=Xget_arg(message).lower()
 
-    dnd = True
-    loud = ["loud", "notify"]
-    if arg in loud:
-        dnd = False
+XXXXdndX=XTrue
+XXXXloudX=X["loud",X"notify"]
+XXXXifXargXinXloud:
+XXXXXXXXdndX=XFalse
 
-    try:
-        await bot.pin_chat_message(message.chat.id, msg, disable_notification=dnd)
-    except BadRequest:
-        await message.reply(strings["chat_not_modified_pin"])
+XXXXtry:
+XXXXXXXXawaitXbot.pin_chat_message(message.chat.id,Xmsg,Xdisable_notification=dnd)
+XXXXexceptXBadRequest:
+XXXXXXXXawaitXmessage.reply(strings["chat_not_modified_pin"])
 
 
-__mod_name__ = "Pinning"
+__mod_name__X=X"Pinning"
 
-__help__ = """
-All the pin related commands can be found here; keep your chat up to date on the latest news with a simple pinned message!
+__help__X=X"""
+AllXtheXpinXrelatedXcommandsXcanXbeXfoundXhere;XkeepXyourXchatXupXtoXdateXonXtheXlatestXnewsXwithXaXsimpleXpinnedXmessage!
 
-<b> Basic Pins </b>
-- /pin: silently pins the message replied to - add 'loud' or 'notify' to give notifs to users.
-- /unpin: unpins the currently pinned message - add 'all' to unpin all pinned messages.
+<b>XBasicXPinsX</b>
+-X/pin:XsilentlyXpinsXtheXmessageXrepliedXtoX-XaddX'loud'XorX'notify'XtoXgiveXnotifsXtoXusers.
+-X/unpin:XunpinsXtheXcurrentlyXpinnedXmessageX-XaddX'all'XtoXunpinXallXpinnedXmessages.
 
-<b> Other </b>
-- /permapin [reply]: Pin a custom message through the bot. This message can contain markdown, buttons, and all the other cool features.
-- /unpinall: Unpins all pinned messages.
-- /antichannelpin [yes/no/on/off]: Don't let telegram auto-pin linked channels. If no arguments are given, shows current setting.
-- /cleanlinked [yes/no/on/off]: Delete messages sent by the linked channel.
+<b>XOtherX</b>
+-X/permapinX[reply]:XPinXaXcustomXmessageXthroughXtheXbot.XThisXmessageXcanXcontainXmarkdown,Xbuttons,XandXallXtheXotherXcoolXfeatures.
+-X/unpinall:XUnpinsXallXpinnedXmessages.
+-X/antichannelpinX[yes/no/on/off]:XDon'tXletXtelegramXauto-pinXlinkedXchannels.XIfXnoXargumentsXareXgiven,XshowsXcurrentXsetting.
+-X/cleanlinkedX[yes/no/on/off]:XDeleteXmessagesXsentXbyXtheXlinkedXchannel.
 
-Note: When using antichannel pins, make sure to use the /unpin command, instead of doing it manually. Otherwise, the old message will get re-pinned when the channel sends any messages.
+Note:XWhenXusingXantichannelXpins,XmakeXsureXtoXuseXtheX/unpinXcommand,XinsteadXofXdoingXitXmanually.XOtherwise,XtheXoldXmessageXwillXgetXre-pinnedXwhenXtheXchannelXsendsXanyXmessages.
 """

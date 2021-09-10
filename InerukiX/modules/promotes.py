@@ -1,102 +1,102 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 errorshivansh
-# Copyright (C) 2020 Inuka Asith
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2021Xerrorshivansh
+#XCopyrightX(C)X2020XInukaXAsith
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import html
+importXhtml
 
-from aiogram.utils.exceptions import ChatAdminRequired
-from telethon.errors import AdminRankEmojiNotAllowedError
+fromXaiogram.utils.exceptionsXimportXChatAdminRequired
+fromXtelethon.errorsXimportXAdminRankEmojiNotAllowedError
 
-from Ineruki  import BOT_ID, bot
-from Ineruki .decorator import register
-from Ineruki .services.telethon import tbot
+fromXInerukiXXimportXBOT_ID,Xbot
+fromXInerukiX.decoratorXimportXregister
+fromXInerukiX.services.telethonXimportXtbot
 
-from .utils.connections import chat_connection
-from .utils.language import get_strings_dec
-from .utils.user_details import (
-    get_admins_rights,
-    get_user_and_text_dec,
-    get_user_dec,
-    get_user_link,
+fromX.utils.connectionsXimportXchat_connection
+fromX.utils.languageXimportXget_strings_dec
+fromX.utils.user_detailsXimportX(
+XXXXget_admins_rights,
+XXXXget_user_and_text_dec,
+XXXXget_user_dec,
+XXXXget_user_link,
 )
 
 
-@register(cmds="promote", bot_can_promote_members=True, user_can_promote_members=True)
-@chat_connection(admin=True, only_groups=True)
+@register(cmds="promote",Xbot_can_promote_members=True,Xuser_can_promote_members=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_user_and_text_dec()
 @get_strings_dec("promotes")
-async def promote(message, chat, user, args, strings):
-    chat_id = chat["chat_id"]
-    text = strings["promote_success"].format(
-        user=await get_user_link(user["user_id"]), chat_name=chat["chat_title"]
-    )
+asyncXdefXpromote(message,Xchat,Xuser,Xargs,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
+XXXXtextX=Xstrings["promote_success"].format(
+XXXXXXXXuser=awaitXget_user_link(user["user_id"]),Xchat_name=chat["chat_title"]
+XXXX)
 
-    if user["user_id"] == BOT_ID:
-        return
+XXXXifXuser["user_id"]X==XBOT_ID:
+XXXXXXXXreturn
 
-    if user["user_id"] == message.from_user.id:
-        return await message.reply(strings["cant_promote_yourself"])
+XXXXifXuser["user_id"]X==Xmessage.from_user.id:
+XXXXXXXXreturnXawaitXmessage.reply(strings["cant_promote_yourself"])
 
-    title = None
+XXXXtitleX=XNone
 
-    if args:
-        if len(args) > 16:
-            await message.reply(strings["rank_to_loong"])
-            return
-        title = args
-        text += strings["promote_title"].format(role=html.escape(title, quote=False))
+XXXXifXargs:
+XXXXXXXXifXlen(args)X>X16:
+XXXXXXXXXXXXawaitXmessage.reply(strings["rank_to_loong"])
+XXXXXXXXXXXXreturn
+XXXXXXXXtitleX=Xargs
+XXXXXXXXtextX+=Xstrings["promote_title"].format(role=html.escape(title,Xquote=False))
 
-    try:
-        await tbot.edit_admin(
-            chat_id,
-            user["user_id"],
-            invite_users=True,
-            change_info=True,
-            ban_users=True,
-            delete_messages=True,
-            pin_messages=True,
-            title=title,
-        )
-    except ValueError:
-        return await message.reply(strings["cant_get_user"])
-    except AdminRankEmojiNotAllowedError:
-        return await message.reply(strings["emoji_not_allowed"])
-    await get_admins_rights(chat_id, force_update=True)  # Reset a cache
-    await message.reply(text)
+XXXXtry:
+XXXXXXXXawaitXtbot.edit_admin(
+XXXXXXXXXXXXchat_id,
+XXXXXXXXXXXXuser["user_id"],
+XXXXXXXXXXXXinvite_users=True,
+XXXXXXXXXXXXchange_info=True,
+XXXXXXXXXXXXban_users=True,
+XXXXXXXXXXXXdelete_messages=True,
+XXXXXXXXXXXXpin_messages=True,
+XXXXXXXXXXXXtitle=title,
+XXXXXXXX)
+XXXXexceptXValueError:
+XXXXXXXXreturnXawaitXmessage.reply(strings["cant_get_user"])
+XXXXexceptXAdminRankEmojiNotAllowedError:
+XXXXXXXXreturnXawaitXmessage.reply(strings["emoji_not_allowed"])
+XXXXawaitXget_admins_rights(chat_id,Xforce_update=True)XX#XResetXaXcache
+XXXXawaitXmessage.reply(text)
 
 
-@register(cmds="demote", bot_can_promote_members=True, user_can_promote_members=True)
-@chat_connection(admin=True, only_groups=True)
+@register(cmds="demote",Xbot_can_promote_members=True,Xuser_can_promote_members=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_user_dec()
 @get_strings_dec("promotes")
-async def demote(message, chat, user, strings):
-    chat_id = chat["chat_id"]
-    if user["user_id"] == BOT_ID:
-        return
+asyncXdefXdemote(message,Xchat,Xuser,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
+XXXXifXuser["user_id"]X==XBOT_ID:
+XXXXXXXXreturn
 
-    try:
-        await bot.promote_chat_member(chat_id, user["user_id"])
-    except ChatAdminRequired:
-        return await message.reply(strings["demote_failed"])
+XXXXtry:
+XXXXXXXXawaitXbot.promote_chat_member(chat_id,Xuser["user_id"])
+XXXXexceptXChatAdminRequired:
+XXXXXXXXreturnXawaitXmessage.reply(strings["demote_failed"])
 
-    await get_admins_rights(chat_id, force_update=True)  # Reset a cache
-    await message.reply(
-        strings["demote_success"].format(
-            user=await get_user_link(user["user_id"]), chat_name=chat["chat_title"]
-        )
-    )
+XXXXawaitXget_admins_rights(chat_id,Xforce_update=True)XX#XResetXaXcache
+XXXXawaitXmessage.reply(
+XXXXXXXXstrings["demote_success"].format(
+XXXXXXXXXXXXuser=awaitXget_user_link(user["user_id"]),Xchat_name=chat["chat_title"]
+XXXXXXXX)
+XXXX)

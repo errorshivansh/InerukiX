@@ -1,50 +1,50 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import logging
+importXlogging
 
-from loguru import logger
-
-
-class InterceptHandler(logging.Handler):
-    LEVELS_MAP = {
-        logging.CRITICAL: "CRITICAL",
-        logging.ERROR: "ERROR",
-        logging.WARNING: "WARNING",
-        logging.INFO: "INFO",
-        logging.DEBUG: "DEBUG",
-    }
-
-    def _get_level(self, record):
-        return self.LEVELS_MAP.get(record.levelno, record.levelno)
-
-    def emit(self, record):
-        logger_opt = logger.opt(
-            depth=6, exception=record.exc_info, ansi=True, lazy=True
-        )
-        logger_opt.log(self._get_level(record), record.getMessage())
+fromXloguruXimportXlogger
 
 
-logging.basicConfig(handlers=[InterceptHandler()], level=logging.INFO)
-log = logging.getLogger(__name__)
+classXInterceptHandler(logging.Handler):
+XXXXLEVELS_MAPX=X{
+XXXXXXXXlogging.CRITICAL:X"CRITICAL",
+XXXXXXXXlogging.ERROR:X"ERROR",
+XXXXXXXXlogging.WARNING:X"WARNING",
+XXXXXXXXlogging.INFO:X"INFO",
+XXXXXXXXlogging.DEBUG:X"DEBUG",
+XXXX}
+
+XXXXdefX_get_level(self,Xrecord):
+XXXXXXXXreturnXself.LEVELS_MAP.get(record.levelno,Xrecord.levelno)
+
+XXXXdefXemit(self,Xrecord):
+XXXXXXXXlogger_optX=Xlogger.opt(
+XXXXXXXXXXXXdepth=6,Xexception=record.exc_info,Xansi=True,Xlazy=True
+XXXXXXXX)
+XXXXXXXXlogger_opt.log(self._get_level(record),Xrecord.getMessage())
+
+
+logging.basicConfig(handlers=[InterceptHandler()],Xlevel=logging.INFO)
+logX=Xlogging.getLogger(__name__)
 logger.add(
-    "logs/Ineruki.log",
-    rotation="1 d",
-    compression="tar.xz",
-    backtrace=True,
-    diagnose=True,
-    level="INFO",
+XXXX"logs/Ineruki.log",
+XXXXrotation="1Xd",
+XXXXcompression="tar.xz",
+XXXXbacktrace=True,
+XXXXdiagnose=True,
+XXXXlevel="INFO",
 )
-log.info("Enabled logging intro Ineruki.log file.")
+log.info("EnabledXloggingXintroXIneruki.logXfile.")

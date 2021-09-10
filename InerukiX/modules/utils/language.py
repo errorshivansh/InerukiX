@@ -1,135 +1,135 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import os
+importXos
 
-import yaml
-from babel.core import Locale
+importXyaml
+fromXbabel.coreXimportXLocale
 
-from Ineruki .services.mongo import db
-from Ineruki .services.redis import redis
-from Ineruki .utils.logger import log
+fromXInerukiX.services.mongoXimportXdb
+fromXInerukiX.services.redisXimportXredis
+fromXInerukiX.utils.loggerXimportXlog
 
-LANGUAGES = {}
+LANGUAGESX=X{}
 
-log.info("Loading localizations...")
+log.info("LoadingXlocalizations...")
 
-for filename in os.listdir("Ineruki /localization"):
-    log.debug("Loading language file " + filename)
-    with open("Ineruki /localization/" + filename, "r", encoding="utf8") as f:
-        lang = yaml.load(f, Loader=yaml.CLoader)
+forXfilenameXinXos.listdir("InerukiX/localization"):
+XXXXlog.debug("LoadingXlanguageXfileX"X+Xfilename)
+XXXXwithXopen("InerukiX/localization/"X+Xfilename,X"r",Xencoding="utf8")XasXf:
+XXXXXXXXlangX=Xyaml.load(f,XLoader=yaml.CLoader)
 
-        lang_code = lang["language_info"]["code"]
-        lang["language_info"]["babel"] = Locale(lang_code)
+XXXXXXXXlang_codeX=Xlang["language_info"]["code"]
+XXXXXXXXlang["language_info"]["babel"]X=XLocale(lang_code)
 
-        LANGUAGES[lang_code] = lang
+XXXXXXXXLANGUAGES[lang_code]X=Xlang
 
 log.info(
-    "Languages loaded: {}".format(
-        [
-            language["language_info"]["babel"].display_name
-            for language in LANGUAGES.values()
-        ]
-    )
+XXXX"LanguagesXloaded:X{}".format(
+XXXXXXXX[
+XXXXXXXXXXXXlanguage["language_info"]["babel"].display_name
+XXXXXXXXXXXXforXlanguageXinXLANGUAGES.values()
+XXXXXXXX]
+XXXX)
 )
 
 
-async def get_chat_lang(chat_id):
-    r = redis.get("lang_cache_{}".format(chat_id))
-    if r:
-        return r
-    else:
-        db_lang = await db.lang.find_one({"chat_id": chat_id})
-        if db_lang:
-            # Rebuild lang cache
-            redis.set("lang_cache_{}".format(chat_id), db_lang["lang"])
-            return db_lang["lang"]
-        user_lang = await db.user_list.find_one({"user_id": chat_id})
-        if user_lang and user_lang["user_lang"] in LANGUAGES:
-            # Add telegram language in lang cache
-            redis.set("lang_cache_{}".format(chat_id), user_lang["user_lang"])
-            return user_lang["user_lang"]
-        else:
-            return "en"
+asyncXdefXget_chat_lang(chat_id):
+XXXXrX=Xredis.get("lang_cache_{}".format(chat_id))
+XXXXifXr:
+XXXXXXXXreturnXr
+XXXXelse:
+XXXXXXXXdb_langX=XawaitXdb.lang.find_one({"chat_id":Xchat_id})
+XXXXXXXXifXdb_lang:
+XXXXXXXXXXXX#XRebuildXlangXcache
+XXXXXXXXXXXXredis.set("lang_cache_{}".format(chat_id),Xdb_lang["lang"])
+XXXXXXXXXXXXreturnXdb_lang["lang"]
+XXXXXXXXuser_langX=XawaitXdb.user_list.find_one({"user_id":Xchat_id})
+XXXXXXXXifXuser_langXandXuser_lang["user_lang"]XinXLANGUAGES:
+XXXXXXXXXXXX#XAddXtelegramXlanguageXinXlangXcache
+XXXXXXXXXXXXredis.set("lang_cache_{}".format(chat_id),Xuser_lang["user_lang"])
+XXXXXXXXXXXXreturnXuser_lang["user_lang"]
+XXXXXXXXelse:
+XXXXXXXXXXXXreturnX"en"
 
 
-async def change_chat_lang(chat_id, lang):
-    redis.set("lang_cache_{}".format(chat_id), lang)
-    await db.lang.update_one(
-        {"chat_id": chat_id}, {"$set": {"chat_id": chat_id, "lang": lang}}, upsert=True
-    )
+asyncXdefXchange_chat_lang(chat_id,Xlang):
+XXXXredis.set("lang_cache_{}".format(chat_id),Xlang)
+XXXXawaitXdb.lang.update_one(
+XXXXXXXX{"chat_id":Xchat_id},X{"$set":X{"chat_id":Xchat_id,X"lang":Xlang}},Xupsert=True
+XXXX)
 
 
-async def get_strings(chat_id, module, mas_name="STRINGS"):
-    chat_lang = await get_chat_lang(chat_id)
-    if chat_lang not in LANGUAGES:
-        await change_chat_lang(chat_id, "en")
+asyncXdefXget_strings(chat_id,Xmodule,Xmas_name="STRINGS"):
+XXXXchat_langX=XawaitXget_chat_lang(chat_id)
+XXXXifXchat_langXnotXinXLANGUAGES:
+XXXXXXXXawaitXchange_chat_lang(chat_id,X"en")
 
-    class Strings:
-        @staticmethod
-        def get_strings(lang, mas_name, module):
+XXXXclassXStrings:
+XXXXXXXX@staticmethod
+XXXXXXXXdefXget_strings(lang,Xmas_name,Xmodule):
 
-            if (
-                mas_name not in LANGUAGES[lang]
-                or module not in LANGUAGES[lang][mas_name]
-            ):
-                return {}
+XXXXXXXXXXXXifX(
+XXXXXXXXXXXXXXXXmas_nameXnotXinXLANGUAGES[lang]
+XXXXXXXXXXXXXXXXorXmoduleXnotXinXLANGUAGES[lang][mas_name]
+XXXXXXXXXXXX):
+XXXXXXXXXXXXXXXXreturnX{}
 
-            data = LANGUAGES[lang][mas_name][module]
+XXXXXXXXXXXXdataX=XLANGUAGES[lang][mas_name][module]
 
-            if mas_name == "STRINGS":
-                data["language_info"] = LANGUAGES[chat_lang]["language_info"]
-            return data
+XXXXXXXXXXXXifXmas_nameX==X"STRINGS":
+XXXXXXXXXXXXXXXXdata["language_info"]X=XLANGUAGES[chat_lang]["language_info"]
+XXXXXXXXXXXXreturnXdata
 
-        def get_string(self, name):
-            data = self.get_strings(chat_lang, mas_name, module)
-            if name not in data:
-                data = self.get_strings("en", mas_name, module)
+XXXXXXXXdefXget_string(self,Xname):
+XXXXXXXXXXXXdataX=Xself.get_strings(chat_lang,Xmas_name,Xmodule)
+XXXXXXXXXXXXifXnameXnotXinXdata:
+XXXXXXXXXXXXXXXXdataX=Xself.get_strings("en",Xmas_name,Xmodule)
 
-            return data[name]
+XXXXXXXXXXXXreturnXdata[name]
 
-        def __getitem__(self, key):
-            return self.get_string(key)
+XXXXXXXXdefX__getitem__(self,Xkey):
+XXXXXXXXXXXXreturnXself.get_string(key)
 
-    return Strings()
-
-
-async def get_string(chat_id, module, name, mas_name="STRINGS"):
-    strings = await get_strings(chat_id, module, mas_name=mas_name)
-    return strings[name]
+XXXXreturnXStrings()
 
 
-def get_strings_dec(module, mas_name="STRINGS"):
-    def wrapped(func):
-        async def wrapped_1(*args, **kwargs):
-            message = args[0]
-            if hasattr(message, "chat"):
-                chat_id = message.chat.id
-            elif hasattr(message, "message"):
-                chat_id = message.message.chat.id
-            else:
-                chat_id = None
-
-            strings = await get_strings(chat_id, module, mas_name=mas_name)
-            return await func(*args, strings, **kwargs)
-
-        return wrapped_1
-
-    return wrapped
+asyncXdefXget_string(chat_id,Xmodule,Xname,Xmas_name="STRINGS"):
+XXXXstringsX=XawaitXget_strings(chat_id,Xmodule,Xmas_name=mas_name)
+XXXXreturnXstrings[name]
 
 
-async def get_chat_lang_info(chat_id):
-    chat_lang = await get_chat_lang(chat_id)
-    return LANGUAGES[chat_lang]["language_info"]
+defXget_strings_dec(module,Xmas_name="STRINGS"):
+XXXXdefXwrapped(func):
+XXXXXXXXasyncXdefXwrapped_1(*args,X**kwargs):
+XXXXXXXXXXXXmessageX=Xargs[0]
+XXXXXXXXXXXXifXhasattr(message,X"chat"):
+XXXXXXXXXXXXXXXXchat_idX=Xmessage.chat.id
+XXXXXXXXXXXXelifXhasattr(message,X"message"):
+XXXXXXXXXXXXXXXXchat_idX=Xmessage.message.chat.id
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXchat_idX=XNone
+
+XXXXXXXXXXXXstringsX=XawaitXget_strings(chat_id,Xmodule,Xmas_name=mas_name)
+XXXXXXXXXXXXreturnXawaitXfunc(*args,Xstrings,X**kwargs)
+
+XXXXXXXXreturnXwrapped_1
+
+XXXXreturnXwrapped
+
+
+asyncXdefXget_chat_lang_info(chat_id):
+XXXXchat_langX=XawaitXget_chat_lang(chat_id)
+XXXXreturnXLANGUAGES[chat_lang]["language_info"]

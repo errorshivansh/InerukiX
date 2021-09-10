@@ -1,247 +1,247 @@
-# By @TroJanzHE 
-import os
-import shutil
+#XByX@TroJanzHEX
+importXos
+importXshutil
 
-import cv2
-from PIL import Image, ImageEnhance, ImageFilter
-
-
-async def bright(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "brightness.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            a = await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            image = Image.open(a)
-            brightness = ImageEnhance.Brightness(image)
-            brightness.enhance(1.5).save(edit_img_loc)
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("bright-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+importXcv2
+fromXPILXimportXImage,XImageEnhance,XImageFilter
 
 
-async def mix(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "mix.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            a = await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            image = Image.open(a)
-            red, green, blue = image.split()
-            new_image = Image.merge("RGB", (green, red, blue))
-            new_image.save(edit_img_loc)
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("mix-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXbright(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"brightness.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXaX=XawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXimageX=XImage.open(a)
+XXXXXXXXXXXXbrightnessX=XImageEnhance.Brightness(image)
+XXXXXXXXXXXXbrightness.enhance(1.5).save(edit_img_loc)
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("bright-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def black_white(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "black_white.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            a = await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            image_file = cv2.imread(a)
-            grayImage = cv2.cvtColor(image_file, cv2.COLOR_BGR2GRAY)
-            cv2.imwrite(edit_img_loc, grayImage)
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("black_white-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXmix(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"mix.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXaX=XawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXimageX=XImage.open(a)
+XXXXXXXXXXXXred,Xgreen,XblueX=Ximage.split()
+XXXXXXXXXXXXnew_imageX=XImage.merge("RGB",X(green,Xred,Xblue))
+XXXXXXXXXXXXnew_image.save(edit_img_loc)
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("mix-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def normal_blur(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "BlurImage.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            a = await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            OriImage = Image.open(a)
-            blurImage = OriImage.filter(ImageFilter.BLUR)
-            blurImage.save(edit_img_loc)
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("normal_blur-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXblack_white(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"black_white.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXaX=XawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXimage_fileX=Xcv2.imread(a)
+XXXXXXXXXXXXgrayImageX=Xcv2.cvtColor(image_file,Xcv2.COLOR_BGR2GRAY)
+XXXXXXXXXXXXcv2.imwrite(edit_img_loc,XgrayImage)
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("black_white-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def g_blur(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "gaussian_blur.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            a = await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            im1 = Image.open(a)
-            im2 = im1.filter(ImageFilter.GaussianBlur(radius=5))
-            im2.save(edit_img_loc)
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("g_blur-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXnormal_blur(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"BlurImage.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXaX=XawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXOriImageX=XImage.open(a)
+XXXXXXXXXXXXblurImageX=XOriImage.filter(ImageFilter.BLUR)
+XXXXXXXXXXXXblurImage.save(edit_img_loc)
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("normal_blur-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def box_blur(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "box_blur.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            a = await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            im1 = Image.open(a)
-            im2 = im1.filter(ImageFilter.BoxBlur(0))
-            im2.save(edit_img_loc)
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("box_blur-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXg_blur(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"gaussian_blur.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXaX=XawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXim1X=XImage.open(a)
+XXXXXXXXXXXXim2X=Xim1.filter(ImageFilter.GaussianBlur(radius=5))
+XXXXXXXXXXXXim2.save(edit_img_loc)
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("g_blur-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
+
+
+asyncXdefXbox_blur(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"box_blur.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXaX=XawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXim1X=XImage.open(a)
+XXXXXXXXXXXXim2X=Xim1.filter(ImageFilter.BoxBlur(0))
+XXXXXXXXXXXXim2.save(edit_img_loc)
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("box_blur-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn

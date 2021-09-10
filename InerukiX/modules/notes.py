@@ -1,215 +1,215 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 errorshivansh
-# Copyright (C) 2020 Inuka Asith
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2021Xerrorshivansh
+#XCopyrightX(C)X2020XInukaXAsith
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import difflib
-import re
-from contextlib import suppress
-from datetime import datetime
+importXdifflib
+importXre
+fromXcontextlibXimportXsuppress
+fromXdatetimeXimportXdatetime
 
-from aiogram.dispatcher.filters.builtin import CommandStart
-from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
-from aiogram.utils.deep_linking import get_start_link
-from aiogram.utils.exceptions import (
-    BadRequest,
-    MessageCantBeDeleted,
-    MessageNotModified,
+fromXaiogram.dispatcher.filters.builtinXimportXCommandStart
+fromXaiogram.types.inline_keyboardXimportXInlineKeyboardButton,XInlineKeyboardMarkup
+fromXaiogram.utils.deep_linkingXimportXget_start_link
+fromXaiogram.utils.exceptionsXimportX(
+XXXXBadRequest,
+XXXXMessageCantBeDeleted,
+XXXXMessageNotModified,
 )
-from babel.dates import format_datetime
-from pymongo import ReplaceOne
-from telethon.errors.rpcerrorlist import MessageDeleteForbiddenError
+fromXbabel.datesXimportXformat_datetime
+fromXpymongoXimportXReplaceOne
+fromXtelethon.errors.rpcerrorlistXimportXMessageDeleteForbiddenError
 
-from Ineruki  import bot
-from Ineruki .decorator import register
-from Ineruki .services.mongo import db
-from Ineruki .services.redis import redis
-from Ineruki .services.telethon import tbot
+fromXInerukiXXimportXbot
+fromXInerukiX.decoratorXimportXregister
+fromXInerukiX.services.mongoXimportXdb
+fromXInerukiX.services.redisXimportXredis
+fromXInerukiX.services.telethonXimportXtbot
 
-from .utils.connections import chat_connection, set_connected_command
-from .utils.disable import disableable_dec
-from .utils.language import get_string, get_strings_dec
-from .utils.message import get_arg, need_args_dec
-from .utils.notes import (
-    ALLOWED_COLUMNS,
-    BUTTONS,
-    get_parsed_note_list,
-    send_note,
-    t_unparse_note_item,
+fromX.utils.connectionsXimportXchat_connection,Xset_connected_command
+fromX.utils.disableXimportXdisableable_dec
+fromX.utils.languageXimportXget_string,Xget_strings_dec
+fromX.utils.messageXimportXget_arg,Xneed_args_dec
+fromX.utils.notesXimportX(
+XXXXALLOWED_COLUMNS,
+XXXXBUTTONS,
+XXXXget_parsed_note_list,
+XXXXsend_note,
+XXXXt_unparse_note_item,
 )
-from .utils.user_details import get_user_link
+fromX.utils.user_detailsXimportXget_user_link
 
-RESTRICTED_SYMBOLS_IN_NOTENAMES = [
-    ":",
-    "**",
-    "__",
-    "`",
-    "#",
-    '"',
-    "[",
-    "]",
-    "'",
-    "$",
-    "||",
+RESTRICTED_SYMBOLS_IN_NOTENAMESX=X[
+XXXX":",
+XXXX"**",
+XXXX"__",
+XXXX"`",
+XXXX"#",
+XXXX'"',
+XXXX"[",
+XXXX"]",
+XXXX"'",
+XXXX"$",
+XXXX"||",
 ]
 
 
-async def get_similar_note(chat_id, note_name):
-    all_notes = []
-    async for note in db.notes.find({"chat_id": chat_id}):
-        all_notes.extend(note["names"])
+asyncXdefXget_similar_note(chat_id,Xnote_name):
+XXXXall_notesX=X[]
+XXXXasyncXforXnoteXinXdb.notes.find({"chat_id":Xchat_id}):
+XXXXXXXXall_notes.extend(note["names"])
 
-    if len(all_notes) > 0:
-        check = difflib.get_close_matches(note_name, all_notes)
-        if len(check) > 0:
-            return check[0]
+XXXXifXlen(all_notes)X>X0:
+XXXXXXXXcheckX=Xdifflib.get_close_matches(note_name,Xall_notes)
+XXXXXXXXifXlen(check)X>X0:
+XXXXXXXXXXXXreturnXcheck[0]
 
-    return None
-
-
-def clean_notes(func):
-    async def wrapped_1(*args, **kwargs):
-        event = args[0]
-
-        message = await func(*args, **kwargs)
-        if not message:
-            return
-
-        if event.chat.type == "private":
-            return
-
-        chat_id = event.chat.id
-
-        data = await db.clean_notes.find_one({"chat_id": chat_id})
-        if not data:
-            return
-
-        if data["enabled"] is not True:
-            return
-
-        if "msgs" in data:
-            with suppress(MessageDeleteForbiddenError):
-                await tbot.delete_messages(chat_id, data["msgs"])
-
-        msgs = []
-        if hasattr(message, "message_id"):
-            msgs.append(message.message_id)
-        else:
-            msgs.append(message.id)
-
-        msgs.append(event.message_id)
-
-        await db.clean_notes.update_one({"chat_id": chat_id}, {"$set": {"msgs": msgs}})
-
-    return wrapped_1
+XXXXreturnXNone
 
 
-@register(cmds="save", user_admin=True, user_can_change_info=True)
+defXclean_notes(func):
+XXXXasyncXdefXwrapped_1(*args,X**kwargs):
+XXXXXXXXeventX=Xargs[0]
+
+XXXXXXXXmessageX=XawaitXfunc(*args,X**kwargs)
+XXXXXXXXifXnotXmessage:
+XXXXXXXXXXXXreturn
+
+XXXXXXXXifXevent.chat.typeX==X"private":
+XXXXXXXXXXXXreturn
+
+XXXXXXXXchat_idX=Xevent.chat.id
+
+XXXXXXXXdataX=XawaitXdb.clean_notes.find_one({"chat_id":Xchat_id})
+XXXXXXXXifXnotXdata:
+XXXXXXXXXXXXreturn
+
+XXXXXXXXifXdata["enabled"]XisXnotXTrue:
+XXXXXXXXXXXXreturn
+
+XXXXXXXXifX"msgs"XinXdata:
+XXXXXXXXXXXXwithXsuppress(MessageDeleteForbiddenError):
+XXXXXXXXXXXXXXXXawaitXtbot.delete_messages(chat_id,Xdata["msgs"])
+
+XXXXXXXXmsgsX=X[]
+XXXXXXXXifXhasattr(message,X"message_id"):
+XXXXXXXXXXXXmsgs.append(message.message_id)
+XXXXXXXXelse:
+XXXXXXXXXXXXmsgs.append(message.id)
+
+XXXXXXXXmsgs.append(event.message_id)
+
+XXXXXXXXawaitXdb.clean_notes.update_one({"chat_id":Xchat_id},X{"$set":X{"msgs":Xmsgs}})
+
+XXXXreturnXwrapped_1
+
+
+@register(cmds="save",Xuser_admin=True,Xuser_can_change_info=True)
 @need_args_dec()
 @chat_connection(admin=True)
 @get_strings_dec("notes")
-async def save_note(message, chat, strings):
-    chat_id = chat["chat_id"]
-    arg = get_arg(message).lower()
-    if arg[0] == "#":
-        arg = arg[1:]
+asyncXdefXsave_note(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
+XXXXargX=Xget_arg(message).lower()
+XXXXifXarg[0]X==X"#":
+XXXXXXXXargX=Xarg[1:]
 
-    sym = None
-    if any((sym := s) in arg for s in RESTRICTED_SYMBOLS_IN_NOTENAMES):
-        await message.reply(strings["notename_cant_contain"].format(symbol=sym))
-        return
+XXXXsymX=XNone
+XXXXifXany((symX:=Xs)XinXargXforXsXinXRESTRICTED_SYMBOLS_IN_NOTENAMES):
+XXXXXXXXawaitXmessage.reply(strings["notename_cant_contain"].format(symbol=sym))
+XXXXXXXXreturn
 
-    note_names = arg.split("|")
+XXXXnote_namesX=Xarg.split("|")
 
-    note = await get_parsed_note_list(message)
+XXXXnoteX=XawaitXget_parsed_note_list(message)
 
-    note["names"] = note_names
-    note["chat_id"] = chat_id
+XXXXnote["names"]X=Xnote_names
+XXXXnote["chat_id"]X=Xchat_id
 
-    if "text" not in note and "file" not in note:
-        await message.reply(strings["blank_note"])
-        return
+XXXXifX"text"XnotXinXnoteXandX"file"XnotXinXnote:
+XXXXXXXXawaitXmessage.reply(strings["blank_note"])
+XXXXXXXXreturn
 
-    if old_note := await db.notes.find_one(
-        {"chat_id": chat_id, "names": {"$in": note_names}}
-    ):
-        text = strings["note_updated"]
-        if "created_date" in old_note:
-            note["created_date"] = old_note["created_date"]
-            note["created_user"] = old_note["created_user"]
-        note["edited_date"] = datetime.now()
-        note["edited_user"] = message.from_user.id
-    else:
-        text = strings["note_saved"]
-        note["created_date"] = datetime.now()
-        note["created_user"] = message.from_user.id
+XXXXifXold_noteX:=XawaitXdb.notes.find_one(
+XXXXXXXX{"chat_id":Xchat_id,X"names":X{"$in":Xnote_names}}
+XXXX):
+XXXXXXXXtextX=Xstrings["note_updated"]
+XXXXXXXXifX"created_date"XinXold_note:
+XXXXXXXXXXXXnote["created_date"]X=Xold_note["created_date"]
+XXXXXXXXXXXXnote["created_user"]X=Xold_note["created_user"]
+XXXXXXXXnote["edited_date"]X=Xdatetime.now()
+XXXXXXXXnote["edited_user"]X=Xmessage.from_user.id
+XXXXelse:
+XXXXXXXXtextX=Xstrings["note_saved"]
+XXXXXXXXnote["created_date"]X=Xdatetime.now()
+XXXXXXXXnote["created_user"]X=Xmessage.from_user.id
 
-    await db.notes.replace_one(
-        {"_id": old_note["_id"]} if old_note else note, note, upsert=True
-    )
+XXXXawaitXdb.notes.replace_one(
+XXXXXXXX{"_id":Xold_note["_id"]}XifXold_noteXelseXnote,Xnote,Xupsert=True
+XXXX)
 
-    text += strings["you_can_get_note"]
-    text = text.format(note_name=note_names[0], chat_title=chat["chat_title"])
-    if len(note_names) > 1:
-        text += strings["note_aliases"]
-        for notename in note_names:
-            text += f" <code>#{notename}</code>"
+XXXXtextX+=Xstrings["you_can_get_note"]
+XXXXtextX=Xtext.format(note_name=note_names[0],Xchat_title=chat["chat_title"])
+XXXXifXlen(note_names)X>X1:
+XXXXXXXXtextX+=Xstrings["note_aliases"]
+XXXXXXXXforXnotenameXinXnote_names:
+XXXXXXXXXXXXtextX+=Xf"X<code>#{notename}</code>"
 
-    await message.reply(text)
+XXXXawaitXmessage.reply(text)
 
 
 @get_strings_dec("notes")
-async def get_note(
-    message,
-    strings,
-    note_name=None,
-    db_item=None,
-    chat_id=None,
-    send_id=None,
-    rpl_id=None,
-    noformat=False,
-    event=None,
-    user=None,
+asyncXdefXget_note(
+XXXXmessage,
+XXXXstrings,
+XXXXnote_name=None,
+XXXXdb_item=None,
+XXXXchat_id=None,
+XXXXsend_id=None,
+XXXXrpl_id=None,
+XXXXnoformat=False,
+XXXXevent=None,
+XXXXuser=None,
 ):
-    if not chat_id:
-        chat_id = message.chat.id
+XXXXifXnotXchat_id:
+XXXXXXXXchat_idX=Xmessage.chat.id
 
-    if not send_id:
-        send_id = message.chat.id
+XXXXifXnotXsend_id:
+XXXXXXXXsend_idX=Xmessage.chat.id
 
-    if rpl_id is False:
-        rpl_id = None
-    elif not rpl_id:
-        rpl_id = message.message_id
+XXXXifXrpl_idXisXFalse:
+XXXXXXXXrpl_idX=XNone
+XXXXelifXnotXrpl_id:
+XXXXXXXXrpl_idX=Xmessage.message_id
 
-    if not db_item and not (
-        db_item := await db.notes.find_one(
-            {"chat_id": chat_id, "names": {"$in": [note_name]}}
-        )
-    ):
-        await bot.send_message(chat_id, strings["no_note"], reply_to_message_id=rpl_id)
-        return
+XXXXifXnotXdb_itemXandXnotX(
+XXXXXXXXdb_itemX:=XawaitXdb.notes.find_one(
+XXXXXXXXXXXX{"chat_id":Xchat_id,X"names":X{"$in":X[note_name]}}
+XXXXXXXX)
+XXXX):
+XXXXXXXXawaitXbot.send_message(chat_id,Xstrings["no_note"],Xreply_to_message_id=rpl_id)
+XXXXXXXXreturn
 
-    text, kwargs = await t_unparse_note_item(
-        message, db_item, chat_id, noformat=noformat, event=event, user=user
-    )
-    kwargs["reply_to"] = rpl_id
+XXXXtext,XkwargsX=XawaitXt_unparse_note_item(
+XXXXXXXXmessage,Xdb_item,Xchat_id,Xnoformat=noformat,Xevent=event,Xuser=user
+XXXX)
+XXXXkwargs["reply_to"]X=Xrpl_id
 
-    return await send_note(send_id, text, **kwargs)
+XXXXreturnXawaitXsend_note(send_id,Xtext,X**kwargs)
 
 
 @register(cmds="get")
@@ -218,601 +218,601 @@ async def get_note(
 @chat_connection(command="get")
 @get_strings_dec("notes")
 @clean_notes
-async def get_note_cmd(message, chat, strings):
-    chat_id = chat["chat_id"]
-    chat_name = chat["chat_title"]
+asyncXdefXget_note_cmd(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
+XXXXchat_nameX=Xchat["chat_title"]
 
-    note_name = get_arg(message).lower()
-    if note_name[0] == "#":
-        note_name = note_name[1:]
+XXXXnote_nameX=Xget_arg(message).lower()
+XXXXifXnote_name[0]X==X"#":
+XXXXXXXXnote_nameX=Xnote_name[1:]
 
-    if "reply_to_message" in message:
-        rpl_id = message.reply_to_message.message_id
-        user = message.reply_to_message.from_user
-    else:
-        rpl_id = message.message_id
-        user = message.from_user
+XXXXifX"reply_to_message"XinXmessage:
+XXXXXXXXrpl_idX=Xmessage.reply_to_message.message_id
+XXXXXXXXuserX=Xmessage.reply_to_message.from_user
+XXXXelse:
+XXXXXXXXrpl_idX=Xmessage.message_id
+XXXXXXXXuserX=Xmessage.from_user
 
-    if not (
-        note := await db.notes.find_one(
-            {"chat_id": int(chat_id), "names": {"$in": [note_name]}}
-        )
-    ):
-        text = strings["cant_find_note"].format(chat_name=chat_name)
-        if alleged_note_name := await get_similar_note(chat_id, note_name):
-            text += strings["u_mean"].format(note_name=alleged_note_name)
-        await message.reply(text)
-        return
+XXXXifXnotX(
+XXXXXXXXnoteX:=XawaitXdb.notes.find_one(
+XXXXXXXXXXXX{"chat_id":Xint(chat_id),X"names":X{"$in":X[note_name]}}
+XXXXXXXX)
+XXXX):
+XXXXXXXXtextX=Xstrings["cant_find_note"].format(chat_name=chat_name)
+XXXXXXXXifXalleged_note_nameX:=XawaitXget_similar_note(chat_id,Xnote_name):
+XXXXXXXXXXXXtextX+=Xstrings["u_mean"].format(note_name=alleged_note_name)
+XXXXXXXXawaitXmessage.reply(text)
+XXXXXXXXreturn
 
-    noformat = False
-    if len(args := message.text.split(" ")) > 2:
-        arg2 = args[2].lower()
-        noformat = arg2 in ("noformat", "raw")
+XXXXnoformatX=XFalse
+XXXXifXlen(argsX:=Xmessage.text.split("X"))X>X2:
+XXXXXXXXarg2X=Xargs[2].lower()
+XXXXXXXXnoformatX=Xarg2XinX("noformat",X"raw")
 
-    return await get_note(
-        message, db_item=note, rpl_id=rpl_id, noformat=noformat, user=user
-    )
+XXXXreturnXawaitXget_note(
+XXXXXXXXmessage,Xdb_item=note,Xrpl_id=rpl_id,Xnoformat=noformat,Xuser=user
+XXXX)
 
 
-@register(regexp=r"^#([\w-]+)", allow_kwargs=True)
+@register(regexp=r"^#([\w-]+)",Xallow_kwargs=True)
 @disableable_dec("get")
 @chat_connection(command="get")
 @clean_notes
-async def get_note_hashtag(message, chat, regexp=None, **kwargs):
-    chat_id = chat["chat_id"]
+asyncXdefXget_note_hashtag(message,Xchat,Xregexp=None,X**kwargs):
+XXXXchat_idX=Xchat["chat_id"]
 
-    note_name = regexp.group(1).lower()
-    if not (
-        note := await db.notes.find_one(
-            {"chat_id": int(chat_id), "names": {"$in": [note_name]}}
-        )
-    ):
-        return
+XXXXnote_nameX=Xregexp.group(1).lower()
+XXXXifXnotX(
+XXXXXXXXnoteX:=XawaitXdb.notes.find_one(
+XXXXXXXXXXXX{"chat_id":Xint(chat_id),X"names":X{"$in":X[note_name]}}
+XXXXXXXX)
+XXXX):
+XXXXXXXXreturn
 
-    if "reply_to_message" in message:
-        rpl_id = message.reply_to_message.message_id
-        user = message.reply_to_message.from_user
-    else:
-        rpl_id = message.message_id
-        user = message.from_user
+XXXXifX"reply_to_message"XinXmessage:
+XXXXXXXXrpl_idX=Xmessage.reply_to_message.message_id
+XXXXXXXXuserX=Xmessage.reply_to_message.from_user
+XXXXelse:
+XXXXXXXXrpl_idX=Xmessage.message_id
+XXXXXXXXuserX=Xmessage.from_user
 
-    return await get_note(message, db_item=note, rpl_id=rpl_id, user=user)
+XXXXreturnXawaitXget_note(message,Xdb_item=note,Xrpl_id=rpl_id,Xuser=user)
 
 
-@register(cmds=["notes", "saved"])
+@register(cmds=["notes",X"saved"])
 @disableable_dec("notes")
 @chat_connection(command="notes")
 @get_strings_dec("notes")
 @clean_notes
-async def get_notes_list_cmd(message, chat, strings):
-    if (
-        await db.privatenotes.find_one({"chat_id": chat["chat_id"]})
-        and message.chat.id == chat["chat_id"]
-    ):  # Workaround to avoid sending PN to connected PM
-        text = strings["notes_in_private"]
-        if not (keyword := message.get_args()):
-            keyword = None
-        button = InlineKeyboardMarkup().add(
-            InlineKeyboardButton(
-                text="Click here",
-                url=await get_start_link(f"notes_{chat['chat_id']}_{keyword}"),
-            )
-        )
-        return await message.reply(
-            text, reply_markup=button, disable_web_page_preview=True
-        )
-    else:
-        return await get_notes_list(message, chat=chat)
+asyncXdefXget_notes_list_cmd(message,Xchat,Xstrings):
+XXXXifX(
+XXXXXXXXawaitXdb.privatenotes.find_one({"chat_id":Xchat["chat_id"]})
+XXXXXXXXandXmessage.chat.idX==Xchat["chat_id"]
+XXXX):XX#XWorkaroundXtoXavoidXsendingXPNXtoXconnectedXPM
+XXXXXXXXtextX=Xstrings["notes_in_private"]
+XXXXXXXXifXnotX(keywordX:=Xmessage.get_args()):
+XXXXXXXXXXXXkeywordX=XNone
+XXXXXXXXbuttonX=XInlineKeyboardMarkup().add(
+XXXXXXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXXXXXtext="ClickXhere",
+XXXXXXXXXXXXXXXXurl=awaitXget_start_link(f"notes_{chat['chat_id']}_{keyword}"),
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturnXawaitXmessage.reply(
+XXXXXXXXXXXXtext,Xreply_markup=button,Xdisable_web_page_preview=True
+XXXXXXXX)
+XXXXelse:
+XXXXXXXXreturnXawaitXget_notes_list(message,Xchat=chat)
 
 
 @get_strings_dec("notes")
-async def get_notes_list(message, strings, chat, keyword=None, pm=False):
-    text = strings["notelist_header"].format(chat_name=chat["chat_title"])
+asyncXdefXget_notes_list(message,Xstrings,Xchat,Xkeyword=None,Xpm=False):
+XXXXtextX=Xstrings["notelist_header"].format(chat_name=chat["chat_title"])
 
-    notes = (
-        await db.notes.find({"chat_id": chat["chat_id"]})
-        .sort("names", 1)
-        .to_list(length=300)
-    )
-    if not notes:
-        return await message.reply(
-            strings["notelist_no_notes"].format(chat_title=chat["chat_title"])
-        )
+XXXXnotesX=X(
+XXXXXXXXawaitXdb.notes.find({"chat_id":Xchat["chat_id"]})
+XXXXXXXX.sort("names",X1)
+XXXXXXXX.to_list(length=300)
+XXXX)
+XXXXifXnotXnotes:
+XXXXXXXXreturnXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["notelist_no_notes"].format(chat_title=chat["chat_title"])
+XXXXXXXX)
 
-    async def search_notes(request):
-        nonlocal notes, text, note, note_name
-        text += "\n" + strings["notelist_search"].format(request=request)
-        all_notes = notes
-        notes = []
-        for note in all_notes:
-            for note_name in note["names"]:
-                if re.search(request, note_name):
-                    notes.append(note)
-        if len(notes) <= 0:
-            return await message.reply(strings["no_notes_pattern"] % request)
+XXXXasyncXdefXsearch_notes(request):
+XXXXXXXXnonlocalXnotes,Xtext,Xnote,Xnote_name
+XXXXXXXXtextX+=X"\n"X+Xstrings["notelist_search"].format(request=request)
+XXXXXXXXall_notesX=Xnotes
+XXXXXXXXnotesX=X[]
+XXXXXXXXforXnoteXinXall_notes:
+XXXXXXXXXXXXforXnote_nameXinXnote["names"]:
+XXXXXXXXXXXXXXXXifXre.search(request,Xnote_name):
+XXXXXXXXXXXXXXXXXXXXnotes.append(note)
+XXXXXXXXifXlen(notes)X<=X0:
+XXXXXXXXXXXXreturnXawaitXmessage.reply(strings["no_notes_pattern"]X%Xrequest)
 
-    # Search
-    if keyword:
-        await search_notes(keyword)
-    if len(keyword := message.get_args()) > 0 and pm is False:
-        await search_notes(keyword)
+XXXX#XSearch
+XXXXifXkeyword:
+XXXXXXXXawaitXsearch_notes(keyword)
+XXXXifXlen(keywordX:=Xmessage.get_args())X>X0XandXpmXisXFalse:
+XXXXXXXXawaitXsearch_notes(keyword)
 
-    if len(notes) > 0:
-        for note in notes:
-            text += "\n-"
-            for note_name in note["names"]:
-                text += f" <code>#{note_name}</code>"
-        text += strings["you_can_get_note"]
+XXXXifXlen(notes)X>X0:
+XXXXXXXXforXnoteXinXnotes:
+XXXXXXXXXXXXtextX+=X"\n-"
+XXXXXXXXXXXXforXnote_nameXinXnote["names"]:
+XXXXXXXXXXXXXXXXtextX+=Xf"X<code>#{note_name}</code>"
+XXXXXXXXtextX+=Xstrings["you_can_get_note"]
 
-        try:
-            return await message.reply(text)
-        except BadRequest:
-            await message.answer(text)
+XXXXXXXXtry:
+XXXXXXXXXXXXreturnXawaitXmessage.reply(text)
+XXXXXXXXexceptXBadRequest:
+XXXXXXXXXXXXawaitXmessage.answer(text)
 
 
 @register(cmds="search")
 @chat_connection()
 @get_strings_dec("notes")
 @clean_notes
-async def search_in_note(message, chat, strings):
-    request = message.get_args()
-    text = strings["search_header"].format(
-        chat_name=chat["chat_title"], request=request
-    )
+asyncXdefXsearch_in_note(message,Xchat,Xstrings):
+XXXXrequestX=Xmessage.get_args()
+XXXXtextX=Xstrings["search_header"].format(
+XXXXXXXXchat_name=chat["chat_title"],Xrequest=request
+XXXX)
 
-    notes = db.notes.find(
-        {"chat_id": chat["chat_id"], "text": {"$regex": request, "$options": "i"}}
-    ).sort("names", 1)
-    for note in (check := await notes.to_list(length=300)):
-        text += "\n-"
-        for note_name in note["names"]:
-            text += f" <code>#{note_name}</code>"
-    text += strings["you_can_get_note"]
-    if not check:
-        return await message.reply(
-            strings["notelist_no_notes"].format(chat_title=chat["chat_title"])
-        )
-    return await message.reply(text)
+XXXXnotesX=Xdb.notes.find(
+XXXXXXXX{"chat_id":Xchat["chat_id"],X"text":X{"$regex":Xrequest,X"$options":X"i"}}
+XXXX).sort("names",X1)
+XXXXforXnoteXinX(checkX:=XawaitXnotes.to_list(length=300)):
+XXXXXXXXtextX+=X"\n-"
+XXXXXXXXforXnote_nameXinXnote["names"]:
+XXXXXXXXXXXXtextX+=Xf"X<code>#{note_name}</code>"
+XXXXtextX+=Xstrings["you_can_get_note"]
+XXXXifXnotXcheck:
+XXXXXXXXreturnXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["notelist_no_notes"].format(chat_title=chat["chat_title"])
+XXXXXXXX)
+XXXXreturnXawaitXmessage.reply(text)
 
 
-@register(cmds=["clear", "delnote"], user_admin=True, user_can_change_info=True)
+@register(cmds=["clear",X"delnote"],Xuser_admin=True,Xuser_can_change_info=True)
 @chat_connection(admin=True)
 @need_args_dec()
 @get_strings_dec("notes")
-async def clear_note(message, chat, strings):
-    note_names = get_arg(message).lower().split("|")
+asyncXdefXclear_note(message,Xchat,Xstrings):
+XXXXnote_namesX=Xget_arg(message).lower().split("|")
 
-    removed = ""
-    not_removed = ""
-    for note_name in note_names:
-        if note_name[0] == "#":
-            note_name = note_name[1:]
+XXXXremovedX=X""
+XXXXnot_removedX=X""
+XXXXforXnote_nameXinXnote_names:
+XXXXXXXXifXnote_name[0]X==X"#":
+XXXXXXXXXXXXnote_nameX=Xnote_name[1:]
 
-        if not (
-            note := await db.notes.find_one(
-                {"chat_id": chat["chat_id"], "names": {"$in": [note_name]}}
-            )
-        ):
-            if len(note_names) <= 1:
-                text = strings["cant_find_note"].format(chat_name=chat["chat_title"])
-                if alleged_note_name := await get_similar_note(
-                    chat["chat_id"], note_name
-                ):
-                    text += strings["u_mean"].format(note_name=alleged_note_name)
-                await message.reply(text)
-                return
-            else:
-                not_removed += " #" + note_name
-                continue
+XXXXXXXXifXnotX(
+XXXXXXXXXXXXnoteX:=XawaitXdb.notes.find_one(
+XXXXXXXXXXXXXXXX{"chat_id":Xchat["chat_id"],X"names":X{"$in":X[note_name]}}
+XXXXXXXXXXXX)
+XXXXXXXX):
+XXXXXXXXXXXXifXlen(note_names)X<=X1:
+XXXXXXXXXXXXXXXXtextX=Xstrings["cant_find_note"].format(chat_name=chat["chat_title"])
+XXXXXXXXXXXXXXXXifXalleged_note_nameX:=XawaitXget_similar_note(
+XXXXXXXXXXXXXXXXXXXXchat["chat_id"],Xnote_name
+XXXXXXXXXXXXXXXX):
+XXXXXXXXXXXXXXXXXXXXtextX+=Xstrings["u_mean"].format(note_name=alleged_note_name)
+XXXXXXXXXXXXXXXXawaitXmessage.reply(text)
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXnot_removedX+=X"X#"X+Xnote_name
+XXXXXXXXXXXXXXXXcontinue
 
-        await db.notes.delete_one({"_id": note["_id"]})
-        removed += " #" + note_name
+XXXXXXXXawaitXdb.notes.delete_one({"_id":Xnote["_id"]})
+XXXXXXXXremovedX+=X"X#"X+Xnote_name
 
-    if len(note_names) > 1:
-        text = strings["note_removed_multiple"].format(
-            chat_name=chat["chat_title"], removed=removed
-        )
-        if not_removed:
-            text += strings["not_removed_multiple"].format(not_removed=not_removed)
-        await message.reply(text)
-    else:
-        await message.reply(
-            strings["note_removed"].format(
-                note_name=note_name, chat_name=chat["chat_title"]
-            )
-        )
+XXXXifXlen(note_names)X>X1:
+XXXXXXXXtextX=Xstrings["note_removed_multiple"].format(
+XXXXXXXXXXXXchat_name=chat["chat_title"],Xremoved=removed
+XXXXXXXX)
+XXXXXXXXifXnot_removed:
+XXXXXXXXXXXXtextX+=Xstrings["not_removed_multiple"].format(not_removed=not_removed)
+XXXXXXXXawaitXmessage.reply(text)
+XXXXelse:
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["note_removed"].format(
+XXXXXXXXXXXXXXXXnote_name=note_name,Xchat_name=chat["chat_title"]
+XXXXXXXXXXXX)
+XXXXXXXX)
 
 
-@register(cmds="clearall", user_admin=True, user_can_change_info=True)
+@register(cmds="clearall",Xuser_admin=True,Xuser_can_change_info=True)
 @chat_connection(admin=True)
 @get_strings_dec("notes")
-async def clear_all_notes(message, chat, strings):
-    # Ensure notes count
-    if not await db.notes.find_one({"chat_id": chat["chat_id"]}):
-        await message.reply(
-            strings["notelist_no_notes"].format(chat_title=chat["chat_title"])
-        )
-        return
+asyncXdefXclear_all_notes(message,Xchat,Xstrings):
+XXXX#XEnsureXnotesXcount
+XXXXifXnotXawaitXdb.notes.find_one({"chat_id":Xchat["chat_id"]}):
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["notelist_no_notes"].format(chat_title=chat["chat_title"])
+XXXXXXXX)
+XXXXXXXXreturn
 
-    text = strings["clear_all_text"].format(chat_name=chat["chat_title"])
-    buttons = InlineKeyboardMarkup()
-    buttons.add(
-        InlineKeyboardButton(
-            strings["clearall_btn_yes"], callback_data="clean_all_notes_cb"
-        )
-    )
-    buttons.add(
-        InlineKeyboardButton(strings["clearall_btn_no"], callback_data="cancel")
-    )
-    await message.reply(text, reply_markup=buttons)
+XXXXtextX=Xstrings["clear_all_text"].format(chat_name=chat["chat_title"])
+XXXXbuttonsX=XInlineKeyboardMarkup()
+XXXXbuttons.add(
+XXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXstrings["clearall_btn_yes"],Xcallback_data="clean_all_notes_cb"
+XXXXXXXX)
+XXXX)
+XXXXbuttons.add(
+XXXXXXXXInlineKeyboardButton(strings["clearall_btn_no"],Xcallback_data="cancel")
+XXXX)
+XXXXawaitXmessage.reply(text,Xreply_markup=buttons)
 
 
-@register(regexp="clean_all_notes_cb", f="cb", is_admin=True, user_can_change_info=True)
+@register(regexp="clean_all_notes_cb",Xf="cb",Xis_admin=True,Xuser_can_change_info=True)
 @chat_connection(admin=True)
 @get_strings_dec("notes")
-async def clear_all_notes_cb(event, chat, strings):
-    num = (await db.notes.delete_many({"chat_id": chat["chat_id"]})).deleted_count
+asyncXdefXclear_all_notes_cb(event,Xchat,Xstrings):
+XXXXnumX=X(awaitXdb.notes.delete_many({"chat_id":Xchat["chat_id"]})).deleted_count
 
-    text = strings["clearall_done"].format(num=num, chat_name=chat["chat_title"])
-    await event.message.edit_text(text)
+XXXXtextX=Xstrings["clearall_done"].format(num=num,Xchat_name=chat["chat_title"])
+XXXXawaitXevent.message.edit_text(text)
 
 
-@register(cmds="noteinfo", user_admin=True)
+@register(cmds="noteinfo",Xuser_admin=True)
 @chat_connection()
 @need_args_dec()
 @get_strings_dec("notes")
 @clean_notes
-async def note_info(message, chat, strings):
-    note_name = get_arg(message).lower()
-    if note_name[0] == "#":
-        note_name = note_name[1:]
+asyncXdefXnote_info(message,Xchat,Xstrings):
+XXXXnote_nameX=Xget_arg(message).lower()
+XXXXifXnote_name[0]X==X"#":
+XXXXXXXXnote_nameX=Xnote_name[1:]
 
-    if not (
-        note := await db.notes.find_one(
-            {"chat_id": chat["chat_id"], "names": {"$in": [note_name]}}
-        )
-    ):
-        text = strings["cant_find_note"].format(chat_name=chat["chat_title"])
-        if alleged_note_name := await get_similar_note(chat["chat_id"], note_name):
-            text += strings["u_mean"].format(note_name=alleged_note_name)
-        return await message.reply(text)
+XXXXifXnotX(
+XXXXXXXXnoteX:=XawaitXdb.notes.find_one(
+XXXXXXXXXXXX{"chat_id":Xchat["chat_id"],X"names":X{"$in":X[note_name]}}
+XXXXXXXX)
+XXXX):
+XXXXXXXXtextX=Xstrings["cant_find_note"].format(chat_name=chat["chat_title"])
+XXXXXXXXifXalleged_note_nameX:=XawaitXget_similar_note(chat["chat_id"],Xnote_name):
+XXXXXXXXXXXXtextX+=Xstrings["u_mean"].format(note_name=alleged_note_name)
+XXXXXXXXreturnXawaitXmessage.reply(text)
 
-    text = strings["note_info_title"]
+XXXXtextX=Xstrings["note_info_title"]
 
-    note_names = ""
-    for note_name in note["names"]:
-        note_names += f" <code>#{note_name}</code>"
+XXXXnote_namesX=X""
+XXXXforXnote_nameXinXnote["names"]:
+XXXXXXXXnote_namesX+=Xf"X<code>#{note_name}</code>"
 
-    text += strings["note_info_note"] % note_names
-    text += strings["note_info_content"] % (
-        "text" if "file" not in note else note["file"]["type"]
-    )
+XXXXtextX+=Xstrings["note_info_note"]X%Xnote_names
+XXXXtextX+=Xstrings["note_info_content"]X%X(
+XXXXXXXX"text"XifX"file"XnotXinXnoteXelseXnote["file"]["type"]
+XXXX)
 
-    if "parse_mode" not in note or note["parse_mode"] == "md":
-        parse_mode = "Markdown"
-    elif note["parse_mode"] == "html":
-        parse_mode = "HTML"
-    elif note["parse_mode"] == "none":
-        parse_mode = "None"
-    else:
-        raise TypeError()
+XXXXifX"parse_mode"XnotXinXnoteXorXnote["parse_mode"]X==X"md":
+XXXXXXXXparse_modeX=X"Markdown"
+XXXXelifXnote["parse_mode"]X==X"html":
+XXXXXXXXparse_modeX=X"HTML"
+XXXXelifXnote["parse_mode"]X==X"none":
+XXXXXXXXparse_modeX=X"None"
+XXXXelse:
+XXXXXXXXraiseXTypeError()
 
-    text += strings["note_info_parsing"] % parse_mode
+XXXXtextX+=Xstrings["note_info_parsing"]X%Xparse_mode
 
-    if "created_date" in note:
-        text += strings["note_info_created"].format(
-            date=format_datetime(
-                note["created_date"], locale=strings["language_info"]["babel"]
-            ),
-            user=await get_user_link(note["created_user"]),
-        )
+XXXXifX"created_date"XinXnote:
+XXXXXXXXtextX+=Xstrings["note_info_created"].format(
+XXXXXXXXXXXXdate=format_datetime(
+XXXXXXXXXXXXXXXXnote["created_date"],Xlocale=strings["language_info"]["babel"]
+XXXXXXXXXXXX),
+XXXXXXXXXXXXuser=awaitXget_user_link(note["created_user"]),
+XXXXXXXX)
 
-    if "edited_date" in note:
-        text += strings["note_info_updated"].format(
-            date=format_datetime(
-                note["edited_date"], locale=strings["language_info"]["babel"]
-            ),
-            user=await get_user_link(note["edited_user"]),
-        )
+XXXXifX"edited_date"XinXnote:
+XXXXXXXXtextX+=Xstrings["note_info_updated"].format(
+XXXXXXXXXXXXdate=format_datetime(
+XXXXXXXXXXXXXXXXnote["edited_date"],Xlocale=strings["language_info"]["babel"]
+XXXXXXXXXXXX),
+XXXXXXXXXXXXuser=awaitXget_user_link(note["edited_user"]),
+XXXXXXXX)
 
-    return await message.reply(text)
-
-
-BUTTONS.update({"note": "btnnotesm", "#": "btnnotesm"})
+XXXXreturnXawaitXmessage.reply(text)
 
 
-@register(regexp=r"btnnotesm_(\w+)_(.*)", f="cb", allow_kwargs=True)
+BUTTONS.update({"note":X"btnnotesm",X"#":X"btnnotesm"})
+
+
+@register(regexp=r"btnnotesm_(\w+)_(.*)",Xf="cb",Xallow_kwargs=True)
 @get_strings_dec("notes")
-async def note_btn(event, strings, regexp=None, **kwargs):
-    chat_id = int(regexp.group(2))
-    user_id = event.from_user.id
-    note_name = regexp.group(1).lower()
+asyncXdefXnote_btn(event,Xstrings,Xregexp=None,X**kwargs):
+XXXXchat_idX=Xint(regexp.group(2))
+XXXXuser_idX=Xevent.from_user.id
+XXXXnote_nameX=Xregexp.group(1).lower()
 
-    if not (
-        note := await db.notes.find_one(
-            {"chat_id": chat_id, "names": {"$in": [note_name]}}
-        )
-    ):
-        await event.answer(strings["no_note"])
-        return
+XXXXifXnotX(
+XXXXXXXXnoteX:=XawaitXdb.notes.find_one(
+XXXXXXXXXXXX{"chat_id":Xchat_id,X"names":X{"$in":X[note_name]}}
+XXXXXXXX)
+XXXX):
+XXXXXXXXawaitXevent.answer(strings["no_note"])
+XXXXXXXXreturn
 
-    with suppress(MessageCantBeDeleted):
-        await event.message.delete()
-    await get_note(
-        event.message,
-        db_item=note,
-        chat_id=chat_id,
-        send_id=user_id,
-        rpl_id=None,
-        event=event,
-    )
+XXXXwithXsuppress(MessageCantBeDeleted):
+XXXXXXXXawaitXevent.message.delete()
+XXXXawaitXget_note(
+XXXXXXXXevent.message,
+XXXXXXXXdb_item=note,
+XXXXXXXXchat_id=chat_id,
+XXXXXXXXsend_id=user_id,
+XXXXXXXXrpl_id=None,
+XXXXXXXXevent=event,
+XXXX)
 
 
-@register(CommandStart(re.compile(r"btnnotesm")), allow_kwargs=True)
+@register(CommandStart(re.compile(r"btnnotesm")),Xallow_kwargs=True)
 @get_strings_dec("notes")
-async def note_start(message, strings, regexp=None, **kwargs):
-    # Don't even ask what it means, mostly it workaround to support note names with _
-    args = re.search(r"^([a-zA-Z0-9]+)_(.*?)(-\d+)$", message.get_args())
-    chat_id = int(args.group(3))
-    user_id = message.from_user.id
-    note_name = args.group(2).strip("_")
+asyncXdefXnote_start(message,Xstrings,Xregexp=None,X**kwargs):
+XXXX#XDon'tXevenXaskXwhatXitXmeans,XmostlyXitXworkaroundXtoXsupportXnoteXnamesXwithX_
+XXXXargsX=Xre.search(r"^([a-zA-Z0-9]+)_(.*?)(-\d+)$",Xmessage.get_args())
+XXXXchat_idX=Xint(args.group(3))
+XXXXuser_idX=Xmessage.from_user.id
+XXXXnote_nameX=Xargs.group(2).strip("_")
 
-    if not (
-        note := await db.notes.find_one(
-            {"chat_id": chat_id, "names": {"$in": [note_name]}}
-        )
-    ):
-        await message.reply(strings["no_note"])
-        return
+XXXXifXnotX(
+XXXXXXXXnoteX:=XawaitXdb.notes.find_one(
+XXXXXXXXXXXX{"chat_id":Xchat_id,X"names":X{"$in":X[note_name]}}
+XXXXXXXX)
+XXXX):
+XXXXXXXXawaitXmessage.reply(strings["no_note"])
+XXXXXXXXreturn
 
-    await get_note(message, db_item=note, chat_id=chat_id, send_id=user_id, rpl_id=None)
+XXXXawaitXget_note(message,Xdb_item=note,Xchat_id=chat_id,Xsend_id=user_id,Xrpl_id=None)
 
 
-@register(cmds="start", only_pm=True)
+@register(cmds="start",Xonly_pm=True)
 @get_strings_dec("connections")
-async def btn_note_start_state(message, strings):
-    key = "btn_note_start_state:" + str(message.from_user.id)
-    if not (cached := redis.hgetall(key)):
-        return
+asyncXdefXbtn_note_start_state(message,Xstrings):
+XXXXkeyX=X"btn_note_start_state:"X+Xstr(message.from_user.id)
+XXXXifXnotX(cachedX:=Xredis.hgetall(key)):
+XXXXXXXXreturn
 
-    chat_id = int(cached["chat_id"])
-    user_id = message.from_user.id
-    note_name = cached["notename"]
+XXXXchat_idX=Xint(cached["chat_id"])
+XXXXuser_idX=Xmessage.from_user.id
+XXXXnote_nameX=Xcached["notename"]
 
-    note = await db.notes.find_one({"chat_id": chat_id, "names": {"$in": [note_name]}})
-    await get_note(message, db_item=note, chat_id=chat_id, send_id=user_id, rpl_id=None)
+XXXXnoteX=XawaitXdb.notes.find_one({"chat_id":Xchat_id,X"names":X{"$in":X[note_name]}})
+XXXXawaitXget_note(message,Xdb_item=note,Xchat_id=chat_id,Xsend_id=user_id,Xrpl_id=None)
 
-    redis.delete(key)
+XXXXredis.delete(key)
 
 
-@register(cmds="privatenotes", is_admin=True, user_can_change_info=True)
+@register(cmds="privatenotes",Xis_admin=True,Xuser_can_change_info=True)
 @chat_connection(admin=True)
 @get_strings_dec("notes")
-async def private_notes_cmd(message, chat, strings):
-    chat_id = chat["chat_id"]
-    chat_name = chat["chat_title"]
-    text = str
+asyncXdefXprivate_notes_cmd(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
+XXXXchat_nameX=Xchat["chat_title"]
+XXXXtextX=Xstr
 
-    try:
-        (text := "".join(message.text.split()[1]).lower())
-    except IndexError:
-        pass
+XXXXtry:
+XXXXXXXX(textX:=X"".join(message.text.split()[1]).lower())
+XXXXexceptXIndexError:
+XXXXXXXXpass
 
-    enabling = ["true", "enable", "on"]
-    disabling = ["false", "disable", "off"]
-    if database := await db.privatenotes.find_one({"chat_id": chat_id}):
-        if text in enabling:
-            await message.reply(strings["already_enabled"] % chat_name)
-            return
-    if text in enabling:
-        await db.privatenotes.insert_one({"chat_id": chat_id})
-        await message.reply(strings["enabled_successfully"] % chat_name)
-    elif text in disabling:
-        if not database:
-            await message.reply(strings["not_enabled"])
-            return
-        await db.privatenotes.delete_one({"_id": database["_id"]})
-        await message.reply(strings["disabled_successfully"] % chat_name)
-    else:
-        # Assume admin asked for current state
-        if database:
-            state = strings["enabled"]
-        else:
-            state = strings["disabled"]
-        await message.reply(
-            strings["current_state_info"].format(state=state, chat=chat_name)
-        )
+XXXXenablingX=X["true",X"enable",X"on"]
+XXXXdisablingX=X["false",X"disable",X"off"]
+XXXXifXdatabaseX:=XawaitXdb.privatenotes.find_one({"chat_id":Xchat_id}):
+XXXXXXXXifXtextXinXenabling:
+XXXXXXXXXXXXawaitXmessage.reply(strings["already_enabled"]X%Xchat_name)
+XXXXXXXXXXXXreturn
+XXXXifXtextXinXenabling:
+XXXXXXXXawaitXdb.privatenotes.insert_one({"chat_id":Xchat_id})
+XXXXXXXXawaitXmessage.reply(strings["enabled_successfully"]X%Xchat_name)
+XXXXelifXtextXinXdisabling:
+XXXXXXXXifXnotXdatabase:
+XXXXXXXXXXXXawaitXmessage.reply(strings["not_enabled"])
+XXXXXXXXXXXXreturn
+XXXXXXXXawaitXdb.privatenotes.delete_one({"_id":Xdatabase["_id"]})
+XXXXXXXXawaitXmessage.reply(strings["disabled_successfully"]X%Xchat_name)
+XXXXelse:
+XXXXXXXX#XAssumeXadminXaskedXforXcurrentXstate
+XXXXXXXXifXdatabase:
+XXXXXXXXXXXXstateX=Xstrings["enabled"]
+XXXXXXXXelse:
+XXXXXXXXXXXXstateX=Xstrings["disabled"]
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["current_state_info"].format(state=state,Xchat=chat_name)
+XXXXXXXX)
 
 
-@register(cmds="cleannotes", is_admin=True, user_can_change_info=True)
+@register(cmds="cleannotes",Xis_admin=True,Xuser_can_change_info=True)
 @chat_connection(admin=True)
 @get_strings_dec("notes")
-async def clean_notes(message, chat, strings):
-    disable = ["no", "off", "0", "false", "disable"]
-    enable = ["yes", "on", "1", "true", "enable"]
+asyncXdefXclean_notes(message,Xchat,Xstrings):
+XXXXdisableX=X["no",X"off",X"0",X"false",X"disable"]
+XXXXenableX=X["yes",X"on",X"1",X"true",X"enable"]
 
-    chat_id = chat["chat_id"]
+XXXXchat_idX=Xchat["chat_id"]
 
-    arg = get_arg(message)
-    if arg and arg.lower() in enable:
-        await db.clean_notes.update_one(
-            {"chat_id": chat_id}, {"$set": {"enabled": True}}, upsert=True
-        )
-        text = strings["clean_notes_enable"].format(chat_name=chat["chat_title"])
-    elif arg and arg.lower() in disable:
-        await db.clean_notes.update_one(
-            {"chat_id": chat_id}, {"$set": {"enabled": False}}, upsert=True
-        )
-        text = strings["clean_notes_disable"].format(chat_name=chat["chat_title"])
-    else:
-        data = await db.clean_notes.find_one({"chat_id": chat_id})
-        if data and data["enabled"] is True:
-            text = strings["clean_notes_enabled"].format(chat_name=chat["chat_title"])
-        else:
-            text = strings["clean_notes_disabled"].format(chat_name=chat["chat_title"])
+XXXXargX=Xget_arg(message)
+XXXXifXargXandXarg.lower()XinXenable:
+XXXXXXXXawaitXdb.clean_notes.update_one(
+XXXXXXXXXXXX{"chat_id":Xchat_id},X{"$set":X{"enabled":XTrue}},Xupsert=True
+XXXXXXXX)
+XXXXXXXXtextX=Xstrings["clean_notes_enable"].format(chat_name=chat["chat_title"])
+XXXXelifXargXandXarg.lower()XinXdisable:
+XXXXXXXXawaitXdb.clean_notes.update_one(
+XXXXXXXXXXXX{"chat_id":Xchat_id},X{"$set":X{"enabled":XFalse}},Xupsert=True
+XXXXXXXX)
+XXXXXXXXtextX=Xstrings["clean_notes_disable"].format(chat_name=chat["chat_title"])
+XXXXelse:
+XXXXXXXXdataX=XawaitXdb.clean_notes.find_one({"chat_id":Xchat_id})
+XXXXXXXXifXdataXandXdata["enabled"]XisXTrue:
+XXXXXXXXXXXXtextX=Xstrings["clean_notes_enabled"].format(chat_name=chat["chat_title"])
+XXXXXXXXelse:
+XXXXXXXXXXXXtextX=Xstrings["clean_notes_disabled"].format(chat_name=chat["chat_title"])
 
-    await message.reply(text)
+XXXXawaitXmessage.reply(text)
 
 
 @register(CommandStart(re.compile("notes")))
 @get_strings_dec("notes")
-async def private_notes_func(message, strings):
-    args = message.get_args().split("_")
-    chat_id = args[1]
-    keyword = args[2] if args[2] != "None" else None
-    await set_connected_command(message.from_user.id, int(chat_id), ["get", "notes"])
-    chat = await db.chat_list.find_one({"chat_id": int(chat_id)})
-    await message.answer(strings["privatenotes_notif"].format(chat=chat["chat_title"]))
-    await get_notes_list(message, chat=chat, keyword=keyword, pm=True)
+asyncXdefXprivate_notes_func(message,Xstrings):
+XXXXargsX=Xmessage.get_args().split("_")
+XXXXchat_idX=Xargs[1]
+XXXXkeywordX=Xargs[2]XifXargs[2]X!=X"None"XelseXNone
+XXXXawaitXset_connected_command(message.from_user.id,Xint(chat_id),X["get",X"notes"])
+XXXXchatX=XawaitXdb.chat_list.find_one({"chat_id":Xint(chat_id)})
+XXXXawaitXmessage.answer(strings["privatenotes_notif"].format(chat=chat["chat_title"]))
+XXXXawaitXget_notes_list(message,Xchat=chat,Xkeyword=keyword,Xpm=True)
 
 
-async def __stats__():
-    text = "* <code>{}</code> total notes\n".format(await db.notes.count_documents({}))
-    return text
+asyncXdefX__stats__():
+XXXXtextX=X"*X<code>{}</code>XtotalXnotes\n".format(awaitXdb.notes.count_documents({}))
+XXXXreturnXtext
 
 
-async def __export__(chat_id):
-    data = []
-    notes = (
-        await db.notes.find({"chat_id": chat_id}).sort("names", 1).to_list(length=300)
-    )
-    for note in notes:
-        del note["_id"]
-        del note["chat_id"]
-        note["created_date"] = str(note["created_date"])
-        if "edited_date" in note:
-            note["edited_date"] = str(note["edited_date"])
-        data.append(note)
+asyncXdefX__export__(chat_id):
+XXXXdataX=X[]
+XXXXnotesX=X(
+XXXXXXXXawaitXdb.notes.find({"chat_id":Xchat_id}).sort("names",X1).to_list(length=300)
+XXXX)
+XXXXforXnoteXinXnotes:
+XXXXXXXXdelXnote["_id"]
+XXXXXXXXdelXnote["chat_id"]
+XXXXXXXXnote["created_date"]X=Xstr(note["created_date"])
+XXXXXXXXifX"edited_date"XinXnote:
+XXXXXXXXXXXXnote["edited_date"]X=Xstr(note["edited_date"])
+XXXXXXXXdata.append(note)
 
-    return {"notes": data}
+XXXXreturnX{"notes":Xdata}
 
 
-ALLOWED_COLUMNS_NOTES = ALLOWED_COLUMNS + [
-    "names",
-    "created_date",
-    "created_user",
-    "edited_date",
-    "edited_user",
+ALLOWED_COLUMNS_NOTESX=XALLOWED_COLUMNSX+X[
+XXXX"names",
+XXXX"created_date",
+XXXX"created_user",
+XXXX"edited_date",
+XXXX"edited_user",
 ]
 
 
-async def __import__(chat_id, data):
-    if not data:
-        return
+asyncXdefX__import__(chat_id,Xdata):
+XXXXifXnotXdata:
+XXXXXXXXreturn
 
-    new = []
-    for note in data:
+XXXXnewX=X[]
+XXXXforXnoteXinXdata:
 
-        # File ver 1 to 2
-        if "name" in note:
-            note["names"] = [note["name"]]
-            del note["name"]
+XXXXXXXX#XFileXverX1XtoX2
+XXXXXXXXifX"name"XinXnote:
+XXXXXXXXXXXXnote["names"]X=X[note["name"]]
+XXXXXXXXXXXXdelXnote["name"]
 
-        for item in [i for i in note if i not in ALLOWED_COLUMNS_NOTES]:
-            del note[item]
+XXXXXXXXforXitemXinX[iXforXiXinXnoteXifXiXnotXinXALLOWED_COLUMNS_NOTES]:
+XXXXXXXXXXXXdelXnote[item]
 
-        note["chat_id"] = chat_id
-        note["created_date"] = datetime.fromisoformat(note["created_date"])
-        if "edited_date" in note:
-            note["edited_date"] = datetime.fromisoformat(note["edited_date"])
-        new.append(
-            ReplaceOne(
-                {"chat_id": note["chat_id"], "names": {"$in": [note["names"][0]]}},
-                note,
-                upsert=True,
-            )
-        )
+XXXXXXXXnote["chat_id"]X=Xchat_id
+XXXXXXXXnote["created_date"]X=Xdatetime.fromisoformat(note["created_date"])
+XXXXXXXXifX"edited_date"XinXnote:
+XXXXXXXXXXXXnote["edited_date"]X=Xdatetime.fromisoformat(note["edited_date"])
+XXXXXXXXnew.append(
+XXXXXXXXXXXXReplaceOne(
+XXXXXXXXXXXXXXXX{"chat_id":Xnote["chat_id"],X"names":X{"$in":X[note["names"][0]]}},
+XXXXXXXXXXXXXXXXnote,
+XXXXXXXXXXXXXXXXupsert=True,
+XXXXXXXXXXXX)
+XXXXXXXX)
 
-    await db.notes.bulk_write(new)
-
-
-async def filter_handle(message, chat, data):
-    chat_id = chat["chat_id"]
-    read_chat_id = message.chat.id
-    note_name = data["note_name"]
-    note = await db.notes.find_one({"chat_id": chat_id, "names": {"$in": [note_name]}})
-    await get_note(
-        message, db_item=note, chat_id=chat_id, send_id=read_chat_id, rpl_id=None
-    )
+XXXXawaitXdb.notes.bulk_write(new)
 
 
-async def setup_start(message):
-    text = await get_string(message.chat.id, "notes", "filters_setup_start")
-    with suppress(MessageNotModified):
-        await message.edit_text(text)
+asyncXdefXfilter_handle(message,Xchat,Xdata):
+XXXXchat_idX=Xchat["chat_id"]
+XXXXread_chat_idX=Xmessage.chat.id
+XXXXnote_nameX=Xdata["note_name"]
+XXXXnoteX=XawaitXdb.notes.find_one({"chat_id":Xchat_id,X"names":X{"$in":X[note_name]}})
+XXXXawaitXget_note(
+XXXXXXXXmessage,Xdb_item=note,Xchat_id=chat_id,Xsend_id=read_chat_id,Xrpl_id=None
+XXXX)
 
 
-async def setup_finish(message, data):
-    note_name = message.text.split(" ", 1)[0].split()[0]
-
-    if not (await db.notes.find_one({"chat_id": data["chat_id"], "names": note_name})):
-        await message.reply("no such note!")
-        return
-
-    return {"note_name": note_name}
+asyncXdefXsetup_start(message):
+XXXXtextX=XawaitXget_string(message.chat.id,X"notes",X"filters_setup_start")
+XXXXwithXsuppress(MessageNotModified):
+XXXXXXXXawaitXmessage.edit_text(text)
 
 
-__filters__ = {
-    "get_note": {
-        "title": {"module": "notes", "string": "filters_title"},
-        "handle": filter_handle,
-        "setup": {"start": setup_start, "finish": setup_finish},
-        "del_btn_name": lambda msg, data: f"Get note: {data['note_name']}",
-    }
+asyncXdefXsetup_finish(message,Xdata):
+XXXXnote_nameX=Xmessage.text.split("X",X1)[0].split()[0]
+
+XXXXifXnotX(awaitXdb.notes.find_one({"chat_id":Xdata["chat_id"],X"names":Xnote_name})):
+XXXXXXXXawaitXmessage.reply("noXsuchXnote!")
+XXXXXXXXreturn
+
+XXXXreturnX{"note_name":Xnote_name}
+
+
+__filters__X=X{
+XXXX"get_note":X{
+XXXXXXXX"title":X{"module":X"notes",X"string":X"filters_title"},
+XXXXXXXX"handle":Xfilter_handle,
+XXXXXXXX"setup":X{"start":Xsetup_start,X"finish":Xsetup_finish},
+XXXXXXXX"del_btn_name":XlambdaXmsg,Xdata:Xf"GetXnote:X{data['note_name']}",
+XXXX}
 }
 
 
-__mod_name__ = "Notes"
+__mod_name__X=X"Notes"
 
-__help__ = """
-Sometimes you need to save some data, like text or pictures. With notes, you can save any types of Telegram's data in your chats.
-Also notes perfectly working in PM with Ineruki.
+__help__X=X"""
+SometimesXyouXneedXtoXsaveXsomeXdata,XlikeXtextXorXpictures.XWithXnotes,XyouXcanXsaveXanyXtypesXofXTelegram'sXdataXinXyourXchats.
+AlsoXnotesXperfectlyXworkingXinXPMXwithXIneruki.
 
-<b>Available commands:</b>
-- /save (name) (data): Saves the note.
-- #(name) or /get (name): Get the note registered to that word.
-- /clear (name): deletes the note.
-- /notes or /saved: Lists all notes.
-- /noteinfo (name): Shows detailed info about the note.
-- /search (search pattern): Search text in notes
-- /clearall: Clears all notes
+<b>AvailableXcommands:</b>
+-X/saveX(name)X(data):XSavesXtheXnote.
+-X#(name)XorX/getX(name):XGetXtheXnoteXregisteredXtoXthatXword.
+-X/clearX(name):XdeletesXtheXnote.
+-X/notesXorX/saved:XListsXallXnotes.
+-X/noteinfoX(name):XShowsXdetailedXinfoXaboutXtheXnote.
+-X/searchX(searchXpattern):XSearchXtextXinXnotes
+-X/clearall:XClearsXallXnotes
 
-<b>Only in groups:</b>
-- /privatenotes (on/off): Redirect user in PM to see notes
-- /cleannotes (on/off): Will clean old notes messages
+<b>OnlyXinXgroups:</b>
+-X/privatenotesX(on/off):XRedirectXuserXinXPMXtoXseeXnotes
+-X/cleannotesX(on/off):XWillXcleanXoldXnotesXmessages
 
 <b>Examples:</b>
-An example of how to save a note would be via:
-<code>/save data This is example note!</code>
-Now, anyone using <code>/get data</code>, or <code>#data</code> will be replied to with This is example note!.
+AnXexampleXofXhowXtoXsaveXaXnoteXwouldXbeXvia:
+<code>/saveXdataXThisXisXexampleXnote!</code>
+Now,XanyoneXusingX<code>/getXdata</code>,XorX<code>#data</code>XwillXbeXrepliedXtoXwithXThisXisXexampleXnote!.
 
-<b>Saving pictures and other non-text data:</b>
-If you want to save an image, gif, or sticker, or any other data, do the following:
-<code>/save word</code> while replying to a sticker or whatever data you'd like. Now, the note at <code>#word</code> contains a sticker which will be sent as a reply.
+<b>SavingXpicturesXandXotherXnon-textXdata:</b>
+IfXyouXwantXtoXsaveXanXimage,Xgif,XorXsticker,XorXanyXotherXdata,XdoXtheXfollowing:
+<code>/saveXword</code>XwhileXreplyingXtoXaXstickerXorXwhateverXdataXyou'dXlike.XNow,XtheXnoteXatX<code>#word</code>XcontainsXaXstickerXwhichXwillXbeXsentXasXaXreply.
 
-<b>Removing many notes per one request:</b>
-To remove many notes you can use the /clear command, just place all note names which you want to remove as argument of the command, use | as seprator, for example:
-<code>/clear note1|note2|note3</code>
+<b>RemovingXmanyXnotesXperXoneXrequest:</b>
+ToXremoveXmanyXnotesXyouXcanXuseXtheX/clearXcommand,XjustXplaceXallXnoteXnamesXwhichXyouXwantXtoXremoveXasXargumentXofXtheXcommand,XuseX|XasXseprator,XforXexample:
+<code>/clearXnote1|note2|note3</code>
 
-<b>Notes aliases:</b>
-You can save note with many names, example:
-<code>/save name1|name2|name3</code>
-That will save a note with 3 different names, by any you can /get note, that can be useful if users in your chat trying to get notes which exits by other names.
+<b>NotesXaliases:</b>
+YouXcanXsaveXnoteXwithXmanyXnames,Xexample:
+<code>/saveXname1|name2|name3</code>
+ThatXwillXsaveXaXnoteXwithX3XdifferentXnames,XbyXanyXyouXcanX/getXnote,XthatXcanXbeXusefulXifXusersXinXyourXchatXtryingXtoXgetXnotesXwhichXexitsXbyXotherXnames.
 
-<b>Notes buttons and variables:</b>
-Notes support inline buttons, send /buttonshelp to get started with using it.
-Variables are special words which will be replaced by actual info like if you add <code>{id}</code> in your note it will be replaced by user ID which asked note. Send /variableshelp to get started with using it.
+<b>NotesXbuttonsXandXvariables:</b>
+NotesXsupportXinlineXbuttons,XsendX/buttonshelpXtoXgetXstartedXwithXusingXit.
+VariablesXareXspecialXwordsXwhichXwillXbeXreplacedXbyXactualXinfoXlikeXifXyouXaddX<code>{id}</code>XinXyourXnoteXitXwillXbeXreplacedXbyXuserXIDXwhichXaskedXnote.XSendX/variableshelpXtoXgetXstartedXwithXusingXit.
 
-<b>Notes formatting and settings:</b>
-Every note can contain special settings, for example you can change formatting method to HTML by <code>%PARSEMODE_HTML</code> and fully disable it by <code>%PARSEMODE_NONE</code> ( By default formatting is Markdown or the same formatting Telegram supports )
+<b>NotesXformattingXandXsettings:</b>
+EveryXnoteXcanXcontainXspecialXsettings,XforXexampleXyouXcanXchangeXformattingXmethodXtoXHTMLXbyX<code>%PARSEMODE_HTML</code>XandXfullyXdisableXitXbyX<code>%PARSEMODE_NONE</code>X(XByXdefaultXformattingXisXMarkdownXorXtheXsameXformattingXTelegramXsupportsX)
 
-<code>%PARSEMODE_(HTML, NONE)</code>: Change the note formatting
-<code>%PREVIEW</code>: Enables the links preview in saved note
+<code>%PARSEMODE_(HTML,XNONE)</code>:XChangeXtheXnoteXformatting
+<code>%PREVIEW</code>:XEnablesXtheXlinksXpreviewXinXsavedXnote
 
-<b>Saving notes from other Marie style bots:</b>
-Ineruki can save notes from other bots, just reply /save on the saved message from another bot, saving pictures and buttons supported aswell.
+<b>SavingXnotesXfromXotherXMarieXstyleXbots:</b>
+InerukiXcanXsaveXnotesXfromXotherXbots,XjustXreplyX/saveXonXtheXsavedXmessageXfromXanotherXbot,XsavingXpicturesXandXbuttonsXsupportedXaswell.
 
-<b>Retrieving notes without the formatting:</b>
-To retrieve a note without the formatting, use <code>/get (name) raw</code> or <code>/get (name) noformat</code>
-This will retrieve the note and send it without formatting it; getting you the raw note, allowing you to make easy edits.
+<b>RetrievingXnotesXwithoutXtheXformatting:</b>
+ToXretrieveXaXnoteXwithoutXtheXformatting,XuseX<code>/getX(name)Xraw</code>XorX<code>/getX(name)Xnoformat</code>
+ThisXwillXretrieveXtheXnoteXandXsendXitXwithoutXformattingXit;XgettingXyouXtheXrawXnote,XallowingXyouXtoXmakeXeasyXedits.
 """

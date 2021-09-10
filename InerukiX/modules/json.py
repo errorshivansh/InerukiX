@@ -1,83 +1,83 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import io
+importXio
 
-from telethon import types
-from telethon.tl import functions, types
-from telethon.tl.types import *
+fromXtelethonXimportXtypes
+fromXtelethon.tlXimportXfunctions,Xtypes
+fromXtelethon.tl.typesXimportX*
 
-from Ineruki .services.events import register
-from Ineruki .services.telethon import tbot as borg
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.telethonXimportXtbotXasXborg
 
 
-async def is_register_admin(chat, user):
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
+asyncXdefXis_register_admin(chat,Xuser):
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
 
-        return isinstance(
-            (
-                await borg(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    if isinstance(chat, types.InputPeerChat):
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXborg(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXifXisinstance(chat,Xtypes.InputPeerChat):
 
-        ui = await borg.get_peer_id(user)
-        ps = (
-            await borg(functions.messages.GetFullChatRequest(chat.chat_id))
-        ).full_chat.participants.participants
-        return isinstance(
-            next((p for p in ps if p.user_id == ui), None),
-            (types.ChatParticipantAdmin, types.ChatParticipantCreator),
-        )
-    return None
+XXXXXXXXuiX=XawaitXborg.get_peer_id(user)
+XXXXXXXXpsX=X(
+XXXXXXXXXXXXawaitXborg(functions.messages.GetFullChatRequest(chat.chat_id))
+XXXXXXXX).full_chat.participants.participants
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXXnext((pXforXpXinXpsXifXp.user_idX==Xui),XNone),
+XXXXXXXXXXXX(types.ChatParticipantAdmin,Xtypes.ChatParticipantCreator),
+XXXXXXXX)
+XXXXreturnXNone
 
 
 @register(pattern="^/json$")
-async def _(event):
-    if event.fwd_from:
-        return
-    if event.is_group:
-        if await is_register_admin(event.input_chat, event.message.sender_id):
-            pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
-            return
-    the_real_message = None
-    reply_to_id = None
-    if event.reply_to_msg_id:
-        previous_message = await event.get_reply_message()
-        the_real_message = previous_message.stringify()
-        reply_to_id = event.reply_to_msg_id
-    else:
-        the_real_message = event.stringify()
-        reply_to_id = event.message.id
-    if len(the_real_message) > 4095:
-        with io.BytesIO(str.encode(the_real_message)) as out_file:
-            out_file.name = "json.text"
-            await borg.send_file(
-                event.chat_id,
-                out_file,
-                force_document=True,
-                allow_cache=False,
-                reply_to=reply_to_id,
-            )
-            await event.delete()
-    else:
-        await event.reply("`{}`".format(the_real_message))
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXifXevent.is_group:
+XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
+XXXXXXXXXXXXpass
+XXXXXXXXelifXevent.chat_idX==XiidXandXevent.sender_idX==Xuserss:
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+XXXXthe_real_messageX=XNone
+XXXXreply_to_idX=XNone
+XXXXifXevent.reply_to_msg_id:
+XXXXXXXXprevious_messageX=XawaitXevent.get_reply_message()
+XXXXXXXXthe_real_messageX=Xprevious_message.stringify()
+XXXXXXXXreply_to_idX=Xevent.reply_to_msg_id
+XXXXelse:
+XXXXXXXXthe_real_messageX=Xevent.stringify()
+XXXXXXXXreply_to_idX=Xevent.message.id
+XXXXifXlen(the_real_message)X>X4095:
+XXXXXXXXwithXio.BytesIO(str.encode(the_real_message))XasXout_file:
+XXXXXXXXXXXXout_file.nameX=X"json.text"
+XXXXXXXXXXXXawaitXborg.send_file(
+XXXXXXXXXXXXXXXXevent.chat_id,
+XXXXXXXXXXXXXXXXout_file,
+XXXXXXXXXXXXXXXXforce_document=True,
+XXXXXXXXXXXXXXXXallow_cache=False,
+XXXXXXXXXXXXXXXXreply_to=reply_to_id,
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXevent.delete()
+XXXXelse:
+XXXXXXXXawaitXevent.reply("`{}`".format(the_real_message))

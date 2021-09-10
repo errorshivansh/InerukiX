@@ -1,466 +1,466 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import json
-import os
-import random
-import textwrap
-import urllib
+importXjson
+importXos
+importXrandom
+importXtextwrap
+importXurllib
 
-import emoji
-from fontTools.ttLib import TTFont
-from PIL import Image, ImageDraw, ImageFont, ImageOps
-from telethon.tl import functions, types
+importXemoji
+fromXfontTools.ttLibXimportXTTFont
+fromXPILXimportXImage,XImageDraw,XImageFont,XImageOps
+fromXtelethon.tlXimportXfunctions,Xtypes
 
-from Ineruki .services.events import register
+fromXInerukiX.services.eventsXimportXregister
 
-COLORS = [
-    "#F07975",
-    "#F49F69",
-    "#F9C84A",
-    "#8CC56E",
-    "#6CC7DC",
-    "#80C1FA",
-    "#BCB3F9",
-    "#E181AC",
+COLORSX=X[
+XXXX"#F07975",
+XXXX"#F49F69",
+XXXX"#F9C84A",
+XXXX"#8CC56E",
+XXXX"#6CC7DC",
+XXXX"#80C1FA",
+XXXX"#BCB3F9",
+XXXX"#E181AC",
 ]
 
 
-async def process(msg, user, client, reply, replied=None):
-    if not os.path.isdir("resources"):
-        os.mkdir("resources", 0o755)
-        urllib.request.urlretrieve(
-            "https://github.com/erenmetesar/modules-repo/raw/master/Roboto-Regular.ttf",
-            "resources/Roboto-Regular.ttf",
-        )
-        urllib.request.urlretrieve(
-            "https://github.com/erenmetesar/modules-repo/raw/master/Quivira.otf",
-            "resources/Quivira.otf",
-        )
-        urllib.request.urlretrieve(
-            "https://github.com/erenmetesar/modules-repo/raw/master/Roboto-Medium.ttf",
-            "resources/Roboto-Medium.ttf",
-        )
-        urllib.request.urlretrieve(
-            "https://github.com/erenmetesar/modules-repo/raw/master/DroidSansMono.ttf",
-            "resources/DroidSansMono.ttf",
-        )
-        urllib.request.urlretrieve(
-            "https://github.com/erenmetesar/modules-repo/raw/master/Roboto-Italic.ttf",
-            "resources/Roboto-Italic.ttf",
-        )
+asyncXdefXprocess(msg,Xuser,Xclient,Xreply,Xreplied=None):
+XXXXifXnotXos.path.isdir("resources"):
+XXXXXXXXos.mkdir("resources",X0o755)
+XXXXXXXXurllib.request.urlretrieve(
+XXXXXXXXXXXX"https://github.com/erenmetesar/modules-repo/raw/master/Roboto-Regular.ttf",
+XXXXXXXXXXXX"resources/Roboto-Regular.ttf",
+XXXXXXXX)
+XXXXXXXXurllib.request.urlretrieve(
+XXXXXXXXXXXX"https://github.com/erenmetesar/modules-repo/raw/master/Quivira.otf",
+XXXXXXXXXXXX"resources/Quivira.otf",
+XXXXXXXX)
+XXXXXXXXurllib.request.urlretrieve(
+XXXXXXXXXXXX"https://github.com/erenmetesar/modules-repo/raw/master/Roboto-Medium.ttf",
+XXXXXXXXXXXX"resources/Roboto-Medium.ttf",
+XXXXXXXX)
+XXXXXXXXurllib.request.urlretrieve(
+XXXXXXXXXXXX"https://github.com/erenmetesar/modules-repo/raw/master/DroidSansMono.ttf",
+XXXXXXXXXXXX"resources/DroidSansMono.ttf",
+XXXXXXXX)
+XXXXXXXXurllib.request.urlretrieve(
+XXXXXXXXXXXX"https://github.com/erenmetesar/modules-repo/raw/master/Roboto-Italic.ttf",
+XXXXXXXXXXXX"resources/Roboto-Italic.ttf",
+XXXXXXXX)
 
-    # Importıng fonts and gettings the size of text
-    font = ImageFont.truetype("resources/Roboto-Medium.ttf", 43, encoding="utf-16")
-    font2 = ImageFont.truetype("resources/Roboto-Regular.ttf", 33, encoding="utf-16")
-    mono = ImageFont.truetype("resources/DroidSansMono.ttf", 30, encoding="utf-16")
-    italic = ImageFont.truetype("resources/Roboto-Italic.ttf", 33, encoding="utf-16")
-    fallback = ImageFont.truetype("resources/Quivira.otf", 43, encoding="utf-16")
+XXXX#XImportıngXfontsXandXgettingsXtheXsizeXofXtext
+XXXXfontX=XImageFont.truetype("resources/Roboto-Medium.ttf",X43,Xencoding="utf-16")
+XXXXfont2X=XImageFont.truetype("resources/Roboto-Regular.ttf",X33,Xencoding="utf-16")
+XXXXmonoX=XImageFont.truetype("resources/DroidSansMono.ttf",X30,Xencoding="utf-16")
+XXXXitalicX=XImageFont.truetype("resources/Roboto-Italic.ttf",X33,Xencoding="utf-16")
+XXXXfallbackX=XImageFont.truetype("resources/Quivira.otf",X43,Xencoding="utf-16")
 
-    # Splitting text
-    maxlength = 0
-    width = 0
-    text = []
-    for line in msg.split("\n"):
-        length = len(line)
-        if length > 43:
-            text += textwrap.wrap(line, 43)
-            maxlength = 43
-            if width < fallback.getsize(line[:43])[0]:
-                if "MessageEntityCode" in str(reply.entities):
-                    width = mono.getsize(line[:43])[0] + 30
-                else:
-                    width = fallback.getsize(line[:43])[0]
-            next
-        else:
-            text.append(line + "\n")
-            if width < fallback.getsize(line)[0]:
-                if "MessageEntityCode" in str(reply.entities):
-                    width = mono.getsize(line)[0] + 30
-                else:
-                    width = fallback.getsize(line)[0]
-            if maxlength < length:
-                maxlength = length
+XXXX#XSplittingXtext
+XXXXmaxlengthX=X0
+XXXXwidthX=X0
+XXXXtextX=X[]
+XXXXforXlineXinXmsg.split("\n"):
+XXXXXXXXlengthX=Xlen(line)
+XXXXXXXXifXlengthX>X43:
+XXXXXXXXXXXXtextX+=Xtextwrap.wrap(line,X43)
+XXXXXXXXXXXXmaxlengthX=X43
+XXXXXXXXXXXXifXwidthX<Xfallback.getsize(line[:43])[0]:
+XXXXXXXXXXXXXXXXifX"MessageEntityCode"XinXstr(reply.entities):
+XXXXXXXXXXXXXXXXXXXXwidthX=Xmono.getsize(line[:43])[0]X+X30
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXwidthX=Xfallback.getsize(line[:43])[0]
+XXXXXXXXXXXXnext
+XXXXXXXXelse:
+XXXXXXXXXXXXtext.append(lineX+X"\n")
+XXXXXXXXXXXXifXwidthX<Xfallback.getsize(line)[0]:
+XXXXXXXXXXXXXXXXifX"MessageEntityCode"XinXstr(reply.entities):
+XXXXXXXXXXXXXXXXXXXXwidthX=Xmono.getsize(line)[0]X+X30
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXwidthX=Xfallback.getsize(line)[0]
+XXXXXXXXXXXXifXmaxlengthX<Xlength:
+XXXXXXXXXXXXXXXXmaxlengthX=Xlength
 
-    title = ""
-    try:
-        details = await client(
-            functions.channels.GetParticipantRequest(reply.chat_id, user.id)
-        )
-        if isinstance(details.participant, types.ChannelParticipantCreator):
-            title = details.participant.rank if details.participant.rank else "Creator"
-        elif isinstance(details.participant, types.ChannelParticipantAdmin):
-            title = details.participant.rank if details.participant.rank else "Admin"
-    except TypeError:
-        pass
-    titlewidth = font2.getsize(title)[0]
+XXXXtitleX=X""
+XXXXtry:
+XXXXXXXXdetailsX=XawaitXclient(
+XXXXXXXXXXXXfunctions.channels.GetParticipantRequest(reply.chat_id,Xuser.id)
+XXXXXXXX)
+XXXXXXXXifXisinstance(details.participant,Xtypes.ChannelParticipantCreator):
+XXXXXXXXXXXXtitleX=Xdetails.participant.rankXifXdetails.participant.rankXelseX"Creator"
+XXXXXXXXelifXisinstance(details.participant,Xtypes.ChannelParticipantAdmin):
+XXXXXXXXXXXXtitleX=Xdetails.participant.rankXifXdetails.participant.rankXelseX"Admin"
+XXXXexceptXTypeError:
+XXXXXXXXpass
+XXXXtitlewidthX=Xfont2.getsize(title)[0]
 
-    # Get user name
-    lname = "" if not user.last_name else user.last_name
-    tot = user.first_name + " " + lname
+XXXX#XGetXuserXname
+XXXXlnameX=X""XifXnotXuser.last_nameXelseXuser.last_name
+XXXXtotX=Xuser.first_nameX+X"X"X+Xlname
 
-    namewidth = fallback.getsize(tot)[0] + 10
+XXXXnamewidthX=Xfallback.getsize(tot)[0]X+X10
 
-    if namewidth > width:
-        width = namewidth
-    width += titlewidth + 30 if titlewidth > width - namewidth else -(titlewidth - 30)
-    height = len(text) * 40
+XXXXifXnamewidthX>Xwidth:
+XXXXXXXXwidthX=Xnamewidth
+XXXXwidthX+=XtitlewidthX+X30XifXtitlewidthX>XwidthX-XnamewidthXelseX-(titlewidthX-X30)
+XXXXheightX=Xlen(text)X*X40
 
-    # Profile Photo BG
-    pfpbg = Image.new("RGBA", (125, 600), (0, 0, 0, 0))
+XXXX#XProfileXPhotoXBG
+XXXXpfpbgX=XImage.new("RGBA",X(125,X600),X(0,X0,X0,X0))
 
-    # Draw Template
-    top, middle, bottom = await drawer(width, height)
-    # Profile Photo Check and Fetch
-    yes = False
-    color = random.choice(COLORS)
-    async for photo in client.iter_profile_photos(user, limit=1):
-        yes = True
-    if yes:
-        pfp = await client.download_profile_photo(user)
-        paste = Image.open(pfp)
-        os.remove(pfp)
-        paste.thumbnail((105, 105))
+XXXX#XDrawXTemplate
+XXXXtop,Xmiddle,XbottomX=XawaitXdrawer(width,Xheight)
+XXXX#XProfileXPhotoXCheckXandXFetch
+XXXXyesX=XFalse
+XXXXcolorX=Xrandom.choice(COLORS)
+XXXXasyncXforXphotoXinXclient.iter_profile_photos(user,Xlimit=1):
+XXXXXXXXyesX=XTrue
+XXXXifXyes:
+XXXXXXXXpfpX=XawaitXclient.download_profile_photo(user)
+XXXXXXXXpasteX=XImage.open(pfp)
+XXXXXXXXos.remove(pfp)
+XXXXXXXXpaste.thumbnail((105,X105))
 
-        # Mask
-        mask_im = Image.new("L", paste.size, 0)
-        draw = ImageDraw.Draw(mask_im)
-        draw.ellipse((0, 0, 105, 105), fill=255)
+XXXXXXXX#XMask
+XXXXXXXXmask_imX=XImage.new("L",Xpaste.size,X0)
+XXXXXXXXdrawX=XImageDraw.Draw(mask_im)
+XXXXXXXXdraw.ellipse((0,X0,X105,X105),Xfill=255)
 
-        # Apply Mask
-        pfpbg.paste(paste, (0, 0), mask_im)
-    else:
-        paste, color = await no_photo(user, tot)
-        pfpbg.paste(paste, (0, 0))
+XXXXXXXX#XApplyXMask
+XXXXXXXXpfpbg.paste(paste,X(0,X0),Xmask_im)
+XXXXelse:
+XXXXXXXXpaste,XcolorX=XawaitXno_photo(user,Xtot)
+XXXXXXXXpfpbg.paste(paste,X(0,X0))
 
-    # Creating a big canvas to gather all the elements
-    canvassize = (
-        middle.width + pfpbg.width,
-        top.height + middle.height + bottom.height,
-    )
-    canvas = Image.new("RGBA", canvassize)
-    draw = ImageDraw.Draw(canvas)
+XXXX#XCreatingXaXbigXcanvasXtoXgatherXallXtheXelements
+XXXXcanvassizeX=X(
+XXXXXXXXmiddle.widthX+Xpfpbg.width,
+XXXXXXXXtop.heightX+Xmiddle.heightX+Xbottom.height,
+XXXX)
+XXXXcanvasX=XImage.new("RGBA",Xcanvassize)
+XXXXdrawX=XImageDraw.Draw(canvas)
 
-    y = 80
-    if replied:
-        # Creating a big canvas to gather all the elements
-        replname = "" if not replied.sender.last_name else replied.sender.last_name
-        reptot = replied.sender.first_name + " " + replname
-        font2.getsize(reptot)[0]
-        if reply.sticker:
-            sticker = await reply.download_media()
-            stimg = Image.open(sticker)
-            canvas = canvas.resize((stimg.width + pfpbg.width, stimg.height + 160))
-            top = Image.new("RGBA", (200 + stimg.width, 300), (29, 29, 29, 255))
-            draw = ImageDraw.Draw(top)
-            await replied_user(draw, reptot, replied.message.replace("\n", " "), 20)
-            top = top.crop((135, 70, top.width, 300))
-            canvas.paste(pfpbg, (0, 0))
-            canvas.paste(top, (pfpbg.width + 10, 0))
-            canvas.paste(stimg, (pfpbg.width + 10, 140))
-            os.remove(sticker)
-            return True, canvas
-        canvas = canvas.resize((canvas.width + 60, canvas.height + 120))
-        top, middle, bottom = await drawer(middle.width + 60, height + 105)
-        canvas.paste(pfpbg, (0, 0))
-        canvas.paste(top, (pfpbg.width, 0))
-        canvas.paste(middle, (pfpbg.width, top.height))
-        canvas.paste(bottom, (pfpbg.width, top.height + middle.height))
-        draw = ImageDraw.Draw(canvas)
-        if replied.sticker:
-            replied.text = "Sticker"
-        elif replied.photo:
-            replied.text = "Photo"
-        elif replied.audio:
-            replied.text = "Audio"
-        elif replied.voice:
-            replied.text = "Voice Message"
-        elif replied.document:
-            replied.text = "Document"
-        await replied_user(
-            draw,
-            reptot,
-            replied.message.replace("\n", " "),
-            maxlength + len(title),
-            len(title),
-        )
-        y = 200
-    elif reply.sticker:
-        sticker = await reply.download_media()
-        stimg = Image.open(sticker)
-        canvas = canvas.resize((stimg.width + pfpbg.width + 30, stimg.height + 10))
-        canvas.paste(pfpbg, (0, 0))
-        canvas.paste(stimg, (pfpbg.width + 10, 10))
-        os.remove(sticker)
-        return True, canvas
-    elif reply.document and not reply.audio and not reply.audio:
-        docname = ".".join(reply.document.attributes[-1].file_name.split(".")[:-1])
-        doctype = reply.document.attributes[-1].file_name.split(".")[-1].upper()
-        if reply.document.size < 1024:
-            docsize = str(reply.document.size) + " Bytes"
-        elif reply.document.size < 1048576:
-            docsize = str(round(reply.document.size / 1024, 2)) + " KB "
-        elif reply.document.size < 1073741824:
-            docsize = str(round(reply.document.size / 1024 ** 2, 2)) + " MB "
-        else:
-            docsize = str(round(reply.document.size / 1024 ** 3, 2)) + " GB "
-        docbglen = (
-            font.getsize(docsize)[0]
-            if font.getsize(docsize)[0] > font.getsize(docname)[0]
-            else font.getsize(docname)[0]
-        )
-        canvas = canvas.resize((pfpbg.width + width + docbglen, 160 + height))
-        top, middle, bottom = await drawer(width + docbglen, height + 30)
-        canvas.paste(pfpbg, (0, 0))
-        canvas.paste(top, (pfpbg.width, 0))
-        canvas.paste(middle, (pfpbg.width, top.height))
-        canvas.paste(bottom, (pfpbg.width, top.height + middle.height))
-        canvas = await doctype(docname, docsize, doctype, canvas)
-        y = 80 if text else 0
-    else:
-        canvas.paste(pfpbg, (0, 0))
-        canvas.paste(top, (pfpbg.width, 0))
-        canvas.paste(middle, (pfpbg.width, top.height))
-        canvas.paste(bottom, (pfpbg.width, top.height + middle.height))
-        y = 85
+XXXXyX=X80
+XXXXifXreplied:
+XXXXXXXX#XCreatingXaXbigXcanvasXtoXgatherXallXtheXelements
+XXXXXXXXreplnameX=X""XifXnotXreplied.sender.last_nameXelseXreplied.sender.last_name
+XXXXXXXXreptotX=Xreplied.sender.first_nameX+X"X"X+Xreplname
+XXXXXXXXfont2.getsize(reptot)[0]
+XXXXXXXXifXreply.sticker:
+XXXXXXXXXXXXstickerX=XawaitXreply.download_media()
+XXXXXXXXXXXXstimgX=XImage.open(sticker)
+XXXXXXXXXXXXcanvasX=Xcanvas.resize((stimg.widthX+Xpfpbg.width,Xstimg.heightX+X160))
+XXXXXXXXXXXXtopX=XImage.new("RGBA",X(200X+Xstimg.width,X300),X(29,X29,X29,X255))
+XXXXXXXXXXXXdrawX=XImageDraw.Draw(top)
+XXXXXXXXXXXXawaitXreplied_user(draw,Xreptot,Xreplied.message.replace("\n",X"X"),X20)
+XXXXXXXXXXXXtopX=Xtop.crop((135,X70,Xtop.width,X300))
+XXXXXXXXXXXXcanvas.paste(pfpbg,X(0,X0))
+XXXXXXXXXXXXcanvas.paste(top,X(pfpbg.widthX+X10,X0))
+XXXXXXXXXXXXcanvas.paste(stimg,X(pfpbg.widthX+X10,X140))
+XXXXXXXXXXXXos.remove(sticker)
+XXXXXXXXXXXXreturnXTrue,Xcanvas
+XXXXXXXXcanvasX=Xcanvas.resize((canvas.widthX+X60,Xcanvas.heightX+X120))
+XXXXXXXXtop,Xmiddle,XbottomX=XawaitXdrawer(middle.widthX+X60,XheightX+X105)
+XXXXXXXXcanvas.paste(pfpbg,X(0,X0))
+XXXXXXXXcanvas.paste(top,X(pfpbg.width,X0))
+XXXXXXXXcanvas.paste(middle,X(pfpbg.width,Xtop.height))
+XXXXXXXXcanvas.paste(bottom,X(pfpbg.width,Xtop.heightX+Xmiddle.height))
+XXXXXXXXdrawX=XImageDraw.Draw(canvas)
+XXXXXXXXifXreplied.sticker:
+XXXXXXXXXXXXreplied.textX=X"Sticker"
+XXXXXXXXelifXreplied.photo:
+XXXXXXXXXXXXreplied.textX=X"Photo"
+XXXXXXXXelifXreplied.audio:
+XXXXXXXXXXXXreplied.textX=X"Audio"
+XXXXXXXXelifXreplied.voice:
+XXXXXXXXXXXXreplied.textX=X"VoiceXMessage"
+XXXXXXXXelifXreplied.document:
+XXXXXXXXXXXXreplied.textX=X"Document"
+XXXXXXXXawaitXreplied_user(
+XXXXXXXXXXXXdraw,
+XXXXXXXXXXXXreptot,
+XXXXXXXXXXXXreplied.message.replace("\n",X"X"),
+XXXXXXXXXXXXmaxlengthX+Xlen(title),
+XXXXXXXXXXXXlen(title),
+XXXXXXXX)
+XXXXXXXXyX=X200
+XXXXelifXreply.sticker:
+XXXXXXXXstickerX=XawaitXreply.download_media()
+XXXXXXXXstimgX=XImage.open(sticker)
+XXXXXXXXcanvasX=Xcanvas.resize((stimg.widthX+Xpfpbg.widthX+X30,Xstimg.heightX+X10))
+XXXXXXXXcanvas.paste(pfpbg,X(0,X0))
+XXXXXXXXcanvas.paste(stimg,X(pfpbg.widthX+X10,X10))
+XXXXXXXXos.remove(sticker)
+XXXXXXXXreturnXTrue,Xcanvas
+XXXXelifXreply.documentXandXnotXreply.audioXandXnotXreply.audio:
+XXXXXXXXdocnameX=X".".join(reply.document.attributes[-1].file_name.split(".")[:-1])
+XXXXXXXXdoctypeX=Xreply.document.attributes[-1].file_name.split(".")[-1].upper()
+XXXXXXXXifXreply.document.sizeX<X1024:
+XXXXXXXXXXXXdocsizeX=Xstr(reply.document.size)X+X"XBytes"
+XXXXXXXXelifXreply.document.sizeX<X1048576:
+XXXXXXXXXXXXdocsizeX=Xstr(round(reply.document.sizeX/X1024,X2))X+X"XKBX"
+XXXXXXXXelifXreply.document.sizeX<X1073741824:
+XXXXXXXXXXXXdocsizeX=Xstr(round(reply.document.sizeX/X1024X**X2,X2))X+X"XMBX"
+XXXXXXXXelse:
+XXXXXXXXXXXXdocsizeX=Xstr(round(reply.document.sizeX/X1024X**X3,X2))X+X"XGBX"
+XXXXXXXXdocbglenX=X(
+XXXXXXXXXXXXfont.getsize(docsize)[0]
+XXXXXXXXXXXXifXfont.getsize(docsize)[0]X>Xfont.getsize(docname)[0]
+XXXXXXXXXXXXelseXfont.getsize(docname)[0]
+XXXXXXXX)
+XXXXXXXXcanvasX=Xcanvas.resize((pfpbg.widthX+XwidthX+Xdocbglen,X160X+Xheight))
+XXXXXXXXtop,Xmiddle,XbottomX=XawaitXdrawer(widthX+Xdocbglen,XheightX+X30)
+XXXXXXXXcanvas.paste(pfpbg,X(0,X0))
+XXXXXXXXcanvas.paste(top,X(pfpbg.width,X0))
+XXXXXXXXcanvas.paste(middle,X(pfpbg.width,Xtop.height))
+XXXXXXXXcanvas.paste(bottom,X(pfpbg.width,Xtop.heightX+Xmiddle.height))
+XXXXXXXXcanvasX=XawaitXdoctype(docname,Xdocsize,Xdoctype,Xcanvas)
+XXXXXXXXyX=X80XifXtextXelseX0
+XXXXelse:
+XXXXXXXXcanvas.paste(pfpbg,X(0,X0))
+XXXXXXXXcanvas.paste(top,X(pfpbg.width,X0))
+XXXXXXXXcanvas.paste(middle,X(pfpbg.width,Xtop.height))
+XXXXXXXXcanvas.paste(bottom,X(pfpbg.width,Xtop.heightX+Xmiddle.height))
+XXXXXXXXyX=X85
 
-    # Writing User's Name
-    space = pfpbg.width + 30
-    namefallback = ImageFont.truetype("resources/Quivira.otf", 43, encoding="utf-16")
-    for letter in tot:
-        if letter in emoji.UNICODE_EMOJI:
-            newemoji, mask = await emoji_fetch(letter)
-            canvas.paste(newemoji, (space, 24), mask)
-            space += 40
-        else:
-            if not await fontTest(letter):
-                draw.text((space, 20), letter, font=namefallback, fill=color)
-                space += namefallback.getsize(letter)[0]
-            else:
-                draw.text((space, 20), letter, font=font, fill=color)
-                space += font.getsize(letter)[0]
+XXXX#XWritingXUser'sXName
+XXXXspaceX=Xpfpbg.widthX+X30
+XXXXnamefallbackX=XImageFont.truetype("resources/Quivira.otf",X43,Xencoding="utf-16")
+XXXXforXletterXinXtot:
+XXXXXXXXifXletterXinXemoji.UNICODE_EMOJI:
+XXXXXXXXXXXXnewemoji,XmaskX=XawaitXemoji_fetch(letter)
+XXXXXXXXXXXXcanvas.paste(newemoji,X(space,X24),Xmask)
+XXXXXXXXXXXXspaceX+=X40
+XXXXXXXXelse:
+XXXXXXXXXXXXifXnotXawaitXfontTest(letter):
+XXXXXXXXXXXXXXXXdraw.text((space,X20),Xletter,Xfont=namefallback,Xfill=color)
+XXXXXXXXXXXXXXXXspaceX+=Xnamefallback.getsize(letter)[0]
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXdraw.text((space,X20),Xletter,Xfont=font,Xfill=color)
+XXXXXXXXXXXXXXXXspaceX+=Xfont.getsize(letter)[0]
 
-    if title:
-        draw.text(
-            (canvas.width - titlewidth - 20, 25), title, font=font2, fill="#898989"
-        )
+XXXXifXtitle:
+XXXXXXXXdraw.text(
+XXXXXXXXXXXX(canvas.widthX-XtitlewidthX-X20,X25),Xtitle,Xfont=font2,Xfill="#898989"
+XXXXXXXX)
 
-    # Writing all separating emojis and regular texts
-    x = pfpbg.width + 30
-    bold, mono, italic, link = await get_entity(reply)
-    index = 0
-    emojicount = 0
-    textfallback = ImageFont.truetype("resources/Quivira.otf", 33, encoding="utf-16")
-    textcolor = "white"
-    for line in text:
-        for letter in line:
-            index = (
-                msg.find(letter) if emojicount == 0 else msg.find(letter) + emojicount
-            )
-            for offset, length in bold.items():
-                if index in range(offset, length):
-                    font2 = ImageFont.truetype(
-                        "resources/Roboto-Medium.ttf", 33, encoding="utf-16"
-                    )
-                    textcolor = "white"
-            for offset, length in italic.items():
-                if index in range(offset, length):
-                    font2 = ImageFont.truetype(
-                        "resources/Roboto-Italic.ttf", 33, encoding="utf-16"
-                    )
-                    textcolor = "white"
-            for offset, length in mono.items():
-                if index in range(offset, length):
-                    font2 = ImageFont.truetype(
-                        "resources/DroidSansMono.ttf", 30, encoding="utf-16"
-                    )
-                    textcolor = "white"
-            for offset, length in link.items():
-                if index in range(offset, length):
-                    font2 = ImageFont.truetype(
-                        "resources/Roboto-Regular.ttf", 30, encoding="utf-16"
-                    )
-                    textcolor = "#898989"
-            if letter in emoji.UNICODE_EMOJI:
-                newemoji, mask = await emoji_fetch(letter)
-                canvas.paste(newemoji, (x, y - 2), mask)
-                x += 45
-                emojicount += 1
-            else:
-                if not await fontTest(letter):
-                    draw.text((x, y), letter, font=textfallback, fill=textcolor)
-                    x += textfallback.getsize(letter)[0]
-                else:
-                    draw.text((x, y), letter, font=font2, fill=textcolor)
-                    x += font2.getsize(letter)[0]
-            msg = msg.replace(letter, "¶", 1)
-        y += 40
-        x = pfpbg.width + 30
-    return True, canvas
-
-
-async def drawer(width, height):
-    # Top part
-    top = Image.new("RGBA", (width, 20), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(top)
-    draw.line((10, 0, top.width - 20, 0), fill=(29, 29, 29, 255), width=50)
-    draw.pieslice((0, 0, 30, 50), 180, 270, fill=(29, 29, 29, 255))
-    draw.pieslice((top.width - 75, 0, top.width, 50), 270, 360, fill=(29, 29, 29, 255))
-
-    # Middle part
-    middle = Image.new("RGBA", (top.width, height + 75), (29, 29, 29, 255))
-
-    # Bottom part
-    bottom = ImageOps.flip(top)
-
-    return top, middle, bottom
+XXXX#XWritingXallXseparatingXemojisXandXregularXtexts
+XXXXxX=Xpfpbg.widthX+X30
+XXXXbold,Xmono,Xitalic,XlinkX=XawaitXget_entity(reply)
+XXXXindexX=X0
+XXXXemojicountX=X0
+XXXXtextfallbackX=XImageFont.truetype("resources/Quivira.otf",X33,Xencoding="utf-16")
+XXXXtextcolorX=X"white"
+XXXXforXlineXinXtext:
+XXXXXXXXforXletterXinXline:
+XXXXXXXXXXXXindexX=X(
+XXXXXXXXXXXXXXXXmsg.find(letter)XifXemojicountX==X0XelseXmsg.find(letter)X+Xemojicount
+XXXXXXXXXXXX)
+XXXXXXXXXXXXforXoffset,XlengthXinXbold.items():
+XXXXXXXXXXXXXXXXifXindexXinXrange(offset,Xlength):
+XXXXXXXXXXXXXXXXXXXXfont2X=XImageFont.truetype(
+XXXXXXXXXXXXXXXXXXXXXXXX"resources/Roboto-Medium.ttf",X33,Xencoding="utf-16"
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXtextcolorX=X"white"
+XXXXXXXXXXXXforXoffset,XlengthXinXitalic.items():
+XXXXXXXXXXXXXXXXifXindexXinXrange(offset,Xlength):
+XXXXXXXXXXXXXXXXXXXXfont2X=XImageFont.truetype(
+XXXXXXXXXXXXXXXXXXXXXXXX"resources/Roboto-Italic.ttf",X33,Xencoding="utf-16"
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXtextcolorX=X"white"
+XXXXXXXXXXXXforXoffset,XlengthXinXmono.items():
+XXXXXXXXXXXXXXXXifXindexXinXrange(offset,Xlength):
+XXXXXXXXXXXXXXXXXXXXfont2X=XImageFont.truetype(
+XXXXXXXXXXXXXXXXXXXXXXXX"resources/DroidSansMono.ttf",X30,Xencoding="utf-16"
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXtextcolorX=X"white"
+XXXXXXXXXXXXforXoffset,XlengthXinXlink.items():
+XXXXXXXXXXXXXXXXifXindexXinXrange(offset,Xlength):
+XXXXXXXXXXXXXXXXXXXXfont2X=XImageFont.truetype(
+XXXXXXXXXXXXXXXXXXXXXXXX"resources/Roboto-Regular.ttf",X30,Xencoding="utf-16"
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXtextcolorX=X"#898989"
+XXXXXXXXXXXXifXletterXinXemoji.UNICODE_EMOJI:
+XXXXXXXXXXXXXXXXnewemoji,XmaskX=XawaitXemoji_fetch(letter)
+XXXXXXXXXXXXXXXXcanvas.paste(newemoji,X(x,XyX-X2),Xmask)
+XXXXXXXXXXXXXXXXxX+=X45
+XXXXXXXXXXXXXXXXemojicountX+=X1
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXifXnotXawaitXfontTest(letter):
+XXXXXXXXXXXXXXXXXXXXdraw.text((x,Xy),Xletter,Xfont=textfallback,Xfill=textcolor)
+XXXXXXXXXXXXXXXXXXXXxX+=Xtextfallback.getsize(letter)[0]
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXdraw.text((x,Xy),Xletter,Xfont=font2,Xfill=textcolor)
+XXXXXXXXXXXXXXXXXXXXxX+=Xfont2.getsize(letter)[0]
+XXXXXXXXXXXXmsgX=Xmsg.replace(letter,X"¶",X1)
+XXXXXXXXyX+=X40
+XXXXXXXXxX=Xpfpbg.widthX+X30
+XXXXreturnXTrue,Xcanvas
 
 
-async def fontTest(letter):
-    test = TTFont("resources/Roboto-Medium.ttf")
-    for table in test["cmap"].tables:
-        if ord(letter) in table.cmap.keys():
-            return True
+asyncXdefXdrawer(width,Xheight):
+XXXX#XTopXpart
+XXXXtopX=XImage.new("RGBA",X(width,X20),X(0,X0,X0,X0))
+XXXXdrawX=XImageDraw.Draw(top)
+XXXXdraw.line((10,X0,Xtop.widthX-X20,X0),Xfill=(29,X29,X29,X255),Xwidth=50)
+XXXXdraw.pieslice((0,X0,X30,X50),X180,X270,Xfill=(29,X29,X29,X255))
+XXXXdraw.pieslice((top.widthX-X75,X0,Xtop.width,X50),X270,X360,Xfill=(29,X29,X29,X255))
+
+XXXX#XMiddleXpart
+XXXXmiddleX=XImage.new("RGBA",X(top.width,XheightX+X75),X(29,X29,X29,X255))
+
+XXXX#XBottomXpart
+XXXXbottomX=XImageOps.flip(top)
+
+XXXXreturnXtop,Xmiddle,Xbottom
 
 
-async def get_entity(msg):
-    bold = {0: 0}
-    italic = {0: 0}
-    mono = {0: 0}
-    link = {0: 0}
-    if not msg.entities:
-        return bold, mono, italic, link
-    for entity in msg.entities:
-        if isinstance(entity, types.MessageEntityBold):
-            bold[entity.offset] = entity.offset + entity.length
-        elif isinstance(entity, types.MessageEntityItalic):
-            italic[entity.offset] = entity.offset + entity.length
-        elif isinstance(entity, types.MessageEntityCode):
-            mono[entity.offset] = entity.offset + entity.length
-        elif isinstance(entity, types.MessageEntityUrl):
-            link[entity.offset] = entity.offset + entity.length
-        elif isinstance(entity, types.MessageEntityTextUrl):
-            link[entity.offset] = entity.offset + entity.length
-        elif isinstance(entity, types.MessageEntityMention):
-            link[entity.offset] = entity.offset + entity.length
-    return bold, mono, italic, link
+asyncXdefXfontTest(letter):
+XXXXtestX=XTTFont("resources/Roboto-Medium.ttf")
+XXXXforXtableXinXtest["cmap"].tables:
+XXXXXXXXifXord(letter)XinXtable.cmap.keys():
+XXXXXXXXXXXXreturnXTrue
 
 
-async def doctype(name, size, type, canvas):
-    font = ImageFont.truetype("resources/Roboto-Medium.ttf", 38)
-    doc = Image.new("RGBA", (130, 130), (29, 29, 29, 255))
-    draw = ImageDraw.Draw(doc)
-    draw.ellipse((0, 0, 130, 130), fill="#434343")
-    draw.line((66, 28, 66, 53), width=14, fill="white")
-    draw.polygon([(67, 77), (90, 53), (42, 53)], fill="white")
-    draw.line((40, 87, 90, 87), width=8, fill="white")
-    canvas.paste(doc, (160, 23))
-    draw2 = ImageDraw.Draw(canvas)
-    draw2.text((320, 40), name, font=font, fill="white")
-    draw2.text((320, 97), size + type, font=font, fill="#AAAAAA")
-    return canvas
+asyncXdefXget_entity(msg):
+XXXXboldX=X{0:X0}
+XXXXitalicX=X{0:X0}
+XXXXmonoX=X{0:X0}
+XXXXlinkX=X{0:X0}
+XXXXifXnotXmsg.entities:
+XXXXXXXXreturnXbold,Xmono,Xitalic,Xlink
+XXXXforXentityXinXmsg.entities:
+XXXXXXXXifXisinstance(entity,Xtypes.MessageEntityBold):
+XXXXXXXXXXXXbold[entity.offset]X=Xentity.offsetX+Xentity.length
+XXXXXXXXelifXisinstance(entity,Xtypes.MessageEntityItalic):
+XXXXXXXXXXXXitalic[entity.offset]X=Xentity.offsetX+Xentity.length
+XXXXXXXXelifXisinstance(entity,Xtypes.MessageEntityCode):
+XXXXXXXXXXXXmono[entity.offset]X=Xentity.offsetX+Xentity.length
+XXXXXXXXelifXisinstance(entity,Xtypes.MessageEntityUrl):
+XXXXXXXXXXXXlink[entity.offset]X=Xentity.offsetX+Xentity.length
+XXXXXXXXelifXisinstance(entity,Xtypes.MessageEntityTextUrl):
+XXXXXXXXXXXXlink[entity.offset]X=Xentity.offsetX+Xentity.length
+XXXXXXXXelifXisinstance(entity,Xtypes.MessageEntityMention):
+XXXXXXXXXXXXlink[entity.offset]X=Xentity.offsetX+Xentity.length
+XXXXreturnXbold,Xmono,Xitalic,Xlink
 
 
-async def no_photo(reply, tot):
-    pfp = Image.new("RGBA", (105, 105), (0, 0, 0, 0))
-    pen = ImageDraw.Draw(pfp)
-    color = random.choice(COLORS)
-    pen.ellipse((0, 0, 105, 105), fill=color)
-    letter = "" if not tot else tot[0]
-    font = ImageFont.truetype("resources/Roboto-Regular.ttf", 60)
-    pen.text((32, 17), letter, font=font, fill="white")
-    return pfp, color
+asyncXdefXdoctype(name,Xsize,Xtype,Xcanvas):
+XXXXfontX=XImageFont.truetype("resources/Roboto-Medium.ttf",X38)
+XXXXdocX=XImage.new("RGBA",X(130,X130),X(29,X29,X29,X255))
+XXXXdrawX=XImageDraw.Draw(doc)
+XXXXdraw.ellipse((0,X0,X130,X130),Xfill="#434343")
+XXXXdraw.line((66,X28,X66,X53),Xwidth=14,Xfill="white")
+XXXXdraw.polygon([(67,X77),X(90,X53),X(42,X53)],Xfill="white")
+XXXXdraw.line((40,X87,X90,X87),Xwidth=8,Xfill="white")
+XXXXcanvas.paste(doc,X(160,X23))
+XXXXdraw2X=XImageDraw.Draw(canvas)
+XXXXdraw2.text((320,X40),Xname,Xfont=font,Xfill="white")
+XXXXdraw2.text((320,X97),XsizeX+Xtype,Xfont=font,Xfill="#AAAAAA")
+XXXXreturnXcanvas
 
 
-async def emoji_fetch(emoji):
-    emojis = json.loads(
-        urllib.request.urlopen(
-            "https://github.com/erenmetesar/modules-repo/raw/master/emojis.txt"
-        )
-        .read()
-        .decode()
-    )
-    if emoji in emojis:
-        img = emojis[emoji]
-        return await transparent(
-            urllib.request.urlretrieve(img, "resources/emoji.png")[0]
-        )
-    else:
-        img = emojis["⛔"]
-        return await transparent(
-            urllib.request.urlretrieve(img, "resources/emoji.png")[0]
-        )
+asyncXdefXno_photo(reply,Xtot):
+XXXXpfpX=XImage.new("RGBA",X(105,X105),X(0,X0,X0,X0))
+XXXXpenX=XImageDraw.Draw(pfp)
+XXXXcolorX=Xrandom.choice(COLORS)
+XXXXpen.ellipse((0,X0,X105,X105),Xfill=color)
+XXXXletterX=X""XifXnotXtotXelseXtot[0]
+XXXXfontX=XImageFont.truetype("resources/Roboto-Regular.ttf",X60)
+XXXXpen.text((32,X17),Xletter,Xfont=font,Xfill="white")
+XXXXreturnXpfp,Xcolor
 
 
-async def transparent(emoji):
-    emoji = Image.open(emoji).convert("RGBA")
-    emoji.thumbnail((40, 40))
+asyncXdefXemoji_fetch(emoji):
+XXXXemojisX=Xjson.loads(
+XXXXXXXXurllib.request.urlopen(
+XXXXXXXXXXXX"https://github.com/erenmetesar/modules-repo/raw/master/emojis.txt"
+XXXXXXXX)
+XXXXXXXX.read()
+XXXXXXXX.decode()
+XXXX)
+XXXXifXemojiXinXemojis:
+XXXXXXXXimgX=Xemojis[emoji]
+XXXXXXXXreturnXawaitXtransparent(
+XXXXXXXXXXXXurllib.request.urlretrieve(img,X"resources/emoji.png")[0]
+XXXXXXXX)
+XXXXelse:
+XXXXXXXXimgX=Xemojis["⛔"]
+XXXXXXXXreturnXawaitXtransparent(
+XXXXXXXXXXXXurllib.request.urlretrieve(img,X"resources/emoji.png")[0]
+XXXXXXXX)
 
-    # Mask
-    mask = Image.new("L", (40, 40), 0)
-    draw = ImageDraw.Draw(mask)
-    draw.ellipse((0, 0, 40, 40), fill=255)
-    return emoji, mask
+
+asyncXdefXtransparent(emoji):
+XXXXemojiX=XImage.open(emoji).convert("RGBA")
+XXXXemoji.thumbnail((40,X40))
+
+XXXX#XMask
+XXXXmaskX=XImage.new("L",X(40,X40),X0)
+XXXXdrawX=XImageDraw.Draw(mask)
+XXXXdraw.ellipse((0,X0,X40,X40),Xfill=255)
+XXXXreturnXemoji,Xmask
 
 
-async def replied_user(draw, tot, text, maxlength, title):
-    namefont = ImageFont.truetype("resources/Roboto-Medium.ttf", 38)
-    namefallback = ImageFont.truetype("resources/Quivira.otf", 38)
-    textfont = ImageFont.truetype("resources/Roboto-Regular.ttf", 32)
-    textfallback = ImageFont.truetype("resources/Roboto-Medium.ttf", 38)
-    maxlength = maxlength + 7 if maxlength < 10 else maxlength
-    text = text[: maxlength - 2] + ".." if len(text) > maxlength else text
-    draw.line((165, 90, 165, 170), width=5, fill="white")
-    space = 0
-    for letter in tot:
-        if not await fontTest(letter):
-            draw.text((180 + space, 86), letter, font=namefallback, fill="#888888")
-            space += namefallback.getsize(letter)[0]
-        else:
-            draw.text((180 + space, 86), letter, font=namefont, fill="#888888")
-            space += namefont.getsize(letter)[0]
-    space = 0
-    for letter in text:
-        if not await fontTest(letter):
-            draw.text((180 + space, 132), letter, font=textfallback, fill="#888888")
-            space += textfallback.getsize(letter)[0]
-        else:
-            draw.text((180 + space, 132), letter, font=textfont, fill="white")
-            space += textfont.getsize(letter)[0]
+asyncXdefXreplied_user(draw,Xtot,Xtext,Xmaxlength,Xtitle):
+XXXXnamefontX=XImageFont.truetype("resources/Roboto-Medium.ttf",X38)
+XXXXnamefallbackX=XImageFont.truetype("resources/Quivira.otf",X38)
+XXXXtextfontX=XImageFont.truetype("resources/Roboto-Regular.ttf",X32)
+XXXXtextfallbackX=XImageFont.truetype("resources/Roboto-Medium.ttf",X38)
+XXXXmaxlengthX=XmaxlengthX+X7XifXmaxlengthX<X10XelseXmaxlength
+XXXXtextX=Xtext[:XmaxlengthX-X2]X+X".."XifXlen(text)X>XmaxlengthXelseXtext
+XXXXdraw.line((165,X90,X165,X170),Xwidth=5,Xfill="white")
+XXXXspaceX=X0
+XXXXforXletterXinXtot:
+XXXXXXXXifXnotXawaitXfontTest(letter):
+XXXXXXXXXXXXdraw.text((180X+Xspace,X86),Xletter,Xfont=namefallback,Xfill="#888888")
+XXXXXXXXXXXXspaceX+=Xnamefallback.getsize(letter)[0]
+XXXXXXXXelse:
+XXXXXXXXXXXXdraw.text((180X+Xspace,X86),Xletter,Xfont=namefont,Xfill="#888888")
+XXXXXXXXXXXXspaceX+=Xnamefont.getsize(letter)[0]
+XXXXspaceX=X0
+XXXXforXletterXinXtext:
+XXXXXXXXifXnotXawaitXfontTest(letter):
+XXXXXXXXXXXXdraw.text((180X+Xspace,X132),Xletter,Xfont=textfallback,Xfill="#888888")
+XXXXXXXXXXXXspaceX+=Xtextfallback.getsize(letter)[0]
+XXXXXXXXelse:
+XXXXXXXXXXXXdraw.text((180X+Xspace,X132),Xletter,Xfont=textfont,Xfill="white")
+XXXXXXXXXXXXspaceX+=Xtextfont.getsize(letter)[0]
 
 
 @register(pattern="^/q")
-async def _(event):
-    if event.fwd_from:
-        return
-    reply = await event.get_reply_message()
-    msg = reply.message
-    repliedreply = await reply.get_reply_message()
-    user = (
-        await event.client.get_entity(reply.forward.sender)
-        if reply.fwd_from
-        else reply.sender
-    )
-    res, canvas = await process(msg, user, event.client, reply, repliedreply)
-    if not res:
-        return
-    canvas.save("sticker.webp")
-    await event.client.send_file(
-        event.chat_id, "sticker.webp", reply_to=event.reply_to_msg_id
-    )
-    os.remove("sticker.webp")
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXreplyX=XawaitXevent.get_reply_message()
+XXXXmsgX=Xreply.message
+XXXXrepliedreplyX=XawaitXreply.get_reply_message()
+XXXXuserX=X(
+XXXXXXXXawaitXevent.client.get_entity(reply.forward.sender)
+XXXXXXXXifXreply.fwd_from
+XXXXXXXXelseXreply.sender
+XXXX)
+XXXXres,XcanvasX=XawaitXprocess(msg,Xuser,Xevent.client,Xreply,Xrepliedreply)
+XXXXifXnotXres:
+XXXXXXXXreturn
+XXXXcanvas.save("sticker.webp")
+XXXXawaitXevent.client.send_file(
+XXXXXXXXevent.chat_id,X"sticker.webp",Xreply_to=event.reply_to_msg_id
+XXXX)
+XXXXos.remove("sticker.webp")

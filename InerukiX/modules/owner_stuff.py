@@ -1,271 +1,271 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 errorshivansh
-# Copyright (C) 2020 Inuka Asith
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2021Xerrorshivansh
+#XCopyrightX(C)X2020XInukaXAsith
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import asyncio
-import html
-import os
-import sys
+importXasyncio
+importXhtml
+importXos
+importXsys
 
-import rapidjson
-import requests
+importXrapidjson
+importXrequests
 
-from Ineruki  import INERUKI_VERSION, OWNER_ID, bot, dp
-from Ineruki .decorator import COMMANDS_ALIASES, REGISTRED_COMMANDS, register
-from Ineruki .modules import LOADED_MODULES
-from Ineruki .services.mongo import db, mongodb
-from Ineruki .services.redis import redis
-from Ineruki .services.telethon import tbot
+fromXInerukiXXimportXINERUKI_VERSION,XOWNER_ID,Xbot,Xdp
+fromXInerukiX.decoratorXimportXCOMMANDS_ALIASES,XREGISTRED_COMMANDS,Xregister
+fromXInerukiX.modulesXimportXLOADED_MODULES
+fromXInerukiX.services.mongoXimportXdb,Xmongodb
+fromXInerukiX.services.redisXimportXredis
+fromXInerukiX.services.telethonXimportXtbot
 
-from .utils.covert import convert_size
-from .utils.message import need_args_dec
-from .utils.notes import BUTTONS, get_parsed_note_list, send_note, t_unparse_note_item
-from .utils.term import chat_term
-
-
-@register(cmds="allcommands", is_op=True)
-async def all_commands_list(message):
-    text = ""
-    for cmd in REGISTRED_COMMANDS:
-        text += "* /" + cmd + "\n"
-    await message.reply(text)
+fromX.utils.covertXimportXconvert_size
+fromX.utils.messageXimportXneed_args_dec
+fromX.utils.notesXimportXBUTTONS,Xget_parsed_note_list,Xsend_note,Xt_unparse_note_item
+fromX.utils.termXimportXchat_term
 
 
-@register(cmds="allcmdsaliases", is_op=True)
-async def all_cmds_aliases_list(message):
-    text = ""
-    text = str(COMMANDS_ALIASES)
-    await message.reply(text)
+@register(cmds="allcommands",Xis_op=True)
+asyncXdefXall_commands_list(message):
+XXXXtextX=X""
+XXXXforXcmdXinXREGISTRED_COMMANDS:
+XXXXXXXXtextX+=X"*X/"X+XcmdX+X"\n"
+XXXXawaitXmessage.reply(text)
 
 
-@register(cmds="loadedmodules", is_op=True)
-async def all_modules_list(message):
-    text = ""
-    for module in LOADED_MODULES:
-        text += "* " + module.__name__ + "\n"
-    await message.reply(text)
+@register(cmds="allcmdsaliases",Xis_op=True)
+asyncXdefXall_cmds_aliases_list(message):
+XXXXtextX=X""
+XXXXtextX=Xstr(COMMANDS_ALIASES)
+XXXXawaitXmessage.reply(text)
 
 
-@register(cmds="avaiblebtns", is_op=True)
-async def all_btns_list(message):
-    text = "Avaible message inline btns:\n"
-    for module in BUTTONS:
-        text += "* " + module + "\n"
-    await message.reply(text)
+@register(cmds="loadedmodules",Xis_op=True)
+asyncXdefXall_modules_list(message):
+XXXXtextX=X""
+XXXXforXmoduleXinXLOADED_MODULES:
+XXXXXXXXtextX+=X"*X"X+Xmodule.__name__X+X"\n"
+XXXXawaitXmessage.reply(text)
 
 
-@register(cmds="ip", is_owner=True, only_pm=True)
-async def get_bot_ip(message):
-    await message.reply(requests.get("http://ipinfo.io/ip").text)
+@register(cmds="avaiblebtns",Xis_op=True)
+asyncXdefXall_btns_list(message):
+XXXXtextX=X"AvaibleXmessageXinlineXbtns:\n"
+XXXXforXmoduleXinXBUTTONS:
+XXXXXXXXtextX+=X"*X"X+XmoduleX+X"\n"
+XXXXawaitXmessage.reply(text)
 
 
-@register(cmds="term", is_owner=True)
-async def cmd_term(message):
-    if message.from_user.id in devs:
-        msg = await message.reply("Running...")
-        command = str(message.text.split(" ", 1)[1])
-        text = "<b>Shell:</b>\n"
-        text += (
-            "<code>"
-            + html.escape(await chat_term(message, command), quote=False)
-            + "</code>"
-        )
-        await msg.edit_text(text)
-    else:
-        pass
+@register(cmds="ip",Xis_owner=True,Xonly_pm=True)
+asyncXdefXget_bot_ip(message):
+XXXXawaitXmessage.reply(requests.get("http://ipinfo.io/ip").text)
 
 
-@register(cmds="leavechat", is_owner=True)
+@register(cmds="term",Xis_owner=True)
+asyncXdefXcmd_term(message):
+XXXXifXmessage.from_user.idXinXdevs:
+XXXXXXXXmsgX=XawaitXmessage.reply("Running...")
+XXXXXXXXcommandX=Xstr(message.text.split("X",X1)[1])
+XXXXXXXXtextX=X"<b>Shell:</b>\n"
+XXXXXXXXtextX+=X(
+XXXXXXXXXXXX"<code>"
+XXXXXXXXXXXX+Xhtml.escape(awaitXchat_term(message,Xcommand),Xquote=False)
+XXXXXXXXXXXX+X"</code>"
+XXXXXXXX)
+XXXXXXXXawaitXmsg.edit_text(text)
+XXXXelse:
+XXXXXXXXpass
+
+
+@register(cmds="leavechat",Xis_owner=True)
 @need_args_dec()
-async def leave_chat(message):
-    arg = message.text.split()[1]
-    cname = message.chat.title
-    await bot.leave_chat(chat_id=arg)
-    await message.reply(f"Done, I left the group <b>{cname}</b>")
+asyncXdefXleave_chat(message):
+XXXXargX=Xmessage.text.split()[1]
+XXXXcnameX=Xmessage.chat.title
+XXXXawaitXbot.leave_chat(chat_id=arg)
+XXXXawaitXmessage.reply(f"Done,XIXleftXtheXgroupX<b>{cname}</b>")
 
 
-@register(cmds="sbroadcast", is_owner=True)
+@register(cmds="sbroadcast",Xis_owner=True)
 @need_args_dec()
-async def sbroadcast(message):
-    data = await get_parsed_note_list(message, split_args=-1)
-    dp.register_message_handler(check_message_for_smartbroadcast)
+asyncXdefXsbroadcast(message):
+XXXXdataX=XawaitXget_parsed_note_list(message,Xsplit_args=-1)
+XXXXdp.register_message_handler(check_message_for_smartbroadcast)
 
-    await db.sbroadcast.drop({})
+XXXXawaitXdb.sbroadcast.drop({})
 
-    chats = mongodb.chat_list.distinct("chat_id")
+XXXXchatsX=Xmongodb.chat_list.distinct("chat_id")
 
-    data["chats_num"] = len(chats)
-    data["recived_chats"] = 0
-    data["chats"] = chats
+XXXXdata["chats_num"]X=Xlen(chats)
+XXXXdata["recived_chats"]X=X0
+XXXXdata["chats"]X=Xchats
 
-    await db.sbroadcast.insert_one(data)
-    await message.reply(
-        "Smart broadcast planned for <code>{}</code> chats".format(len(chats))
-    )
-
-
-@register(cmds="stopsbroadcast", is_owner=True)
-async def stop_sbroadcast(message):
-    dp.message_handlers.unregister(check_message_for_smartbroadcast)
-    old = await db.sbroadcast.find_one({})
-    await db.sbroadcast.drop({})
-    await message.reply(
-        "Smart broadcast stopped."
-        "It was sended to <code>%d</code> chats." % old["recived_chats"]
-    )
+XXXXawaitXdb.sbroadcast.insert_one(data)
+XXXXawaitXmessage.reply(
+XXXXXXXX"SmartXbroadcastXplannedXforX<code>{}</code>Xchats".format(len(chats))
+XXXX)
 
 
-@register(cmds="continuebroadcast", is_owner=True)
-async def continue_sbroadcast(message):
-    dp.register_message_handler(check_message_for_smartbroadcast)
-    return await message.reply("Re-registered the broadcast handler.")
+@register(cmds="stopsbroadcast",Xis_owner=True)
+asyncXdefXstop_sbroadcast(message):
+XXXXdp.message_handlers.unregister(check_message_for_smartbroadcast)
+XXXXoldX=XawaitXdb.sbroadcast.find_one({})
+XXXXawaitXdb.sbroadcast.drop({})
+XXXXawaitXmessage.reply(
+XXXXXXXX"SmartXbroadcastXstopped."
+XXXXXXXX"ItXwasXsendedXtoX<code>%d</code>Xchats."X%Xold["recived_chats"]
+XXXX)
 
 
-# Check on smart broadcast
-async def check_message_for_smartbroadcast(message):
-    chat_id = message.chat.id
-    if not (db_item := await db.sbroadcast.find_one({"chats": {"$in": [chat_id]}})):
-        return
-
-    text, kwargs = await t_unparse_note_item(message, db_item, chat_id)
-    await send_note(chat_id, text, **kwargs)
-
-    await db.sbroadcast.update_one(
-        {"_id": db_item["_id"]},
-        {"$pull": {"chats": chat_id}, "$inc": {"recived_chats": 1}},
-    )
+@register(cmds="continuebroadcast",Xis_owner=True)
+asyncXdefXcontinue_sbroadcast(message):
+XXXXdp.register_message_handler(check_message_for_smartbroadcast)
+XXXXreturnXawaitXmessage.reply("Re-registeredXtheXbroadcastXhandler.")
 
 
-@register(cmds="purgecache", is_owner=True)
-async def purge_caches(message):
-    redis.flushdb()
-    await message.reply("Redis cache was cleaned.")
+#XCheckXonXsmartXbroadcast
+asyncXdefXcheck_message_for_smartbroadcast(message):
+XXXXchat_idX=Xmessage.chat.id
+XXXXifXnotX(db_itemX:=XawaitXdb.sbroadcast.find_one({"chats":X{"$in":X[chat_id]}})):
+XXXXXXXXreturn
+
+XXXXtext,XkwargsX=XawaitXt_unparse_note_item(message,Xdb_item,Xchat_id)
+XXXXawaitXsend_note(chat_id,Xtext,X**kwargs)
+
+XXXXawaitXdb.sbroadcast.update_one(
+XXXXXXXX{"_id":Xdb_item["_id"]},
+XXXXXXXX{"$pull":X{"chats":Xchat_id},X"$inc":X{"recived_chats":X1}},
+XXXX)
 
 
-@register(cmds="botstop", is_owner=True)
-async def bot_stop(message):
-    await message.reply("Goodbye...")
-    sys.exit(1)
+@register(cmds="purgecache",Xis_owner=True)
+asyncXdefXpurge_caches(message):
+XXXXredis.flushdb()
+XXXXawaitXmessage.reply("RedisXcacheXwasXcleaned.")
 
 
-@register(cmds="restart", is_owner=True)
-async def restart_bot(message):
-    await message.reply("Ineruki will be restarted...")
-    args = [sys.executable, "-m", "Ineruki "]
-    os.execl(sys.executable, *args)
+@register(cmds="botstop",Xis_owner=True)
+asyncXdefXbot_stop(message):
+XXXXawaitXmessage.reply("Goodbye...")
+XXXXsys.exit(1)
 
 
-@register(cmds="upgrade", is_owner=True)
-async def upgrade(message):
-    m = await message.reply("Upgrading sources...")
-    proc = await asyncio.create_subprocess_shell(
-        "git pull --no-edit",
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.STDOUT,
-    )
-    stdout = (await proc.communicate())[0]
-    if proc.returncode == 0:
-        if "Already up to date." in stdout.decode():
-            await m.edit_text("There's nothing to upgrade.")
-        else:
-            await m.edit_text("Restarting...")
-            args = [sys.executable, "-m", "Ineruki "]
-            os.execl(sys.executable, *args)
-    else:
-        await m.edit_text(
-            f"Upgrade failed (process exited with {proc.returncode}):\n{stdout.decode()}"
-        )
-        proc = await asyncio.create_subprocess_shell("git merge --abort")
-        await proc.communicate()
+@register(cmds="restart",Xis_owner=True)
+asyncXdefXrestart_bot(message):
+XXXXawaitXmessage.reply("InerukiXwillXbeXrestarted...")
+XXXXargsX=X[sys.executable,X"-m",X"InerukiX"]
+XXXXos.execl(sys.executable,X*args)
 
 
-@register(cmds="upload", is_owner=True)
-async def upload_file(message):
-    input_str = message.get_args()
-    if not os.path.exists(input_str):
-        await message.reply("File not found!")
-        return
-    await message.reply("Processing ...")
-    caption_rts = os.path.basename(input_str)
-    with open(input_str, "rb") as f:
-        await tbot.send_file(
-            message.chat.id,
-            f,
-            caption=caption_rts,
-            force_document=False,
-            allow_cache=False,
-            reply_to=message.message_id,
-        )
+@register(cmds="upgrade",Xis_owner=True)
+asyncXdefXupgrade(message):
+XXXXmX=XawaitXmessage.reply("UpgradingXsources...")
+XXXXprocX=XawaitXasyncio.create_subprocess_shell(
+XXXXXXXX"gitXpullX--no-edit",
+XXXXXXXXstdout=asyncio.subprocess.PIPE,
+XXXXXXXXstderr=asyncio.subprocess.STDOUT,
+XXXX)
+XXXXstdoutX=X(awaitXproc.communicate())[0]
+XXXXifXproc.returncodeX==X0:
+XXXXXXXXifX"AlreadyXupXtoXdate."XinXstdout.decode():
+XXXXXXXXXXXXawaitXm.edit_text("There'sXnothingXtoXupgrade.")
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXm.edit_text("Restarting...")
+XXXXXXXXXXXXargsX=X[sys.executable,X"-m",X"InerukiX"]
+XXXXXXXXXXXXos.execl(sys.executable,X*args)
+XXXXelse:
+XXXXXXXXawaitXm.edit_text(
+XXXXXXXXXXXXf"UpgradeXfailedX(processXexitedXwithX{proc.returncode}):\n{stdout.decode()}"
+XXXXXXXX)
+XXXXXXXXprocX=XawaitXasyncio.create_subprocess_shell("gitXmergeX--abort")
+XXXXXXXXawaitXproc.communicate()
 
 
-@register(cmds="logs", is_op=True)
-async def upload_logs(message):
-    input_str = "logs/Ineruki.log"
-    with open(input_str, "rb") as f:
-        await tbot.send_file(message.chat.id, f, reply_to=message.message_id)
+@register(cmds="upload",Xis_owner=True)
+asyncXdefXupload_file(message):
+XXXXinput_strX=Xmessage.get_args()
+XXXXifXnotXos.path.exists(input_str):
+XXXXXXXXawaitXmessage.reply("FileXnotXfound!")
+XXXXXXXXreturn
+XXXXawaitXmessage.reply("ProcessingX...")
+XXXXcaption_rtsX=Xos.path.basename(input_str)
+XXXXwithXopen(input_str,X"rb")XasXf:
+XXXXXXXXawaitXtbot.send_file(
+XXXXXXXXXXXXmessage.chat.id,
+XXXXXXXXXXXXf,
+XXXXXXXXXXXXcaption=caption_rts,
+XXXXXXXXXXXXforce_document=False,
+XXXXXXXXXXXXallow_cache=False,
+XXXXXXXXXXXXreply_to=message.message_id,
+XXXXXXXX)
 
 
-@register(cmds="crash", is_owner=True)
-async def crash(message):
-    test = 2 / 0
-    print(test)
+@register(cmds="logs",Xis_op=True)
+asyncXdefXupload_logs(message):
+XXXXinput_strX=X"logs/Ineruki.log"
+XXXXwithXopen(input_str,X"rb")XasXf:
+XXXXXXXXawaitXtbot.send_file(message.chat.id,Xf,Xreply_to=message.message_id)
 
 
-@register(cmds="event", is_op=True)
-async def get_event(message):
-    print(message)
-    event = str(rapidjson.dumps(message, indent=2))
-    await message.reply(event)
+@register(cmds="crash",Xis_owner=True)
+asyncXdefXcrash(message):
+XXXXtestX=X2X/X0
+XXXXprint(test)
 
 
-@register(cmds="stats", is_op=True)
-async def stats(message):
-    if message.from_user.id == OWNER_ID:
-        text = f"<b>Ineruki {INERUKI_VERSION} stats</b>\n"
-
-        for module in [m for m in LOADED_MODULES if hasattr(m, "__stats__")]:
-            text += await module.__stats__()
-
-        await message.reply(text)
-    else:
-        pass
+@register(cmds="event",Xis_op=True)
+asyncXdefXget_event(message):
+XXXXprint(message)
+XXXXeventX=Xstr(rapidjson.dumps(message,Xindent=2))
+XXXXawaitXmessage.reply(event)
 
 
-async def __stats__():
-    text = ""
-    if os.getenv("WEBHOOKS", False):
-        text += f"* Webhooks mode, listen port: <code>{os.getenv('WEBHOOKS_PORT', 8080)}</code>\n"
-    else:
-        text += "* Long-polling mode\n"
-    local_db = await db.command("dbstats")
-    if "fsTotalSize" in local_db:
-        text += "* Database size is <code>{}</code>, free <code>{}</code>\n".format(
-            convert_size(local_db["dataSize"]),
-            convert_size(local_db["fsTotalSize"] - local_db["fsUsedSize"]),
-        )
-    else:
-        text += "* Database size is <code>{}</code>, free <code>{}</code>\n".format(
-            convert_size(local_db["storageSize"]),
-            convert_size(536870912 - local_db["storageSize"]),
-        )
+@register(cmds="stats",Xis_op=True)
+asyncXdefXstats(message):
+XXXXifXmessage.from_user.idX==XOWNER_ID:
+XXXXXXXXtextX=Xf"<b>InerukiX{INERUKI_VERSION}Xstats</b>\n"
 
-    text += "* <code>{}</code> total keys in Redis database\n".format(len(redis.keys()))
-    text += "* <code>{}</code> total commands registred, in <code>{}</code> modules\n".format(
-        len(REGISTRED_COMMANDS), len(LOADED_MODULES)
-    )
-    return text
+XXXXXXXXforXmoduleXinX[mXforXmXinXLOADED_MODULESXifXhasattr(m,X"__stats__")]:
+XXXXXXXXXXXXtextX+=XawaitXmodule.__stats__()
+
+XXXXXXXXawaitXmessage.reply(text)
+XXXXelse:
+XXXXXXXXpass
+
+
+asyncXdefX__stats__():
+XXXXtextX=X""
+XXXXifXos.getenv("WEBHOOKS",XFalse):
+XXXXXXXXtextX+=Xf"*XWebhooksXmode,XlistenXport:X<code>{os.getenv('WEBHOOKS_PORT',X8080)}</code>\n"
+XXXXelse:
+XXXXXXXXtextX+=X"*XLong-pollingXmode\n"
+XXXXlocal_dbX=XawaitXdb.command("dbstats")
+XXXXifX"fsTotalSize"XinXlocal_db:
+XXXXXXXXtextX+=X"*XDatabaseXsizeXisX<code>{}</code>,XfreeX<code>{}</code>\n".format(
+XXXXXXXXXXXXconvert_size(local_db["dataSize"]),
+XXXXXXXXXXXXconvert_size(local_db["fsTotalSize"]X-Xlocal_db["fsUsedSize"]),
+XXXXXXXX)
+XXXXelse:
+XXXXXXXXtextX+=X"*XDatabaseXsizeXisX<code>{}</code>,XfreeX<code>{}</code>\n".format(
+XXXXXXXXXXXXconvert_size(local_db["storageSize"]),
+XXXXXXXXXXXXconvert_size(536870912X-Xlocal_db["storageSize"]),
+XXXXXXXX)
+
+XXXXtextX+=X"*X<code>{}</code>XtotalXkeysXinXRedisXdatabase\n".format(len(redis.keys()))
+XXXXtextX+=X"*X<code>{}</code>XtotalXcommandsXregistred,XinX<code>{}</code>Xmodules\n".format(
+XXXXXXXXlen(REGISTRED_COMMANDS),Xlen(LOADED_MODULES)
+XXXX)
+XXXXreturnXtext

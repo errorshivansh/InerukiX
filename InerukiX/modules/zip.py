@@ -1,227 +1,227 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import os
-import time
-import zipfile
+importXos
+importXtime
+importXzipfile
 
-from telethon import types
-from telethon.tl import functions
+fromXtelethonXimportXtypes
+fromXtelethon.tlXimportXfunctions
 
-from Ineruki  import TEMP_DOWNLOAD_DIRECTORY
-from Ineruki .services.events import register
-from Ineruki .services.telethon import tbot as client
+fromXInerukiXXimportXTEMP_DOWNLOAD_DIRECTORY
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.telethonXimportXtbotXasXclient
 
 
-async def is_register_admin(chat, user):
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
+asyncXdefXis_register_admin(chat,Xuser):
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
 
-        return isinstance(
-            (
-                await client(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    if isinstance(chat, types.InputPeerChat):
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXclient(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXifXisinstance(chat,Xtypes.InputPeerChat):
 
-        ui = await client.get_peer_id(user)
-        ps = (
-            await client(functions.messages.GetFullChatRequest(chat.chat_id))
-        ).full_chat.participants.participants
-        return isinstance(
-            next((p for p in ps if p.user_id == ui), None),
-            (types.ChatParticipantAdmin, types.ChatParticipantCreator),
-        )
-    return None
+XXXXXXXXuiX=XawaitXclient.get_peer_id(user)
+XXXXXXXXpsX=X(
+XXXXXXXXXXXXawaitXclient(functions.messages.GetFullChatRequest(chat.chat_id))
+XXXXXXXX).full_chat.participants.participants
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXXnext((pXforXpXinXpsXifXp.user_idX==Xui),XNone),
+XXXXXXXXXXXX(types.ChatParticipantAdmin,Xtypes.ChatParticipantCreator),
+XXXXXXXX)
+XXXXreturnXNone
 
 
 @register(pattern="^/zip")
-async def _(event):
-    if event.fwd_from:
-        return
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
 
-    if not event.is_reply:
-        await event.reply("Reply to a file to compress it.")
-        return
-    if event.is_group:
-        if not (await is_register_admin(event.input_chat, event.message.sender_id)):
-            await event.reply(
-                "Hai.. You are not admin.. You can't use this command.. But you can use in my pm"
-            )
-            return
+XXXXifXnotXevent.is_reply:
+XXXXXXXXawaitXevent.reply("ReplyXtoXaXfileXtoXcompressXit.")
+XXXXXXXXreturn
+XXXXifXevent.is_group:
+XXXXXXXXifXnotX(awaitXis_register_admin(event.input_chat,Xevent.message.sender_id)):
+XXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXX"Hai..XYouXareXnotXadmin..XYouXcan'tXuseXthisXcommand..XButXyouXcanXuseXinXmyXpm"
+XXXXXXXXXXXX)
+XXXXXXXXXXXXreturn
 
-    mone = await event.reply("`⏳️ Please wait...`")
-    if not os.path.isdir(TEMP_DOWNLOAD_DIRECTORY):
-        os.makedirs(TEMP_DOWNLOAD_DIRECTORY)
-    if event.reply_to_msg_id:
-        reply_message = await event.get_reply_message()
-        try:
-            time.time()
-            downloaded_file_name = await event.client.download_media(
-                reply_message, TEMP_DOWNLOAD_DIRECTORY
-            )
-            directory_name = downloaded_file_name
-        except Exception as e:  # pylint:disable=C0103,W0703
-            await mone.reply(str(e))
-    zipfile.ZipFile(directory_name + ".zip", "w", zipfile.ZIP_DEFLATED).write(
-        directory_name
-    )
-    await event.client.send_file(
-        event.chat_id,
-        directory_name + ".zip",
-        force_document=True,
-        allow_cache=False,
-        reply_to=event.message.id,
-    )
-
-
-def zipdir(path, ziph):
-    # ziph is zipfile handle
-    for root, dirs, files in os.walk(path):
-        for file in files:
-            ziph.write(os.path.join(root, file))
-            os.remove(os.path.join(root, file))
+XXXXmoneX=XawaitXevent.reply("`⏳️XPleaseXwait...`")
+XXXXifXnotXos.path.isdir(TEMP_DOWNLOAD_DIRECTORY):
+XXXXXXXXos.makedirs(TEMP_DOWNLOAD_DIRECTORY)
+XXXXifXevent.reply_to_msg_id:
+XXXXXXXXreply_messageX=XawaitXevent.get_reply_message()
+XXXXXXXXtry:
+XXXXXXXXXXXXtime.time()
+XXXXXXXXXXXXdownloaded_file_nameX=XawaitXevent.client.download_media(
+XXXXXXXXXXXXXXXXreply_message,XTEMP_DOWNLOAD_DIRECTORY
+XXXXXXXXXXXX)
+XXXXXXXXXXXXdirectory_nameX=Xdownloaded_file_name
+XXXXXXXXexceptXExceptionXasXe:XX#Xpylint:disable=C0103,W0703
+XXXXXXXXXXXXawaitXmone.reply(str(e))
+XXXXzipfile.ZipFile(directory_nameX+X".zip",X"w",Xzipfile.ZIP_DEFLATED).write(
+XXXXXXXXdirectory_name
+XXXX)
+XXXXawaitXevent.client.send_file(
+XXXXXXXXevent.chat_id,
+XXXXXXXXdirectory_nameX+X".zip",
+XXXXXXXXforce_document=True,
+XXXXXXXXallow_cache=False,
+XXXXXXXXreply_to=event.message.id,
+XXXX)
 
 
-from datetime import datetime
-
-from hachoir.metadata import extractMetadata
-from hachoir.parser import createParser
-from telethon.tl.types import DocumentAttributeVideo
-
-extracted = TEMP_DOWNLOAD_DIRECTORY + "extracted/"
-thumb_image_path = TEMP_DOWNLOAD_DIRECTORY + "/thumb_image.jpg"
-if not os.path.isdir(extracted):
-    os.makedirs(extracted)
+defXzipdir(path,Xziph):
+XXXX#XziphXisXzipfileXhandle
+XXXXforXroot,Xdirs,XfilesXinXos.walk(path):
+XXXXXXXXforXfileXinXfiles:
+XXXXXXXXXXXXziph.write(os.path.join(root,Xfile))
+XXXXXXXXXXXXos.remove(os.path.join(root,Xfile))
 
 
-async def is_register_admin(chat, user):
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
+fromXdatetimeXimportXdatetime
 
-        return isinstance(
-            (
-                await client(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    if isinstance(chat, types.InputPeerChat):
+fromXhachoir.metadataXimportXextractMetadata
+fromXhachoir.parserXimportXcreateParser
+fromXtelethon.tl.typesXimportXDocumentAttributeVideo
 
-        ui = await client.get_peer_id(user)
-        ps = (
-            await client(functions.messages.GetFullChatRequest(chat.chat_id))
-        ).full_chat.participants.participants
-        return isinstance(
-            next((p for p in ps if p.user_id == ui), None),
-            (types.ChatParticipantAdmin, types.ChatParticipantCreator),
-        )
-    return None
+extractedX=XTEMP_DOWNLOAD_DIRECTORYX+X"extracted/"
+thumb_image_pathX=XTEMP_DOWNLOAD_DIRECTORYX+X"/thumb_image.jpg"
+ifXnotXos.path.isdir(extracted):
+XXXXos.makedirs(extracted)
+
+
+asyncXdefXis_register_admin(chat,Xuser):
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
+
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXclient(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXifXisinstance(chat,Xtypes.InputPeerChat):
+
+XXXXXXXXuiX=XawaitXclient.get_peer_id(user)
+XXXXXXXXpsX=X(
+XXXXXXXXXXXXawaitXclient(functions.messages.GetFullChatRequest(chat.chat_id))
+XXXXXXXX).full_chat.participants.participants
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXXnext((pXforXpXinXpsXifXp.user_idX==Xui),XNone),
+XXXXXXXXXXXX(types.ChatParticipantAdmin,Xtypes.ChatParticipantCreator),
+XXXXXXXX)
+XXXXreturnXNone
 
 
 @register(pattern="^/unzip")
-async def _(event):
-    if event.fwd_from:
-        return
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
 
-    if not event.is_reply:
-        await event.reply("Reply to a zip file.")
-        return
-    if event.is_group:
-        if not (await is_register_admin(event.input_chat, event.message.sender_id)):
-            await event.reply(
-                " Hai.. You are not admin.. You can't use this command.. But you can use in my pm🙈"
-            )
-            return
+XXXXifXnotXevent.is_reply:
+XXXXXXXXawaitXevent.reply("ReplyXtoXaXzipXfile.")
+XXXXXXXXreturn
+XXXXifXevent.is_group:
+XXXXXXXXifXnotX(awaitXis_register_admin(event.input_chat,Xevent.message.sender_id)):
+XXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXX"XHai..XYouXareXnotXadmin..XYouXcan'tXuseXthisXcommand..XButXyouXcanXuseXinXmyXpm🙈"
+XXXXXXXXXXXX)
+XXXXXXXXXXXXreturn
 
-    mone = await event.reply("Processing ...")
-    if not os.path.isdir(TEMP_DOWNLOAD_DIRECTORY):
-        os.makedirs(TEMP_DOWNLOAD_DIRECTORY)
-    if event.reply_to_msg_id:
-        start = datetime.now()
-        reply_message = await event.get_reply_message()
-        try:
-            time.time()
-            downloaded_file_name = await client.download_media(
-                reply_message, TEMP_DOWNLOAD_DIRECTORY
-            )
-        except Exception as e:
-            await mone.reply(str(e))
-        else:
-            end = datetime.now()
-            (end - start).seconds
+XXXXmoneX=XawaitXevent.reply("ProcessingX...")
+XXXXifXnotXos.path.isdir(TEMP_DOWNLOAD_DIRECTORY):
+XXXXXXXXos.makedirs(TEMP_DOWNLOAD_DIRECTORY)
+XXXXifXevent.reply_to_msg_id:
+XXXXXXXXstartX=Xdatetime.now()
+XXXXXXXXreply_messageX=XawaitXevent.get_reply_message()
+XXXXXXXXtry:
+XXXXXXXXXXXXtime.time()
+XXXXXXXXXXXXdownloaded_file_nameX=XawaitXclient.download_media(
+XXXXXXXXXXXXXXXXreply_message,XTEMP_DOWNLOAD_DIRECTORY
+XXXXXXXXXXXX)
+XXXXXXXXexceptXExceptionXasXe:
+XXXXXXXXXXXXawaitXmone.reply(str(e))
+XXXXXXXXelse:
+XXXXXXXXXXXXendX=Xdatetime.now()
+XXXXXXXXXXXX(endX-Xstart).seconds
 
-        with zipfile.ZipFile(downloaded_file_name, "r") as zip_ref:
-            zip_ref.extractall(extracted)
-        filename = sorted(get_lst_of_files(extracted, []))
-        await event.reply("Unzipping now")
-        for single_file in filename:
-            if os.path.exists(single_file):
-                caption_rts = os.path.basename(single_file)
-                force_document = True
-                supports_streaming = False
-                document_attributes = []
-                if single_file.endswith((".mp4", ".mp3", ".flac", ".webm")):
-                    metadata = extractMetadata(createParser(single_file))
-                    duration = 0
-                    width = 0
-                    height = 0
-                    if metadata.has("duration"):
-                        duration = metadata.get("duration").seconds
-                    if os.path.exists(thumb_image_path):
-                        metadata = extractMetadata(createParser(thumb_image_path))
-                        if metadata.has("width"):
-                            width = metadata.get("width")
-                        if metadata.has("height"):
-                            height = metadata.get("height")
-                    document_attributes = [
-                        DocumentAttributeVideo(
-                            duration=duration,
-                            w=width,
-                            h=height,
-                            round_message=False,
-                            supports_streaming=True,
-                        )
-                    ]
-                try:
-                    await client.send_file(
-                        event.chat_id,
-                        single_file,
-                        force_document=force_document,
-                        supports_streaming=supports_streaming,
-                        allow_cache=False,
-                        reply_to=event.message.id,
-                        attributes=document_attributes,
-                    )
-                except Exception as e:
-                    await client.send_message(
-                        event.chat_id,
-                        "{} caused `{}`".format(caption_rts, str(e)),
-                        reply_to=event.message.id,
-                    )
-                    continue
-                os.remove(single_file)
-        os.remove(downloaded_file_name)
+XXXXXXXXwithXzipfile.ZipFile(downloaded_file_name,X"r")XasXzip_ref:
+XXXXXXXXXXXXzip_ref.extractall(extracted)
+XXXXXXXXfilenameX=Xsorted(get_lst_of_files(extracted,X[]))
+XXXXXXXXawaitXevent.reply("UnzippingXnow")
+XXXXXXXXforXsingle_fileXinXfilename:
+XXXXXXXXXXXXifXos.path.exists(single_file):
+XXXXXXXXXXXXXXXXcaption_rtsX=Xos.path.basename(single_file)
+XXXXXXXXXXXXXXXXforce_documentX=XTrue
+XXXXXXXXXXXXXXXXsupports_streamingX=XFalse
+XXXXXXXXXXXXXXXXdocument_attributesX=X[]
+XXXXXXXXXXXXXXXXifXsingle_file.endswith((".mp4",X".mp3",X".flac",X".webm")):
+XXXXXXXXXXXXXXXXXXXXmetadataX=XextractMetadata(createParser(single_file))
+XXXXXXXXXXXXXXXXXXXXdurationX=X0
+XXXXXXXXXXXXXXXXXXXXwidthX=X0
+XXXXXXXXXXXXXXXXXXXXheightX=X0
+XXXXXXXXXXXXXXXXXXXXifXmetadata.has("duration"):
+XXXXXXXXXXXXXXXXXXXXXXXXdurationX=Xmetadata.get("duration").seconds
+XXXXXXXXXXXXXXXXXXXXifXos.path.exists(thumb_image_path):
+XXXXXXXXXXXXXXXXXXXXXXXXmetadataX=XextractMetadata(createParser(thumb_image_path))
+XXXXXXXXXXXXXXXXXXXXXXXXifXmetadata.has("width"):
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXwidthX=Xmetadata.get("width")
+XXXXXXXXXXXXXXXXXXXXXXXXifXmetadata.has("height"):
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXheightX=Xmetadata.get("height")
+XXXXXXXXXXXXXXXXXXXXdocument_attributesX=X[
+XXXXXXXXXXXXXXXXXXXXXXXXDocumentAttributeVideo(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXduration=duration,
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXw=width,
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXh=height,
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXround_message=False,
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXsupports_streaming=True,
+XXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXX]
+XXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXawaitXclient.send_file(
+XXXXXXXXXXXXXXXXXXXXXXXXevent.chat_id,
+XXXXXXXXXXXXXXXXXXXXXXXXsingle_file,
+XXXXXXXXXXXXXXXXXXXXXXXXforce_document=force_document,
+XXXXXXXXXXXXXXXXXXXXXXXXsupports_streaming=supports_streaming,
+XXXXXXXXXXXXXXXXXXXXXXXXallow_cache=False,
+XXXXXXXXXXXXXXXXXXXXXXXXreply_to=event.message.id,
+XXXXXXXXXXXXXXXXXXXXXXXXattributes=document_attributes,
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXexceptXExceptionXasXe:
+XXXXXXXXXXXXXXXXXXXXawaitXclient.send_message(
+XXXXXXXXXXXXXXXXXXXXXXXXevent.chat_id,
+XXXXXXXXXXXXXXXXXXXXXXXX"{}XcausedX`{}`".format(caption_rts,Xstr(e)),
+XXXXXXXXXXXXXXXXXXXXXXXXreply_to=event.message.id,
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXcontinue
+XXXXXXXXXXXXXXXXos.remove(single_file)
+XXXXXXXXos.remove(downloaded_file_name)
 
 
-def get_lst_of_files(input_directory, output_lst):
-    filesinfolder = os.listdir(input_directory)
-    for file_name in filesinfolder:
-        current_file_name = os.path.join(input_directory, file_name)
-        if os.path.isdir(current_file_name):
-            return get_lst_of_files(current_file_name, output_lst)
-        output_lst.append(current_file_name)
-    return output_lst
+defXget_lst_of_files(input_directory,Xoutput_lst):
+XXXXfilesinfolderX=Xos.listdir(input_directory)
+XXXXforXfile_nameXinXfilesinfolder:
+XXXXXXXXcurrent_file_nameX=Xos.path.join(input_directory,Xfile_name)
+XXXXXXXXifXos.path.isdir(current_file_name):
+XXXXXXXXXXXXreturnXget_lst_of_files(current_file_name,Xoutput_lst)
+XXXXXXXXoutput_lst.append(current_file_name)
+XXXXreturnXoutput_lst

@@ -1,128 +1,128 @@
-import pymongo
+importXpymongo
 
-from Ineruki .config import get_str_key
+fromXInerukiX.configXimportXget_str_key
 
-MONGO2 = get_str_key("FILTERS_MONGO", None)
-MONGO = get_str_key("MONGO_URI", required=True)
-if MONGO2 == None:
-    MONGO2 = MONGO
-myclient = pymongo.MongoClient(MONGO2)
-mydb = myclient["Ineruki"]
-mycol = mydb["CONNECTION"]
-
-
-async def add_connection(group_id, user_id):
-    query = mycol.find_one({"_id": user_id}, {"_id": 0, "active_group": 0})
-    if query is not None:
-        group_ids = []
-        for x in query["group_details"]:
-            group_ids.append(x["group_id"])
-
-        if group_id in group_ids:
-            return False
-
-    group_details = {"group_id": group_id}
-
-    data = {
-        "_id": user_id,
-        "group_details": [group_details],
-        "active_group": group_id,
-    }
-
-    if mycol.count_documents({"_id": user_id}) == 0:
-        try:
-            mycol.insert_one(data)
-            return True
-        except:
-            print("Some error occured!")
-
-    else:
-        try:
-            mycol.update_one(
-                {"_id": user_id},
-                {
-                    "$push": {"group_details": group_details},
-                    "$set": {"active_group": group_id},
-                },
-            )
-            return True
-        except:
-            print("Some error occured!")
+MONGO2X=Xget_str_key("FILTERS_MONGO",XNone)
+MONGOX=Xget_str_key("MONGO_URI",Xrequired=True)
+ifXMONGO2X==XNone:
+XXXXMONGO2X=XMONGO
+myclientX=Xpymongo.MongoClient(MONGO2)
+mydbX=Xmyclient["Ineruki"]
+mycolX=Xmydb["CONNECTION"]
 
 
-async def active_connection(user_id):
+asyncXdefXadd_connection(group_id,Xuser_id):
+XXXXqueryX=Xmycol.find_one({"_id":Xuser_id},X{"_id":X0,X"active_group":X0})
+XXXXifXqueryXisXnotXNone:
+XXXXXXXXgroup_idsX=X[]
+XXXXXXXXforXxXinXquery["group_details"]:
+XXXXXXXXXXXXgroup_ids.append(x["group_id"])
 
-    query = mycol.find_one({"_id": user_id}, {"_id": 0, "group_details": 0})
-    if query:
-        group_id = query["active_group"]
-        if group_id != None:
-            return int(group_id)
-        else:
-            return None
-    else:
-        return None
+XXXXXXXXifXgroup_idXinXgroup_ids:
+XXXXXXXXXXXXreturnXFalse
 
+XXXXgroup_detailsX=X{"group_id":Xgroup_id}
 
-async def all_connections(user_id):
-    query = mycol.find_one({"_id": user_id}, {"_id": 0, "active_group": 0})
-    if query is not None:
-        group_ids = []
-        for x in query["group_details"]:
-            group_ids.append(x["group_id"])
-        return group_ids
-    else:
-        return None
+XXXXdataX=X{
+XXXXXXXX"_id":Xuser_id,
+XXXXXXXX"group_details":X[group_details],
+XXXXXXXX"active_group":Xgroup_id,
+XXXX}
 
+XXXXifXmycol.count_documents({"_id":Xuser_id})X==X0:
+XXXXXXXXtry:
+XXXXXXXXXXXXmycol.insert_one(data)
+XXXXXXXXXXXXreturnXTrue
+XXXXXXXXexcept:
+XXXXXXXXXXXXprint("SomeXerrorXoccured!")
 
-async def if_active(user_id, group_id):
-    query = mycol.find_one({"_id": user_id}, {"_id": 0, "group_details": 0})
-    if query is not None:
-        if query["active_group"] == group_id:
-            return True
-        else:
-            return False
-    else:
-        return False
-
-
-async def make_active(user_id, group_id):
-    update = mycol.update_one({"_id": user_id}, {"$set": {"active_group": group_id}})
-    if update.modified_count == 0:
-        return False
-    else:
-        return True
+XXXXelse:
+XXXXXXXXtry:
+XXXXXXXXXXXXmycol.update_one(
+XXXXXXXXXXXXXXXX{"_id":Xuser_id},
+XXXXXXXXXXXXXXXX{
+XXXXXXXXXXXXXXXXXXXX"$push":X{"group_details":Xgroup_details},
+XXXXXXXXXXXXXXXXXXXX"$set":X{"active_group":Xgroup_id},
+XXXXXXXXXXXXXXXX},
+XXXXXXXXXXXX)
+XXXXXXXXXXXXreturnXTrue
+XXXXXXXXexcept:
+XXXXXXXXXXXXprint("SomeXerrorXoccured!")
 
 
-async def make_inactive(user_id):
-    update = mycol.update_one({"_id": user_id}, {"$set": {"active_group": None}})
-    if update.modified_count == 0:
-        return False
-    else:
-        return True
+asyncXdefXactive_connection(user_id):
+
+XXXXqueryX=Xmycol.find_one({"_id":Xuser_id},X{"_id":X0,X"group_details":X0})
+XXXXifXquery:
+XXXXXXXXgroup_idX=Xquery["active_group"]
+XXXXXXXXifXgroup_idX!=XNone:
+XXXXXXXXXXXXreturnXint(group_id)
+XXXXXXXXelse:
+XXXXXXXXXXXXreturnXNone
+XXXXelse:
+XXXXXXXXreturnXNone
 
 
-async def delete_connection(user_id, group_id):
+asyncXdefXall_connections(user_id):
+XXXXqueryX=Xmycol.find_one({"_id":Xuser_id},X{"_id":X0,X"active_group":X0})
+XXXXifXqueryXisXnotXNone:
+XXXXXXXXgroup_idsX=X[]
+XXXXXXXXforXxXinXquery["group_details"]:
+XXXXXXXXXXXXgroup_ids.append(x["group_id"])
+XXXXXXXXreturnXgroup_ids
+XXXXelse:
+XXXXXXXXreturnXNone
 
-    try:
-        update = mycol.update_one(
-            {"_id": user_id}, {"$pull": {"group_details": {"group_id": group_id}}}
-        )
-        if update.modified_count == 0:
-            return False
-        else:
-            query = mycol.find_one({"_id": user_id}, {"_id": 0})
-            if len(query["group_details"]) >= 1:
-                if query["active_group"] == group_id:
-                    prvs_group_id = query["group_details"][
-                        len(query["group_details"]) - 1
-                    ]["group_id"]
 
-                    mycol.update_one(
-                        {"_id": user_id}, {"$set": {"active_group": prvs_group_id}}
-                    )
-            else:
-                mycol.update_one({"_id": user_id}, {"$set": {"active_group": None}})
-            return True
-    except Exception as e:
-        print(e)
-        return False
+asyncXdefXif_active(user_id,Xgroup_id):
+XXXXqueryX=Xmycol.find_one({"_id":Xuser_id},X{"_id":X0,X"group_details":X0})
+XXXXifXqueryXisXnotXNone:
+XXXXXXXXifXquery["active_group"]X==Xgroup_id:
+XXXXXXXXXXXXreturnXTrue
+XXXXXXXXelse:
+XXXXXXXXXXXXreturnXFalse
+XXXXelse:
+XXXXXXXXreturnXFalse
+
+
+asyncXdefXmake_active(user_id,Xgroup_id):
+XXXXupdateX=Xmycol.update_one({"_id":Xuser_id},X{"$set":X{"active_group":Xgroup_id}})
+XXXXifXupdate.modified_countX==X0:
+XXXXXXXXreturnXFalse
+XXXXelse:
+XXXXXXXXreturnXTrue
+
+
+asyncXdefXmake_inactive(user_id):
+XXXXupdateX=Xmycol.update_one({"_id":Xuser_id},X{"$set":X{"active_group":XNone}})
+XXXXifXupdate.modified_countX==X0:
+XXXXXXXXreturnXFalse
+XXXXelse:
+XXXXXXXXreturnXTrue
+
+
+asyncXdefXdelete_connection(user_id,Xgroup_id):
+
+XXXXtry:
+XXXXXXXXupdateX=Xmycol.update_one(
+XXXXXXXXXXXX{"_id":Xuser_id},X{"$pull":X{"group_details":X{"group_id":Xgroup_id}}}
+XXXXXXXX)
+XXXXXXXXifXupdate.modified_countX==X0:
+XXXXXXXXXXXXreturnXFalse
+XXXXXXXXelse:
+XXXXXXXXXXXXqueryX=Xmycol.find_one({"_id":Xuser_id},X{"_id":X0})
+XXXXXXXXXXXXifXlen(query["group_details"])X>=X1:
+XXXXXXXXXXXXXXXXifXquery["active_group"]X==Xgroup_id:
+XXXXXXXXXXXXXXXXXXXXprvs_group_idX=Xquery["group_details"][
+XXXXXXXXXXXXXXXXXXXXXXXXlen(query["group_details"])X-X1
+XXXXXXXXXXXXXXXXXXXX]["group_id"]
+
+XXXXXXXXXXXXXXXXXXXXmycol.update_one(
+XXXXXXXXXXXXXXXXXXXXXXXX{"_id":Xuser_id},X{"$set":X{"active_group":Xprvs_group_id}}
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXmycol.update_one({"_id":Xuser_id},X{"$set":X{"active_group":XNone}})
+XXXXXXXXXXXXreturnXTrue
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint(e)
+XXXXXXXXreturnXFalse

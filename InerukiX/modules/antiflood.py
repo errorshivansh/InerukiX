@@ -1,407 +1,407 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 errorshivansh
-# Copyright (C) 2020 Inuka Asith
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2021Xerrorshivansh
+#XCopyrightX(C)X2020XInukaXAsith
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import pickle
-from dataclasses import dataclass
-from typing import Optional
+importXpickle
+fromXdataclassesXimportXdataclass
+fromXtypingXimportXOptional
 
-from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.state import State, StatesGroup
-from aiogram.dispatcher.handler import CancelHandler
-from aiogram.dispatcher.middlewares import BaseMiddleware
-from aiogram.types import ChatType, InlineKeyboardMarkup
-from aiogram.types.callback_query import CallbackQuery
-from aiogram.types.inline_keyboard import InlineKeyboardButton
-from aiogram.types.message import ContentType, Message
-from aiogram.utils.callback_data import CallbackData
-from babel.dates import format_timedelta
+fromXaiogram.dispatcherXimportXFSMContext
+fromXaiogram.dispatcher.filters.stateXimportXState,XStatesGroup
+fromXaiogram.dispatcher.handlerXimportXCancelHandler
+fromXaiogram.dispatcher.middlewaresXimportXBaseMiddleware
+fromXaiogram.typesXimportXChatType,XInlineKeyboardMarkup
+fromXaiogram.types.callback_queryXimportXCallbackQuery
+fromXaiogram.types.inline_keyboardXimportXInlineKeyboardButton
+fromXaiogram.types.messageXimportXContentType,XMessage
+fromXaiogram.utils.callback_dataXimportXCallbackData
+fromXbabel.datesXimportXformat_timedelta
 
-from Ineruki  import dp
-from Ineruki .decorator import register
-from Ineruki .modules.utils.connections import chat_connection
-from Ineruki .modules.utils.language import get_strings, get_strings_dec
-from Ineruki .modules.utils.message import (
-    InvalidTimeUnit,
-    convert_time,
-    get_args,
-    need_args_dec,
+fromXInerukiXXimportXdp
+fromXInerukiX.decoratorXimportXregister
+fromXInerukiX.modules.utils.connectionsXimportXchat_connection
+fromXInerukiX.modules.utils.languageXimportXget_strings,Xget_strings_dec
+fromXInerukiX.modules.utils.messageXimportX(
+XXXXInvalidTimeUnit,
+XXXXconvert_time,
+XXXXget_args,
+XXXXneed_args_dec,
 )
-from Ineruki .modules.utils.restrictions import ban_user, kick_user, mute_user
-from Ineruki .modules.utils.user_details import get_user_link, is_user_admin
-from Ineruki .services.mongo import db
-from Ineruki .services.redis import bredis, redis
-from Ineruki .utils.cached import cached
-from Ineruki .utils.logger import log
+fromXInerukiX.modules.utils.restrictionsXimportXban_user,Xkick_user,Xmute_user
+fromXInerukiX.modules.utils.user_detailsXimportXget_user_link,Xis_user_admin
+fromXInerukiX.services.mongoXimportXdb
+fromXInerukiX.services.redisXimportXbredis,Xredis
+fromXInerukiX.utils.cachedXimportXcached
+fromXInerukiX.utils.loggerXimportXlog
 
-cancel_state = CallbackData("cancel_state", "user_id")
-
-
-class AntiFloodConfigState(StatesGroup):
-    expiration_proc = State()
+cancel_stateX=XCallbackData("cancel_state",X"user_id")
 
 
-class AntiFloodActionState(StatesGroup):
-    set_time_proc = State()
+classXAntiFloodConfigState(StatesGroup):
+XXXXexpiration_procX=XState()
+
+
+classXAntiFloodActionState(StatesGroup):
+XXXXset_time_procX=XState()
 
 
 @dataclass
-class CacheModel:
-    count: int
+classXCacheModel:
+XXXXcount:Xint
 
 
-class AntifloodEnforcer(BaseMiddleware):
-    state_cache_key = "floodstate:{chat_id}"
+classXAntifloodEnforcer(BaseMiddleware):
+XXXXstate_cache_keyX=X"floodstate:{chat_id}"
 
-    async def enforcer(self, message: Message, database: dict):
-        if (not (data := self.get_flood(message))) or int(
-            self.get_state(message)
-        ) != message.from_user.id:
-            to_set = CacheModel(count=1)
-            self.insert_flood(to_set, message, database)
-            self.set_state(message)
-            return False  # we aint banning anybody
+XXXXasyncXdefXenforcer(self,Xmessage:XMessage,Xdatabase:Xdict):
+XXXXXXXXifX(notX(dataX:=Xself.get_flood(message)))XorXint(
+XXXXXXXXXXXXself.get_state(message)
+XXXXXXXX)X!=Xmessage.from_user.id:
+XXXXXXXXXXXXto_setX=XCacheModel(count=1)
+XXXXXXXXXXXXself.insert_flood(to_set,Xmessage,Xdatabase)
+XXXXXXXXXXXXself.set_state(message)
+XXXXXXXXXXXXreturnXFalseXX#XweXaintXbanningXanybody
 
-        # update count
-        data.count += 1
+XXXXXXXX#XupdateXcount
+XXXXXXXXdata.countX+=X1
 
-        # check exceeding
-        if data.count >= database["count"]:
-            if await self.do_action(message, database):
-                self.reset_flood(message)
-                return True
+XXXXXXXX#XcheckXexceeding
+XXXXXXXXifXdata.countX>=Xdatabase["count"]:
+XXXXXXXXXXXXifXawaitXself.do_action(message,Xdatabase):
+XXXXXXXXXXXXXXXXself.reset_flood(message)
+XXXXXXXXXXXXXXXXreturnXTrue
 
-        self.insert_flood(data, message, database)
-        return False
+XXXXXXXXself.insert_flood(data,Xmessage,Xdatabase)
+XXXXXXXXreturnXFalse
 
-    @classmethod
-    def is_message_valid(cls, message) -> bool:
-        _pre = [ContentType.NEW_CHAT_MEMBERS, ContentType.LEFT_CHAT_MEMBER]
-        if message.content_type in _pre:
-            return False
-        elif message.chat.type in (ChatType.PRIVATE,):
-            return False
-        return True
+XXXX@classmethod
+XXXXdefXis_message_valid(cls,Xmessage)X->Xbool:
+XXXXXXXX_preX=X[ContentType.NEW_CHAT_MEMBERS,XContentType.LEFT_CHAT_MEMBER]
+XXXXXXXXifXmessage.content_typeXinX_pre:
+XXXXXXXXXXXXreturnXFalse
+XXXXXXXXelifXmessage.chat.typeXinX(ChatType.PRIVATE,):
+XXXXXXXXXXXXreturnXFalse
+XXXXXXXXreturnXTrue
 
-    def get_flood(self, message) -> Optional[CacheModel]:
-        if data := bredis.get(self.cache_key(message)):
-            data = pickle.loads(data)
-            return data
-        return None
+XXXXdefXget_flood(self,Xmessage)X->XOptional[CacheModel]:
+XXXXXXXXifXdataX:=Xbredis.get(self.cache_key(message)):
+XXXXXXXXXXXXdataX=Xpickle.loads(data)
+XXXXXXXXXXXXreturnXdata
+XXXXXXXXreturnXNone
 
-    def insert_flood(self, data: CacheModel, message: Message, database: dict):
-        ex = (
-            convert_time(database["time"])
-            if database.get("time", None) is not None
-            else None
-        )
-        return bredis.set(self.cache_key(message), pickle.dumps(data), ex=ex)
+XXXXdefXinsert_flood(self,Xdata:XCacheModel,Xmessage:XMessage,Xdatabase:Xdict):
+XXXXXXXXexX=X(
+XXXXXXXXXXXXconvert_time(database["time"])
+XXXXXXXXXXXXifXdatabase.get("time",XNone)XisXnotXNone
+XXXXXXXXXXXXelseXNone
+XXXXXXXX)
+XXXXXXXXreturnXbredis.set(self.cache_key(message),Xpickle.dumps(data),Xex=ex)
 
-    def reset_flood(self, message):
-        return bredis.delete(self.cache_key(message))
+XXXXdefXreset_flood(self,Xmessage):
+XXXXXXXXreturnXbredis.delete(self.cache_key(message))
 
-    def check_flood(self, message):
-        return bredis.exists(self.cache_key(message))
+XXXXdefXcheck_flood(self,Xmessage):
+XXXXXXXXreturnXbredis.exists(self.cache_key(message))
 
-    def set_state(self, message: Message):
-        return bredis.set(
-            self.state_cache_key.format(chat_id=message.chat.id), message.from_user.id
-        )
+XXXXdefXset_state(self,Xmessage:XMessage):
+XXXXXXXXreturnXbredis.set(
+XXXXXXXXXXXXself.state_cache_key.format(chat_id=message.chat.id),Xmessage.from_user.id
+XXXXXXXX)
 
-    def get_state(self, message: Message):
-        return bredis.get(self.state_cache_key.format(chat_id=message.chat.id))
+XXXXdefXget_state(self,Xmessage:XMessage):
+XXXXXXXXreturnXbredis.get(self.state_cache_key.format(chat_id=message.chat.id))
 
-    @classmethod
-    def cache_key(cls, message: Message):
-        return f"antiflood:{message.chat.id}:{message.from_user.id}"
+XXXX@classmethod
+XXXXdefXcache_key(cls,Xmessage:XMessage):
+XXXXXXXXreturnXf"antiflood:{message.chat.id}:{message.from_user.id}"
 
-    @classmethod
-    async def do_action(cls, message: Message, database: dict):
-        action = database["action"] if "action" in database else "ban"
+XXXX@classmethod
+XXXXasyncXdefXdo_action(cls,Xmessage:XMessage,Xdatabase:Xdict):
+XXXXXXXXactionX=Xdatabase["action"]XifX"action"XinXdatabaseXelseX"ban"
 
-        if action == "ban":
-            return await ban_user(message.chat.id, message.from_user.id)
-        elif action == "kick":
-            return await kick_user(message.chat.id, message.from_user.id)
-        elif action == "mute":
-            return await mute_user(message.chat.id, message.from_user.id)
-        elif action.startswith("t"):
-            time = database.get("time", None)
-            if not time:
-                return False
-            if action == "tmute":
-                return await mute_user(
-                    message.chat.id, message.from_user.id, until_date=convert_time(time)
-                )
-            elif action == "tban":
-                return await ban_user(
-                    message.chat.id, message.from_user.id, until_date=convert_time(time)
-                )
-        else:
-            return False
+XXXXXXXXifXactionX==X"ban":
+XXXXXXXXXXXXreturnXawaitXban_user(message.chat.id,Xmessage.from_user.id)
+XXXXXXXXelifXactionX==X"kick":
+XXXXXXXXXXXXreturnXawaitXkick_user(message.chat.id,Xmessage.from_user.id)
+XXXXXXXXelifXactionX==X"mute":
+XXXXXXXXXXXXreturnXawaitXmute_user(message.chat.id,Xmessage.from_user.id)
+XXXXXXXXelifXaction.startswith("t"):
+XXXXXXXXXXXXtimeX=Xdatabase.get("time",XNone)
+XXXXXXXXXXXXifXnotXtime:
+XXXXXXXXXXXXXXXXreturnXFalse
+XXXXXXXXXXXXifXactionX==X"tmute":
+XXXXXXXXXXXXXXXXreturnXawaitXmute_user(
+XXXXXXXXXXXXXXXXXXXXmessage.chat.id,Xmessage.from_user.id,Xuntil_date=convert_time(time)
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXelifXactionX==X"tban":
+XXXXXXXXXXXXXXXXreturnXawaitXban_user(
+XXXXXXXXXXXXXXXXXXXXmessage.chat.id,Xmessage.from_user.id,Xuntil_date=convert_time(time)
+XXXXXXXXXXXXXXXX)
+XXXXXXXXelse:
+XXXXXXXXXXXXreturnXFalse
 
-    async def on_pre_process_message(self, message: Message, _):
-        log.debug(
-            f"Enforcing flood control on {message.from_user.id} in {message.chat.id}"
-        )
-        if self.is_message_valid(message):
-            if await is_user_admin(message.chat.id, message.from_user.id):
-                return self.set_state(message)
-            if (database := await get_data(message.chat.id)) is None:
-                return
+XXXXasyncXdefXon_pre_process_message(self,Xmessage:XMessage,X_):
+XXXXXXXXlog.debug(
+XXXXXXXXXXXXf"EnforcingXfloodXcontrolXonX{message.from_user.id}XinX{message.chat.id}"
+XXXXXXXX)
+XXXXXXXXifXself.is_message_valid(message):
+XXXXXXXXXXXXifXawaitXis_user_admin(message.chat.id,Xmessage.from_user.id):
+XXXXXXXXXXXXXXXXreturnXself.set_state(message)
+XXXXXXXXXXXXifX(databaseX:=XawaitXget_data(message.chat.id))XisXNone:
+XXXXXXXXXXXXXXXXreturn
 
-            if await self.enforcer(message, database):
-                await message.delete()
-                strings = await get_strings(message.chat.id, "antiflood")
-                await message.answer(
-                    strings["flood_exceeded"].format(
-                        action=(
-                            strings[database["action"]]
-                            if "action" in database
-                            else "banned"
-                        ).capitalize(),
-                        user=await get_user_link(message.from_user.id),
-                    )
-                )
-                raise CancelHandler
+XXXXXXXXXXXXifXawaitXself.enforcer(message,Xdatabase):
+XXXXXXXXXXXXXXXXawaitXmessage.delete()
+XXXXXXXXXXXXXXXXstringsX=XawaitXget_strings(message.chat.id,X"antiflood")
+XXXXXXXXXXXXXXXXawaitXmessage.answer(
+XXXXXXXXXXXXXXXXXXXXstrings["flood_exceeded"].format(
+XXXXXXXXXXXXXXXXXXXXXXXXaction=(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXstrings[database["action"]]
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXifX"action"XinXdatabase
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXelseX"banned"
+XXXXXXXXXXXXXXXXXXXXXXXX).capitalize(),
+XXXXXXXXXXXXXXXXXXXXXXXXuser=awaitXget_user_link(message.from_user.id),
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXraiseXCancelHandler
 
 
 @register(
-    cmds=["setflood"], user_can_restrict_members=True, bot_can_restrict_members=True
+XXXXcmds=["setflood"],Xuser_can_restrict_members=True,Xbot_can_restrict_members=True
 )
 @need_args_dec()
 @chat_connection()
 @get_strings_dec("antiflood")
-async def setflood_command(message: Message, chat: dict, strings: dict):
-    try:
-        args = int(get_args(message)[0])
-    except ValueError:
-        return await message.reply(strings["invalid_args:setflood"])
-    if args > 200:
-        return await message.reply(strings["overflowed_count"])
+asyncXdefXsetflood_command(message:XMessage,Xchat:Xdict,Xstrings:Xdict):
+XXXXtry:
+XXXXXXXXargsX=Xint(get_args(message)[0])
+XXXXexceptXValueError:
+XXXXXXXXreturnXawaitXmessage.reply(strings["invalid_args:setflood"])
+XXXXifXargsX>X200:
+XXXXXXXXreturnXawaitXmessage.reply(strings["overflowed_count"])
 
-    await AntiFloodConfigState.expiration_proc.set()
-    redis.set(f"antiflood_setup:{chat['chat_id']}", args)
-    await message.reply(
-        strings["config_proc_1"],
-        reply_markup=InlineKeyboardMarkup().add(
-            InlineKeyboardButton(
-                text=strings["cancel"],
-                callback_data=cancel_state.new(user_id=message.from_user.id),
-            )
-        ),
-    )
+XXXXawaitXAntiFloodConfigState.expiration_proc.set()
+XXXXredis.set(f"antiflood_setup:{chat['chat_id']}",Xargs)
+XXXXawaitXmessage.reply(
+XXXXXXXXstrings["config_proc_1"],
+XXXXXXXXreply_markup=InlineKeyboardMarkup().add(
+XXXXXXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXXXXXtext=strings["cancel"],
+XXXXXXXXXXXXXXXXcallback_data=cancel_state.new(user_id=message.from_user.id),
+XXXXXXXXXXXX)
+XXXXXXXX),
+XXXX)
 
 
 @register(
-    state=AntiFloodConfigState.expiration_proc,
-    content_types=ContentType.TE T,
-    allow_kwargs=True,
+XXXXstate=AntiFloodConfigState.expiration_proc,
+XXXXcontent_types=ContentType.TEXT,
+XXXXallow_kwargs=True,
 )
 @chat_connection()
 @get_strings_dec("antiflood")
-async def antiflood_expire_proc(
-    message: Message, chat: dict, strings: dict, state, **_
+asyncXdefXantiflood_expire_proc(
+XXXXmessage:XMessage,Xchat:Xdict,Xstrings:Xdict,Xstate,X**_
 ):
-    try:
-        if (time := message.text) not in (0, "0"):
-            parsed_time = convert_time(time)  # just call for making sure its valid
-        else:
-            time, parsed_time = None, None
-    except (TypeError, ValueError):
-        await message.reply(strings["invalid_time"])
-    else:
-        if not (data := redis.get(f'antiflood_setup:{chat["chat_id"]}')):
-            await message.reply(strings["setup_corrupted"])
-        else:
-            await db.antiflood.update_one(
-                {"chat_id": chat["chat_id"]},
-                {"$set": {"time": time, "count": int(data)}},
-                upsert=True,
-            )
-            await get_data.reset_cache(chat["chat_id"])
-            kw = {"count": data}
-            if time is not None:
-                kw.update(
-                    {
-                        "time": format_timedelta(
-                            parsed_time, locale=strings["language_info"]["babel"]
-                        )
-                    }
-                )
-            await message.reply(
-                strings[
-                    "setup_success" if time is not None else "setup_success:no_exp"
-                ].format(**kw)
-            )
-    finally:
-        await state.finish()
+XXXXtry:
+XXXXXXXXifX(timeX:=Xmessage.text)XnotXinX(0,X"0"):
+XXXXXXXXXXXXparsed_timeX=Xconvert_time(time)XX#XjustXcallXforXmakingXsureXitsXvalid
+XXXXXXXXelse:
+XXXXXXXXXXXXtime,Xparsed_timeX=XNone,XNone
+XXXXexceptX(TypeError,XValueError):
+XXXXXXXXawaitXmessage.reply(strings["invalid_time"])
+XXXXelse:
+XXXXXXXXifXnotX(dataX:=Xredis.get(f'antiflood_setup:{chat["chat_id"]}')):
+XXXXXXXXXXXXawaitXmessage.reply(strings["setup_corrupted"])
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXdb.antiflood.update_one(
+XXXXXXXXXXXXXXXX{"chat_id":Xchat["chat_id"]},
+XXXXXXXXXXXXXXXX{"$set":X{"time":Xtime,X"count":Xint(data)}},
+XXXXXXXXXXXXXXXXupsert=True,
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXget_data.reset_cache(chat["chat_id"])
+XXXXXXXXXXXXkwX=X{"count":Xdata}
+XXXXXXXXXXXXifXtimeXisXnotXNone:
+XXXXXXXXXXXXXXXXkw.update(
+XXXXXXXXXXXXXXXXXXXX{
+XXXXXXXXXXXXXXXXXXXXXXXX"time":Xformat_timedelta(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXparsed_time,Xlocale=strings["language_info"]["babel"]
+XXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXX}
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXXXXXstrings[
+XXXXXXXXXXXXXXXXXXXX"setup_success"XifXtimeXisXnotXNoneXelseX"setup_success:no_exp"
+XXXXXXXXXXXXXXXX].format(**kw)
+XXXXXXXXXXXX)
+XXXXfinally:
+XXXXXXXXawaitXstate.finish()
 
 
-@register(cmds=["antiflood", "flood"], is_admin=True)
+@register(cmds=["antiflood",X"flood"],Xis_admin=True)
 @chat_connection(admin=True)
 @get_strings_dec("antiflood")
-async def antiflood(message: Message, chat: dict, strings: dict):
-    if not (data := await get_data(chat["chat_id"])):
-        return await message.reply(strings["not_configured"])
+asyncXdefXantiflood(message:XMessage,Xchat:Xdict,Xstrings:Xdict):
+XXXXifXnotX(dataX:=XawaitXget_data(chat["chat_id"])):
+XXXXXXXXreturnXawaitXmessage.reply(strings["not_configured"])
 
-    if message.get_args().lower() in ("off", "0", "no"):
-        await db.antiflood.delete_one({"chat_id": chat["chat_id"]})
-        await get_data.reset_cache(chat["chat_id"])
-        return await message.reply(
-            strings["turned_off"].format(chat_title=chat["chat_title"])
-        )
+XXXXifXmessage.get_args().lower()XinX("off",X"0",X"no"):
+XXXXXXXXawaitXdb.antiflood.delete_one({"chat_id":Xchat["chat_id"]})
+XXXXXXXXawaitXget_data.reset_cache(chat["chat_id"])
+XXXXXXXXreturnXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["turned_off"].format(chat_title=chat["chat_title"])
+XXXXXXXX)
 
-    if data["time"] is None:
-        return await message.reply(
-            strings["configuration_info"].format(
-                action=strings[data["action"]] if "action" in data else strings["ban"],
-                count=data["count"],
-            )
-        )
-    return await message.reply(
-        strings["configuration_info:with_time"].format(
-            action=strings[data["action"]] if "action" in data else strings["ban"],
-            count=data["count"],
-            time=format_timedelta(
-                convert_time(data["time"]), locale=strings["language_info"]["babel"]
-            ),
-        )
-    )
+XXXXifXdata["time"]XisXNone:
+XXXXXXXXreturnXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["configuration_info"].format(
+XXXXXXXXXXXXXXXXaction=strings[data["action"]]XifX"action"XinXdataXelseXstrings["ban"],
+XXXXXXXXXXXXXXXXcount=data["count"],
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXreturnXawaitXmessage.reply(
+XXXXXXXXstrings["configuration_info:with_time"].format(
+XXXXXXXXXXXXaction=strings[data["action"]]XifX"action"XinXdataXelseXstrings["ban"],
+XXXXXXXXXXXXcount=data["count"],
+XXXXXXXXXXXXtime=format_timedelta(
+XXXXXXXXXXXXXXXXconvert_time(data["time"]),Xlocale=strings["language_info"]["babel"]
+XXXXXXXXXXXX),
+XXXXXXXX)
+XXXX)
 
 
-@register(cmds=["setfloodaction"], user_can_restrict_members=True)
+@register(cmds=["setfloodaction"],Xuser_can_restrict_members=True)
 @need_args_dec()
 @chat_connection(admin=True)
 @get_strings_dec("antiflood")
-async def setfloodaction(message: Message, chat: dict, strings: dict):
-    SUPPORTED_ACTIONS = ["kick", "ban", "mute", "tmute", "tban"]  # noqa
-    if (action := message.get_args().lower()) not in SUPPORTED_ACTIONS:
-        return await message.reply(
-            strings["invalid_args"].format(
-                supported_actions=", ".join(SUPPORTED_ACTIONS)
-            )
-        )
+asyncXdefXsetfloodaction(message:XMessage,Xchat:Xdict,Xstrings:Xdict):
+XXXXSUPPORTED_ACTIONSX=X["kick",X"ban",X"mute",X"tmute",X"tban"]XX#Xnoqa
+XXXXifX(actionX:=Xmessage.get_args().lower())XnotXinXSUPPORTED_ACTIONS:
+XXXXXXXXreturnXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["invalid_args"].format(
+XXXXXXXXXXXXXXXXsupported_actions=",X".join(SUPPORTED_ACTIONS)
+XXXXXXXXXXXX)
+XXXXXXXX)
 
-    if action.startswith("t"):
-        await message.reply(
-            "Send a time for t action", allow_sending_without_reply=True
-        )
-        redis.set(f"floodactionstate:{chat['chat_id']}", action)
-        return await AntiFloodActionState.set_time_proc.set()
+XXXXifXaction.startswith("t"):
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXX"SendXaXtimeXforXtXaction",Xallow_sending_without_reply=True
+XXXXXXXX)
+XXXXXXXXredis.set(f"floodactionstate:{chat['chat_id']}",Xaction)
+XXXXXXXXreturnXawaitXAntiFloodActionState.set_time_proc.set()
 
-    await db.antiflood.update_one(
-        {"chat_id": chat["chat_id"]}, {"$set": {"action": action}}, upsert=True
-    )
-    await get_data.reset_cache(message.chat.id)
-    return await message.reply(strings["setfloodaction_success"].format(action=action))
+XXXXawaitXdb.antiflood.update_one(
+XXXXXXXX{"chat_id":Xchat["chat_id"]},X{"$set":X{"action":Xaction}},Xupsert=True
+XXXX)
+XXXXawaitXget_data.reset_cache(message.chat.id)
+XXXXreturnXawaitXmessage.reply(strings["setfloodaction_success"].format(action=action))
 
 
 @register(
-    state=AntiFloodActionState.set_time_proc,
-    user_can_restrict_members=True,
-    allow_kwargs=True,
+XXXXstate=AntiFloodActionState.set_time_proc,
+XXXXuser_can_restrict_members=True,
+XXXXallow_kwargs=True,
 )
 @chat_connection(admin=True)
 @get_strings_dec("antiflood")
-async def set_time_config(
-    message: Message, chat: dict, strings: dict, state: FSMContext, **_
+asyncXdefXset_time_config(
+XXXXmessage:XMessage,Xchat:Xdict,Xstrings:Xdict,Xstate:XFSMContext,X**_
 ):
-    if not (action := redis.get(f"floodactionstate:{chat['chat_id']}")):
-        await message.reply("setup_corrupted", allow_sending_without_reply=True)
-        return await state.finish()
-    try:
-        parsed_time = convert_time(
-            time := message.text.lower()
-        )  # just call for making sure its valid
-    except (TypeError, ValueError, InvalidTimeUnit):
-        await message.reply("Invalid time")
-    else:
-        await db.antiflood.update_one(
-            {"chat_id": chat["chat_id"]},
-            {"$set": {"action": action, "time": time}},
-            upsert=True,
-        )
-        await get_data.reset_cache(chat["chat_id"])
-        text = strings["setfloodaction_success"].format(action=action)
-        text += f" ({format_timedelta(parsed_time, locale=strings['language_info']['babel'])})"
-        await message.reply(text, allow_sending_without_reply=True)
-    finally:
-        await state.finish()
+XXXXifXnotX(actionX:=Xredis.get(f"floodactionstate:{chat['chat_id']}")):
+XXXXXXXXawaitXmessage.reply("setup_corrupted",Xallow_sending_without_reply=True)
+XXXXXXXXreturnXawaitXstate.finish()
+XXXXtry:
+XXXXXXXXparsed_timeX=Xconvert_time(
+XXXXXXXXXXXXtimeX:=Xmessage.text.lower()
+XXXXXXXX)XX#XjustXcallXforXmakingXsureXitsXvalid
+XXXXexceptX(TypeError,XValueError,XInvalidTimeUnit):
+XXXXXXXXawaitXmessage.reply("InvalidXtime")
+XXXXelse:
+XXXXXXXXawaitXdb.antiflood.update_one(
+XXXXXXXXXXXX{"chat_id":Xchat["chat_id"]},
+XXXXXXXXXXXX{"$set":X{"action":Xaction,X"time":Xtime}},
+XXXXXXXXXXXXupsert=True,
+XXXXXXXX)
+XXXXXXXXawaitXget_data.reset_cache(chat["chat_id"])
+XXXXXXXXtextX=Xstrings["setfloodaction_success"].format(action=action)
+XXXXXXXXtextX+=Xf"X({format_timedelta(parsed_time,Xlocale=strings['language_info']['babel'])})"
+XXXXXXXXawaitXmessage.reply(text,Xallow_sending_without_reply=True)
+XXXXfinally:
+XXXXXXXXawaitXstate.finish()
 
 
-async def __before_serving__(_):
-    dp.middleware.setup(AntifloodEnforcer())
+asyncXdefX__before_serving__(_):
+XXXXdp.middleware.setup(AntifloodEnforcer())
 
 
-@register(cancel_state.filter(), f="cb")
-async def cancel_state_cb(event: CallbackQuery):
-    await event.message.delete()
+@register(cancel_state.filter(),Xf="cb")
+asyncXdefXcancel_state_cb(event:XCallbackQuery):
+XXXXawaitXevent.message.delete()
 
 
 @cached()
-async def get_data(chat_id: int):
-    return await db.antiflood.find_one({"chat_id": chat_id})
+asyncXdefXget_data(chat_id:Xint):
+XXXXreturnXawaitXdb.antiflood.find_one({"chat_id":Xchat_id})
 
 
-async def __export__(chat_id: int):
-    data = await get_data(chat_id)
-    if not data:
-        return
+asyncXdefX__export__(chat_id:Xint):
+XXXXdataX=XawaitXget_data(chat_id)
+XXXXifXnotXdata:
+XXXXXXXXreturn
 
-    del data["_id"], data["chat_id"]
-    return data
-
-
-async def __import__(chat_id: int, data: dict):  # noqa
-    await db.antiflood.update_one({"chat_id": chat_id}, {"$set": data})
+XXXXdelXdata["_id"],Xdata["chat_id"]
+XXXXreturnXdata
 
 
-__mod_name__ = "AntiFlood"
+asyncXdefX__import__(chat_id:Xint,Xdata:Xdict):XX#Xnoqa
+XXXXawaitXdb.antiflood.update_one({"chat_id":Xchat_id},X{"$set":Xdata})
 
-__help__ = """
-You know how sometimes, people join, send 100 messages, and ruin your chat? With antiflood, that happens no more!
 
-Antiflood allows you to take action on users that send more than x messages in a row.
+__mod_name__X=X"AntiFlood"
 
-<b>Admins only:</b>
-- /antiflood: Gives you current configuration of antiflood in the chat
-- /antiflood off: Disables Antiflood
-- /setflood (limit): Sets flood limit
+__help__X=X"""
+YouXknowXhowXsometimes,XpeopleXjoin,XsendX100Xmessages,XandXruinXyourXchat?XWithXantiflood,XthatXhappensXnoXmore!
 
-Replace (limit) with any integer, should be less than 200. When setting up, Ineruki would ask you to send expiration time, if you dont understand what this expiration time for? User who sends specified limit of messages consecutively within this TIME, would be kicked, banned whatever the action is. if you dont want this TIME, wants to take action against those who exceeds specified limit without mattering TIME INTERVAL between the messages. you can reply to question with 0
+AntifloodXallowsXyouXtoXtakeXactionXonXusersXthatXsendXmoreXthanXxXmessagesXinXaXrow.
 
-<b>Configuring the time:</b>
-<code>2m</code> = 2 minutes
-<code>2h</code> = 2 hours
-<code>2d</code> = 2 days
+<b>AdminsXonly:</b>
+-X/antiflood:XGivesXyouXcurrentXconfigurationXofXantifloodXinXtheXchat
+-X/antifloodXoff:XDisablesXAntiflood
+-X/setfloodX(limit):XSetsXfloodXlimit
+
+ReplaceX(limit)XwithXanyXinteger,XshouldXbeXlessXthanX200.XWhenXsettingXup,XInerukiXwouldXaskXyouXtoXsendXexpirationXtime,XifXyouXdontXunderstandXwhatXthisXexpirationXtimeXfor?XUserXwhoXsendsXspecifiedXlimitXofXmessagesXconsecutivelyXwithinXthisXTIME,XwouldXbeXkicked,XbannedXwhateverXtheXactionXis.XifXyouXdontXwantXthisXTIME,XwantsXtoXtakeXactionXagainstXthoseXwhoXexceedsXspecifiedXlimitXwithoutXmatteringXTIMEXINTERVALXbetweenXtheXmessages.XyouXcanXreplyXtoXquestionXwithX0
+
+<b>ConfiguringXtheXtime:</b>
+<code>2m</code>X=X2Xminutes
+<code>2h</code>X=X2Xhours
+<code>2d</code>X=X2Xdays
 
 <b>Example:</b>
-Me: <code>/setflood 10</code>
-Ineruki: <code>Please send expiration time [...]</code>
-Me: <code>5m</code> (5 minutes)
+Me:X<code>/setfloodX10</code>
+Ineruki:X<code>PleaseXsendXexpirationXtimeX[...]</code>
+Me:X<code>5m</code>X(5Xminutes)
 DONE!
 
-- /setfloodaction (action): Sets the action to taken when user exceeds flood limit
+-X/setfloodactionX(action):XSetsXtheXactionXtoXtakenXwhenXuserXexceedsXfloodXlimit
 
-<b>Currently supported actions:</b>
+<b>CurrentlyXsupportedXactions:</b>
 <code>ban</code>
 <code>mute</code>
 <code>kick</code>
-<i>More soon™</i>
+<i>MoreXsoon™</i>
 """

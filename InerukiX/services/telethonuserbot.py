@@ -1,32 +1,32 @@
-# This file is part of Ineruki Bot (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiXBotX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import sys
+importXsys
 
-from telethon import TelegramClient
-from telethon.sessions import StringSession
+fromXtelethonXimportXTelegramClient
+fromXtelethon.sessionsXimportXStringSession
 
-from Ineruki .config import get_int_key, get_str_key
+fromXInerukiX.configXimportXget_int_key,Xget_str_key
 
-STRING_SESSION = get_str_key("STRING_SESSION", required=True)
-API_ID = get_int_key("APP_ID", required=True)
-API_HASH = get_str_key("APP_HASH", required=True)
+STRING_SESSIONX=Xget_str_key("STRING_SESSION",Xrequired=True)
+API_IDX=Xget_int_key("APP_ID",Xrequired=True)
+API_HASHX=Xget_str_key("APP_HASH",Xrequired=True)
 
-ubot = TelegramClient(StringSession(STRING_SESSION), API_ID, API_HASH)
+ubotX=XTelegramClient(StringSession(STRING_SESSION),XAPI_ID,XAPI_HASH)
 try:
-    ubot.start()
-except BaseException:
-    print("Userbot Error ! Have you added a STRING_SESSION in deploying??")
-    sys.exit(1)
+XXXXubot.start()
+exceptXBaseException:
+XXXXprint("UserbotXErrorX!XHaveXyouXaddedXaXSTRING_SESSIONXinXdeploying??")
+XXXXsys.exit(1)

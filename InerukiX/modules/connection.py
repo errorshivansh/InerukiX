@@ -1,282 +1,282 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 errorshivansh
-# Copyright (C) 2020 Inuka Asith
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2021Xerrorshivansh
+#XCopyrightX(C)X2020XInukaXAsith
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import re
+importXre
 
-from aiogram.dispatcher.filters.builtin import CommandStart
-from aiogram.types import CallbackQuery
-from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
-from aiogram.utils.callback_data import CallbackData
-from aiogram.utils.deep_linking import get_start_link
-from aiogram.utils.exceptions import BotBlocked, CantInitiateConversation
+fromXaiogram.dispatcher.filters.builtinXimportXCommandStart
+fromXaiogram.typesXimportXCallbackQuery
+fromXaiogram.types.inline_keyboardXimportXInlineKeyboardButton,XInlineKeyboardMarkup
+fromXaiogram.utils.callback_dataXimportXCallbackData
+fromXaiogram.utils.deep_linkingXimportXget_start_link
+fromXaiogram.utils.exceptionsXimportXBotBlocked,XCantInitiateConversation
 
-from Ineruki  import bot
-from Ineruki .decorator import register
-from Ineruki .services.mongo import db
-from Ineruki .services.redis import redis
+fromXInerukiXXimportXbot
+fromXInerukiX.decoratorXimportXregister
+fromXInerukiX.services.mongoXimportXdb
+fromXInerukiX.services.redisXimportXredis
 
-from .utils.connections import chat_connection, get_connection_data, set_connected_chat
-from .utils.language import get_strings_dec
-from .utils.message import get_arg
-from .utils.notes import BUTTONS
-from .utils.user_details import get_chat_dec, is_user_admin
+fromX.utils.connectionsXimportXchat_connection,Xget_connection_data,Xset_connected_chat
+fromX.utils.languageXimportXget_strings_dec
+fromX.utils.messageXimportXget_arg
+fromX.utils.notesXimportXBUTTONS
+fromX.utils.user_detailsXimportXget_chat_dec,Xis_user_admin
 
-connect_to_chat_cb = CallbackData("connect_to_chat_cb", "chat_id")
+connect_to_chat_cbX=XCallbackData("connect_to_chat_cb",X"chat_id")
 
 
 @get_strings_dec("connections")
-async def def_connect_chat(message, user_id, chat_id, chat_title, strings, edit=False):
-    await set_connected_chat(user_id, chat_id)
+asyncXdefXdef_connect_chat(message,Xuser_id,Xchat_id,Xchat_title,Xstrings,Xedit=False):
+XXXXawaitXset_connected_chat(user_id,Xchat_id)
 
-    text = strings["pm_connected"].format(chat_name=chat_title)
-    if edit:
-        await message.edit_text(text)
-    else:
-        await message.reply(text)
+XXXXtextX=Xstrings["pm_connected"].format(chat_name=chat_title)
+XXXXifXedit:
+XXXXXXXXawaitXmessage.edit_text(text)
+XXXXelse:
+XXXXXXXXawaitXmessage.reply(text)
 
 
-# In chat - connect directly to chat
-@register(cmds="connect", only_groups=True, no_args=True)
+#XInXchatX-XconnectXdirectlyXtoXchat
+@register(cmds="connect",Xonly_groups=True,Xno_args=True)
 @get_strings_dec("connections")
-async def connect_to_chat_direct(message, strings):
-    user_id = message.from_user.id
-    chat_id = message.chat.id
+asyncXdefXconnect_to_chat_direct(message,Xstrings):
+XXXXuser_idX=Xmessage.from_user.id
+XXXXchat_idX=Xmessage.chat.id
 
-    if user_id == 1087968824:
-        # just warn the user that connections with admin rights doesn't work
-        return await message.reply(
-            strings["anon_admin_conn"],
-            reply_markup=InlineKeyboardMarkup().add(
-                InlineKeyboardButton(
-                    strings["click_here"], callback_data="anon_conn_cb"
-                )
-            ),
-        )
+XXXXifXuser_idX==X1087968824:
+XXXXXXXX#XjustXwarnXtheXuserXthatXconnectionsXwithXadminXrightsXdoesn'tXwork
+XXXXXXXXreturnXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["anon_admin_conn"],
+XXXXXXXXXXXXreply_markup=InlineKeyboardMarkup().add(
+XXXXXXXXXXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXXXXXXXXXstrings["click_here"],Xcallback_data="anon_conn_cb"
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX),
+XXXXXXXX)
 
-    chat = await db.chat_list.find_one({"chat_id": chat_id})
-    chat_title = chat["chat_title"] if chat is not None else message.chat.title
-    text = strings["pm_connected"].format(chat_name=chat_title)
+XXXXchatX=XawaitXdb.chat_list.find_one({"chat_id":Xchat_id})
+XXXXchat_titleX=Xchat["chat_title"]XifXchatXisXnotXNoneXelseXmessage.chat.title
+XXXXtextX=Xstrings["pm_connected"].format(chat_name=chat_title)
 
-    try:
-        await bot.send_message(user_id, text)
-        await def_connect_chat(message, user_id, chat_id, chat_title)
-    except (BotBlocked, CantInitiateConversation):
-        await message.reply(strings["connected_pm_to_me"].format(chat_name=chat_title))
-        redis.set("Ineruki _connected_start_state:" + str(user_id), 1)
+XXXXtry:
+XXXXXXXXawaitXbot.send_message(user_id,Xtext)
+XXXXXXXXawaitXdef_connect_chat(message,Xuser_id,Xchat_id,Xchat_title)
+XXXXexceptX(BotBlocked,XCantInitiateConversation):
+XXXXXXXXawaitXmessage.reply(strings["connected_pm_to_me"].format(chat_name=chat_title))
+XXXXXXXXredis.set("InerukiX_connected_start_state:"X+Xstr(user_id),X1)
 
 
-# In pm without args - show last connected chats
-@register(cmds="connect", no_args=True, only_pm=True)
+#XInXpmXwithoutXargsX-XshowXlastXconnectedXchats
+@register(cmds="connect",Xno_args=True,Xonly_pm=True)
 @get_strings_dec("connections")
 @chat_connection()
-async def connect_chat_keyboard(message, strings, chat):
-    connected_data = await get_connection_data(message.from_user.id)
-    if not connected_data:
-        return await message.reply(strings["u_wasnt_connected"])
+asyncXdefXconnect_chat_keyboard(message,Xstrings,Xchat):
+XXXXconnected_dataX=XawaitXget_connection_data(message.from_user.id)
+XXXXifXnotXconnected_data:
+XXXXXXXXreturnXawaitXmessage.reply(strings["u_wasnt_connected"])
 
-    if chat["status"] != "private":
-        text = strings["connected_chat"].format(chat_name=chat["chat_title"])
-    elif "command" in connected_data:
-        if chat := await db.chat_list.find_one({"chat_id": connected_data["chat_id"]}):
-            chat_title = chat["chat_title"]
-        else:
-            chat_title = connected_data["chat_id"]
-        text = strings["connected_chat:cmds"].format(
-            chat_name=chat_title,
-            # disconnect is builtin command, should not be shown
-            commands=", ".join(
-                f"<code>/{cmd}</code>"
-                for cmd in connected_data["command"]
-                if cmd != "disconnect"
-            ),
-        )
-    else:
-        text = ""
+XXXXifXchat["status"]X!=X"private":
+XXXXXXXXtextX=Xstrings["connected_chat"].format(chat_name=chat["chat_title"])
+XXXXelifX"command"XinXconnected_data:
+XXXXXXXXifXchatX:=XawaitXdb.chat_list.find_one({"chat_id":Xconnected_data["chat_id"]}):
+XXXXXXXXXXXXchat_titleX=Xchat["chat_title"]
+XXXXXXXXelse:
+XXXXXXXXXXXXchat_titleX=Xconnected_data["chat_id"]
+XXXXXXXXtextX=Xstrings["connected_chat:cmds"].format(
+XXXXXXXXXXXXchat_name=chat_title,
+XXXXXXXXXXXX#XdisconnectXisXbuiltinXcommand,XshouldXnotXbeXshown
+XXXXXXXXXXXXcommands=",X".join(
+XXXXXXXXXXXXXXXXf"<code>/{cmd}</code>"
+XXXXXXXXXXXXXXXXforXcmdXinXconnected_data["command"]
+XXXXXXXXXXXXXXXXifXcmdX!=X"disconnect"
+XXXXXXXXXXXX),
+XXXXXXXX)
+XXXXelse:
+XXXXXXXXtextX=X""
 
-    text += strings["select_chat_to_connect"]
-    markup = InlineKeyboardMarkup(row_width=1)
-    for chat_id in reversed(connected_data["history"][-3:]):
-        chat = await db.chat_list.find_one({"chat_id": chat_id})
-        markup.insert(
-            InlineKeyboardButton(
-                chat["chat_title"],
-                callback_data=connect_to_chat_cb.new(chat_id=chat_id),
-            )
-        )
+XXXXtextX+=Xstrings["select_chat_to_connect"]
+XXXXmarkupX=XInlineKeyboardMarkup(row_width=1)
+XXXXforXchat_idXinXreversed(connected_data["history"][-3:]):
+XXXXXXXXchatX=XawaitXdb.chat_list.find_one({"chat_id":Xchat_id})
+XXXXXXXXmarkup.insert(
+XXXXXXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXXXXXchat["chat_title"],
+XXXXXXXXXXXXXXXXcallback_data=connect_to_chat_cb.new(chat_id=chat_id),
+XXXXXXXXXXXX)
+XXXXXXXX)
 
-    await message.reply(text, reply_markup=markup)
-
-
-# Callback for prev. function
-@register(connect_to_chat_cb.filter(), f="cb", allow_kwargs=True)
-async def connect_chat_keyboard_cb(message, callback_data=False, **kwargs):
-    chat_id = int(callback_data["chat_id"])
-    chat = await db.chat_list.find_one({"chat_id": chat_id})
-    await def_connect_chat(
-        message.message, message.from_user.id, chat_id, chat["chat_title"], edit=True
-    )
+XXXXawaitXmessage.reply(text,Xreply_markup=markup)
 
 
-# In pm with args - connect to chat by arg
-@register(cmds="connect", has_args=True, only_pm=True)
+#XCallbackXforXprev.Xfunction
+@register(connect_to_chat_cb.filter(),Xf="cb",Xallow_kwargs=True)
+asyncXdefXconnect_chat_keyboard_cb(message,Xcallback_data=False,X**kwargs):
+XXXXchat_idX=Xint(callback_data["chat_id"])
+XXXXchatX=XawaitXdb.chat_list.find_one({"chat_id":Xchat_id})
+XXXXawaitXdef_connect_chat(
+XXXXXXXXmessage.message,Xmessage.from_user.id,Xchat_id,Xchat["chat_title"],Xedit=True
+XXXX)
+
+
+#XInXpmXwithXargsX-XconnectXtoXchatXbyXarg
+@register(cmds="connect",Xhas_args=True,Xonly_pm=True)
 @get_chat_dec()
 @get_strings_dec("connections")
-async def connect_to_chat_from_arg(message, chat, strings):
-    user_id = message.from_user.id
-    chat_id = chat["chat_id"]
+asyncXdefXconnect_to_chat_from_arg(message,Xchat,Xstrings):
+XXXXuser_idX=Xmessage.from_user.id
+XXXXchat_idX=Xchat["chat_id"]
 
-    arg = get_arg(message)
-    if arg.startswith("-"):
-        chat_id = int(arg)
+XXXXargX=Xget_arg(message)
+XXXXifXarg.startswith("-"):
+XXXXXXXXchat_idX=Xint(arg)
 
-    if not chat_id:
-        await message.reply(strings["cant_find_chat_use_id"])
-        return
+XXXXifXnotXchat_id:
+XXXXXXXXawaitXmessage.reply(strings["cant_find_chat_use_id"])
+XXXXXXXXreturn
 
-    await def_connect_chat(message, user_id, chat_id, chat["chat_title"])
+XXXXawaitXdef_connect_chat(message,Xuser_id,Xchat_id,Xchat["chat_title"])
 
 
-@register(cmds="disconnect", only_pm=True)
+@register(cmds="disconnect",Xonly_pm=True)
 @get_strings_dec("connections")
-async def disconnect_from_chat_direct(message, strings):
-    if (data := await get_connection_data(message.from_user.id)) and "chat_id" in data:
-        chat = await db.chat_list.find_one({"chat_id": data["chat_id"]})
-        user_id = message.from_user.id
-        await set_connected_chat(user_id, None)
-        await message.reply(
-            strings["disconnected"].format(chat_name=chat["chat_title"])
-        )
+asyncXdefXdisconnect_from_chat_direct(message,Xstrings):
+XXXXifX(dataX:=XawaitXget_connection_data(message.from_user.id))XandX"chat_id"XinXdata:
+XXXXXXXXchatX=XawaitXdb.chat_list.find_one({"chat_id":Xdata["chat_id"]})
+XXXXXXXXuser_idX=Xmessage.from_user.id
+XXXXXXXXawaitXset_connected_chat(user_id,XNone)
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["disconnected"].format(chat_name=chat["chat_title"])
+XXXXXXXX)
 
 
 @register(cmds="allowusersconnect")
 @get_strings_dec("connections")
-@chat_connection(admin=True, only_groups=True)
-async def allow_users_to_connect(message, strings, chat):
-    chat_id = chat["chat_id"]
-    arg = get_arg(message).lower()
-    if not arg:
-        status = strings["enabled"]
-        data = await db.chat_connection_settings.find_one({"chat_id": chat_id})
-        if (
-            data
-            and "allow_users_connect" in data
-            and data["allow_users_connect"] is False
-        ):
-            status = strings["disabled"]
-        await message.reply(
-            strings["chat_users_connections_info"].format(
-                status=status, chat_name=chat["chat_title"]
-            )
-        )
-        return
-    enable = ("enable", "on", "ok", "yes")
-    disable = ("disable", "off", "no")
-    if arg in enable:
-        r_bool = True
-        status = strings["enabled"]
-    elif arg in disable:
-        r_bool = False
-        status = strings["disabled"]
-    else:
-        await message.reply(strings["bad_arg_bool"])
-        return
+@chat_connection(admin=True,Xonly_groups=True)
+asyncXdefXallow_users_to_connect(message,Xstrings,Xchat):
+XXXXchat_idX=Xchat["chat_id"]
+XXXXargX=Xget_arg(message).lower()
+XXXXifXnotXarg:
+XXXXXXXXstatusX=Xstrings["enabled"]
+XXXXXXXXdataX=XawaitXdb.chat_connection_settings.find_one({"chat_id":Xchat_id})
+XXXXXXXXifX(
+XXXXXXXXXXXXdata
+XXXXXXXXXXXXandX"allow_users_connect"XinXdata
+XXXXXXXXXXXXandXdata["allow_users_connect"]XisXFalse
+XXXXXXXX):
+XXXXXXXXXXXXstatusX=Xstrings["disabled"]
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["chat_users_connections_info"].format(
+XXXXXXXXXXXXXXXXstatus=status,Xchat_name=chat["chat_title"]
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturn
+XXXXenableX=X("enable",X"on",X"ok",X"yes")
+XXXXdisableX=X("disable",X"off",X"no")
+XXXXifXargXinXenable:
+XXXXXXXXr_boolX=XTrue
+XXXXXXXXstatusX=Xstrings["enabled"]
+XXXXelifXargXinXdisable:
+XXXXXXXXr_boolX=XFalse
+XXXXXXXXstatusX=Xstrings["disabled"]
+XXXXelse:
+XXXXXXXXawaitXmessage.reply(strings["bad_arg_bool"])
+XXXXXXXXreturn
 
-    await db.chat_connection_settings.update_one(
-        {"chat_id": chat_id}, {"$set": {"allow_users_connect": r_bool}}, upsert=True
-    )
-    await message.reply(
-        strings["chat_users_connections_cng"].format(
-            status=status, chat_name=chat["chat_title"]
-        )
-    )
+XXXXawaitXdb.chat_connection_settings.update_one(
+XXXXXXXX{"chat_id":Xchat_id},X{"$set":X{"allow_users_connect":Xr_bool}},Xupsert=True
+XXXX)
+XXXXawaitXmessage.reply(
+XXXXXXXXstrings["chat_users_connections_cng"].format(
+XXXXXXXXXXXXstatus=status,Xchat_name=chat["chat_title"]
+XXXXXXXX)
+XXXX)
 
 
-@register(cmds="start", only_pm=True)
+@register(cmds="start",Xonly_pm=True)
 @get_strings_dec("connections")
 @chat_connection()
-async def connected_start_state(message, strings, chat):
-    key = "Ineruki _connected_start_state:" + str(message.from_user.id)
-    if redis.get(key):
-        await message.reply(
-            strings["pm_connected"].format(chat_name=chat["chat_title"])
-        )
-        redis.delete(key)
+asyncXdefXconnected_start_state(message,Xstrings,Xchat):
+XXXXkeyX=X"InerukiX_connected_start_state:"X+Xstr(message.from_user.id)
+XXXXifXredis.get(key):
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["pm_connected"].format(chat_name=chat["chat_title"])
+XXXXXXXX)
+XXXXXXXXredis.delete(key)
 
 
-BUTTONS.update({"connect": "btn_connect_start"})
+BUTTONS.update({"connect":X"btn_connect_start"})
 
 
-@register(CommandStart(re.compile(r"btn_connect_start")), allow_kwargs=True)
+@register(CommandStart(re.compile(r"btn_connect_start")),Xallow_kwargs=True)
 @get_strings_dec("connections")
-async def connect_start(message, strings, regexp=None, **kwargs):
-    args = message.get_args().split("_")
+asyncXdefXconnect_start(message,Xstrings,Xregexp=None,X**kwargs):
+XXXXargsX=Xmessage.get_args().split("_")
 
-    # In case if button have arg it will be used. # TODO: Check chat_id, parse chat nickname.
-    arg = args[3]
+XXXX#XInXcaseXifXbuttonXhaveXargXitXwillXbeXused.X#XTODO:XCheckXchat_id,XparseXchatXnickname.
+XXXXargX=Xargs[3]
 
-    if arg.startswith("-") or arg.isdigit():
-        chat = await db.chat_list.find_one({"chat_id": int(arg)})
-    elif arg.startswith("@"):
-        chat = await db.chat_list.find_one({"chat_nick": arg.lower()})
-    else:
-        await message.reply(strings["cant_find_chat_use_id"])
-        return
+XXXXifXarg.startswith("-")XorXarg.isdigit():
+XXXXXXXXchatX=XawaitXdb.chat_list.find_one({"chat_id":Xint(arg)})
+XXXXelifXarg.startswith("@"):
+XXXXXXXXchatX=XawaitXdb.chat_list.find_one({"chat_nick":Xarg.lower()})
+XXXXelse:
+XXXXXXXXawaitXmessage.reply(strings["cant_find_chat_use_id"])
+XXXXXXXXreturn
 
-    await def_connect_chat(
-        message, message.from_user.id, chat["chat_id"], chat["chat_title"]
-    )
-
-
-@register(regexp="anon_conn_cb", f="cb")
-async def connect_anon_admins(event: CallbackQuery):
-    if not await is_user_admin(event.message.chat.id, event.from_user.id):
-        return
-
-    if (
-        event.message.chat.id
-        not in (data := await db.user_list.find_one({"user_id": event.from_user.id}))[
-            "chats"
-        ]
-    ):
-        await db.user_list.update_one(
-            {"_id": data["_id"]}, {"$addToSet": {"chats": event.message.chat.id}}
-        )
-    return await event.answer(
-        url=await get_start_link(f"btn_connect_start_{event.message.chat.id}")
-    )
+XXXXawaitXdef_connect_chat(
+XXXXXXXXmessage,Xmessage.from_user.id,Xchat["chat_id"],Xchat["chat_title"]
+XXXX)
 
 
-__mod_name__ = "Connections"
+@register(regexp="anon_conn_cb",Xf="cb")
+asyncXdefXconnect_anon_admins(event:XCallbackQuery):
+XXXXifXnotXawaitXis_user_admin(event.message.chat.id,Xevent.from_user.id):
+XXXXXXXXreturn
 
-__help__ = """
-Sometimes you need change something in your chat, like notes, but you don't want to spam in it, try connections, this allow you change chat settings and manage chat's content in personal message with Ineruki.
+XXXXifX(
+XXXXXXXXevent.message.chat.id
+XXXXXXXXnotXinX(dataX:=XawaitXdb.user_list.find_one({"user_id":Xevent.from_user.id}))[
+XXXXXXXXXXXX"chats"
+XXXXXXXX]
+XXXX):
+XXXXXXXXawaitXdb.user_list.update_one(
+XXXXXXXXXXXX{"_id":Xdata["_id"]},X{"$addToSet":X{"chats":Xevent.message.chat.id}}
+XXXXXXXX)
+XXXXreturnXawaitXevent.answer(
+XXXXXXXXurl=awaitXget_start_link(f"btn_connect_start_{event.message.chat.id}")
+XXXX)
 
-<b>Available commands are:</b>
-<b>Avaible only in PM:</b>
-- /connect: Show last connected chats button for fast connection
-- /connect (chat ID or chat nickname): Connect to chat by argument which you provided
-- /reconnect: Connect to last connected chat before
-- /disconnect: Disconnect from
 
-<b>Avaible only in groups:</b>
-- /connect: Direct connect to this group
+__mod_name__X=X"Connections"
 
-<b>Other commands:</b>
-- /allowusersconnect (on/off enable/disable): Enable or disable connection feature for regular users, for admins connections will be works always
+__help__X=X"""
+SometimesXyouXneedXchangeXsomethingXinXyourXchat,XlikeXnotes,XbutXyouXdon'tXwantXtoXspamXinXit,XtryXconnections,XthisXallowXyouXchangeXchatXsettingsXandXmanageXchat'sXcontentXinXpersonalXmessageXwithXIneruki.
+
+<b>AvailableXcommandsXare:</b>
+<b>AvaibleXonlyXinXPM:</b>
+-X/connect:XShowXlastXconnectedXchatsXbuttonXforXfastXconnection
+-X/connectX(chatXIDXorXchatXnickname):XConnectXtoXchatXbyXargumentXwhichXyouXprovided
+-X/reconnect:XConnectXtoXlastXconnectedXchatXbefore
+-X/disconnect:XDisconnectXfrom
+
+<b>AvaibleXonlyXinXgroups:</b>
+-X/connect:XDirectXconnectXtoXthisXgroup
+
+<b>OtherXcommands:</b>
+-X/allowusersconnectX(on/offXenable/disable):XEnableXorXdisableXconnectionXfeatureXforXregularXusers,XforXadminsXconnectionsXwillXbeXworksXalways
 """

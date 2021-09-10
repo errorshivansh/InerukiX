@@ -1,283 +1,283 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2019 Aiogram
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2019XAiogram
 #
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import datetime
-import html
+importXdatetime
+importXhtml
 
-from aiogram.dispatcher.middlewares import BaseMiddleware
+fromXaiogram.dispatcher.middlewaresXimportXBaseMiddleware
 
-from Ineruki  import dp
-from Ineruki .decorator import register
-from Ineruki .modules import LOADED_MODULES
-from Ineruki .services.mongo import db
-from Ineruki .utils.logger import log
+fromXInerukiXXimportXdp
+fromXInerukiX.decoratorXimportXregister
+fromXInerukiX.modulesXimportXLOADED_MODULES
+fromXInerukiX.services.mongoXimportXdb
+fromXInerukiX.utils.loggerXimportXlog
 
-from .utils.connections import chat_connection
-from .utils.disable import disableable_dec
-from .utils.language import get_strings_dec
-from .utils.user_details import (
-    get_admins_rights,
-    get_user_dec,
-    get_user_link,
-    is_user_admin,
+fromX.utils.connectionsXimportXchat_connection
+fromX.utils.disableXimportXdisableable_dec
+fromX.utils.languageXimportXget_strings_dec
+fromX.utils.user_detailsXimportX(
+XXXXget_admins_rights,
+XXXXget_user_dec,
+XXXXget_user_link,
+XXXXis_user_admin,
 )
 
 
-async def update_users_handler(message):
-    chat_id = message.chat.id
+asyncXdefXupdate_users_handler(message):
+XXXXchat_idX=Xmessage.chat.id
 
-    # Update chat
-    new_chat = message.chat
-    if not new_chat.type == "private":
+XXXX#XUpdateXchat
+XXXXnew_chatX=Xmessage.chat
+XXXXifXnotXnew_chat.typeX==X"private":
 
-        old_chat = await db.chat_list.find_one({"chat_id": chat_id})
+XXXXXXXXold_chatX=XawaitXdb.chat_list.find_one({"chat_id":Xchat_id})
 
-        if not hasattr(new_chat, "username"):
-            chatnick = None
-        else:
-            chatnick = new_chat.username
+XXXXXXXXifXnotXhasattr(new_chat,X"username"):
+XXXXXXXXXXXXchatnickX=XNone
+XXXXXXXXelse:
+XXXXXXXXXXXXchatnickX=Xnew_chat.username
 
-        if old_chat and "first_detected_date" in old_chat:
-            first_detected_date = old_chat["first_detected_date"]
-        else:
-            first_detected_date = datetime.datetime.now()
+XXXXXXXXifXold_chatXandX"first_detected_date"XinXold_chat:
+XXXXXXXXXXXXfirst_detected_dateX=Xold_chat["first_detected_date"]
+XXXXXXXXelse:
+XXXXXXXXXXXXfirst_detected_dateX=Xdatetime.datetime.now()
 
-        chat_new = {
-            "chat_id": chat_id,
-            "chat_title": html.escape(new_chat.title, quote=False),
-            "chat_nick": chatnick,
-            "type": new_chat.type,
-            "first_detected_date": first_detected_date,
-        }
+XXXXXXXXchat_newX=X{
+XXXXXXXXXXXX"chat_id":Xchat_id,
+XXXXXXXXXXXX"chat_title":Xhtml.escape(new_chat.title,Xquote=False),
+XXXXXXXXXXXX"chat_nick":Xchatnick,
+XXXXXXXXXXXX"type":Xnew_chat.type,
+XXXXXXXXXXXX"first_detected_date":Xfirst_detected_date,
+XXXXXXXX}
 
-        # Check on old chat in DB with same username
-        find_old_chat = {
-            "chat_nick": chat_new["chat_nick"],
-            "chat_id": {"$ne": chat_new["chat_id"]},
-        }
-        if chat_new["chat_nick"] and (
-            check := await db.chat_list.find_one(find_old_chat)
-        ):
-            await db.chat_list.delete_one({"_id": check["_id"]})
-            log.info(
-                f"Found chat ({check['chat_id']}) with same username as ({chat_new['chat_id']}), old chat was deleted."
-            )
+XXXXXXXX#XCheckXonXoldXchatXinXDBXwithXsameXusername
+XXXXXXXXfind_old_chatX=X{
+XXXXXXXXXXXX"chat_nick":Xchat_new["chat_nick"],
+XXXXXXXXXXXX"chat_id":X{"$ne":Xchat_new["chat_id"]},
+XXXXXXXX}
+XXXXXXXXifXchat_new["chat_nick"]XandX(
+XXXXXXXXXXXXcheckX:=XawaitXdb.chat_list.find_one(find_old_chat)
+XXXXXXXX):
+XXXXXXXXXXXXawaitXdb.chat_list.delete_one({"_id":Xcheck["_id"]})
+XXXXXXXXXXXXlog.info(
+XXXXXXXXXXXXXXXXf"FoundXchatX({check['chat_id']})XwithXsameXusernameXasX({chat_new['chat_id']}),XoldXchatXwasXdeleted."
+XXXXXXXXXXXX)
 
-        await db.chat_list.update_one(
-            {"chat_id": chat_id}, {"$set": chat_new}, upsert=True
-        )
+XXXXXXXXawaitXdb.chat_list.update_one(
+XXXXXXXXXXXX{"chat_id":Xchat_id},X{"$set":Xchat_new},Xupsert=True
+XXXXXXXX)
 
-        log.debug(f"Users: Chat {chat_id} updated")
+XXXXXXXXlog.debug(f"Users:XChatX{chat_id}Xupdated")
 
-    # Update users
-    await update_user(chat_id, message.from_user)
+XXXX#XUpdateXusers
+XXXXawaitXupdate_user(chat_id,Xmessage.from_user)
 
-    if (
-        "reply_to_message" in message
-        and hasattr(message.reply_to_message.from_user, "chat_id")
-        and message.reply_to_message.from_user.chat_id
-    ):
-        await update_user(chat_id, message.reply_to_message.from_user)
+XXXXifX(
+XXXXXXXX"reply_to_message"XinXmessage
+XXXXXXXXandXhasattr(message.reply_to_message.from_user,X"chat_id")
+XXXXXXXXandXmessage.reply_to_message.from_user.chat_id
+XXXX):
+XXXXXXXXawaitXupdate_user(chat_id,Xmessage.reply_to_message.from_user)
 
-    if "forward_from" in message:
-        await update_user(chat_id, message.forward_from)
+XXXXifX"forward_from"XinXmessage:
+XXXXXXXXawaitXupdate_user(chat_id,Xmessage.forward_from)
 
 
-async def update_user(chat_id, new_user):
-    old_user = await db.user_list.find_one({"user_id": new_user.id})
+asyncXdefXupdate_user(chat_id,Xnew_user):
+XXXXold_userX=XawaitXdb.user_list.find_one({"user_id":Xnew_user.id})
 
-    new_chat = [chat_id]
+XXXXnew_chatX=X[chat_id]
 
-    if old_user and "chats" in old_user:
-        if old_user["chats"]:
-            new_chat = old_user["chats"]
-        if not new_chat or chat_id not in new_chat:
-            new_chat.append(chat_id)
+XXXXifXold_userXandX"chats"XinXold_user:
+XXXXXXXXifXold_user["chats"]:
+XXXXXXXXXXXXnew_chatX=Xold_user["chats"]
+XXXXXXXXifXnotXnew_chatXorXchat_idXnotXinXnew_chat:
+XXXXXXXXXXXXnew_chat.append(chat_id)
 
-    if old_user and "first_detected_date" in old_user:
-        first_detected_date = old_user["first_detected_date"]
-    else:
-        first_detected_date = datetime.datetime.now()
+XXXXifXold_userXandX"first_detected_date"XinXold_user:
+XXXXXXXXfirst_detected_dateX=Xold_user["first_detected_date"]
+XXXXelse:
+XXXXXXXXfirst_detected_dateX=Xdatetime.datetime.now()
 
-    if new_user.username:
-        username = new_user.username.lower()
-    else:
-        username = None
+XXXXifXnew_user.username:
+XXXXXXXXusernameX=Xnew_user.username.lower()
+XXXXelse:
+XXXXXXXXusernameX=XNone
 
-    if hasattr(new_user, "last_name") and new_user.last_name:
-        last_name = html.escape(new_user.last_name, quote=False)
-    else:
-        last_name = None
+XXXXifXhasattr(new_user,X"last_name")XandXnew_user.last_name:
+XXXXXXXXlast_nameX=Xhtml.escape(new_user.last_name,Xquote=False)
+XXXXelse:
+XXXXXXXXlast_nameX=XNone
 
-    first_name = html.escape(new_user.first_name, quote=False)
+XXXXfirst_nameX=Xhtml.escape(new_user.first_name,Xquote=False)
 
-    user_new = {
-        "user_id": new_user.id,
-        "first_name": first_name,
-        "last_name": last_name,
-        "username": username,
-        "user_lang": new_user.language_code,
-        "chats": new_chat,
-        "first_detected_date": first_detected_date,
-    }
+XXXXuser_newX=X{
+XXXXXXXX"user_id":Xnew_user.id,
+XXXXXXXX"first_name":Xfirst_name,
+XXXXXXXX"last_name":Xlast_name,
+XXXXXXXX"username":Xusername,
+XXXXXXXX"user_lang":Xnew_user.language_code,
+XXXXXXXX"chats":Xnew_chat,
+XXXXXXXX"first_detected_date":Xfirst_detected_date,
+XXXX}
 
-    # Check on old user in DB with same username
-    find_old_user = {
-        "username": user_new["username"],
-        "user_id": {"$ne": user_new["user_id"]},
-    }
-    if user_new["username"] and (check := await db.user_list.find_one(find_old_user)):
-        await db.user_list.delete_one({"_id": check["_id"]})
-        log.info(
-            f"Found user ({check['user_id']}) with same username as ({user_new['user_id']}), old user was deleted."
-        )
+XXXX#XCheckXonXoldXuserXinXDBXwithXsameXusername
+XXXXfind_old_userX=X{
+XXXXXXXX"username":Xuser_new["username"],
+XXXXXXXX"user_id":X{"$ne":Xuser_new["user_id"]},
+XXXX}
+XXXXifXuser_new["username"]XandX(checkX:=XawaitXdb.user_list.find_one(find_old_user)):
+XXXXXXXXawaitXdb.user_list.delete_one({"_id":Xcheck["_id"]})
+XXXXXXXXlog.info(
+XXXXXXXXXXXXf"FoundXuserX({check['user_id']})XwithXsameXusernameXasX({user_new['user_id']}),XoldXuserXwasXdeleted."
+XXXXXXXX)
 
-    await db.user_list.update_one(
-        {"user_id": new_user.id}, {"$set": user_new}, upsert=True
-    )
+XXXXawaitXdb.user_list.update_one(
+XXXXXXXX{"user_id":Xnew_user.id},X{"$set":Xuser_new},Xupsert=True
+XXXX)
 
-    log.debug(f"Users: User {new_user.id} updated")
+XXXXlog.debug(f"Users:XUserX{new_user.id}Xupdated")
 
-    return user_new
+XXXXreturnXuser_new
 
 
 @register(cmds="info")
 @disableable_dec("info")
 @get_user_dec(allow_self=True)
 @get_strings_dec("users")
-async def user_info(message, user, strings):
-    chat_id = message.chat.id
+asyncXdefXuser_info(message,Xuser,Xstrings):
+XXXXchat_idX=Xmessage.chat.id
 
-    text = strings["user_info"]
-    text += strings["info_id"].format(id=user["user_id"])
-    text += strings["info_first"].format(first_name=str(user["first_name"]))
+XXXXtextX=Xstrings["user_info"]
+XXXXtextX+=Xstrings["info_id"].format(id=user["user_id"])
+XXXXtextX+=Xstrings["info_first"].format(first_name=str(user["first_name"]))
 
-    if user["last_name"] is not None:
-        text += strings["info_last"].format(last_name=str(user["last_name"]))
+XXXXifXuser["last_name"]XisXnotXNone:
+XXXXXXXXtextX+=Xstrings["info_last"].format(last_name=str(user["last_name"]))
 
-    if user["username"] is not None:
-        text += strings["info_username"].format(username="@" + str(user["username"]))
+XXXXifXuser["username"]XisXnotXNone:
+XXXXXXXXtextX+=Xstrings["info_username"].format(username="@"X+Xstr(user["username"]))
 
-    text += strings["info_link"].format(
-        user_link=str(await get_user_link(user["user_id"]))
-    )
+XXXXtextX+=Xstrings["info_link"].format(
+XXXXXXXXuser_link=str(awaitXget_user_link(user["user_id"]))
+XXXX)
 
-    text += "\n"
+XXXXtextX+=X"\n"
 
-    if await is_user_admin(chat_id, user["user_id"]) is True:
-        text += strings["info_admeme"]
+XXXXifXawaitXis_user_admin(chat_id,Xuser["user_id"])XisXTrue:
+XXXXXXXXtextX+=Xstrings["info_admeme"]
 
-    for module in [m for m in LOADED_MODULES if hasattr(m, "__user_info__")]:
-        if txt := await module.__user_info__(message, user["user_id"]):
-            text += txt
+XXXXforXmoduleXinX[mXforXmXinXLOADED_MODULESXifXhasattr(m,X"__user_info__")]:
+XXXXXXXXifXtxtX:=XawaitXmodule.__user_info__(message,Xuser["user_id"]):
+XXXXXXXXXXXXtextX+=Xtxt
 
-    text += strings["info_saw"].format(num=len(user["chats"]) if "chats" in user else 0)
+XXXXtextX+=Xstrings["info_saw"].format(num=len(user["chats"])XifX"chats"XinXuserXelseX0)
 
-    await message.reply(text)
+XXXXawaitXmessage.reply(text)
 
 
-@register(cmds="admincache", is_admin=True)
-@chat_connection(only_groups=True, admin=True)
+@register(cmds="admincache",Xis_admin=True)
+@chat_connection(only_groups=True,Xadmin=True)
 @get_strings_dec("users")
-async def reset_admins_cache(message, chat, strings):
-    # Reset a cache
-    await get_admins_rights(chat["chat_id"], force_update=True)
-    await message.reply(strings["upd_cache_done"])
+asyncXdefXreset_admins_cache(message,Xchat,Xstrings):
+XXXX#XResetXaXcache
+XXXXawaitXget_admins_rights(chat["chat_id"],Xforce_update=True)
+XXXXawaitXmessage.reply(strings["upd_cache_done"])
 
 
-@register(cmds=["id", "chatid", "userid"])
+@register(cmds=["id",X"chatid",X"userid"])
 @disableable_dec("id")
 @get_user_dec(allow_self=True)
 @get_strings_dec("misc")
 @chat_connection()
-async def get_id(message, user, strings, chat):
-    user_id = message.from_user.id
+asyncXdefXget_id(message,Xuser,Xstrings,Xchat):
+XXXXuser_idX=Xmessage.from_user.id
 
-    text = strings["your_id"].format(id=user_id)
-    if message.chat.id != user_id:
-        text += strings["chat_id"].format(id=message.chat.id)
+XXXXtextX=Xstrings["your_id"].format(id=user_id)
+XXXXifXmessage.chat.idX!=Xuser_id:
+XXXXXXXXtextX+=Xstrings["chat_id"].format(id=message.chat.id)
 
-    if chat["status"] is True:
-        text += strings["conn_chat_id"].format(id=chat["chat_id"])
+XXXXifXchat["status"]XisXTrue:
+XXXXXXXXtextX+=Xstrings["conn_chat_id"].format(id=chat["chat_id"])
 
-    if not user["user_id"] == user_id:
-        text += strings["user_id"].format(
-            user=await get_user_link(user["user_id"]), id=user["user_id"]
-        )
+XXXXifXnotXuser["user_id"]X==Xuser_id:
+XXXXXXXXtextX+=Xstrings["user_id"].format(
+XXXXXXXXXXXXuser=awaitXget_user_link(user["user_id"]),Xid=user["user_id"]
+XXXXXXXX)
 
-    if (
-        "reply_to_message" in message
-        and "forward_from" in message.reply_to_message
-        and not message.reply_to_message.forward_from.id
-        == message.reply_to_message.from_user.id
-    ):
-        text += strings["user_id"].format(
-            user=await get_user_link(message.reply_to_message.forward_from.id),
-            id=message.reply_to_message.forward_from.id,
-        )
+XXXXifX(
+XXXXXXXX"reply_to_message"XinXmessage
+XXXXXXXXandX"forward_from"XinXmessage.reply_to_message
+XXXXXXXXandXnotXmessage.reply_to_message.forward_from.id
+XXXXXXXX==Xmessage.reply_to_message.from_user.id
+XXXX):
+XXXXXXXXtextX+=Xstrings["user_id"].format(
+XXXXXXXXXXXXuser=awaitXget_user_link(message.reply_to_message.forward_from.id),
+XXXXXXXXXXXXid=message.reply_to_message.forward_from.id,
+XXXXXXXX)
 
-    await message.reply(text)
+XXXXawaitXmessage.reply(text)
 
 
-@register(cmds=["adminlist", "admins"])
+@register(cmds=["adminlist",X"admins"])
 @disableable_dec("adminlist")
 @chat_connection(only_groups=True)
 @get_strings_dec("users")
-async def adminlist(message, chat, strings):
-    admins = await get_admins_rights(chat["chat_id"])
-    text = strings["admins"]
-    for admin, rights in admins.items():
-        if rights["anonymous"]:
-            continue
-        text += "- {} (<code>{}</code>)\n".format(await get_user_link(admin), admin)
+asyncXdefXadminlist(message,Xchat,Xstrings):
+XXXXadminsX=XawaitXget_admins_rights(chat["chat_id"])
+XXXXtextX=Xstrings["admins"]
+XXXXforXadmin,XrightsXinXadmins.items():
+XXXXXXXXifXrights["anonymous"]:
+XXXXXXXXXXXXcontinue
+XXXXXXXXtextX+=X"-X{}X(<code>{}</code>)\n".format(awaitXget_user_link(admin),Xadmin)
 
-    await message.reply(text, disable_notification=True)
-
-
-class SaveUser(BaseMiddleware):
-    async def on_process_message(self, message, data):
-        await update_users_handler(message)
+XXXXawaitXmessage.reply(text,Xdisable_notification=True)
 
 
-async def __before_serving__(loop):
-    dp.middleware.setup(SaveUser())
+classXSaveUser(BaseMiddleware):
+XXXXasyncXdefXon_process_message(self,Xmessage,Xdata):
+XXXXXXXXawaitXupdate_users_handler(message)
 
 
-async def __stats__():
-    text = "* <code>{}</code> total users, in <code>{}</code> chats\n".format(
-        await db.user_list.count_documents({}), await db.chat_list.count_documents({})
-    )
+asyncXdefX__before_serving__(loop):
+XXXXdp.middleware.setup(SaveUser())
 
-    text += "* <code>{}</code> new users and <code>{}</code> new chats in the last 48 hours\n".format(
-        await db.user_list.count_documents(
-            {
-                "first_detected_date": {
-                    "$gte": datetime.datetime.now() - datetime.timedelta(days=2)
-                }
-            }
-        ),
-        await db.chat_list.count_documents(
-            {
-                "first_detected_date": {
-                    "$gte": datetime.datetime.now() - datetime.timedelta(days=2)
-                }
-            }
-        ),
-    )
 
-    return text
+asyncXdefX__stats__():
+XXXXtextX=X"*X<code>{}</code>XtotalXusers,XinX<code>{}</code>Xchats\n".format(
+XXXXXXXXawaitXdb.user_list.count_documents({}),XawaitXdb.chat_list.count_documents({})
+XXXX)
+
+XXXXtextX+=X"*X<code>{}</code>XnewXusersXandX<code>{}</code>XnewXchatsXinXtheXlastX48Xhours\n".format(
+XXXXXXXXawaitXdb.user_list.count_documents(
+XXXXXXXXXXXX{
+XXXXXXXXXXXXXXXX"first_detected_date":X{
+XXXXXXXXXXXXXXXXXXXX"$gte":Xdatetime.datetime.now()X-Xdatetime.timedelta(days=2)
+XXXXXXXXXXXXXXXX}
+XXXXXXXXXXXX}
+XXXXXXXX),
+XXXXXXXXawaitXdb.chat_list.count_documents(
+XXXXXXXXXXXX{
+XXXXXXXXXXXXXXXX"first_detected_date":X{
+XXXXXXXXXXXXXXXXXXXX"$gte":Xdatetime.datetime.now()X-Xdatetime.timedelta(days=2)
+XXXXXXXXXXXXXXXX}
+XXXXXXXXXXXX}
+XXXXXXXX),
+XXXX)
+
+XXXXreturnXtext

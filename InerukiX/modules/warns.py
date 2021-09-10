@@ -1,412 +1,412 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 errorshivansh
-# Copyright (C) 2020 Inuka Asith
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2021Xerrorshivansh
+#XCopyrightX(C)X2020XInukaXAsith
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
 
-import functools
-import re
-from contextlib import suppress
+importXfunctools
+importXre
+fromXcontextlibXimportXsuppress
 
-from aiogram.types import Message
-from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
-from aiogram.utils.deep_linking import get_start_link
-from aiogram.utils.exceptions import MessageNotModified
-from babel.dates import format_timedelta
-from bson.objectid import ObjectId
+fromXaiogram.typesXimportXMessage
+fromXaiogram.types.inline_keyboardXimportXInlineKeyboardButton,XInlineKeyboardMarkup
+fromXaiogram.utils.deep_linkingXimportXget_start_link
+fromXaiogram.utils.exceptionsXimportXMessageNotModified
+fromXbabel.datesXimportXformat_timedelta
+fromXbson.objectidXimportXObjectId
 
-from Ineruki  import BOT_ID, bot
-from Ineruki .decorator import register
-from Ineruki .services.mongo import db
-from Ineruki .services.telethon import tbot
+fromXInerukiXXimportXBOT_ID,Xbot
+fromXInerukiX.decoratorXimportXregister
+fromXInerukiX.services.mongoXimportXdb
+fromXInerukiX.services.telethonXimportXtbot
 
-from .misc import customise_reason_finish, customise_reason_start
-from .utils.connections import chat_connection
-from .utils.language import get_strings_dec
-from .utils.message import InvalidTimeUnit, convert_time
-from .utils.restrictions import ban_user, mute_user
-from .utils.user_details import (
-    get_user_and_text_dec,
-    get_user_dec,
-    get_user_link,
-    is_user_admin,
+fromX.miscXimportXcustomise_reason_finish,Xcustomise_reason_start
+fromX.utils.connectionsXimportXchat_connection
+fromX.utils.languageXimportXget_strings_dec
+fromX.utils.messageXimportXInvalidTimeUnit,Xconvert_time
+fromX.utils.restrictionsXimportXban_user,Xmute_user
+fromX.utils.user_detailsXimportX(
+XXXXget_user_and_text_dec,
+XXXXget_user_dec,
+XXXXget_user_link,
+XXXXis_user_admin,
 )
 
 
-@register(cmds="warn", user_can_restrict_members=True, bot_can_restrict_members=True)
-@chat_connection(admin=True, only_groups=True)
+@register(cmds="warn",Xuser_can_restrict_members=True,Xbot_can_restrict_members=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_user_and_text_dec()
-async def warn_cmd(message, chat, user, text):
-    await warn_func(message, chat, user, text)
+asyncXdefXwarn_cmd(message,Xchat,Xuser,Xtext):
+XXXXawaitXwarn_func(message,Xchat,Xuser,Xtext)
 
 
-@register(cmds="dwarn", user_can_restrict_members=True, bot_can_restrict_members=True)
-@chat_connection(admin=True, only_groups=True)
+@register(cmds="dwarn",Xuser_can_restrict_members=True,Xbot_can_restrict_members=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_user_and_text_dec()
-async def warn_cmd(message, chat, user, text):
-    if not message.reply_to_message:
-        await message.reply(strings["reply_to_msg"])
-        return
-    await warn_func(message, chat, user, text)
-    msgs = [message.message_id, message.reply_to_message.message_id]
-    await tbot.delete_messages(message.chat.id, msgs)
+asyncXdefXwarn_cmd(message,Xchat,Xuser,Xtext):
+XXXXifXnotXmessage.reply_to_message:
+XXXXXXXXawaitXmessage.reply(strings["reply_to_msg"])
+XXXXXXXXreturn
+XXXXawaitXwarn_func(message,Xchat,Xuser,Xtext)
+XXXXmsgsX=X[message.message_id,Xmessage.reply_to_message.message_id]
+XXXXawaitXtbot.delete_messages(message.chat.id,Xmsgs)
 
 
 @get_strings_dec("warns")
-async def warn_func(message: Message, chat, user, text, strings, filter_action=False):
-    chat_id = chat["chat_id"]
-    chat_title = chat["chat_title"]
-    by_id = BOT_ID if filter_action is True else message.from_user.id
-    user_id = user["user_id"] if filter_action is False else user
+asyncXdefXwarn_func(message:XMessage,Xchat,Xuser,Xtext,Xstrings,Xfilter_action=False):
+XXXXchat_idX=Xchat["chat_id"]
+XXXXchat_titleX=Xchat["chat_title"]
+XXXXby_idX=XBOT_IDXifXfilter_actionXisXTrueXelseXmessage.from_user.id
+XXXXuser_idX=Xuser["user_id"]XifXfilter_actionXisXFalseXelseXuser
 
-    if user_id == BOT_ID:
-        await message.reply(strings["warn_sofi"])
-        return
+XXXXifXuser_idX==XBOT_ID:
+XXXXXXXXawaitXmessage.reply(strings["warn_sofi"])
+XXXXXXXXreturn
 
-    if not filter_action:
-        if user_id == message.from_user.id:
-            await message.reply(strings["warn_self"])
-            return
+XXXXifXnotXfilter_action:
+XXXXXXXXifXuser_idX==Xmessage.from_user.id:
+XXXXXXXXXXXXawaitXmessage.reply(strings["warn_self"])
+XXXXXXXXXXXXreturn
 
-    if await is_user_admin(chat_id, user_id):
-        if not filter_action:
-            await message.reply(strings["warn_admin"])
-        return
+XXXXifXawaitXis_user_admin(chat_id,Xuser_id):
+XXXXXXXXifXnotXfilter_action:
+XXXXXXXXXXXXawaitXmessage.reply(strings["warn_admin"])
+XXXXXXXXreturn
 
-    reason = text
-    warn_id = str(
-        (
-            await db.warns.insert_one(
-                {
-                    "user_id": user_id,
-                    "chat_id": chat_id,
-                    "reason": str(reason),
-                    "by": by_id,
-                }
-            )
-        ).inserted_id
-    )
+XXXXreasonX=Xtext
+XXXXwarn_idX=Xstr(
+XXXXXXXX(
+XXXXXXXXXXXXawaitXdb.warns.insert_one(
+XXXXXXXXXXXXXXXX{
+XXXXXXXXXXXXXXXXXXXX"user_id":Xuser_id,
+XXXXXXXXXXXXXXXXXXXX"chat_id":Xchat_id,
+XXXXXXXXXXXXXXXXXXXX"reason":Xstr(reason),
+XXXXXXXXXXXXXXXXXXXX"by":Xby_id,
+XXXXXXXXXXXXXXXX}
+XXXXXXXXXXXX)
+XXXXXXXX).inserted_id
+XXXX)
 
-    admin = await get_user_link(by_id)
-    member = await get_user_link(user_id)
-    text = strings["warn"].format(admin=admin, user=member, chat_name=chat_title)
+XXXXadminX=XawaitXget_user_link(by_id)
+XXXXmemberX=XawaitXget_user_link(user_id)
+XXXXtextX=Xstrings["warn"].format(admin=admin,Xuser=member,Xchat_name=chat_title)
 
-    if reason:
-        text += strings["warn_rsn"].format(reason=reason)
+XXXXifXreason:
+XXXXXXXXtextX+=Xstrings["warn_rsn"].format(reason=reason)
 
-    warns_count = await db.warns.count_documents(
-        {"chat_id": chat_id, "user_id": user_id}
-    )
+XXXXwarns_countX=XawaitXdb.warns.count_documents(
+XXXXXXXX{"chat_id":Xchat_id,X"user_id":Xuser_id}
+XXXX)
 
-    buttons = InlineKeyboardMarkup().add(
-        InlineKeyboardButton(
-            "⚠️ Remove warn", callback_data="remove_warn_{}".format(warn_id)
-        )
-    )
+XXXXbuttonsX=XInlineKeyboardMarkup().add(
+XXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXX"⚠️XRemoveXwarn",Xcallback_data="remove_warn_{}".format(warn_id)
+XXXXXXXX)
+XXXX)
 
-    if await db.rules.find_one({"chat_id": chat_id}):
-        buttons.insert(
-            InlineKeyboardButton(
-                "📝 Rules", url=await get_start_link(f"btn_rules_{chat_id}")
-            )
-        )
+XXXXifXawaitXdb.rules.find_one({"chat_id":Xchat_id}):
+XXXXXXXXbuttons.insert(
+XXXXXXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXXXXX"📝XRules",Xurl=awaitXget_start_link(f"btn_rules_{chat_id}")
+XXXXXXXXXXXX)
+XXXXXXXX)
 
-    if warn_limit := await db.warnlimit.find_one({"chat_id": chat_id}):
-        max_warn = int(warn_limit["num"])
-    else:
-        max_warn = 3
+XXXXifXwarn_limitX:=XawaitXdb.warnlimit.find_one({"chat_id":Xchat_id}):
+XXXXXXXXmax_warnX=Xint(warn_limit["num"])
+XXXXelse:
+XXXXXXXXmax_warnX=X3
 
-    if filter_action:
-        action = functools.partial(bot.send_message, chat_id=chat_id)
-    elif message.reply_to_message:
-        action = message.reply_to_message.reply
-    else:
-        action = functools.partial(message.reply, disable_notification=True)
+XXXXifXfilter_action:
+XXXXXXXXactionX=Xfunctools.partial(bot.send_message,Xchat_id=chat_id)
+XXXXelifXmessage.reply_to_message:
+XXXXXXXXactionX=Xmessage.reply_to_message.reply
+XXXXelse:
+XXXXXXXXactionX=Xfunctools.partial(message.reply,Xdisable_notification=True)
 
-    if warns_count >= max_warn:
-        if await max_warn_func(chat_id, user_id):
-            await db.warns.delete_many({"user_id": user_id, "chat_id": chat_id})
-            data = await db.warnmode.find_one({"chat_id": chat_id})
-            if data is not None:
-                if data["mode"] == "tmute":
-                    text = strings["max_warn_exceeded:tmute"].format(
-                        user=member,
-                        time=format_timedelta(
-                            convert_time(data["time"]),
-                            locale=strings["language_info"]["babel"],
-                        ),
-                    )
-                else:
-                    text = strings["max_warn_exceeded"].format(
-                        user=member,
-                        action=strings["banned"]
-                        if data["mode"] == "ban"
-                        else strings["muted"],
-                    )
-                return await action(text=text)
-            return await action(
-                text=strings["max_warn_exceeded"].format(
-                    user=member, action=strings["banned"]
-                )
-            )
-    text += strings["warn_num"].format(curr_warns=warns_count, max_warns=max_warn)
-    return await action(text=text, reply_markup=buttons, disable_web_page_preview=True)
+XXXXifXwarns_countX>=Xmax_warn:
+XXXXXXXXifXawaitXmax_warn_func(chat_id,Xuser_id):
+XXXXXXXXXXXXawaitXdb.warns.delete_many({"user_id":Xuser_id,X"chat_id":Xchat_id})
+XXXXXXXXXXXXdataX=XawaitXdb.warnmode.find_one({"chat_id":Xchat_id})
+XXXXXXXXXXXXifXdataXisXnotXNone:
+XXXXXXXXXXXXXXXXifXdata["mode"]X==X"tmute":
+XXXXXXXXXXXXXXXXXXXXtextX=Xstrings["max_warn_exceeded:tmute"].format(
+XXXXXXXXXXXXXXXXXXXXXXXXuser=member,
+XXXXXXXXXXXXXXXXXXXXXXXXtime=format_timedelta(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXconvert_time(data["time"]),
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXlocale=strings["language_info"]["babel"],
+XXXXXXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXtextX=Xstrings["max_warn_exceeded"].format(
+XXXXXXXXXXXXXXXXXXXXXXXXuser=member,
+XXXXXXXXXXXXXXXXXXXXXXXXaction=strings["banned"]
+XXXXXXXXXXXXXXXXXXXXXXXXifXdata["mode"]X==X"ban"
+XXXXXXXXXXXXXXXXXXXXXXXXelseXstrings["muted"],
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXreturnXawaitXaction(text=text)
+XXXXXXXXXXXXreturnXawaitXaction(
+XXXXXXXXXXXXXXXXtext=strings["max_warn_exceeded"].format(
+XXXXXXXXXXXXXXXXXXXXuser=member,Xaction=strings["banned"]
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXtextX+=Xstrings["warn_num"].format(curr_warns=warns_count,Xmax_warns=max_warn)
+XXXXreturnXawaitXaction(text=text,Xreply_markup=buttons,Xdisable_web_page_preview=True)
 
 
 @register(
-    regexp=r"remove_warn_(.*)",
-    f="cb",
-    allow_kwargs=True,
-    user_can_restrict_members=True,
+XXXXregexp=r"remove_warn_(.*)",
+XXXXf="cb",
+XXXXallow_kwargs=True,
+XXXXuser_can_restrict_members=True,
 )
 @get_strings_dec("warns")
-async def rmv_warn_btn(event, strings, regexp=None, **kwargs):
-    warn_id = ObjectId(re.search(r"remove_warn_(.*)", str(regexp)).group(1)[:-2])
-    user_id = event.from_user.id
-    admin_link = await get_user_link(user_id)
-    await db.warns.delete_one({"_id": warn_id})
-    with suppress(MessageNotModified):
-        await event.message.edit_text(
-            strings["warn_btn_rmvl_success"].format(admin=admin_link)
-        )
+asyncXdefXrmv_warn_btn(event,Xstrings,Xregexp=None,X**kwargs):
+XXXXwarn_idX=XObjectId(re.search(r"remove_warn_(.*)",Xstr(regexp)).group(1)[:-2])
+XXXXuser_idX=Xevent.from_user.id
+XXXXadmin_linkX=XawaitXget_user_link(user_id)
+XXXXawaitXdb.warns.delete_one({"_id":Xwarn_id})
+XXXXwithXsuppress(MessageNotModified):
+XXXXXXXXawaitXevent.message.edit_text(
+XXXXXXXXXXXXstrings["warn_btn_rmvl_success"].format(admin=admin_link)
+XXXXXXXX)
 
 
 @register(cmds="warns")
-@chat_connection(admin=True, only_groups=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_user_dec(allow_self=True)
 @get_strings_dec("warns")
-async def warns(message, chat, user, strings):
-    chat_id = chat["chat_id"]
-    user_id = user["user_id"]
-    text = strings["warns_header"]
-    user_link = await get_user_link(user_id)
+asyncXdefXwarns(message,Xchat,Xuser,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
+XXXXuser_idX=Xuser["user_id"]
+XXXXtextX=Xstrings["warns_header"]
+XXXXuser_linkX=XawaitXget_user_link(user_id)
 
-    count = 0
-    async for warn in db.warns.find({"user_id": user_id, "chat_id": chat_id}):
-        count += 1
-        by = await get_user_link(warn["by"])
-        rsn = warn["reason"]
-        reason = f"<code>{rsn}</code>"
-        if not rsn or rsn == "None":
-            reason = "<i>No Reason</i>"
-        text += strings["warns"].format(count=count, reason=reason, admin=by)
+XXXXcountX=X0
+XXXXasyncXforXwarnXinXdb.warns.find({"user_id":Xuser_id,X"chat_id":Xchat_id}):
+XXXXXXXXcountX+=X1
+XXXXXXXXbyX=XawaitXget_user_link(warn["by"])
+XXXXXXXXrsnX=Xwarn["reason"]
+XXXXXXXXreasonX=Xf"<code>{rsn}</code>"
+XXXXXXXXifXnotXrsnXorXrsnX==X"None":
+XXXXXXXXXXXXreasonX=X"<i>NoXReason</i>"
+XXXXXXXXtextX+=Xstrings["warns"].format(count=count,Xreason=reason,Xadmin=by)
 
-    if count == 0:
-        await message.reply(strings["no_warns"].format(user=user_link))
-        return
+XXXXifXcountX==X0:
+XXXXXXXXawaitXmessage.reply(strings["no_warns"].format(user=user_link))
+XXXXXXXXreturn
 
-    await message.reply(text, disable_notification=True)
+XXXXawaitXmessage.reply(text,Xdisable_notification=True)
 
 
-@register(cmds="warnlimit", user_admin=True)
-@chat_connection(admin=True, only_groups=True)
+@register(cmds="warnlimit",Xuser_admin=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_strings_dec("warns")
-async def warnlimit(message, chat, strings):
-    chat_id = chat["chat_id"]
-    chat_title = chat["chat_title"]
-    arg = message.get_args().split()
+asyncXdefXwarnlimit(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
+XXXXchat_titleX=Xchat["chat_title"]
+XXXXargX=Xmessage.get_args().split()
 
-    if not arg:
-        if current_limit := await db.warnlimit.find_one({"chat_id": chat_id}):
-            num = current_limit["num"]
-        else:
-            num = 3  # Default value
-        await message.reply(strings["warn_limit"].format(chat_name=chat_title, num=num))
-    elif not arg[0].isdigit():
-        return await message.reply(strings["not_digit"])
-    else:
-        if int(arg[0]) < 2:
-            return await message.reply(strings["warnlimit_short"])
+XXXXifXnotXarg:
+XXXXXXXXifXcurrent_limitX:=XawaitXdb.warnlimit.find_one({"chat_id":Xchat_id}):
+XXXXXXXXXXXXnumX=Xcurrent_limit["num"]
+XXXXXXXXelse:
+XXXXXXXXXXXXnumX=X3XX#XDefaultXvalue
+XXXXXXXXawaitXmessage.reply(strings["warn_limit"].format(chat_name=chat_title,Xnum=num))
+XXXXelifXnotXarg[0].isdigit():
+XXXXXXXXreturnXawaitXmessage.reply(strings["not_digit"])
+XXXXelse:
+XXXXXXXXifXint(arg[0])X<X2:
+XXXXXXXXXXXXreturnXawaitXmessage.reply(strings["warnlimit_short"])
 
-        elif int(arg[0]) > 10000:  # Max value
-            return await message.reply(strings["warnlimit_long"])
+XXXXXXXXelifXint(arg[0])X>X10000:XX#XMaxXvalue
+XXXXXXXXXXXXreturnXawaitXmessage.reply(strings["warnlimit_long"])
 
-        new = {"chat_id": chat_id, "num": int(arg[0])}
+XXXXXXXXnewX=X{"chat_id":Xchat_id,X"num":Xint(arg[0])}
 
-        await db.warnlimit.update_one({"chat_id": chat_id}, {"$set": new}, upsert=True)
-        await message.reply(strings["warnlimit_updated"].format(num=int(arg[0])))
+XXXXXXXXawaitXdb.warnlimit.update_one({"chat_id":Xchat_id},X{"$set":Xnew},Xupsert=True)
+XXXXXXXXawaitXmessage.reply(strings["warnlimit_updated"].format(num=int(arg[0])))
 
 
-@register(cmds=["resetwarns", "delwarns"], user_can_restrict_members=True)
-@chat_connection(admin=True, only_groups=True)
+@register(cmds=["resetwarns",X"delwarns"],Xuser_can_restrict_members=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_user_dec()
 @get_strings_dec("warns")
-async def reset_warn(message, chat, user, strings):
-    chat_id = chat["chat_id"]
-    chat_title = chat["chat_title"]
-    user_id = user["user_id"]
-    user_link = await get_user_link(user_id)
-    admin_link = await get_user_link(message.from_user.id)
+asyncXdefXreset_warn(message,Xchat,Xuser,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
+XXXXchat_titleX=Xchat["chat_title"]
+XXXXuser_idX=Xuser["user_id"]
+XXXXuser_linkX=XawaitXget_user_link(user_id)
+XXXXadmin_linkX=XawaitXget_user_link(message.from_user.id)
 
-    if user_id == BOT_ID:
-        await message.reply(strings["rst_wrn_sofi"])
-        return
+XXXXifXuser_idX==XBOT_ID:
+XXXXXXXXawaitXmessage.reply(strings["rst_wrn_sofi"])
+XXXXXXXXreturn
 
-    if await db.warns.find_one({"chat_id": chat_id, "user_id": user_id}):
-        deleted = await db.warns.delete_many({"chat_id": chat_id, "user_id": user_id})
-        purged = deleted.deleted_count
-        await message.reply(
-            strings["purged_warns"].format(
-                admin=admin_link, num=purged, user=user_link, chat_title=chat_title
-            )
-        )
-    else:
-        await message.reply(strings["usr_no_wrn"].format(user=user_link))
+XXXXifXawaitXdb.warns.find_one({"chat_id":Xchat_id,X"user_id":Xuser_id}):
+XXXXXXXXdeletedX=XawaitXdb.warns.delete_many({"chat_id":Xchat_id,X"user_id":Xuser_id})
+XXXXXXXXpurgedX=Xdeleted.deleted_count
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["purged_warns"].format(
+XXXXXXXXXXXXXXXXadmin=admin_link,Xnum=purged,Xuser=user_link,Xchat_title=chat_title
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXelse:
+XXXXXXXXawaitXmessage.reply(strings["usr_no_wrn"].format(user=user_link))
 
 
 @register(
-    cmds=["warnmode", "warnaction"], user_admin=True, bot_can_restrict_members=True
+XXXXcmds=["warnmode",X"warnaction"],Xuser_admin=True,Xbot_can_restrict_members=True
 )
 @chat_connection(admin=True)
 @get_strings_dec("warns")
-async def warnmode(message, chat, strings):
-    chat_id = chat["chat_id"]
-    acceptable_args = ["ban", "tmute", "mute"]
-    arg = str(message.get_args()).split()
-    new = {"chat_id": chat_id}
+asyncXdefXwarnmode(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
+XXXXacceptable_argsX=X["ban",X"tmute",X"mute"]
+XXXXargX=Xstr(message.get_args()).split()
+XXXXnewX=X{"chat_id":Xchat_id}
 
-    if arg and arg[0] in acceptable_args:
-        option = "".join(arg[0])
-        if (
-            data := await db.warnmode.find_one({"chat_id": chat_id})
-        ) is not None and data["mode"] == option:
-            return await message.reply(strings["same_mode"])
-        if arg[0] == acceptable_args[0]:
-            new["mode"] = option
-            await db.warnmode.update_one(
-                {"chat_id": chat_id}, {"$set": new}, upsert=True
-            )
-        elif arg[0] == acceptable_args[1]:
-            try:
-                time = arg[1]
-            except IndexError:
-                return await message.reply(strings["no_time"])
-            else:
-                try:
-                    # TODO: For better U  we have to show until time of tmute when action is done.
-                    # We can't store timedelta class in mongodb; Here we check validity of given time.
-                    convert_time(time)
-                except (InvalidTimeUnit, TypeError, ValueError):
-                    return await message.reply(strings["invalid_time"])
-                else:
-                    new.update(mode=option, time=time)
-                    await db.warnmode.update_one(
-                        {"chat_id": chat_id}, {"$set": new}, upsert=True
-                    )
-        elif arg[0] == acceptable_args[2]:
-            new["mode"] = option
-            await db.warnmode.update_one(
-                {"chat_id": chat_id}, {"$set": new}, upsert=True
-            )
-        await message.reply(strings["warnmode_success"] % (chat["chat_title"], option))
-    else:
-        text = ""
-        if (curr_mode := await db.warnmode.find_one({"chat_id": chat_id})) is not None:
-            mode = curr_mode["mode"]
-            text += strings["mode_info"] % mode
-        text += strings["wrng_args"]
-        text += "\n".join([f"- {i}" for i in acceptable_args])
-        await message.reply(text)
-
-
-async def max_warn_func(chat_id, user_id):
-    if (data := await db.warnmode.find_one({"chat_id": chat_id})) is not None:
-        if data["mode"] == "ban":
-            return await ban_user(chat_id, user_id)
-        elif data["mode"] == "tmute":
-            time = convert_time(data["time"])
-            return await mute_user(chat_id, user_id, time)
-        elif data["mode"] == "mute":
-            return await mute_user(chat_id, user_id)
-    else:  # Default
-        return await ban_user(chat_id, user_id)
+XXXXifXargXandXarg[0]XinXacceptable_args:
+XXXXXXXXoptionX=X"".join(arg[0])
+XXXXXXXXifX(
+XXXXXXXXXXXXdataX:=XawaitXdb.warnmode.find_one({"chat_id":Xchat_id})
+XXXXXXXX)XisXnotXNoneXandXdata["mode"]X==Xoption:
+XXXXXXXXXXXXreturnXawaitXmessage.reply(strings["same_mode"])
+XXXXXXXXifXarg[0]X==Xacceptable_args[0]:
+XXXXXXXXXXXXnew["mode"]X=Xoption
+XXXXXXXXXXXXawaitXdb.warnmode.update_one(
+XXXXXXXXXXXXXXXX{"chat_id":Xchat_id},X{"$set":Xnew},Xupsert=True
+XXXXXXXXXXXX)
+XXXXXXXXelifXarg[0]X==Xacceptable_args[1]:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXtimeX=Xarg[1]
+XXXXXXXXXXXXexceptXIndexError:
+XXXXXXXXXXXXXXXXreturnXawaitXmessage.reply(strings["no_time"])
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXX#XTODO:XForXbetterXUXXweXhaveXtoXshowXuntilXtimeXofXtmuteXwhenXactionXisXdone.
+XXXXXXXXXXXXXXXXXXXX#XWeXcan'tXstoreXtimedeltaXclassXinXmongodb;XHereXweXcheckXvalidityXofXgivenXtime.
+XXXXXXXXXXXXXXXXXXXXconvert_time(time)
+XXXXXXXXXXXXXXXXexceptX(InvalidTimeUnit,XTypeError,XValueError):
+XXXXXXXXXXXXXXXXXXXXreturnXawaitXmessage.reply(strings["invalid_time"])
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXnew.update(mode=option,Xtime=time)
+XXXXXXXXXXXXXXXXXXXXawaitXdb.warnmode.update_one(
+XXXXXXXXXXXXXXXXXXXXXXXX{"chat_id":Xchat_id},X{"$set":Xnew},Xupsert=True
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXelifXarg[0]X==Xacceptable_args[2]:
+XXXXXXXXXXXXnew["mode"]X=Xoption
+XXXXXXXXXXXXawaitXdb.warnmode.update_one(
+XXXXXXXXXXXXXXXX{"chat_id":Xchat_id},X{"$set":Xnew},Xupsert=True
+XXXXXXXXXXXX)
+XXXXXXXXawaitXmessage.reply(strings["warnmode_success"]X%X(chat["chat_title"],Xoption))
+XXXXelse:
+XXXXXXXXtextX=X""
+XXXXXXXXifX(curr_modeX:=XawaitXdb.warnmode.find_one({"chat_id":Xchat_id}))XisXnotXNone:
+XXXXXXXXXXXXmodeX=Xcurr_mode["mode"]
+XXXXXXXXXXXXtextX+=Xstrings["mode_info"]X%Xmode
+XXXXXXXXtextX+=Xstrings["wrng_args"]
+XXXXXXXXtextX+=X"\n".join([f"-X{i}"XforXiXinXacceptable_args])
+XXXXXXXXawaitXmessage.reply(text)
 
 
-async def __export__(chat_id):
-    if data := await db.warnlimit.find_one({"chat_id": chat_id}):
-        number = data["num"]
-    else:
-        number = 3
+asyncXdefXmax_warn_func(chat_id,Xuser_id):
+XXXXifX(dataX:=XawaitXdb.warnmode.find_one({"chat_id":Xchat_id}))XisXnotXNone:
+XXXXXXXXifXdata["mode"]X==X"ban":
+XXXXXXXXXXXXreturnXawaitXban_user(chat_id,Xuser_id)
+XXXXXXXXelifXdata["mode"]X==X"tmute":
+XXXXXXXXXXXXtimeX=Xconvert_time(data["time"])
+XXXXXXXXXXXXreturnXawaitXmute_user(chat_id,Xuser_id,Xtime)
+XXXXXXXXelifXdata["mode"]X==X"mute":
+XXXXXXXXXXXXreturnXawaitXmute_user(chat_id,Xuser_id)
+XXXXelse:XX#XDefault
+XXXXXXXXreturnXawaitXban_user(chat_id,Xuser_id)
 
-    if warnmode_data := await db.warnmode.find_one({"chat_id": chat_id}):
-        del warnmode_data["chat_id"], warnmode_data["_id"]
-    else:
-        warnmode_data = None
 
-    return {"warns": {"warns_limit": number, "warn_mode": warnmode_data}}
+asyncXdefX__export__(chat_id):
+XXXXifXdataX:=XawaitXdb.warnlimit.find_one({"chat_id":Xchat_id}):
+XXXXXXXXnumberX=Xdata["num"]
+XXXXelse:
+XXXXXXXXnumberX=X3
+
+XXXXifXwarnmode_dataX:=XawaitXdb.warnmode.find_one({"chat_id":Xchat_id}):
+XXXXXXXXdelXwarnmode_data["chat_id"],Xwarnmode_data["_id"]
+XXXXelse:
+XXXXXXXXwarnmode_dataX=XNone
+
+XXXXreturnX{"warns":X{"warns_limit":Xnumber,X"warn_mode":Xwarnmode_data}}
 
 
-async def __import__(chat_id, data):
-    if "warns_limit" in data:
-        number = data["warns_limit"]
-        if number < 2:
-            return
+asyncXdefX__import__(chat_id,Xdata):
+XXXXifX"warns_limit"XinXdata:
+XXXXXXXXnumberX=Xdata["warns_limit"]
+XXXXXXXXifXnumberX<X2:
+XXXXXXXXXXXXreturn
 
-        elif number > 10000:  # Max value
-            return
+XXXXXXXXelifXnumberX>X10000:XX#XMaxXvalue
+XXXXXXXXXXXXreturn
 
-        await db.warnlimit.update_one(
-            {"chat_id": chat_id}, {"$set": {"num": number}}, upsert=True
-        )
+XXXXXXXXawaitXdb.warnlimit.update_one(
+XXXXXXXXXXXX{"chat_id":Xchat_id},X{"$set":X{"num":Xnumber}},Xupsert=True
+XXXXXXXX)
 
-    if (data := data["warn_mode"]) is not None:
-        await db.warnmode.update_one({"chat_id": chat_id}, {"$set": data}, upsert=True)
+XXXXifX(dataX:=Xdata["warn_mode"])XisXnotXNone:
+XXXXXXXXawaitXdb.warnmode.update_one({"chat_id":Xchat_id},X{"$set":Xdata},Xupsert=True)
 
 
 @get_strings_dec("warns")
-async def filter_handle(message, chat, data, string=None):
-    if await is_user_admin(chat["chat_id"], message.from_user.id):
-        return
-    target_user = message.from_user.id
-    text = data.get("reason", None) or string["filter_handle_rsn"]
-    await warn_func(message, chat, target_user, text, filter_action=True)
+asyncXdefXfilter_handle(message,Xchat,Xdata,Xstring=None):
+XXXXifXawaitXis_user_admin(chat["chat_id"],Xmessage.from_user.id):
+XXXXXXXXreturn
+XXXXtarget_userX=Xmessage.from_user.id
+XXXXtextX=Xdata.get("reason",XNone)XorXstring["filter_handle_rsn"]
+XXXXawaitXwarn_func(message,Xchat,Xtarget_user,Xtext,Xfilter_action=True)
 
 
-__filters__ = {
-    "warn_user": {
-        "title": {"module": "warns", "string": "filters_title"},
-        "setup": {"start": customise_reason_start, "finish": customise_reason_finish},
-        "handle": filter_handle,
-    }
+__filters__X=X{
+XXXX"warn_user":X{
+XXXXXXXX"title":X{"module":X"warns",X"string":X"filters_title"},
+XXXXXXXX"setup":X{"start":Xcustomise_reason_start,X"finish":Xcustomise_reason_finish},
+XXXXXXXX"handle":Xfilter_handle,
+XXXX}
 }
 
 
-__mod_name__ = "Warnings"
+__mod_name__X=X"Warnings"
 
-__help__ = """
-You can keep your members from getting out of control using this feature!
+__help__X=X"""
+YouXcanXkeepXyourXmembersXfromXgettingXoutXofXcontrolXusingXthisXfeature!
 
-<b>Available commands:</b>
-<b>General (Admins):</b>
-- /warn (?user) (?reason): Use this command to warn the user! you can mention or reply to the offended user and add reason if needed
-- /delwarns or /resetwarns: This command is used to delete all the warns user got so far in the chat
-- /dwarn [reply]: Delete the replied message and warn him
-<b>Warnlimt (Admins):</b>
-- /warnlimit (new limit): Sets a warnlimit
-Not all chats want to give same maximum warns to the user, right? This command will help you to modify default maximum warns. Default is 3
+<b>AvailableXcommands:</b>
+<b>GeneralX(Admins):</b>
+-X/warnX(?user)X(?reason):XUseXthisXcommandXtoXwarnXtheXuser!XyouXcanXmentionXorXreplyXtoXtheXoffendedXuserXandXaddXreasonXifXneeded
+-X/delwarnsXorX/resetwarns:XThisXcommandXisXusedXtoXdeleteXallXtheXwarnsXuserXgotXsoXfarXinXtheXchat
+-X/dwarnX[reply]:XDeleteXtheXrepliedXmessageXandXwarnXhim
+<b>WarnlimtX(Admins):</b>
+-X/warnlimitX(newXlimit):XSetsXaXwarnlimit
+NotXallXchatsXwantXtoXgiveXsameXmaximumXwarnsXtoXtheXuser,Xright?XThisXcommandXwillXhelpXyouXtoXmodifyXdefaultXmaximumXwarns.XDefaultXisX3
 
-The warnlimit should be greater than <code>1</code> and less than <code>10,000</code>
+TheXwarnlimitXshouldXbeXgreaterXthanX<code>1</code>XandXlessXthanX<code>10,000</code>
 
-<b>Warnaction (Admins):</b>
-/warnaction (mode) (?time)
-Well again, not all chats want to ban (default) users when exceed maximum warns so this command will able to modify that.
-Current supported actions are <code>ban</code> (default one), <code>mute</code>, <code>tmute</code>. The tmute mode require <code>time</code> argument as you guessed.
+<b>WarnactionX(Admins):</b>
+/warnactionX(mode)X(?time)
+WellXagain,XnotXallXchatsXwantXtoXbanX(default)XusersXwhenXexceedXmaximumXwarnsXsoXthisXcommandXwillXableXtoXmodifyXthat.
+CurrentXsupportedXactionsXareX<code>ban</code>X(defaultXone),X<code>mute</code>,X<code>tmute</code>.XTheXtmuteXmodeXrequireX<code>time</code>XargumentXasXyouXguessed.
 
-<b>Available for all users:</b>
-/warns (?user)
-Use this command to know number of warns and information about warns you got so far in the chat. To use yourself you doesn't require user argument.
+<b>AvailableXforXallXusers:</b>
+/warnsX(?user)
+UseXthisXcommandXtoXknowXnumberXofXwarnsXandXinformationXaboutXwarnsXyouXgotXsoXfarXinXtheXchat.XToXuseXyourselfXyouXdoesn'tXrequireXuserXargument.
 """

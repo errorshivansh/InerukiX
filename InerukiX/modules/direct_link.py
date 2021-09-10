@@ -1,100 +1,100 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import re
-from random import choice
+importXre
+fromXrandomXimportXchoice
 
-import requests
-from bs4 import BeautifulSoup
+importXrequests
+fromXbs4XimportXBeautifulSoup
 
-from Ineruki .decorator import register
+fromXInerukiX.decoratorXimportXregister
 
-from .utils.disable import disableable_dec
-from .utils.message import get_arg
+fromX.utils.disableXimportXdisableable_dec
+fromX.utils.messageXimportXget_arg
 
 
 @register(cmds="direct")
 @disableable_dec("direct")
-async def direct_link_generator(message):
-    text = get_arg(message)
+asyncXdefXdirect_link_generator(message):
+XXXXtextX=Xget_arg(message)
 
-    if not text:
-        m = "Usage: <code>/direct (url)</code>"
-        await message.reply(m)
-        return
+XXXXifXnotXtext:
+XXXXXXXXmX=X"Usage:X<code>/directX(url)</code>"
+XXXXXXXXawaitXmessage.reply(m)
+XXXXXXXXreturn
 
-    if text:
-        links = re.findall(r"\bhttps?://.*\.\S+", text)
-    else:
-        return
+XXXXifXtext:
+XXXXXXXXlinksX=Xre.findall(r"\bhttps?://.*\.\S+",Xtext)
+XXXXelse:
+XXXXXXXXreturn
 
-    reply = []
-    if not links:
-        await message.reply("No links found!")
-        return
+XXXXreplyX=X[]
+XXXXifXnotXlinks:
+XXXXXXXXawaitXmessage.reply("NoXlinksXfound!")
+XXXXXXXXreturn
 
-    for link in links:
-        if "sourceforge.net" in link:
-            reply.append(sourceforge(link))
-        else:
-            reply.append(
-                re.findall(r"\bhttps?://(.*?[^/]+)", link)[0] + " is not supported"
-            )
+XXXXforXlinkXinXlinks:
+XXXXXXXXifX"sourceforge.net"XinXlink:
+XXXXXXXXXXXXreply.append(sourceforge(link))
+XXXXXXXXelse:
+XXXXXXXXXXXXreply.append(
+XXXXXXXXXXXXXXXXre.findall(r"\bhttps?://(.*?[^/]+)",Xlink)[0]X+X"XisXnotXsupported"
+XXXXXXXXXXXX)
 
-    await message.reply("\n".join(reply))
-
-
-def sourceforge(url: str) -> str:
-    try:
-        link = re.findall(r"\bhttps?://.*sourceforge\.net\S+", url)[0]
-    except IndexError:
-        reply = "No SourceForge links found\n"
-        return reply
-
-    file_path = re.findall(r"/files(.*)/download", link)
-    if not file_path:
-        file_path = re.findall(r"/files(.*)", link)
-    file_path = file_path[0]
-    reply = f"Mirrors for <code>{file_path.split('/')[-1]}</code>\n"
-    project = re.findall(r"projects?/(.*?)/files", link)[0]
-    mirrors = (
-        f"https://sourceforge.net/settings/mirror_choices?"
-        f"projectname={project}&filename={file_path}"
-    )
-    page = BeautifulSoup(requests.get(mirrors).content, "lxml")
-    info = page.find("ul", {"id": "mirrorList"}).findAll("li")
-
-    for mirror in info[1:]:
-        name = re.findall(r"\((.*)\)", mirror.text.strip())[0]
-        dl_url = (
-            f'https://{mirror["id"]}.dl.sourceforge.net/project/{project}/{file_path}'
-        )
-        reply += f'<a href="{dl_url}">{name}</a> '
-    return reply
+XXXXawaitXmessage.reply("\n".join(reply))
 
 
-def useragent():
-    useragents = BeautifulSoup(
-        requests.get(
-            "https://developers.whatismybrowser.com/"
-            "useragents/explore/operating_system_name/android/"
-        ).content,
-        "lxml",
-    ).findAll("td", {"class": "useragent"})
-    user_agent = choice(useragents)
-    return user_agent.text
+defXsourceforge(url:Xstr)X->Xstr:
+XXXXtry:
+XXXXXXXXlinkX=Xre.findall(r"\bhttps?://.*sourceforge\.net\S+",Xurl)[0]
+XXXXexceptXIndexError:
+XXXXXXXXreplyX=X"NoXSourceForgeXlinksXfound\n"
+XXXXXXXXreturnXreply
+
+XXXXfile_pathX=Xre.findall(r"/files(.*)/download",Xlink)
+XXXXifXnotXfile_path:
+XXXXXXXXfile_pathX=Xre.findall(r"/files(.*)",Xlink)
+XXXXfile_pathX=Xfile_path[0]
+XXXXreplyX=Xf"MirrorsXforX<code>{file_path.split('/')[-1]}</code>\n"
+XXXXprojectX=Xre.findall(r"projects?/(.*?)/files",Xlink)[0]
+XXXXmirrorsX=X(
+XXXXXXXXf"https://sourceforge.net/settings/mirror_choices?"
+XXXXXXXXf"projectname={project}&filename={file_path}"
+XXXX)
+XXXXpageX=XBeautifulSoup(requests.get(mirrors).content,X"lxml")
+XXXXinfoX=Xpage.find("ul",X{"id":X"mirrorList"}).findAll("li")
+
+XXXXforXmirrorXinXinfo[1:]:
+XXXXXXXXnameX=Xre.findall(r"\((.*)\)",Xmirror.text.strip())[0]
+XXXXXXXXdl_urlX=X(
+XXXXXXXXXXXXf'https://{mirror["id"]}.dl.sourceforge.net/project/{project}/{file_path}'
+XXXXXXXX)
+XXXXXXXXreplyX+=Xf'<aXhref="{dl_url}">{name}</a>X'
+XXXXreturnXreply
+
+
+defXuseragent():
+XXXXuseragentsX=XBeautifulSoup(
+XXXXXXXXrequests.get(
+XXXXXXXXXXXX"https://developers.whatismybrowser.com/"
+XXXXXXXXXXXX"useragents/explore/operating_system_name/android/"
+XXXXXXXX).content,
+XXXXXXXX"lxml",
+XXXX).findAll("td",X{"class":X"useragent"})
+XXXXuser_agentX=Xchoice(useragents)
+XXXXreturnXuser_agent.text

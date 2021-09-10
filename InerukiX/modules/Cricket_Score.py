@@ -1,67 +1,67 @@
-#    Copyright (C) @chsaiujwal 2020-2021
-#    Edited by errorshivansh
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
+#XXXXCopyrightX(C)X@chsaiujwalX2020-2021
+#XXXXEditedXbyXerrorshivansh
+#XXXXThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XXXXitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXasXpublishedXby
+#XXXXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXtheXLicense,Xor
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
+#XXXXThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XXXXbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XXXXMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XXXXGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 #
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#XXXXYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XXXXalongXwithXthisXprogram.XXIfXnot,XseeX<https://www.gnu.org/licenses/>.
 
 
-import urllib.request
+importXurllib.request
 
-from bs4 import BeautifulSoup
-from telethon import events
-from telethon.tl import functions, types
+fromXbs4XimportXBeautifulSoup
+fromXtelethonXimportXevents
+fromXtelethon.tlXimportXfunctions,Xtypes
 
-from Ineruki .services.telethon import tbot
+fromXInerukiX.services.telethonXimportXtbot
 
 
-async def is_register_admin(chat, user):
+asyncXdefXis_register_admin(chat,Xuser):
 
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
 
-        return isinstance(
-            (
-                await tbot(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    if isinstance(chat, types.InputPeerChat):
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXtbot(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXifXisinstance(chat,Xtypes.InputPeerChat):
 
-        ui = await tbot.get_peer_id(user)
-        ps = (
-            await tbot(functions.messages.GetFullChatRequest(chat.chat_id))
-        ).full_chat.participants.participants
-        return isinstance(
-            next((p for p in ps if p.user_id == ui), None),
-            (types.ChatParticipantAdmin, types.ChatParticipantCreator),
-        )
-    return None
+XXXXXXXXuiX=XawaitXtbot.get_peer_id(user)
+XXXXXXXXpsX=X(
+XXXXXXXXXXXXawaitXtbot(functions.messages.GetFullChatRequest(chat.chat_id))
+XXXXXXXX).full_chat.participants.participants
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXXnext((pXforXpXinXpsXifXp.user_idX==Xui),XNone),
+XXXXXXXXXXXX(types.ChatParticipantAdmin,Xtypes.ChatParticipantCreator),
+XXXXXXXX)
+XXXXreturnXNone
 
 
 @tbot.on(events.NewMessage(pattern="/cs$"))
-async def _(event):
-    if event.fwd_from:
-        return
-    if event.is_group:
-        if await is_register_admin(event.input_chat, event.message.sender_id):
-            pass
-        else:
-            return
-    score_page = "http://static.cricinfo.com/rss/livescores.xml"
-    page = urllib.request.urlopen(score_page)
-    soup = BeautifulSoup(page, "html.parser")
-    result = soup.find_all("description")
-    Sed = ""
-    for match in result:
-        Sed += match.get_text() + "\n\n"
-    await event.reply(
-        f"<b><u>Match information gathered successful</b></u>\n\n\n<code>{Sed}</code>",
-        parse_mode="HTML",
-    )
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXifXevent.is_group:
+XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+XXXXscore_pageX=X"http://static.cricinfo.com/rss/livescores.xml"
+XXXXpageX=Xurllib.request.urlopen(score_page)
+XXXXsoupX=XBeautifulSoup(page,X"html.parser")
+XXXXresultX=Xsoup.find_all("description")
+XXXXSedX=X""
+XXXXforXmatchXinXresult:
+XXXXXXXXSedX+=Xmatch.get_text()X+X"\n\n"
+XXXXawaitXevent.reply(
+XXXXXXXXf"<b><u>MatchXinformationXgatheredXsuccessful</b></u>\n\n\n<code>{Sed}</code>",
+XXXXXXXXparse_mode="HTML",
+XXXX)

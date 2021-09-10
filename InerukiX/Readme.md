@@ -1,24 +1,24 @@
-# Clients
-## Importing Aiogram
+#XClients
+##XImportingXAiogram
 ```python3
-from Ineruki  import bot
+fromXInerukiXXimportXbot
 ```
 
-## Importing Pyrogram
+##XImportingXPyrogram
 ```python3
-from Ineruki .services.pyrogram import pbot
+fromXInerukiX.services.pyrogramXimportXpbot
 ```
-## Importing Telethon
+##XImportingXTelethon
 ```python3
-from Ineruki .services.telethon import tbot
+fromXInerukiX.services.telethonXimportXtbot
 ```
-## Importing Userbot
+##XImportingXUserbot
 ```python3
-from Ineruki .services.telethonuserbot import ubot
+fromXInerukiX.services.telethonuserbotXimportXubot
 ```
 
-# DB
-## Importing MongoDB
+#XDB
+##XImportingXMongoDB
 ```python3
-from Ineruki .services.mongo import mongodb
+fromXInerukiX.services.mongoXimportXmongodb
 ```

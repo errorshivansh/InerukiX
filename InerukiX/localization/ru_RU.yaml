@@ -1,673 +1,673 @@
 ---
 language_info:
-  flag: "🇷🇺"
-  code: ru
+XXflag:X"🇷🇺"
+XXcode:Xru
 STRINGS:
-  notes:
-    #/save
-    note_saved: "🗒 Заметка <code>{note_name}</code> сохранена в <b>{chat_title}</b>!"
-    note_updated: "🗒 Заметка <code>{note_name}</code> обновлена в <b>{chat_title}</b>!"
-    you_can_get_note: "\nТы можешь получить эту заметку, используя <code>/get {note_name}</code>, или <code>#{note_name}</code>"
-    #Translator note: please keep sure that you don't have space in the end of string
-    note_aliases: "\nПсевдонимы заметки:"
-    blank_note: "Сохранение пустой заметки не допускается!"
-    notename_cant_contain: "Имя заметки не может содержать \"<code>{symbol}</code>\"!"
-    #/get
-    cant_find_note: Я не могу найти эту заметку в <b>{chat_name}</b>!
-    no_note: "Не могу найти эту заметку."
-    no_notes_pattern: "Не найдено заметок по шаблону <code>%s</code>"
-    u_mean: "\nВы имели в виду <code>#{note_name}</code>?"
-    #/notes
-    notelist_no_notes: "Нет никаких заметок в <b>{chat_title}</b>!"
-    notelist_header: "<b>Заметки в {chat_name}</b>:"
-    notes_in_private: "Нажмите на кнопку ниже, чтобы получить список заметок."
-    notelist_search: |
-      <b>Шаблон:</b> <code>{request}</code>
-      <b>Соответствующие заметки:</b>
-    #/clear
-    note_removed: "Заметка <code>#{note_name}</code> удалена в <b>{chat_name}</b>!"
-    note_removed_multiple: |
-      Removed multiple notes in <b>{chat_name}</b>
-      <b>Removed:</b><code>{removed}</code>
-    not_removed_multiple: "<b>Не удалено:</b><code>{not_removed}</code>"
-    #/clearall
-    clear_all_text: "Все заметки будут удалены из {chat_name}. Вы уверены?"
-    clearall_btn_yes: "Да. Удалите все мои заметки!"
-    clearall_btn_no: "Нет!"
-    clearall_done: "Все (<code>{num}</code>) заметки в {chat_name} были удалены!"
-    #/search
-    search_header: |
-      <b>Поисковый запрос в {chat_name}</b>:
-      <b>Шаблон:</b> <code>{request}</code>
-      <b>Соответствующие заметки:</b>
-    #/noteinfo
-    note_info_title: "<b>Информация о заметке</b>\n"
-    note_info_note: "Названия заметки: %s\n"
-    note_info_content: "Содержимое заметки: %s\n"
-    note_info_parsing: "Режим обработки: <code>%s</code>\n"
-    note_info_created: "Заметка создана: <code>{date}</code> пользователем {user}\n"
-    note_info_updated: "Последнее обновление: <code>{date}</code> пользователем {user}\n"
-    user_blocked: "Напишите /start мне в личные сообщения!"
-    #/privatenotes
-    private_notes_false_args: "You have 2 options <code>Disable</code> and <code>Enable</code>!"
-    already_enabled: "Приватные заметки уже включены в %s"
-    current_state_info: "Private notes are currently <code>{state}</code> in <b>{chat}</b>!"
-    enabled_successfully: "Приватные заметки <b>Включены</b> в %s успешно!"
-    disabled_successfully: "Приватные заметки <b>Отключены</b> в %s успешно!"
-    not_enabled: "Private notes are not enabled."
-    privatenotes_notif: "You have been successfully connected to <b>{chat}</b> notes! To disconnect please use command <code>/disconnect</code>!"
-    enabled: 'Включены'
-    disabled: 'Выключены'
-    #/cleannotes
-    clean_notes_enable: "Очистка заметок успешно включена в <b>{chat_name}</b>"
-    clean_notes_disable: "Очистка заметок успешно отключена в <b>{chat_name}</b>"
-    clean_notes_enabled: "Очистка заметок успешно <b>включена</b> в <b>{chat_name}</b>"
-    clean_notes_disabled: "Очистка заметок успешно <b>отключена</b> в <b>{chat_name}</b>"
-    #Filter
-    filters_title: 'Отправить заметку'
-    filters_setup_start: 'Пожалуйста, отправьте название заметки.'
-  #delmsg_no_arg: "deletemsg button can contain only 'admin' or 'user' argument!"
-  #bot_msg: "I'm sorry, I am not able to get this message, probably this a other bot's message, so I can't save it."
-  filters:
-    no_filters_found: "Фильтры не были найдены в <b>{chat_name}</b>!"
-    #/addfilter
-    anon_detected: Будучи анонимным администратором, вы не можете добавлять новые фильтры, вместо этого используйте соединения.
-    regex_too_slow: "Your regex pattern matches too slowly (more than the half of second) and it can't be added!"
-    cancel_btn: "🛑 Cancel"
-    adding_filter: |
-      Добавление фильтра <code>{handler}</code> в <b>{chat_name}</b>
-      Выберите действие ниже:
-    saved: "New filter was successfully saved!"
-    #/filters
-    list_filters: "Фильтры в <b>{chat_name}</b>:\n"
-    #/delfilter
-    no_such_filter: I can't find that filter in <b>{chat_name}</b>, you can check what filters are enabled with the <code>/filters</code> command.
-    del_filter: "Фильтр '<code>{handler}</code>' был успешно удалён!"
-    select_filter_to_remove: |
-      Я нашла много фильтров '<code>{handler}</code>'.
-      Пожалуйста, выберите один для удаления:
-    #/delfilters or /delallfilters
-    not_chat_creator: Only chat creators can use this command!
-    delall_header: This would delete all filters in this chat. This IS irreversible.
-    confirm_yes: '⚠ Delete all'
-    confirm_no: '❌ Cancel'
-    delall_success: Successfully deleted all ({count}) filters in this chat!
-  warns:
-    #/warn
-    warn_sofi: "Хаха невозможно дать предупреждение самой себе!"
-    warn_self: "Ты хочешь дать предупреждение себе? Просто выйди отсюда."
-    warn_admin: "Ты серьёзно? Ты не можешь дать предупреждение админу."
-    warn: "{admin} выдал варн {user} в <b>{chat_name}</b>\n"
-    warn_bun: "Предупреждения превышены! {user} был забанен!"
-    warn_num: "Предупреждения: {curr_warns}/{max_warns}\n"
-    warn_rsn: "Причина: `{reason}`\n"
-    max_warn_exceeded: Предупреждения превышены! %s был %s!
-    "max_warn_exceeded:tmute": Предупреждения превышены! %s был заткнут на %s!
-    #warn rmv callback
-    warn_no_admin_alert: "⚠ You are NOT admin and cannot remove warnings!"
-    warn_btn_rmvl_success: "✅ Warning removed by {admin}!"
-    #/warns
-    warns_header: "Вот ваши предупреждения в этом чате\n\n"
-    warns: "{count} : <code>{reason}</code> {admin}\n"
-    no_warns: "Что ж, у {user} нет предупреждений."
-    #/warnlimit
-    warn_limit: "Лимит предупреждений в {chat_name}: `{num}`"
-    warnlimit_short: 'Лимит предупреждений должен быть не менее 2!'
-    warnlimit_long: 'Лимит предупреждений должен быть меньше 1 000!'
-    warnlimit_updated: '✅ Warnlimit successfully updated to {num}'
-    #/delwarns
-    purged_warns: "{admin} удалил <code>{num}</code> предупреждений у {user} в <b>{chat_title}</b>!"
-    usr_no_wrn: "У {user} пока нет предупреждений."
-    rst_wrn_sofi: 'У Ineruki никогда не было предупреждений для сброса.'
-    not_digit: Лимит предупреждений должен быть цифрами!
-    #/warnmode
-    same_mode: Это текущий режим! Как изменить его?
-    no_time: Для выбора режима «tmute» вы должны указать время!
-    invalid_time: Invalid time!
-    warnmode_success: Warn mode of <b>%s</b> has successfully changed to <b>%s</b>!
-    wrng_args: |
-      Это доступные варианты:
-      <code>%s</code>
-    mode_info: |
-      Текущий режим в этом чате <b>%s</b>.
-    banned: забанен
-    muted: заглушён
-    filters_title: Предупредить пользователя
-    filter_handle_rsn: Автоматическое действие фильтра на '%s'
-  msg_deleting:
-    no_rights_purge: "У вас недостаточно прав для выполнения очистки в этой группе!"
-    reply_to_msg: "Ответьте на сообщение, которое нужно удалить!"
-    purge_error: "Я не могу продолжить очистку, обычно потому, что вы начали очистку от сообщения, которое было отправлено более 2 дней назад."
-    fast_purge_done: "<b>Быстрая очистка завершена!</b>\nЭто сообщение будет удалено через 5 секунд."
-    purge_user_done: "Все сообщения от {user} были успешно удалены!"
-  misc:
-    your_id: "Ваш ID: <code>{id}</code>\n"
-    chat_id: "ID группы: <code>{id}</code>\n"
-    user_id: "{user} ID: <code>{id}</code>\n"
-    conn_chat_id: "ID текущего подключённого чата: <code>{id}</code>"
-    help_btn: "Нажмите на меня, чтобы получить помощь!"
-    help_txt: "Нажмите кнопку ниже для помощи!"
-    delmsg_filter_title: 'Удалить сообщение'
-    send_text: Пожалуйста, отправьте в ответ слово/предложение !
-    replymsg_filter_title: 'Ответить на сообщение'
-    send_customised_reason: Send the <i>reason</i> you want to include in action message. "<code>None</code>" for <i>no reason</i> to be given!
-    expected_text: Expected a text message!
-  promotes:
-    promote_success: "{user} был успешно повышен в {chat_name}!"
-    promote_title: "\nС пользовательской ролью <code>{role}</code>!"
-    rank_to_loong: "Название пользовательской роли не может быть длиннее 16 символов."
-    promote_failed: "Повышение не удалось! Проверьте, имею ли я права для этого."
-    demote_success: "{user} был успешно понижен в {chat_name}!"
-    demote_not_admin: "Этот пользователь не админ."
-    demote_failed: "Demotion failed. Maybe I can't demote or the person is promoted by someone else?"
-    cant_get_user: "Я не смогла получить пользователя! Пожалуйста, ответьте на его сообщение и повторите попытку."
-    cant_promote_yourself: "Вы не можете повысить себя."
-    emoji_not_allowed: "Извините, но роли администратора не могут иметь эмодзи 😞"
-  pm_menu:
-    start_hi_group: 'Привет! Меня зовут Ineruki'
-    start_hi: "Привет! Меня зовут Sophie. Я помогу вам эффективно управлять вашей группой!"
-    btn_source: "📜 Source code"
-    btn_help: "❔ Помощь"
-    btn_lang: "🇷🇺 Язык"
-    btn_channel: "🙋‍♀️ Новости Ineruki"
-    btn_group: "👥 Ineruki Support"
-    btn_group_help: "Click me for help!"
-    back: Назад
-    #/help
-    help_header: "Привет! Меня зовут <b>Ineruki</b>. Я бот для управления группами, здесь, чтобы помочь вам передвигаться и поддерживать порядок в ваших группах!\nУ меня есть множество удобных функций, таких как борьба с наводнениями, система предупреждений, система ведения заметок и даже заранее определенные ответы на определенные ключевые слова."
-    click_btn: Нажмите сюда
-  disable:
-    #/disableable
-    disablable: "<b>Команды, доступные для отключения:</b>\n"
-    #/disabled
-    no_disabled_cmds: Нет отключённых команд в чате <b>{chat_name}</b>!
-    disabled_list: "<b>Отключённые команды в чате {chat_name}:</b>\n"
-    #/disable
-    wot_to_disable: "Что вы хотите отключить?"
-    already_disabled: "Эта команда уже отключена!"
-    disabled: "Команда <code>{cmd}</code> была отключена в <b>{chat_name}</b>!"
-    #/enable
-    wot_to_enable: "Что вы хотите включить?"
-    already_enabled: "Эта команда не отключена!"
-    enabled: "Команда <code>{cmd}</code> была включена в <b>{chat_name}</b>!"
-    #/enableall
-    not_disabled_anything: "Ничего не было отключено в <b>{chat_title}</b>!"
-    enable_all_text: "This will enable all commands in the <b>{chat_name}</b>. Are you sure?"
-    enable_all_btn_yes: "Да. Включите все команды!"
-    enable_all_btn_no: "Нет!"
-    enable_all_done: "Все (<code>{num}</code>) команды были включены в чате <b>{chat_name}</b>!"
-  bot_rights:
-    change_info: "У меня нет права менять информацию группы, сделайте меня админом с этим правом."
-    edit_messages: "У меня нет прав для редактирования сообщений!"
-    delete_messages: "У меня нет прав на удаление сообщений здесь."
-    ban_user: "У меня нет прав блокировать пользователей, пожалуйста, сделайте меня админом с этим правом."
-    pin_messages: "У меня нет прав закреплять сообщения, пожалуйста, сделайте меня админом с этим правом."
-    add_admins: "У меня нет прав добавлять администраторов, пожалуйста, сделайте меня администратором с этими правами."
-  feds:
-    #decorators
-    need_fed_admin: "You are not an admin in <b>{name}</b> federation"
-    need_fed_owner: "You are not an owner of <b>{name}</b> federation"
-    cant_get_user: "Sorry, I can't get that user, try using their user ID"
-    #/fnew
-    fed_name_long: "Название федерации не может быть длиннее 60 символов!"
-    can_only_1_fed: "Users can only create 1 federation, please remove one."
-    name_not_avaible: "Федерация с именем <code>{name}</code> уже существует! Пожалуйста, используйте другое имя."
-    created_fed: |
-      Congrats, you have successfully created a federation.
-      <b>Name:</b> {name}
-      <b>ID:</b> <code>{id}</code>
-      <b>Creator:</b> {creator}
-      Use <code>/fjoin {id}</code> to connect federation to chat\
-    disallow_anon: As an anonymous admin you cannot create new federation!
-    #/fjoin
-    only_creators: "You must be the chat creator to be able to connect chat to a federation."
-    fed_id_invalid: "The given federation ID is invalid! Please give me a valid ID."
-    joined_fed_already: "This chat has already joined a federation! Please use /fleave to leave that federation"
-    join_fed_success: "Great! Chat <b>{chat}</b> is now a part of <b>{fed}</b> federation!"
-    join_chat_fed_log: |
-      <b>Chat joined federation</b> #ChatJoined
-      <b>Fed:</b> {fed_name} (<code>{fed_id}</code>)
-      <b>Chat:</b> {chat_name} (<code>{chat_id}</code>)
-    #/leavefed
-    chat_not_in_fed: "Этот чат ещё не вступил в федерацию."
-    leave_fed_success: "Чат <b>{chat}</b> покинул федерацию <b>{fed}</b>."
-    leave_chat_fed_log: |
-      <b>Чат вышел из федерации</b> #ChatLeft
-      <b>Федерация:</b> {fed_name} (<code>{fed_id}</code>)
-      <b>Чат:</b> {chat_name} (<code>{chat_id}</code>)
-    #/fsub
-    already_subsed: "Федерация <b>{name}</b> уже подписана на <b>{name2}</b>"
-    subsed_success: "Федерация <b>{name}</b> подписана на <b>{name2}</b>!"
-    #/funsub
-    not_subsed: "Federation <b>{name}</b> is not subscribed to <b>{name2}</b>"
-    unsubsed_success: "Federation <b>{name}</b> unsubscribed from <b>{name2}</b>!"
-    #/fpromote
-    #admin_already_in_fed: "User {user} is already a fed admin in <b>{name}</b> Federation."
-    admin_added_to_fed: "User {user} added to <b>{name}</b> federation admins."
-    promote_user_fed_log: |
-      <b>Пользователь повышен до админа федерации</b> #UserPromoted
-      <b>Федерация:</b> {fed_name} (<code>{fed_id}</code>)
-      <b>Пользователь:</b> {user} (<code>{user_id}</code>)
-    "restricted_user:promote": This user is restricted from being federation admin!
-    #/fdemote
-    #admin_not_in_fed: "User {user} is not <b>{name}</b> Federation admin."
-    admin_demoted_from_fed: "User {user} demoted from <b>{name}</b> federation admins."
-    demote_user_fed_log: |
-      <b>Пользователь исключён из админов федерации</b> #UserDemoted
-      <b>Федерация:</b> {fed_name} (<code>{fed_id}</code>)
-      <b>Пользователь:</b> {user} (<code>{user_id}</code>)
-    #/fsetlog
-    already_have_chatlog: "<b>{name}</b> federation already has logging enabled in another chat/channel!"
-    set_chat_log: |
-      This chat is now logging all actions in <b>{name}</b> federation
+XXnotes:
+XXXX#/save
+XXXXnote_saved:X"🗒XЗаметкаX<code>{note_name}</code>XсохраненаXвX<b>{chat_title}</b>!"
+XXXXnote_updated:X"🗒XЗаметкаX<code>{note_name}</code>XобновленаXвX<b>{chat_title}</b>!"
+XXXXyou_can_get_note:X"\nТыXможешьXполучитьXэтуXзаметку,XиспользуяX<code>/getX{note_name}</code>,XилиX<code>#{note_name}</code>"
+XXXX#TranslatorXnote:XpleaseXkeepXsureXthatXyouXdon'tXhaveXspaceXinXtheXendXofXstring
+XXXXnote_aliases:X"\nПсевдонимыXзаметки:"
+XXXXblank_note:X"СохранениеXпустойXзаметкиXнеXдопускается!"
+XXXXnotename_cant_contain:X"ИмяXзаметкиXнеXможетXсодержатьX\"<code>{symbol}</code>\"!"
+XXXX#/get
+XXXXcant_find_note:XЯXнеXмогуXнайтиXэтуXзаметкуXвX<b>{chat_name}</b>!
+XXXXno_note:X"НеXмогуXнайтиXэтуXзаметку."
+XXXXno_notes_pattern:X"НеXнайденоXзаметокXпоXшаблонуX<code>%s</code>"
+XXXXu_mean:X"\nВыXимелиXвXвидуX<code>#{note_name}</code>?"
+XXXX#/notes
+XXXXnotelist_no_notes:X"НетXникакихXзаметокXвX<b>{chat_title}</b>!"
+XXXXnotelist_header:X"<b>ЗаметкиXвX{chat_name}</b>:"
+XXXXnotes_in_private:X"НажмитеXнаXкнопкуXниже,XчтобыXполучитьXсписокXзаметок."
+XXXXnotelist_search:X|
+XXXXXX<b>Шаблон:</b>X<code>{request}</code>
+XXXXXX<b>СоответствующиеXзаметки:</b>
+XXXX#/clear
+XXXXnote_removed:X"ЗаметкаX<code>#{note_name}</code>XудаленаXвX<b>{chat_name}</b>!"
+XXXXnote_removed_multiple:X|
+XXXXXXRemovedXmultipleXnotesXinX<b>{chat_name}</b>
+XXXXXX<b>Removed:</b><code>{removed}</code>
+XXXXnot_removed_multiple:X"<b>НеXудалено:</b><code>{not_removed}</code>"
+XXXX#/clearall
+XXXXclear_all_text:X"ВсеXзаметкиXбудутXудаленыXизX{chat_name}.XВыXуверены?"
+XXXXclearall_btn_yes:X"Да.XУдалитеXвсеXмоиXзаметки!"
+XXXXclearall_btn_no:X"Нет!"
+XXXXclearall_done:X"ВсеX(<code>{num}</code>)XзаметкиXвX{chat_name}XбылиXудалены!"
+XXXX#/search
+XXXXsearch_header:X|
+XXXXXX<b>ПоисковыйXзапросXвX{chat_name}</b>:
+XXXXXX<b>Шаблон:</b>X<code>{request}</code>
+XXXXXX<b>СоответствующиеXзаметки:</b>
+XXXX#/noteinfo
+XXXXnote_info_title:X"<b>ИнформацияXоXзаметке</b>\n"
+XXXXnote_info_note:X"НазванияXзаметки:X%s\n"
+XXXXnote_info_content:X"СодержимоеXзаметки:X%s\n"
+XXXXnote_info_parsing:X"РежимXобработки:X<code>%s</code>\n"
+XXXXnote_info_created:X"ЗаметкаXсоздана:X<code>{date}</code>XпользователемX{user}\n"
+XXXXnote_info_updated:X"ПоследнееXобновление:X<code>{date}</code>XпользователемX{user}\n"
+XXXXuser_blocked:X"НапишитеX/startXмнеXвXличныеXсообщения!"
+XXXX#/privatenotes
+XXXXprivate_notes_false_args:X"YouXhaveX2XoptionsX<code>Disable</code>XandX<code>Enable</code>!"
+XXXXalready_enabled:X"ПриватныеXзаметкиXужеXвключеныXвX%s"
+XXXXcurrent_state_info:X"PrivateXnotesXareXcurrentlyX<code>{state}</code>XinX<b>{chat}</b>!"
+XXXXenabled_successfully:X"ПриватныеXзаметкиX<b>Включены</b>XвX%sXуспешно!"
+XXXXdisabled_successfully:X"ПриватныеXзаметкиX<b>Отключены</b>XвX%sXуспешно!"
+XXXXnot_enabled:X"PrivateXnotesXareXnotXenabled."
+XXXXprivatenotes_notif:X"YouXhaveXbeenXsuccessfullyXconnectedXtoX<b>{chat}</b>Xnotes!XToXdisconnectXpleaseXuseXcommandX<code>/disconnect</code>!"
+XXXXenabled:X'Включены'
+XXXXdisabled:X'Выключены'
+XXXX#/cleannotes
+XXXXclean_notes_enable:X"ОчисткаXзаметокXуспешноXвключенаXвX<b>{chat_name}</b>"
+XXXXclean_notes_disable:X"ОчисткаXзаметокXуспешноXотключенаXвX<b>{chat_name}</b>"
+XXXXclean_notes_enabled:X"ОчисткаXзаметокXуспешноX<b>включена</b>XвX<b>{chat_name}</b>"
+XXXXclean_notes_disabled:X"ОчисткаXзаметокXуспешноX<b>отключена</b>XвX<b>{chat_name}</b>"
+XXXX#Filter
+XXXXfilters_title:X'ОтправитьXзаметку'
+XXXXfilters_setup_start:X'Пожалуйста,XотправьтеXназваниеXзаметки.'
+XX#delmsg_no_arg:X"deletemsgXbuttonXcanXcontainXonlyX'admin'XorX'user'Xargument!"
+XX#bot_msg:X"I'mXsorry,XIXamXnotXableXtoXgetXthisXmessage,XprobablyXthisXaXotherXbot'sXmessage,XsoXIXcan'tXsaveXit."
+XXfilters:
+XXXXno_filters_found:X"ФильтрыXнеXбылиXнайденыXвX<b>{chat_name}</b>!"
+XXXX#/addfilter
+XXXXanon_detected:XБудучиXанонимнымXадминистратором,XвыXнеXможетеXдобавлятьXновыеXфильтры,XвместоXэтогоXиспользуйтеXсоединения.
+XXXXregex_too_slow:X"YourXregexXpatternXmatchesXtooXslowlyX(moreXthanXtheXhalfXofXsecond)XandXitXcan'tXbeXadded!"
+XXXXcancel_btn:X"🛑XCancel"
+XXXXadding_filter:X|
+XXXXXXДобавлениеXфильтраX<code>{handler}</code>XвX<b>{chat_name}</b>
+XXXXXXВыберитеXдействиеXниже:
+XXXXsaved:X"NewXfilterXwasXsuccessfullyXsaved!"
+XXXX#/filters
+XXXXlist_filters:X"ФильтрыXвX<b>{chat_name}</b>:\n"
+XXXX#/delfilter
+XXXXno_such_filter:XIXcan'tXfindXthatXfilterXinX<b>{chat_name}</b>,XyouXcanXcheckXwhatXfiltersXareXenabledXwithXtheX<code>/filters</code>Xcommand.
+XXXXdel_filter:X"ФильтрX'<code>{handler}</code>'XбылXуспешноXудалён!"
+XXXXselect_filter_to_remove:X|
+XXXXXXЯXнашлаXмногоXфильтровX'<code>{handler}</code>'.
+XXXXXXПожалуйста,XвыберитеXодинXдляXудаления:
+XXXX#/delfiltersXorX/delallfilters
+XXXXnot_chat_creator:XOnlyXchatXcreatorsXcanXuseXthisXcommand!
+XXXXdelall_header:XThisXwouldXdeleteXallXfiltersXinXthisXchat.XThisXISXirreversible.
+XXXXconfirm_yes:X'⚠XDeleteXall'
+XXXXconfirm_no:X'❌XCancel'
+XXXXdelall_success:XSuccessfullyXdeletedXallX({count})XfiltersXinXthisXchat!
+XXwarns:
+XXXX#/warn
+XXXXwarn_sofi:X"ХахаXневозможноXдатьXпредупреждениеXсамойXсебе!"
+XXXXwarn_self:X"ТыXхочешьXдатьXпредупреждениеXсебе?XПростоXвыйдиXотсюда."
+XXXXwarn_admin:X"ТыXсерьёзно?XТыXнеXможешьXдатьXпредупреждениеXадмину."
+XXXXwarn:X"{admin}XвыдалXварнX{user}XвX<b>{chat_name}</b>\n"
+XXXXwarn_bun:X"ПредупрежденияXпревышены!X{user}XбылXзабанен!"
+XXXXwarn_num:X"Предупреждения:X{curr_warns}/{max_warns}\n"
+XXXXwarn_rsn:X"Причина:X`{reason}`\n"
+XXXXmax_warn_exceeded:XПредупрежденияXпревышены!X%sXбылX%s!
+XXXX"max_warn_exceeded:tmute":XПредупрежденияXпревышены!X%sXбылXзаткнутXнаX%s!
+XXXX#warnXrmvXcallback
+XXXXwarn_no_admin_alert:X"⚠XYouXareXNOTXadminXandXcannotXremoveXwarnings!"
+XXXXwarn_btn_rmvl_success:X"✅XWarningXremovedXbyX{admin}!"
+XXXX#/warns
+XXXXwarns_header:X"ВотXвашиXпредупрежденияXвXэтомXчате\n\n"
+XXXXwarns:X"{count}X:X<code>{reason}</code>X{admin}\n"
+XXXXno_warns:X"ЧтоXж,XуX{user}XнетXпредупреждений."
+XXXX#/warnlimit
+XXXXwarn_limit:X"ЛимитXпредупрежденийXвX{chat_name}:X`{num}`"
+XXXXwarnlimit_short:X'ЛимитXпредупрежденийXдолженXбытьXнеXменееX2!'
+XXXXwarnlimit_long:X'ЛимитXпредупрежденийXдолженXбытьXменьшеX1X000!'
+XXXXwarnlimit_updated:X'✅XWarnlimitXsuccessfullyXupdatedXtoX{num}'
+XXXX#/delwarns
+XXXXpurged_warns:X"{admin}XудалилX<code>{num}</code>XпредупрежденийXуX{user}XвX<b>{chat_title}</b>!"
+XXXXusr_no_wrn:X"УX{user}XпокаXнетXпредупреждений."
+XXXXrst_wrn_sofi:X'УXInerukiXникогдаXнеXбылоXпредупрежденийXдляXсброса.'
+XXXXnot_digit:XЛимитXпредупрежденийXдолженXбытьXцифрами!
+XXXX#/warnmode
+XXXXsame_mode:XЭтоXтекущийXрежим!XКакXизменитьXего?
+XXXXno_time:XДляXвыбораXрежимаX«tmute»XвыXдолжныXуказатьXвремя!
+XXXXinvalid_time:XInvalidXtime!
+XXXXwarnmode_success:XWarnXmodeXofX<b>%s</b>XhasXsuccessfullyXchangedXtoX<b>%s</b>!
+XXXXwrng_args:X|
+XXXXXXЭтоXдоступныеXварианты:
+XXXXXX<code>%s</code>
+XXXXmode_info:X|
+XXXXXXТекущийXрежимXвXэтомXчатеX<b>%s</b>.
+XXXXbanned:Xзабанен
+XXXXmuted:Xзаглушён
+XXXXfilters_title:XПредупредитьXпользователя
+XXXXfilter_handle_rsn:XАвтоматическоеXдействиеXфильтраXнаX'%s'
+XXmsg_deleting:
+XXXXno_rights_purge:X"УXвасXнедостаточноXправXдляXвыполненияXочисткиXвXэтойXгруппе!"
+XXXXreply_to_msg:X"ОтветьтеXнаXсообщение,XкотороеXнужноXудалить!"
+XXXXpurge_error:X"ЯXнеXмогуXпродолжитьXочистку,XобычноXпотому,XчтоXвыXначалиXочисткуXотXсообщения,XкотороеXбылоXотправленоXболееX2XднейXназад."
+XXXXfast_purge_done:X"<b>БыстраяXочисткаXзавершена!</b>\nЭтоXсообщениеXбудетXудаленоXчерезX5Xсекунд."
+XXXXpurge_user_done:X"ВсеXсообщенияXотX{user}XбылиXуспешноXудалены!"
+XXmisc:
+XXXXyour_id:X"ВашXID:X<code>{id}</code>\n"
+XXXXchat_id:X"IDXгруппы:X<code>{id}</code>\n"
+XXXXuser_id:X"{user}XID:X<code>{id}</code>\n"
+XXXXconn_chat_id:X"IDXтекущегоXподключённогоXчата:X<code>{id}</code>"
+XXXXhelp_btn:X"НажмитеXнаXменя,XчтобыXполучитьXпомощь!"
+XXXXhelp_txt:X"НажмитеXкнопкуXнижеXдляXпомощи!"
+XXXXdelmsg_filter_title:X'УдалитьXсообщение'
+XXXXsend_text:XПожалуйста,XотправьтеXвXответXслово/предложениеX!
+XXXXreplymsg_filter_title:X'ОтветитьXнаXсообщение'
+XXXXsend_customised_reason:XSendXtheX<i>reason</i>XyouXwantXtoXincludeXinXactionXmessage.X"<code>None</code>"XforX<i>noXreason</i>XtoXbeXgiven!
+XXXXexpected_text:XExpectedXaXtextXmessage!
+XXpromotes:
+XXXXpromote_success:X"{user}XбылXуспешноXповышенXвX{chat_name}!"
+XXXXpromote_title:X"\nСXпользовательскойXрольюX<code>{role}</code>!"
+XXXXrank_to_loong:X"НазваниеXпользовательскойXролиXнеXможетXбытьXдлиннееX16Xсимволов."
+XXXXpromote_failed:X"ПовышениеXнеXудалось!XПроверьте,XимеюXлиXяXправаXдляXэтого."
+XXXXdemote_success:X"{user}XбылXуспешноXпониженXвX{chat_name}!"
+XXXXdemote_not_admin:X"ЭтотXпользовательXнеXадмин."
+XXXXdemote_failed:X"DemotionXfailed.XMaybeXIXcan'tXdemoteXorXtheXpersonXisXpromotedXbyXsomeoneXelse?"
+XXXXcant_get_user:X"ЯXнеXсмоглаXполучитьXпользователя!XПожалуйста,XответьтеXнаXегоXсообщениеXиXповторитеXпопытку."
+XXXXcant_promote_yourself:X"ВыXнеXможетеXповыситьXсебя."
+XXXXemoji_not_allowed:X"Извините,XноXролиXадминистратораXнеXмогутXиметьXэмодзиX😞"
+XXpm_menu:
+XXXXstart_hi_group:X'Привет!XМеняXзовутXIneruki'
+XXXXstart_hi:X"Привет!XМеняXзовутXSophie.XЯXпомогуXвамXэффективноXуправлятьXвашейXгруппой!"
+XXXXbtn_source:X"📜XSourceXcode"
+XXXXbtn_help:X"❔XПомощь"
+XXXXbtn_lang:X"🇷🇺XЯзык"
+XXXXbtn_channel:X"🙋‍♀️XНовостиXIneruki"
+XXXXbtn_group:X"👥XInerukiXSupport"
+XXXXbtn_group_help:X"ClickXmeXforXhelp!"
+XXXXback:XНазад
+XXXX#/help
+XXXXhelp_header:X"Привет!XМеняXзовутX<b>Ineruki</b>.XЯXботXдляXуправленияXгруппами,Xздесь,XчтобыXпомочьXвамXпередвигатьсяXиXподдерживатьXпорядокXвXвашихXгруппах!\nУXменяXестьXмножествоXудобныхXфункций,XтакихXкакXборьбаXсXнаводнениями,XсистемаXпредупреждений,XсистемаXведенияXзаметокXиXдажеXзаранееXопределенныеXответыXнаXопределенныеXключевыеXслова."
+XXXXclick_btn:XНажмитеXсюда
+XXdisable:
+XXXX#/disableable
+XXXXdisablable:X"<b>Команды,XдоступныеXдляXотключения:</b>\n"
+XXXX#/disabled
+XXXXno_disabled_cmds:XНетXотключённыхXкомандXвXчатеX<b>{chat_name}</b>!
+XXXXdisabled_list:X"<b>ОтключённыеXкомандыXвXчатеX{chat_name}:</b>\n"
+XXXX#/disable
+XXXXwot_to_disable:X"ЧтоXвыXхотитеXотключить?"
+XXXXalready_disabled:X"ЭтаXкомандаXужеXотключена!"
+XXXXdisabled:X"КомандаX<code>{cmd}</code>XбылаXотключенаXвX<b>{chat_name}</b>!"
+XXXX#/enable
+XXXXwot_to_enable:X"ЧтоXвыXхотитеXвключить?"
+XXXXalready_enabled:X"ЭтаXкомандаXнеXотключена!"
+XXXXenabled:X"КомандаX<code>{cmd}</code>XбылаXвключенаXвX<b>{chat_name}</b>!"
+XXXX#/enableall
+XXXXnot_disabled_anything:X"НичегоXнеXбылоXотключеноXвX<b>{chat_title}</b>!"
+XXXXenable_all_text:X"ThisXwillXenableXallXcommandsXinXtheX<b>{chat_name}</b>.XAreXyouXsure?"
+XXXXenable_all_btn_yes:X"Да.XВключитеXвсеXкоманды!"
+XXXXenable_all_btn_no:X"Нет!"
+XXXXenable_all_done:X"ВсеX(<code>{num}</code>)XкомандыXбылиXвключеныXвXчатеX<b>{chat_name}</b>!"
+XXbot_rights:
+XXXXchange_info:X"УXменяXнетXправаXменятьXинформациюXгруппы,XсделайтеXменяXадминомXсXэтимXправом."
+XXXXedit_messages:X"УXменяXнетXправXдляXредактированияXсообщений!"
+XXXXdelete_messages:X"УXменяXнетXправXнаXудалениеXсообщенийXздесь."
+XXXXban_user:X"УXменяXнетXправXблокироватьXпользователей,Xпожалуйста,XсделайтеXменяXадминомXсXэтимXправом."
+XXXXpin_messages:X"УXменяXнетXправXзакреплятьXсообщения,Xпожалуйста,XсделайтеXменяXадминомXсXэтимXправом."
+XXXXadd_admins:X"УXменяXнетXправXдобавлятьXадминистраторов,Xпожалуйста,XсделайтеXменяXадминистраторомXсXэтимиXправами."
+XXfeds:
+XXXX#decorators
+XXXXneed_fed_admin:X"YouXareXnotXanXadminXinX<b>{name}</b>Xfederation"
+XXXXneed_fed_owner:X"YouXareXnotXanXownerXofX<b>{name}</b>Xfederation"
+XXXXcant_get_user:X"Sorry,XIXcan'tXgetXthatXuser,XtryXusingXtheirXuserXID"
+XXXX#/fnew
+XXXXfed_name_long:X"НазваниеXфедерацииXнеXможетXбытьXдлиннееX60Xсимволов!"
+XXXXcan_only_1_fed:X"UsersXcanXonlyXcreateX1Xfederation,XpleaseXremoveXone."
+XXXXname_not_avaible:X"ФедерацияXсXименемX<code>{name}</code>XужеXсуществует!XПожалуйста,XиспользуйтеXдругоеXимя."
+XXXXcreated_fed:X|
+XXXXXXCongrats,XyouXhaveXsuccessfullyXcreatedXaXfederation.
+XXXXXX<b>Name:</b>X{name}
+XXXXXX<b>ID:</b>X<code>{id}</code>
+XXXXXX<b>Creator:</b>X{creator}
+XXXXXXUseX<code>/fjoinX{id}</code>XtoXconnectXfederationXtoXchat\
+XXXXdisallow_anon:XAsXanXanonymousXadminXyouXcannotXcreateXnewXfederation!
+XXXX#/fjoin
+XXXXonly_creators:X"YouXmustXbeXtheXchatXcreatorXtoXbeXableXtoXconnectXchatXtoXaXfederation."
+XXXXfed_id_invalid:X"TheXgivenXfederationXIDXisXinvalid!XPleaseXgiveXmeXaXvalidXID."
+XXXXjoined_fed_already:X"ThisXchatXhasXalreadyXjoinedXaXfederation!XPleaseXuseX/fleaveXtoXleaveXthatXfederation"
+XXXXjoin_fed_success:X"Great!XChatX<b>{chat}</b>XisXnowXaXpartXofX<b>{fed}</b>Xfederation!"
+XXXXjoin_chat_fed_log:X|
+XXXXXX<b>ChatXjoinedXfederation</b>X#ChatJoined
+XXXXXX<b>Fed:</b>X{fed_name}X(<code>{fed_id}</code>)
+XXXXXX<b>Chat:</b>X{chat_name}X(<code>{chat_id}</code>)
+XXXX#/leavefed
+XXXXchat_not_in_fed:X"ЭтотXчатXещёXнеXвступилXвXфедерацию."
+XXXXleave_fed_success:X"ЧатX<b>{chat}</b>XпокинулXфедерациюX<b>{fed}</b>."
+XXXXleave_chat_fed_log:X|
+XXXXXX<b>ЧатXвышелXизXфедерации</b>X#ChatLeft
+XXXXXX<b>Федерация:</b>X{fed_name}X(<code>{fed_id}</code>)
+XXXXXX<b>Чат:</b>X{chat_name}X(<code>{chat_id}</code>)
+XXXX#/fsub
+XXXXalready_subsed:X"ФедерацияX<b>{name}</b>XужеXподписанаXнаX<b>{name2}</b>"
+XXXXsubsed_success:X"ФедерацияX<b>{name}</b>XподписанаXнаX<b>{name2}</b>!"
+XXXX#/funsub
+XXXXnot_subsed:X"FederationX<b>{name}</b>XisXnotXsubscribedXtoX<b>{name2}</b>"
+XXXXunsubsed_success:X"FederationX<b>{name}</b>XunsubscribedXfromX<b>{name2}</b>!"
+XXXX#/fpromote
+XXXX#admin_already_in_fed:X"UserX{user}XisXalreadyXaXfedXadminXinX<b>{name}</b>XFederation."
+XXXXadmin_added_to_fed:X"UserX{user}XaddedXtoX<b>{name}</b>XfederationXadmins."
+XXXXpromote_user_fed_log:X|
+XXXXXX<b>ПользовательXповышенXдоXадминаXфедерации</b>X#UserPromoted
+XXXXXX<b>Федерация:</b>X{fed_name}X(<code>{fed_id}</code>)
+XXXXXX<b>Пользователь:</b>X{user}X(<code>{user_id}</code>)
+XXXX"restricted_user:promote":XThisXuserXisXrestrictedXfromXbeingXfederationXadmin!
+XXXX#/fdemote
+XXXX#admin_not_in_fed:X"UserX{user}XisXnotX<b>{name}</b>XFederationXadmin."
+XXXXadmin_demoted_from_fed:X"UserX{user}XdemotedXfromX<b>{name}</b>XfederationXadmins."
+XXXXdemote_user_fed_log:X|
+XXXXXX<b>ПользовательXисключёнXизXадминовXфедерации</b>X#UserDemoted
+XXXXXX<b>Федерация:</b>X{fed_name}X(<code>{fed_id}</code>)
+XXXXXX<b>Пользователь:</b>X{user}X(<code>{user_id}</code>)
+XXXX#/fsetlog
+XXXXalready_have_chatlog:X"<b>{name}</b>XfederationXalreadyXhasXloggingXenabledXinXanotherXchat/channel!"
+XXXXset_chat_log:X|
+XXXXXXThisXchatXisXnowXloggingXallXactionsXinX<b>{name}</b>Xfederation
 
-      Federation logging is used for internal assessment of the federation and its performance.
-      The federation should <b>NOT</b> be used as a public wall of shame thereby respecting user data and our privacy guidelines.
-    set_log_fed_log: |
-      <b>Включён лог</b> #LoggingEnabled
-      <b>Федерация:</b> {fed_name} (<code>{fed_id}</code>)
-    no_right_to_post: У меня нет прав на публикацию сообщений в этом канале!
-    #/funsetlog
-    not_logging: "<b>{name}</b> federation isn't logging to any chat/channel!"
-    logging_removed: "Successfully removed logging from <b>{name}</b> federation."
-    unset_log_fed_log: |
-      <b>Отключено логгирование</b> #LoggingDisabled
-      <b>Федерация:</b> {fed_name} (<code>{fed_id}</code>)
-    #/fchatlist
-    no_chats: "There's no chats joined this <b>{name}</b> federation"
-    chats_in_fed: "<b>Chats connected to {name} federation:</b>\n"
-    too_large: "Вывод слишком велик, отправляю файлом"
-    #/finfo
-    finfo_text: |
-      <b>Информация о Федерации</b>
-      <b>Имя:</b> {name}
-      <b>ID:</b> <code>{fed_id}</code>
-      <b>Создатель:</b> {creator}
-      <b>Чаты в федерации:</b> {chats}
-      <b>Заблокированные пользователи в федерации:</b> {fbanned}
-    finfo_subs_title: "<b>Federations subscribed to this feds:</b>\n"
-    #/fadminlist
-    fadmins_header: "Admins in <b>{fed_name}</b> fed:\n"
-    #no_fbanned_in_fed: "There isn't any banned users in {fed_name} Federation!"
-    #/fban
-    user_wl: "Этот пользователь в белом списке."
-    fban_self: "Это хорошее шоу!"
-    fban_creator: "How can I ban the federation creator?! I don't think it's gonna be funny."
-    fban_fed_admin: "I'm not going to ban a federation admin from their own fed!"
-    update_fban: "This user was already fbanned therefore I am updating the reason to <code>{reason}</code>"
-    already_fbanned: "{user} уже забанен в этой федерации."
-    fbanned_header: "<b>Новый Федеральный бан</b>\n"
-    fban_info: |
-      <b>Федерация:</b> {fed}
-      <b>Админ федерации:</b> {fadmin}
-      <b>Пользователь:</b> {user} (<code>{user_id}</code>)
-    fbanned_reason: "<b>Причина:</b> <code>{reason}</code>"
-    fbanned_process: "\n<b>Статус:</b> Бан в <code>{num}</code> федеральных чатах..."
-    fbanned_done: "\n<b>Статус:</b> Готово! забанен в <code>{num}</code> чатах!"
-    fbanned_silence: "Это сообщение будет очищено через 5 секунд"
-    fbanned_subs_process: "\n<b>Статус:</b> Бан в <code>{feds}</code> подписанных федерациях..."
-    fbanned_subs_done: "\n<b>Status:</b> Done! Banned in <code>{chats}</code> chats of this federation and <code>{subs_chats}</code> chats of <code>{feds}</code> subscribed feds"
-    fban_usr_rmvd: |
-      User {user} is currently banned in <b>{fed}</b> federation and have been removed!
-      Reason: <code>{rsn}</code>
-    fban_log_fed_log: |
-      <b>Блокировка в федерации</b> #FedBan
-      <b>Федерация:</b> {fed_name} (<code>{fed_id}</code>)
-      <b>Чаты:</b> пользователь забанен в <code>{chat_count}</code>/<code>{all_chats}</code> чатах
-    fban_reason_fed_log: "<b>Причина:</b> <code>{reason}</code>\n"
-    fban_subs_fed_log: "\n<b>Подписанные федерации:</b> забанен в <code>{subs_chats}</code> чатах <code>{feds}</code> федераций"
-    #/unfban
-    unfban_self: "Think of something else to have fun with instead of this."
-    user_not_fbanned: "{user} isn't banned in this federation."
-    un_fbanned_header: "<b>Новый раз-FedBan</b>\n"
-    un_fbanned_process: "\n<b>Статус:</b> Разбан в <code>{num}</code> чатах..."
-    un_fbanned_done: "\n<b>Статус:</b> Готово! Разбанен в <code>{num}</code> чатах!"
-    un_fbanned_subs_process: "\n<b>Статус:</b> Разбанивание в <code>{feds}</code> подписанных федерациях..."
-    un_fbanned_subs_done: "\n<b>Статус:</b> Готово! Разбанен в <code>{chats}</code> чатах этой федерации и <code>{subs_chats}</code> чатах <code>{feds}</code> подписанных федераций"
-    un_fban_log_fed_log: |
-      <b>Разбанить пользователя в федерации</b> #FedUnBan
-      <b>Федерация:</b> {fed_name} (<code>{fed_id}</code>)
-      <b>Чаты:</b> пользователь разбанен в <code>{chat_count}</code>/<code>{all_chats}</code> чатах
-    un_fban_subs_fed_log: "\n<b>Подписанные федерации:</b> разблокирован в <code>{subs_chats}</code> чатах <code>{feds}</code> федераций"
-    #/delfed
-    delfed_btn_yes: Да. Удалить федерацию
-    delfed_btn_no: Нет.
-    delfed: |
-      Are you sure you want to delete the <b>%s</b> federation?
+XXXXXXFederationXloggingXisXusedXforXinternalXassessmentXofXtheXfederationXandXitsXperformance.
+XXXXXXTheXfederationXshouldX<b>NOT</b>XbeXusedXasXaXpublicXwallXofXshameXtherebyXrespectingXuserXdataXandXourXprivacyXguidelines.
+XXXXset_log_fed_log:X|
+XXXXXX<b>ВключёнXлог</b>X#LoggingEnabled
+XXXXXX<b>Федерация:</b>X{fed_name}X(<code>{fed_id}</code>)
+XXXXno_right_to_post:XУXменяXнетXправXнаXпубликациюXсообщенийXвXэтомXканале!
+XXXX#/funsetlog
+XXXXnot_logging:X"<b>{name}</b>XfederationXisn'tXloggingXtoXanyXchat/channel!"
+XXXXlogging_removed:X"SuccessfullyXremovedXloggingXfromX<b>{name}</b>Xfederation."
+XXXXunset_log_fed_log:X|
+XXXXXX<b>ОтключеноXлоггирование</b>X#LoggingDisabled
+XXXXXX<b>Федерация:</b>X{fed_name}X(<code>{fed_id}</code>)
+XXXX#/fchatlist
+XXXXno_chats:X"There'sXnoXchatsXjoinedXthisX<b>{name}</b>Xfederation"
+XXXXchats_in_fed:X"<b>ChatsXconnectedXtoX{name}Xfederation:</b>\n"
+XXXXtoo_large:X"ВыводXслишкомXвелик,XотправляюXфайлом"
+XXXX#/finfo
+XXXXfinfo_text:X|
+XXXXXX<b>ИнформацияXоXФедерации</b>
+XXXXXX<b>Имя:</b>X{name}
+XXXXXX<b>ID:</b>X<code>{fed_id}</code>
+XXXXXX<b>Создатель:</b>X{creator}
+XXXXXX<b>ЧатыXвXфедерации:</b>X{chats}
+XXXXXX<b>ЗаблокированныеXпользователиXвXфедерации:</b>X{fbanned}
+XXXXfinfo_subs_title:X"<b>FederationsXsubscribedXtoXthisXfeds:</b>\n"
+XXXX#/fadminlist
+XXXXfadmins_header:X"AdminsXinX<b>{fed_name}</b>Xfed:\n"
+XXXX#no_fbanned_in_fed:X"ThereXisn'tXanyXbannedXusersXinX{fed_name}XFederation!"
+XXXX#/fban
+XXXXuser_wl:X"ЭтотXпользовательXвXбеломXсписке."
+XXXXfban_self:X"ЭтоXхорошееXшоу!"
+XXXXfban_creator:X"HowXcanXIXbanXtheXfederationXcreator?!XIXdon'tXthinkXit'sXgonnaXbeXfunny."
+XXXXfban_fed_admin:X"I'mXnotXgoingXtoXbanXaXfederationXadminXfromXtheirXownXfed!"
+XXXXupdate_fban:X"ThisXuserXwasXalreadyXfbannedXthereforeXIXamXupdatingXtheXreasonXtoX<code>{reason}</code>"
+XXXXalready_fbanned:X"{user}XужеXзабаненXвXэтойXфедерации."
+XXXXfbanned_header:X"<b>НовыйXФедеральныйXбан</b>\n"
+XXXXfban_info:X|
+XXXXXX<b>Федерация:</b>X{fed}
+XXXXXX<b>АдминXфедерации:</b>X{fadmin}
+XXXXXX<b>Пользователь:</b>X{user}X(<code>{user_id}</code>)
+XXXXfbanned_reason:X"<b>Причина:</b>X<code>{reason}</code>"
+XXXXfbanned_process:X"\n<b>Статус:</b>XБанXвX<code>{num}</code>XфедеральныхXчатах..."
+XXXXfbanned_done:X"\n<b>Статус:</b>XГотово!XзабаненXвX<code>{num}</code>Xчатах!"
+XXXXfbanned_silence:X"ЭтоXсообщениеXбудетXочищеноXчерезX5Xсекунд"
+XXXXfbanned_subs_process:X"\n<b>Статус:</b>XБанXвX<code>{feds}</code>XподписанныхXфедерациях..."
+XXXXfbanned_subs_done:X"\n<b>Status:</b>XDone!XBannedXinX<code>{chats}</code>XchatsXofXthisXfederationXandX<code>{subs_chats}</code>XchatsXofX<code>{feds}</code>XsubscribedXfeds"
+XXXXfban_usr_rmvd:X|
+XXXXXXUserX{user}XisXcurrentlyXbannedXinX<b>{fed}</b>XfederationXandXhaveXbeenXremoved!
+XXXXXXReason:X<code>{rsn}</code>
+XXXXfban_log_fed_log:X|
+XXXXXX<b>БлокировкаXвXфедерации</b>X#FedBan
+XXXXXX<b>Федерация:</b>X{fed_name}X(<code>{fed_id}</code>)
+XXXXXX<b>Чаты:</b>XпользовательXзабаненXвX<code>{chat_count}</code>/<code>{all_chats}</code>Xчатах
+XXXXfban_reason_fed_log:X"<b>Причина:</b>X<code>{reason}</code>\n"
+XXXXfban_subs_fed_log:X"\n<b>ПодписанныеXфедерации:</b>XзабаненXвX<code>{subs_chats}</code>XчатахX<code>{feds}</code>Xфедераций"
+XXXX#/unfban
+XXXXunfban_self:X"ThinkXofXsomethingXelseXtoXhaveXfunXwithXinsteadXofXthis."
+XXXXuser_not_fbanned:X"{user}Xisn'tXbannedXinXthisXfederation."
+XXXXun_fbanned_header:X"<b>НовыйXраз-FedBan</b>\n"
+XXXXun_fbanned_process:X"\n<b>Статус:</b>XРазбанXвX<code>{num}</code>Xчатах..."
+XXXXun_fbanned_done:X"\n<b>Статус:</b>XГотово!XРазбаненXвX<code>{num}</code>Xчатах!"
+XXXXun_fbanned_subs_process:X"\n<b>Статус:</b>XРазбаниваниеXвX<code>{feds}</code>XподписанныхXфедерациях..."
+XXXXun_fbanned_subs_done:X"\n<b>Статус:</b>XГотово!XРазбаненXвX<code>{chats}</code>XчатахXэтойXфедерацииXиX<code>{subs_chats}</code>XчатахX<code>{feds}</code>XподписанныхXфедераций"
+XXXXun_fban_log_fed_log:X|
+XXXXXX<b>РазбанитьXпользователяXвXфедерации</b>X#FedUnBan
+XXXXXX<b>Федерация:</b>X{fed_name}X(<code>{fed_id}</code>)
+XXXXXX<b>Чаты:</b>XпользовательXразбаненXвX<code>{chat_count}</code>/<code>{all_chats}</code>Xчатах
+XXXXun_fban_subs_fed_log:X"\n<b>ПодписанныеXфедерации:</b>XразблокированXвX<code>{subs_chats}</code>XчатахX<code>{feds}</code>Xфедераций"
+XXXX#/delfed
+XXXXdelfed_btn_yes:XДа.XУдалитьXфедерацию
+XXXXdelfed_btn_no:XНет.
+XXXXdelfed:X|
+XXXXXXAreXyouXsureXyouXwantXtoXdeleteXtheX<b>%s</b>Xfederation?
 
-      <i>Disclaimer: Deleting this federation will remove all data associated with it from our database!
-      This action is permanent and cannot be reversed!</i>
-    delfed_success: Федерация успешно удалена!
-    #/frename
-    frename_same_name: Please enter a different name, not the same one!
-    frename_success: The federation <b>{old_name}</b> renamed to <b>{new_name}</b> successfully!
-    #/fbanlist
-    fbanlist_locked: Please wait until %s to use fbanlist again.
-    creating_fbanlist: Создание списка забаненых пользователей! Пожалуйста, подождите ..
-    fbanlist_done: Fbanlist of federation <b>%s</b>!
-    #/importfbans
-    send_import_file: |
-      Send the import file!
+XXXXXX<i>Disclaimer:XDeletingXthisXfederationXwillXremoveXallXdataXassociatedXwithXitXfromXourXdatabase!
+XXXXXXThisXactionXisXpermanentXandXcannotXbeXreversed!</i>
+XXXXdelfed_success:XФедерацияXуспешноXудалена!
+XXXX#/frename
+XXXXfrename_same_name:XPleaseXenterXaXdifferentXname,XnotXtheXsameXone!
+XXXXfrename_success:XTheXfederationX<b>{old_name}</b>XrenamedXtoX<b>{new_name}</b>Xsuccessfully!
+XXXX#/fbanlist
+XXXXfbanlist_locked:XPleaseXwaitXuntilX%sXtoXuseXfbanlistXagain.
+XXXXcreating_fbanlist:XСозданиеXспискаXзабаненыхXпользователей!XПожалуйста,XподождитеX..
+XXXXfbanlist_done:XFbanlistXofXfederationX<b>%s</b>!
+XXXX#/importfbans
+XXXXsend_import_file:X|
+XXXXXXSendXtheXimportXfile!
 
-      To cancel this process use /cancel
-    rpl_to_file: Пожалуйста, ответьте на файл!
-    importfbans_locked: Импорт fban заблокирован на %s в этой федерации.
-    big_file_csv: Only supports import csv files less {num} megabytes!
-    big_file_json: |
-      Currently json files are limited to {num} megabytes!
-      Use the csv format if you want to import bigger files.
-    invalid_file: "Недопустимый файл"
-    wrong_file_ext: "Неправильный формат файла! В настоящее время имеется поддержка только: json, csv"
-    importing_process: <b>Импорт запретов федерации...</b>
-    import_done: Importing fed bans finished! {num} bans were imported.
-    #def
-    automatic_ban: User {user} is banned in the current federation <b>{fed_name}</b> and has been removed!
-    automatic_ban_sfed: User {user} is banned in the sub federation <b>{fed_name}</b and has been removed!
-    automatic_ban_reason: "\nПричина: <code>{text}</code>"
-    #/fcheck
-    fcheck_header: "<b>Информация о федерационном бане:</b>\n"
-    fbanned_count_pm: "Вы были забанены в {count} федераций!\n"
-    "fban_info:fcheck": "You have been fbanned in {fed} federation on {date}, No reason was given!"
-    "fban_info:fcheck:reason": "Вы были забанены в федерации {fed} в {date} по причине -\n {reason}\n"
-    fbanned_data: "{user} был забанен в {count} федерации(ях)\n"
-    fbanned_nowhere: "{user} isn't fbanned anywhere!\n"
-    fbanned_in_fed: "Including the <b>{fed}</b> federation!\n"
-    "fbanned_in_fed:reason": "Including the <b>{fed}</b> federation for reason of -\n <code>{reason}</code>"
-    contact_in_pm: "\n\nFor more info on your fbans, please send me a direct message for privacy!"
-    too_long_fbaninfo: "Ну, ваш fbaninfo требует создание файла!"
-    didnt_fbanned: "You aren't fbanned in this fed."
-    not_fbanned_in_fed: They aren't fbanned in the <b>{fed_name}</b> fed
-  reports:
-    user_user_admin: "Вы админ здесь, почему Вам нужно пожаловаться на кого-то?.."
-    user_is_whitelisted: "Вы в белом списке, почему Вы жалуетесь на кого-то?.."
-    reports_disabled: "Репорты <b>отключены</b> в этой группе."
-    no_user_to_report: "На какого пользователя Вы хотите пожаловаться?"
-    report_admin: "You <b>cannot</b> report admins."
-    report_whitedlisted: "Вы <b>не можете</b> пожаловатся на пользователя в белом списке."
-    reported_user: "<b>Я настучала на</b> {user} <b>админам></b>."
-    reported_reason: "\n<b>Причина:</b>\n<code>{reason}</code>"
-    reports_on: "Репорты <b>включены</b> в этой группе."
-    reports_off: "Репорты <b>выключены</b> в этой группе."
-    reports_already_on: "<b>Репорты уже включены.</b>"
-    reports_turned_on: "Репорты <b>включены.</b>"
-    reports_already_off: "<b>Репорты уже выключены.</b>"
-    wrong_argument: "<b> Не правильный аргумент.</b>"
-  language:
-    your_lang: "Ваш текущий язык: <b>{lang}</b>"
-    chat_lang: "Текущий язык чата: <b>{lang}</b>"
-    select_pm_lang: "\n<b>Выберите ваш новый язык:</b>"
-    select_chat_lang: "\n<b>Выберите новый язык чата:</b>"
-    crowdin_btn: "🌎 Помогите нам с переводом"
-    help_us_translate: "\n\n<a href=\"https://crowdin.com/project/Ineruki x\">🌎 Help us improve our translations</a>"
-    not_supported_lang: This language is not supported!
-    lang_changed: Язык был изменён на <b>{lang_name}</b>.
-    see_translators: '👥 Список переводчиков'
-    back: Назад
-  connections:
-    pm_connected: "Вы были успешно подключены к <b>{chat_name}</b>!"
-    connected_pm_to_me: "Вы были успешно подключены к <b>{chat_name}</b>! Пожалуйста, напишите мне в личные сообщения, чтобы начать использовать соединения."
-    chat_connection_tlt: "<b>Подключение к чату</b>\n"
-    connected_chat: |
-      <b>Подключённый чат:</b>
-      {chat_name}
-      Напишите /disconect для отключения от чата
-    "connected_chat:cmds": |
-      <b>Current connected chat:</b>
-      {chat_name}, (bridged commands are {commands}),
-      ⚠ <i>You can only access bridged commands of the connected chat! All other commands would be treated as Local chat</i>
-      Write /disconect to disconnect from chat.
-    u_wasnt_connected: "You were not connected to any chat before!"
-    select_chat_to_connect: "\n<b>Выберите чат для подключения:</b>"
-    disconnected: "Вы были отключены от <b>{chat_name}</b>."
-    cant_find_chat: "Я не могу найти этот чат."
-    cant_find_chat_use_id: "Я не могу найти этот чат. Используйте ID чата."
-    bad_arg_bool: "Неверный аргумент: разрешено только <code>on</code>/<code>off</code> <code>enable</code>/<code>disable</code>"
-    enabled: включено
-    disabled: выключено
-    chat_users_connections_info: "Соединения для обычных пользователей в настоящее время <b>{status}</b> для <b>{chat_name}</b>"
-    chat_users_connections_cng: "Соединения для обычных пользователей изменены на <b>{status}</b> для чата <b>{chat_name}</b>"
-    not_in_group: "Вы не в группе, к которой вы пытаетесь подключиться, войдите и напишите любое сообщение там."
-    history_empty: "Вы не подключены ни к какому чату для истории, подключитесь, используя `/connect (chat id)`"
-    not_in_chat: "Вы больше не в этом чате, я отключу вас."
-    u_should_be_admin: "Вы должны быть админом в {}!"
-    usage_only_in_groups: "Использование ограничено только в группах!"
-    anon_admin_conn: |
-      Please click below button to connect!
-    click_here: Click here!
-  global:
-    u_not_admin: Вы должны быть админом, чтобы сделать это!
-    #Rights
-    "bot_no_right:not_admin": Я не админ!
-    bot_no_right: "У меня нет требуемого разрешения на это! \nОтсутствующее разрешение: <b>%s</b>"
-    user_no_right: "У вас должно быть необходимое разрешение для этого! \nОтсутствующее разрешение: <b>%s</b>"
-    "user_no_right:not_admin": Вы должны быть админом, чтобы сделать это!
-    #is chat creator
-    unable_identify_creator: "Unable to identify anonymous chat creator, duplicate signature (titles) found!"
-  owner_stuff:
-    father: "\nОн мой создатель."
-    sudo_crown: "\nО, зырь, у этого юзера на голове корона. Ща посмотрю.... Вау, там гравировка - <b>'sudo user'</b>!"
-  stickers:
-    rpl_to_sticker: "Ответьте на стикер!"
-    ur_sticker: |
-      <b>Эмодзи:</b> <code>{emoji}</code>
-      <b>ID стикера:</b> <code>{id}</code>
-  pins:
-    no_reply_msg: "Ответьте на сообщение, чтобы закрепить его!"
-    chat_not_modified_pin: "Это сообщение уже закреплено!"
-    chat_not_modified_unpin: "Нет закреплённого сообщения для открепления!"
-    pinned_success: "Успешно закреплено!"
-    unpin_success: "Успешно откреплено!"
-  users:
-    user_info: "<b>Информация о пользователе:</b>\n"
-    info_id: "ID: <code>{id}</code>"
-    info_first: "\nИмя: {first_name}"
-    info_last: "\nФамилия: {last_name}"
-    info_username: "\nИмя пользователя: {username}"
-    info_link: "\nСсылка на пользователя: {user_link}"
-    info_saw: "\nЯ видела их в <code>{num}</code> группах"
-    info_sw_ban: "\nThis user is banned in @SpamWatch!"
-    info_sw_ban_reason: "\nReason: <code>{sw_reason}</code>"
-    info_fbanned: "\nЗабанен в текущей Федерации: "
-    info_admeme: "\nПользователь имеет права админа в этом чате."
-    upd_cache: "Обновление кэша..."
-    upd_cache_done: "Кэш админов был обновлён."
-    admins: "<b>Админ в этой группе:</b>\n"
-  imports_exports:
-    #Exporting
-    started_exporting: Экспорт начался! Пожалуйста, подождите...
-    export_done: Экспорт из <b>{chat_name}</b> завершён!
-    exports_locked: Please wait %s before using exports again!
-    #Importing
-    invalid_file: "Недопустимый файл"
-    send_import_file: Please send a file for importing!
-    rpl_to_file: Пожалуйста, ответьте на файл!
-    big_file: Only files under 50 MB are supported!
-    started_importing: Импорт начался! Пожалуйста, подождите...
-    bad_file: Некорректный файл! Ожидался столбец <code>'Общие'</code>.
-    file_version_so_new: Exported file version is newer than what Ineruki currently supports!
-    imports_locked: Please wait %s before using imports again!
-    import_done: Импорт завершён!
-  restrictions:
-    user_not_in_chat: User is not in this chat!
-    #Kicks
-    kick_Ineruki : Instead of trying kick me you could spend your time better. Thats just boring.
-    kick_admin: Выкинуть админа — это не лучшая идея.
-    kick_self: If you want to kick yourself - just leave this chat. I would rather not see you than look at these pathetic attempts at self-punishment.
-    user_kicked: "{user} был кикнут {admin} в {chat_name}."
-    #Mutes
-    mute_Ineruki : Actually, I'll be happy to shut up you instead.
-    mute_admin: If you think you can shut up an admin, you are wrong!
-    mute_self: If you want to mute yourself - just stop talking! Better to thought a fool than open your mouth and remove all doubt.
-    user_muted: "{user} был заглушён пользователем {admin} в {chat_name}."
-    unmute_Ineruki : Actually, I'm not muted.
-    unmute_admin: Haha no, try muting him first!
-    unmute_self: Может я сначала заткну тебя?
-    user_unmuted: "{user} был размучен пользователем {admin} в {chat_name}."
-    #Bans
-    ban_Ineruki : No, I won't do it! Ask the chat creator to do it!
-    ban_admin: Хах, давай сначала сделаем ему <code>/demote</code>.
-    ban_self: Почему ты пытаешься забанить сам себя?
-    user_banned: "{user} был забанен пользователем {admin} в {chat_name}."
-    unban_Ineruki : Actually, I'm not banned.
-    unban_admin: Haha no, try banning him first!
-    unban_self: Может сначала я забаню тебя?
-    user_unband: "{user} был разбанен {admin} в {chat_name}."
-    invalid_time: Неправильное время!
-    enter_time: Please specify a time!
-    on_time: "\nНа <code>%s</code>"
-    reason: "\nПричина: <code>%s</code>"
-    purge: "\nMessages will be purged in 5 seconds!"
-    filter_title_ban: Забанить пользователя
-    filter_action_rsn: <code>Автоматическое действие фильтра на '%s'</code>
-    filtr_ban_success: '%s забанил %s на %s'
-    filtr_mute_success: '%s заткнул %s за %s'
-    filtr_tmute_success: |
-      %s заткнул %s на %s
-      Причина: %s
-    time_setup_start: Please specify a time!
-    filtr_tban_success: |
-      %s забанил %s на %s
-      Причина: %s
-    filter_title_tmute: Временно заткнуть юзера
-    filter_title_mute: Заткнуть юзера
-    filter_title_tban: Временно забанить юзера
-    filter_title_kick: Кикнуть пользователя
-  rules:
-    #Set
-    saved: Правила были сохранены в <b>%s</b>
-    updated: Правила были обновлены в <b>%s</b>
-    #Reset
-    deleted: Правила были удалены!
-    not_found: Правила не найдены!
-    #Callback
-    user_blocked: "Напишите /start мне в личные сообщения!"
-    rules_was_pmed: Правила были отправлены вам в личку!
-  #cannot_find_note: "I can't find the note <code>{}</code>"
-  #set_note: "Successfully set the rules note to <code>{}</code>"
-  #didnt_set_note: "This group doesn't have rules note set."
-  #cannot_find_set_note: "I can't find the rules note."
-  #havent_set_rules_note: "You haven't set the rules note yet."
-  #success_remove_rules_note: "Successfully removed rules note in <b>{}</b>."
-  greetings:
-    default_welcome: "Welcome {mention}! How are you?"
-    thank_for_add: "Thanks for adding me to your group! Take a look at /help and follow my news channel @Ineruki Updates."
-    default_security_note: "Welcome {mention}! Please press button below to verify yourself as human!"
-    bool_invalid_arg: Недопустимый аргумент, ожидается <code>on</code> (включить)/<code>off</code> (выключить).
-    #/setwelcome
-    saved: Приветственное сообщение было сохранено в <b>%s</b>
-    updated: Приветственное сообщение было обновлено в <b>%s</b>
-    #/turnwelcome
-    turnwelcome_status: 'Приветствия: <code>{status}</code> в <b>{chat_name}</b>'
-    turnwelcome_enabled: Приветствия включены в <b>%s</b>
-    turnwelcome_disabled: Приветствия выключены в <b>%s</b>
-    #/welcome
-    enabled: включены
-    disabled: выключены
-    wlcm_security_enabled: "включена, установлены на уровень {level}"
-    wlcm_mutes_enabled: "включена, установлены на время {time}"
-    welcome_info: |
-      <b>Настройки приветствий в {chat_name}:</b>
-      Приветствия <code>{welcomes_status}</code>
-      Безопасность при приветствии <code>{wlcm_security}</code>
-      Затыкание при приветствии <code>{wlcm_mutes}</code>
-      Удаление старых приветствий <code>{clean_welcomes}</code>
-      Удаление служебных сообщений <code>{clean_service}</code>
-    wlcm_note: "\n\nЗапись для приветствия:"
-    raw_wlcm_note: "Исходник записи приветствия:"
-    security_note: "Текст приветствия безопасности:"
-    #/setsecuritynote
-    security_note_saved: "Пользовательский текст безопасности был сохранён <b>%s</b>"
-    security_note_updated: "Пользовательский текст безопасности был обновлён <b>%s</b>"
-    #/delsecuritynote
-    security_note_not_found: Security text in <b>%s</b> has not been set before
-    del_security_note_ok: Security text was reset to default in <b>%s</b>
-    #/cleanwelcome
-    cleanwelcome_enabled: Очистка приветствий включена в <b>%s</b>
-    cleanwelcome_disabled: Очистка приветствий выключена в <b>%s</b>
-    cleanwelcome_status: 'Очистка приветствий: <code>{status}</code> в <b>{chat_name}</b>'
-    #/cleanservice
-    cleanservice_enabled: Очистка служебных сообщений включена в <b>%s</b>
-    cleanservice_disabled: Очистка служебных сообщений выключена в <b>%s</b>
-    cleanservice_status: 'Очистка служебных сообщений: <code>{status}</code> в <b>{chat_name}</b>'
-    #/welcomemute
-    welcomemute_invalid_arg: Invalid argument, expected a time.
-    welcomemute_enabled: Заглушение при приветствии включено в <b>%s</b>
-    welcomemute_disabled: Заглушение при приветствии выключено в <b>%s</b>
-    welcomemute_status: 'Заглушение при приветствии: <code>{status}</code> в <b>{chat_name}</b>'
-    #/welcomesecurity
-    welcomesecurity_enabled: Приветственная безопасность включена в <b>{chat_name}</b> на уровне <code>{level}</code>.
-    "welcomesecurity_enabled:customized_time": |
-      Welcome security enabled in <b>{chat_name}</b> to <code>{level}</code>, and kick users which aren't verified within {time}.
-    ask_for_time_customization: |
-      Do you want to customize the time period to kick unverified user? (by default it's {time})
-    send_time: Please specify a time.
-    invalid_time: "Invalid time!"
-    welcomesecurity_enabled_word: включена, установлена на уровне {level}
-    welcomesecurity_disabled: Защита входа отключена в <b>%s</b>.
-    welcomesecurity_invalid_arg: Недопустимый аргумент, ожидается <code>button</code>/<code>captcha</code>.
-    welcomesecurity_status: Защита входа <code>{status}</code> в <b>{chat_name}</b>
-    yes_btn: "Yes"
-    no_btn: "No"
-    #Welcomesecurity handler
-    click_here: Нажмите сюда!
-    not_allowed: Вам не разрешено использовать это!
-    ws_captcha_text: Привет, {user}, пожалуйста, введите номер капчи, чтобы иметь возможность писать в чате.
-    regen_captcha_btn: ':counterclockwise_arrows_: Изменить капчу'
-    num_is_not_digit: Пожалуйста, введите только цифры!
-    bad_num: Неправильный номер! Пожалуйста, попробуйте ещё раз.
-    passed: Проверка пройдена, вы получили право писать в <b>%s</b>!
-    passed_no_frm: Проверка пройдена, вы получили право писать в %s!
-    last_chance: У вас есть последний шанс ввести капчу!
-    btn_button_text: "Пожалуйста, нажмите кнопку ниже, чтобы подтвердить себя."
-    btn_wc_text: |
-      Пожалуйста, нажмите кнопку, соответствующую этому выражению:
-      %s
-    math_wc_rtr_text: "У вас последний шанс! Будьте осторожны.\n"
-    math_wc_wrong: Неправильно, попробуйте ещё раз!
-    math_wc_sry: Извините, вы использовали последнюю попытку. Спросите админов чата.
-    not_admin_wm: I can't restrict people here, so I won't use welcome mute!
-    not_admin_ws: I can't restrict people here, so I won't use welcome security!
-    not_admin_wsr: Я не могу удалять сообщения здесь, так что я не буду удалять сервисные сообщения!
-    #/resetwelcome
-    deleted: Successfully reset greetings in <b>{chat}</b>!
-    not_found: Нет ничего для сброса!
-    #...
-    verification_done: Verification is done! You have been unmuted.
-  locks:
-    locks_header: "Текущие настройки блокировки в {chat_title} \n\n"
-    no_lock_args: Дай мне аргументы для блокировки!
-    already_locked: Это уже заблокировано
-    no_such_lock: Смотрите /locks, чтобы узнать, что может быть заблокировано и разблокировано!
-    locked_successfully: '{lock} успешно заблокирован в {chat}!'
-    no_unlock_args: Сначала дай мне агрументы для разблокировки!
-    not_locked: Емае, это не запрещено в чате.
-    unlocked_successfully: Разблокировано {lock} в {chat} успешно!
-  antiflood:
-    #enforcer
-    flood_exceeded: "{action} {user} for flooding!"
-    #/setflood
-    "invalid_args:setflood": "Expected a number!"
-    overflowed_count: Maximum count should be less than 200!
-    config_proc_1: Please send expiration time, '0' (zero) for not being expired.
-    cancel: '❌ Cancel'
-    setup_success: Successfully configured antiflood, now enforces against those who send {count} messages within {time}!
-    "setup_success:no_exp": Successfully configured antiflood, allows {count} messages consecutively!
-    invalid_time: Invalid time!
-    #/antiflood | /flood
-    not_configured: Antiflood isn't configured in this chat yet!
-    turned_off: Disabled antiflood in <b>{chat_title}</b>!
-    "configuration_info:with_time": Antiflood is configured in this chat, those who send {count} message within {time} will be {action}!
-    configuration_info: Antiflood is configured in this chat, those who send {count} consecutively will be {action}!
-    ban: banned
-    mute: muted
-    kick: kicked
-    tmute: tmuted
-    tban: tbanned    
-    #/setfloodaction
-    invalid_args: "Unsupported action, expected {supported_actions}!"
-    setfloodaction_success: "Successfully updated flood action to <b>{action}</b>!"
+XXXXXXToXcancelXthisXprocessXuseX/cancel
+XXXXrpl_to_file:XПожалуйста,XответьтеXнаXфайл!
+XXXXimportfbans_locked:XИмпортXfbanXзаблокированXнаX%sXвXэтойXфедерации.
+XXXXbig_file_csv:XOnlyXsupportsXimportXcsvXfilesXlessX{num}Xmegabytes!
+XXXXbig_file_json:X|
+XXXXXXCurrentlyXjsonXfilesXareXlimitedXtoX{num}Xmegabytes!
+XXXXXXUseXtheXcsvXformatXifXyouXwantXtoXimportXbiggerXfiles.
+XXXXinvalid_file:X"НедопустимыйXфайл"
+XXXXwrong_file_ext:X"НеправильныйXформатXфайла!XВXнастоящееXвремяXимеетсяXподдержкаXтолько:Xjson,Xcsv"
+XXXXimporting_process:X<b>ИмпортXзапретовXфедерации...</b>
+XXXXimport_done:XImportingXfedXbansXfinished!X{num}XbansXwereXimported.
+XXXX#def
+XXXXautomatic_ban:XUserX{user}XisXbannedXinXtheXcurrentXfederationX<b>{fed_name}</b>XandXhasXbeenXremoved!
+XXXXautomatic_ban_sfed:XUserX{user}XisXbannedXinXtheXsubXfederationX<b>{fed_name}</bXandXhasXbeenXremoved!
+XXXXautomatic_ban_reason:X"\nПричина:X<code>{text}</code>"
+XXXX#/fcheck
+XXXXfcheck_header:X"<b>ИнформацияXоXфедерационномXбане:</b>\n"
+XXXXfbanned_count_pm:X"ВыXбылиXзабаненыXвX{count}Xфедераций!\n"
+XXXX"fban_info:fcheck":X"YouXhaveXbeenXfbannedXinX{fed}XfederationXonX{date},XNoXreasonXwasXgiven!"
+XXXX"fban_info:fcheck:reason":X"ВыXбылиXзабаненыXвXфедерацииX{fed}XвX{date}XпоXпричинеX-\nX{reason}\n"
+XXXXfbanned_data:X"{user}XбылXзабаненXвX{count}Xфедерации(ях)\n"
+XXXXfbanned_nowhere:X"{user}Xisn'tXfbannedXanywhere!\n"
+XXXXfbanned_in_fed:X"IncludingXtheX<b>{fed}</b>Xfederation!\n"
+XXXX"fbanned_in_fed:reason":X"IncludingXtheX<b>{fed}</b>XfederationXforXreasonXofX-\nX<code>{reason}</code>"
+XXXXcontact_in_pm:X"\n\nForXmoreXinfoXonXyourXfbans,XpleaseXsendXmeXaXdirectXmessageXforXprivacy!"
+XXXXtoo_long_fbaninfo:X"Ну,XвашXfbaninfoXтребуетXсозданиеXфайла!"
+XXXXdidnt_fbanned:X"YouXaren'tXfbannedXinXthisXfed."
+XXXXnot_fbanned_in_fed:XTheyXaren'tXfbannedXinXtheX<b>{fed_name}</b>Xfed
+XXreports:
+XXXXuser_user_admin:X"ВыXадминXздесь,XпочемуXВамXнужноXпожаловатьсяXнаXкого-то?.."
+XXXXuser_is_whitelisted:X"ВыXвXбеломXсписке,XпочемуXВыXжалуетесьXнаXкого-то?.."
+XXXXreports_disabled:X"РепортыX<b>отключены</b>XвXэтойXгруппе."
+XXXXno_user_to_report:X"НаXкакогоXпользователяXВыXхотитеXпожаловаться?"
+XXXXreport_admin:X"YouX<b>cannot</b>XreportXadmins."
+XXXXreport_whitedlisted:X"ВыX<b>неXможете</b>XпожаловатсяXнаXпользователяXвXбеломXсписке."
+XXXXreported_user:X"<b>ЯXнастучалаXна</b>X{user}X<b>админам></b>."
+XXXXreported_reason:X"\n<b>Причина:</b>\n<code>{reason}</code>"
+XXXXreports_on:X"РепортыX<b>включены</b>XвXэтойXгруппе."
+XXXXreports_off:X"РепортыX<b>выключены</b>XвXэтойXгруппе."
+XXXXreports_already_on:X"<b>РепортыXужеXвключены.</b>"
+XXXXreports_turned_on:X"РепортыX<b>включены.</b>"
+XXXXreports_already_off:X"<b>РепортыXужеXвыключены.</b>"
+XXXXwrong_argument:X"<b>XНеXправильныйXаргумент.</b>"
+XXlanguage:
+XXXXyour_lang:X"ВашXтекущийXязык:X<b>{lang}</b>"
+XXXXchat_lang:X"ТекущийXязыкXчата:X<b>{lang}</b>"
+XXXXselect_pm_lang:X"\n<b>ВыберитеXвашXновыйXязык:</b>"
+XXXXselect_chat_lang:X"\n<b>ВыберитеXновыйXязыкXчата:</b>"
+XXXXcrowdin_btn:X"🌎XПомогитеXнамXсXпереводом"
+XXXXhelp_us_translate:X"\n\n<aXhref=\"https://crowdin.com/project/InerukiXx\">🌎XHelpXusXimproveXourXtranslations</a>"
+XXXXnot_supported_lang:XThisXlanguageXisXnotXsupported!
+XXXXlang_changed:XЯзыкXбылXизменёнXнаX<b>{lang_name}</b>.
+XXXXsee_translators:X'👥XСписокXпереводчиков'
+XXXXback:XНазад
+XXconnections:
+XXXXpm_connected:X"ВыXбылиXуспешноXподключеныXкX<b>{chat_name}</b>!"
+XXXXconnected_pm_to_me:X"ВыXбылиXуспешноXподключеныXкX<b>{chat_name}</b>!XПожалуйста,XнапишитеXмнеXвXличныеXсообщения,XчтобыXначатьXиспользоватьXсоединения."
+XXXXchat_connection_tlt:X"<b>ПодключениеXкXчату</b>\n"
+XXXXconnected_chat:X|
+XXXXXX<b>ПодключённыйXчат:</b>
+XXXXXX{chat_name}
+XXXXXXНапишитеX/disconectXдляXотключенияXотXчата
+XXXX"connected_chat:cmds":X|
+XXXXXX<b>CurrentXconnectedXchat:</b>
+XXXXXX{chat_name},X(bridgedXcommandsXareX{commands}),
+XXXXXX⚠X<i>YouXcanXonlyXaccessXbridgedXcommandsXofXtheXconnectedXchat!XAllXotherXcommandsXwouldXbeXtreatedXasXLocalXchat</i>
+XXXXXXWriteX/disconectXtoXdisconnectXfromXchat.
+XXXXu_wasnt_connected:X"YouXwereXnotXconnectedXtoXanyXchatXbefore!"
+XXXXselect_chat_to_connect:X"\n<b>ВыберитеXчатXдляXподключения:</b>"
+XXXXdisconnected:X"ВыXбылиXотключеныXотX<b>{chat_name}</b>."
+XXXXcant_find_chat:X"ЯXнеXмогуXнайтиXэтотXчат."
+XXXXcant_find_chat_use_id:X"ЯXнеXмогуXнайтиXэтотXчат.XИспользуйтеXIDXчата."
+XXXXbad_arg_bool:X"НеверныйXаргумент:XразрешеноXтолькоX<code>on</code>/<code>off</code>X<code>enable</code>/<code>disable</code>"
+XXXXenabled:Xвключено
+XXXXdisabled:Xвыключено
+XXXXchat_users_connections_info:X"СоединенияXдляXобычныхXпользователейXвXнастоящееXвремяX<b>{status}</b>XдляX<b>{chat_name}</b>"
+XXXXchat_users_connections_cng:X"СоединенияXдляXобычныхXпользователейXизмененыXнаX<b>{status}</b>XдляXчатаX<b>{chat_name}</b>"
+XXXXnot_in_group:X"ВыXнеXвXгруппе,XкXкоторойXвыXпытаетесьXподключиться,XвойдитеXиXнапишитеXлюбоеXсообщениеXтам."
+XXXXhistory_empty:X"ВыXнеXподключеныXниXкXкакомуXчатуXдляXистории,Xподключитесь,XиспользуяX`/connectX(chatXid)`"
+XXXXnot_in_chat:X"ВыXбольшеXнеXвXэтомXчате,XяXотключуXвас."
+XXXXu_should_be_admin:X"ВыXдолжныXбытьXадминомXвX{}!"
+XXXXusage_only_in_groups:X"ИспользованиеXограниченоXтолькоXвXгруппах!"
+XXXXanon_admin_conn:X|
+XXXXXXPleaseXclickXbelowXbuttonXtoXconnect!
+XXXXclick_here:XClickXhere!
+XXglobal:
+XXXXu_not_admin:XВыXдолжныXбытьXадмином,XчтобыXсделатьXэто!
+XXXX#Rights
+XXXX"bot_no_right:not_admin":XЯXнеXадмин!
+XXXXbot_no_right:X"УXменяXнетXтребуемогоXразрешенияXнаXэто!X\nОтсутствующееXразрешение:X<b>%s</b>"
+XXXXuser_no_right:X"УXвасXдолжноXбытьXнеобходимоеXразрешениеXдляXэтого!X\nОтсутствующееXразрешение:X<b>%s</b>"
+XXXX"user_no_right:not_admin":XВыXдолжныXбытьXадмином,XчтобыXсделатьXэто!
+XXXX#isXchatXcreator
+XXXXunable_identify_creator:X"UnableXtoXidentifyXanonymousXchatXcreator,XduplicateXsignatureX(titles)Xfound!"
+XXowner_stuff:
+XXXXfather:X"\nОнXмойXсоздатель."
+XXXXsudo_crown:X"\nО,Xзырь,XуXэтогоXюзераXнаXголовеXкорона.XЩаXпосмотрю....XВау,XтамXгравировкаX-X<b>'sudoXuser'</b>!"
+XXstickers:
+XXXXrpl_to_sticker:X"ОтветьтеXнаXстикер!"
+XXXXur_sticker:X|
+XXXXXX<b>Эмодзи:</b>X<code>{emoji}</code>
+XXXXXX<b>IDXстикера:</b>X<code>{id}</code>
+XXpins:
+XXXXno_reply_msg:X"ОтветьтеXнаXсообщение,XчтобыXзакрепитьXего!"
+XXXXchat_not_modified_pin:X"ЭтоXсообщениеXужеXзакреплено!"
+XXXXchat_not_modified_unpin:X"НетXзакреплённогоXсообщенияXдляXоткрепления!"
+XXXXpinned_success:X"УспешноXзакреплено!"
+XXXXunpin_success:X"УспешноXоткреплено!"
+XXusers:
+XXXXuser_info:X"<b>ИнформацияXоXпользователе:</b>\n"
+XXXXinfo_id:X"ID:X<code>{id}</code>"
+XXXXinfo_first:X"\nИмя:X{first_name}"
+XXXXinfo_last:X"\nФамилия:X{last_name}"
+XXXXinfo_username:X"\nИмяXпользователя:X{username}"
+XXXXinfo_link:X"\nСсылкаXнаXпользователя:X{user_link}"
+XXXXinfo_saw:X"\nЯXвиделаXихXвX<code>{num}</code>Xгруппах"
+XXXXinfo_sw_ban:X"\nThisXuserXisXbannedXinX@SpamWatch!"
+XXXXinfo_sw_ban_reason:X"\nReason:X<code>{sw_reason}</code>"
+XXXXinfo_fbanned:X"\nЗабаненXвXтекущейXФедерации:X"
+XXXXinfo_admeme:X"\nПользовательXимеетXправаXадминаXвXэтомXчате."
+XXXXupd_cache:X"ОбновлениеXкэша..."
+XXXXupd_cache_done:X"КэшXадминовXбылXобновлён."
+XXXXadmins:X"<b>АдминXвXэтойXгруппе:</b>\n"
+XXimports_exports:
+XXXX#Exporting
+XXXXstarted_exporting:XЭкспортXначался!XПожалуйста,Xподождите...
+XXXXexport_done:XЭкспортXизX<b>{chat_name}</b>Xзавершён!
+XXXXexports_locked:XPleaseXwaitX%sXbeforeXusingXexportsXagain!
+XXXX#Importing
+XXXXinvalid_file:X"НедопустимыйXфайл"
+XXXXsend_import_file:XPleaseXsendXaXfileXforXimporting!
+XXXXrpl_to_file:XПожалуйста,XответьтеXнаXфайл!
+XXXXbig_file:XOnlyXfilesXunderX50XMBXareXsupported!
+XXXXstarted_importing:XИмпортXначался!XПожалуйста,Xподождите...
+XXXXbad_file:XНекорректныйXфайл!XОжидалсяXстолбецX<code>'Общие'</code>.
+XXXXfile_version_so_new:XExportedXfileXversionXisXnewerXthanXwhatXInerukiXcurrentlyXsupports!
+XXXXimports_locked:XPleaseXwaitX%sXbeforeXusingXimportsXagain!
+XXXXimport_done:XИмпортXзавершён!
+XXrestrictions:
+XXXXuser_not_in_chat:XUserXisXnotXinXthisXchat!
+XXXX#Kicks
+XXXXkick_InerukiX:XInsteadXofXtryingXkickXmeXyouXcouldXspendXyourXtimeXbetter.XThatsXjustXboring.
+XXXXkick_admin:XВыкинутьXадминаX—XэтоXнеXлучшаяXидея.
+XXXXkick_self:XIfXyouXwantXtoXkickXyourselfX-XjustXleaveXthisXchat.XIXwouldXratherXnotXseeXyouXthanXlookXatXtheseXpatheticXattemptsXatXself-punishment.
+XXXXuser_kicked:X"{user}XбылXкикнутX{admin}XвX{chat_name}."
+XXXX#Mutes
+XXXXmute_InerukiX:XActually,XI'llXbeXhappyXtoXshutXupXyouXinstead.
+XXXXmute_admin:XIfXyouXthinkXyouXcanXshutXupXanXadmin,XyouXareXwrong!
+XXXXmute_self:XIfXyouXwantXtoXmuteXyourselfX-XjustXstopXtalking!XBetterXtoXthoughtXaXfoolXthanXopenXyourXmouthXandXremoveXallXdoubt.
+XXXXuser_muted:X"{user}XбылXзаглушёнXпользователемX{admin}XвX{chat_name}."
+XXXXunmute_InerukiX:XActually,XI'mXnotXmuted.
+XXXXunmute_admin:XHahaXno,XtryXmutingXhimXfirst!
+XXXXunmute_self:XМожетXяXсначалаXзаткнуXтебя?
+XXXXuser_unmuted:X"{user}XбылXразмученXпользователемX{admin}XвX{chat_name}."
+XXXX#Bans
+XXXXban_InerukiX:XNo,XIXwon'tXdoXit!XAskXtheXchatXcreatorXtoXdoXit!
+XXXXban_admin:XХах,XдавайXсначалаXсделаемXемуX<code>/demote</code>.
+XXXXban_self:XПочемуXтыXпытаешьсяXзабанитьXсамXсебя?
+XXXXuser_banned:X"{user}XбылXзабаненXпользователемX{admin}XвX{chat_name}."
+XXXXunban_InerukiX:XActually,XI'mXnotXbanned.
+XXXXunban_admin:XHahaXno,XtryXbanningXhimXfirst!
+XXXXunban_self:XМожетXсначалаXяXзабанюXтебя?
+XXXXuser_unband:X"{user}XбылXразбаненX{admin}XвX{chat_name}."
+XXXXinvalid_time:XНеправильноеXвремя!
+XXXXenter_time:XPleaseXspecifyXaXtime!
+XXXXon_time:X"\nНаX<code>%s</code>"
+XXXXreason:X"\nПричина:X<code>%s</code>"
+XXXXpurge:X"\nMessagesXwillXbeXpurgedXinX5Xseconds!"
+XXXXfilter_title_ban:XЗабанитьXпользователя
+XXXXfilter_action_rsn:X<code>АвтоматическоеXдействиеXфильтраXнаX'%s'</code>
+XXXXfiltr_ban_success:X'%sXзабанилX%sXнаX%s'
+XXXXfiltr_mute_success:X'%sXзаткнулX%sXзаX%s'
+XXXXfiltr_tmute_success:X|
+XXXXXX%sXзаткнулX%sXнаX%s
+XXXXXXПричина:X%s
+XXXXtime_setup_start:XPleaseXspecifyXaXtime!
+XXXXfiltr_tban_success:X|
+XXXXXX%sXзабанилX%sXнаX%s
+XXXXXXПричина:X%s
+XXXXfilter_title_tmute:XВременноXзаткнутьXюзера
+XXXXfilter_title_mute:XЗаткнутьXюзера
+XXXXfilter_title_tban:XВременноXзабанитьXюзера
+XXXXfilter_title_kick:XКикнутьXпользователя
+XXrules:
+XXXX#Set
+XXXXsaved:XПравилаXбылиXсохраненыXвX<b>%s</b>
+XXXXupdated:XПравилаXбылиXобновленыXвX<b>%s</b>
+XXXX#Reset
+XXXXdeleted:XПравилаXбылиXудалены!
+XXXXnot_found:XПравилаXнеXнайдены!
+XXXX#Callback
+XXXXuser_blocked:X"НапишитеX/startXмнеXвXличныеXсообщения!"
+XXXXrules_was_pmed:XПравилаXбылиXотправленыXвамXвXличку!
+XX#cannot_find_note:X"IXcan'tXfindXtheXnoteX<code>{}</code>"
+XX#set_note:X"SuccessfullyXsetXtheXrulesXnoteXtoX<code>{}</code>"
+XX#didnt_set_note:X"ThisXgroupXdoesn'tXhaveXrulesXnoteXset."
+XX#cannot_find_set_note:X"IXcan'tXfindXtheXrulesXnote."
+XX#havent_set_rules_note:X"YouXhaven'tXsetXtheXrulesXnoteXyet."
+XX#success_remove_rules_note:X"SuccessfullyXremovedXrulesXnoteXinX<b>{}</b>."
+XXgreetings:
+XXXXdefault_welcome:X"WelcomeX{mention}!XHowXareXyou?"
+XXXXthank_for_add:X"ThanksXforXaddingXmeXtoXyourXgroup!XTakeXaXlookXatX/helpXandXfollowXmyXnewsXchannelX@InerukiXUpdates."
+XXXXdefault_security_note:X"WelcomeX{mention}!XPleaseXpressXbuttonXbelowXtoXverifyXyourselfXasXhuman!"
+XXXXbool_invalid_arg:XНедопустимыйXаргумент,XожидаетсяX<code>on</code>X(включить)/<code>off</code>X(выключить).
+XXXX#/setwelcome
+XXXXsaved:XПриветственноеXсообщениеXбылоXсохраненоXвX<b>%s</b>
+XXXXupdated:XПриветственноеXсообщениеXбылоXобновленоXвX<b>%s</b>
+XXXX#/turnwelcome
+XXXXturnwelcome_status:X'Приветствия:X<code>{status}</code>XвX<b>{chat_name}</b>'
+XXXXturnwelcome_enabled:XПриветствияXвключеныXвX<b>%s</b>
+XXXXturnwelcome_disabled:XПриветствияXвыключеныXвX<b>%s</b>
+XXXX#/welcome
+XXXXenabled:Xвключены
+XXXXdisabled:Xвыключены
+XXXXwlcm_security_enabled:X"включена,XустановленыXнаXуровеньX{level}"
+XXXXwlcm_mutes_enabled:X"включена,XустановленыXнаXвремяX{time}"
+XXXXwelcome_info:X|
+XXXXXX<b>НастройкиXприветствийXвX{chat_name}:</b>
+XXXXXXПриветствияX<code>{welcomes_status}</code>
+XXXXXXБезопасностьXприXприветствииX<code>{wlcm_security}</code>
+XXXXXXЗатыканиеXприXприветствииX<code>{wlcm_mutes}</code>
+XXXXXXУдалениеXстарыхXприветствийX<code>{clean_welcomes}</code>
+XXXXXXУдалениеXслужебныхXсообщенийX<code>{clean_service}</code>
+XXXXwlcm_note:X"\n\nЗаписьXдляXприветствия:"
+XXXXraw_wlcm_note:X"ИсходникXзаписиXприветствия:"
+XXXXsecurity_note:X"ТекстXприветствияXбезопасности:"
+XXXX#/setsecuritynote
+XXXXsecurity_note_saved:X"ПользовательскийXтекстXбезопасностиXбылXсохранёнX<b>%s</b>"
+XXXXsecurity_note_updated:X"ПользовательскийXтекстXбезопасностиXбылXобновлёнX<b>%s</b>"
+XXXX#/delsecuritynote
+XXXXsecurity_note_not_found:XSecurityXtextXinX<b>%s</b>XhasXnotXbeenXsetXbefore
+XXXXdel_security_note_ok:XSecurityXtextXwasXresetXtoXdefaultXinX<b>%s</b>
+XXXX#/cleanwelcome
+XXXXcleanwelcome_enabled:XОчисткаXприветствийXвключенаXвX<b>%s</b>
+XXXXcleanwelcome_disabled:XОчисткаXприветствийXвыключенаXвX<b>%s</b>
+XXXXcleanwelcome_status:X'ОчисткаXприветствий:X<code>{status}</code>XвX<b>{chat_name}</b>'
+XXXX#/cleanservice
+XXXXcleanservice_enabled:XОчисткаXслужебныхXсообщенийXвключенаXвX<b>%s</b>
+XXXXcleanservice_disabled:XОчисткаXслужебныхXсообщенийXвыключенаXвX<b>%s</b>
+XXXXcleanservice_status:X'ОчисткаXслужебныхXсообщений:X<code>{status}</code>XвX<b>{chat_name}</b>'
+XXXX#/welcomemute
+XXXXwelcomemute_invalid_arg:XInvalidXargument,XexpectedXaXtime.
+XXXXwelcomemute_enabled:XЗаглушениеXприXприветствииXвключеноXвX<b>%s</b>
+XXXXwelcomemute_disabled:XЗаглушениеXприXприветствииXвыключеноXвX<b>%s</b>
+XXXXwelcomemute_status:X'ЗаглушениеXприXприветствии:X<code>{status}</code>XвX<b>{chat_name}</b>'
+XXXX#/welcomesecurity
+XXXXwelcomesecurity_enabled:XПриветственнаяXбезопасностьXвключенаXвX<b>{chat_name}</b>XнаXуровнеX<code>{level}</code>.
+XXXX"welcomesecurity_enabled:customized_time":X|
+XXXXXXWelcomeXsecurityXenabledXinX<b>{chat_name}</b>XtoX<code>{level}</code>,XandXkickXusersXwhichXaren'tXverifiedXwithinX{time}.
+XXXXask_for_time_customization:X|
+XXXXXXDoXyouXwantXtoXcustomizeXtheXtimeXperiodXtoXkickXunverifiedXuser?X(byXdefaultXit'sX{time})
+XXXXsend_time:XPleaseXspecifyXaXtime.
+XXXXinvalid_time:X"InvalidXtime!"
+XXXXwelcomesecurity_enabled_word:Xвключена,XустановленаXнаXуровнеX{level}
+XXXXwelcomesecurity_disabled:XЗащитаXвходаXотключенаXвX<b>%s</b>.
+XXXXwelcomesecurity_invalid_arg:XНедопустимыйXаргумент,XожидаетсяX<code>button</code>/<code>captcha</code>.
+XXXXwelcomesecurity_status:XЗащитаXвходаX<code>{status}</code>XвX<b>{chat_name}</b>
+XXXXyes_btn:X"Yes"
+XXXXno_btn:X"No"
+XXXX#WelcomesecurityXhandler
+XXXXclick_here:XНажмитеXсюда!
+XXXXnot_allowed:XВамXнеXразрешеноXиспользоватьXэто!
+XXXXws_captcha_text:XПривет,X{user},Xпожалуйста,XвведитеXномерXкапчи,XчтобыXиметьXвозможностьXписатьXвXчате.
+XXXXregen_captcha_btn:X':counterclockwise_arrows_:XИзменитьXкапчу'
+XXXXnum_is_not_digit:XПожалуйста,XвведитеXтолькоXцифры!
+XXXXbad_num:XНеправильныйXномер!XПожалуйста,XпопробуйтеXещёXраз.
+XXXXpassed:XПроверкаXпройдена,XвыXполучилиXправоXписатьXвX<b>%s</b>!
+XXXXpassed_no_frm:XПроверкаXпройдена,XвыXполучилиXправоXписатьXвX%s!
+XXXXlast_chance:XУXвасXестьXпоследнийXшансXввестиXкапчу!
+XXXXbtn_button_text:X"Пожалуйста,XнажмитеXкнопкуXниже,XчтобыXподтвердитьXсебя."
+XXXXbtn_wc_text:X|
+XXXXXXПожалуйста,XнажмитеXкнопку,XсоответствующуюXэтомуXвыражению:
+XXXXXX%s
+XXXXmath_wc_rtr_text:X"УXвасXпоследнийXшанс!XБудьтеXосторожны.\n"
+XXXXmath_wc_wrong:XНеправильно,XпопробуйтеXещёXраз!
+XXXXmath_wc_sry:XИзвините,XвыXиспользовалиXпоследнююXпопытку.XСпроситеXадминовXчата.
+XXXXnot_admin_wm:XIXcan'tXrestrictXpeopleXhere,XsoXIXwon'tXuseXwelcomeXmute!
+XXXXnot_admin_ws:XIXcan'tXrestrictXpeopleXhere,XsoXIXwon'tXuseXwelcomeXsecurity!
+XXXXnot_admin_wsr:XЯXнеXмогуXудалятьXсообщенияXздесь,XтакXчтоXяXнеXбудуXудалятьXсервисныеXсообщения!
+XXXX#/resetwelcome
+XXXXdeleted:XSuccessfullyXresetXgreetingsXinX<b>{chat}</b>!
+XXXXnot_found:XНетXничегоXдляXсброса!
+XXXX#...
+XXXXverification_done:XVerificationXisXdone!XYouXhaveXbeenXunmuted.
+XXlocks:
+XXXXlocks_header:X"ТекущиеXнастройкиXблокировкиXвX{chat_title}X\n\n"
+XXXXno_lock_args:XДайXмнеXаргументыXдляXблокировки!
+XXXXalready_locked:XЭтоXужеXзаблокировано
+XXXXno_such_lock:XСмотритеX/locks,XчтобыXузнать,XчтоXможетXбытьXзаблокированоXиXразблокировано!
+XXXXlocked_successfully:X'{lock}XуспешноXзаблокированXвX{chat}!'
+XXXXno_unlock_args:XСначалаXдайXмнеXагрументыXдляXразблокировки!
+XXXXnot_locked:XЕмае,XэтоXнеXзапрещеноXвXчате.
+XXXXunlocked_successfully:XРазблокированоX{lock}XвX{chat}Xуспешно!
+XXantiflood:
+XXXX#enforcer
+XXXXflood_exceeded:X"{action}X{user}XforXflooding!"
+XXXX#/setflood
+XXXX"invalid_args:setflood":X"ExpectedXaXnumber!"
+XXXXoverflowed_count:XMaximumXcountXshouldXbeXlessXthanX200!
+XXXXconfig_proc_1:XPleaseXsendXexpirationXtime,X'0'X(zero)XforXnotXbeingXexpired.
+XXXXcancel:X'❌XCancel'
+XXXXsetup_success:XSuccessfullyXconfiguredXantiflood,XnowXenforcesXagainstXthoseXwhoXsendX{count}XmessagesXwithinX{time}!
+XXXX"setup_success:no_exp":XSuccessfullyXconfiguredXantiflood,XallowsX{count}XmessagesXconsecutively!
+XXXXinvalid_time:XInvalidXtime!
+XXXX#/antifloodX|X/flood
+XXXXnot_configured:XAntifloodXisn'tXconfiguredXinXthisXchatXyet!
+XXXXturned_off:XDisabledXantifloodXinX<b>{chat_title}</b>!
+XXXX"configuration_info:with_time":XAntifloodXisXconfiguredXinXthisXchat,XthoseXwhoXsendX{count}XmessageXwithinX{time}XwillXbeX{action}!
+XXXXconfiguration_info:XAntifloodXisXconfiguredXinXthisXchat,XthoseXwhoXsendX{count}XconsecutivelyXwillXbeX{action}!
+XXXXban:Xbanned
+XXXXmute:Xmuted
+XXXXkick:Xkicked
+XXXXtmute:Xtmuted
+XXXXtban:XtbannedXXXX
+XXXX#/setfloodaction
+XXXXinvalid_args:X"UnsupportedXaction,XexpectedX{supported_actions}!"
+XXXXsetfloodaction_success:X"SuccessfullyXupdatedXfloodXactionXtoX<b>{action}</b>!"
 
-  afk:
-    is_afk: "{user} is AFK!\nReason: {reason}"
-    unafk: "{user} is not AFK anymore!"
-    afk_anon: "AFK mode cannot be used as an anonymous administrator."
+XXafk:
+XXXXis_afk:X"{user}XisXAFK!\nReason:X{reason}"
+XXXXunafk:X"{user}XisXnotXAFKXanymore!"
+XXXXafk_anon:X"AFKXmodeXcannotXbeXusedXasXanXanonymousXadministrator."

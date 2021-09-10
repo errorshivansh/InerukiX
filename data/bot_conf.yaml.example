@@ -1,73 +1,73 @@
-# Ineruki Bot example config
+#XInerukiXBotXexampleXconfig
 
-# Basic
+#XBasic
 
-TOKEN: ""
+TOKEN:X""
 
-# Get they in https://my.telegram.org/
+#XGetXtheyXinXhttps://my.telegram.org/
 
-APP_ID: 000000
+APP_ID:X000000
 
-APP_HASH: ""
+APP_HASH:X""
 
-#Generate a telethon str session  with https://repl.it/@SpEcHiDe/GenerateStringSession (telethon one)
+#GenerateXaXtelethonXstrXsessionXXwithXhttps://repl.it/@SpEcHiDe/GenerateStringSessionX(telethonXone)
 
-STRING_SESSION: ""
+STRING_SESSION:X""
 
-MONGO_URI: "mongodb+srv://dfsdf :dfsfd @cluster0.df4j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+MONGO_URI:X"mongodb+srv://dfsdfX:dfsfdX@cluster0.df4j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 
-MONGO_URI2: ""
+MONGO_URI2:X""
 
-MONGO_PORT: 27017
+MONGO_PORT:X27017
 
-MONGO_DB': 'Ineruki '
+MONGO_DB':X'InerukiX'
 
-API_PORT': 8080
+API_PORT':X8080
 
-REDIS_URI: "redis-1324.c234.us-east-1-4.ec4.cloud.redislabs.com"
+REDIS_URI:X"redis-1324.c234.us-east-1-4.ec4.cloud.redislabs.com"
 
-REDIS_PORT: 15514
+REDIS_PORT:X15514
 
-REDIS_PASS: "sdfgg"
+REDIS_PASS:X"sdfgg"
 
-TEMP_MAIL_KEY: ""
+TEMP_MAIL_KEY:X""
 
-OWNER_ID: 1141839926
+OWNER_ID:X1141839926
 
-OPERATORS: [1141839926, 00000000]
+OPERATORS:X[1141839926,X00000000]
 
-SUPPORT_CHAT: -000000000
+SUPPORT_CHAT:X-000000000
 
-SUDO_USERS: ""
+SUDO_USERS:X""
 
-DATABASE_URL: ""
+DATABASE_URL:X""
 
-VIRUS_API_KEY: ""
+VIRUS_API_KEY:X""
 
-TIME_API_KEY: ""
+TIME_API_KEY:X""
 
-REM_BG_API_KEY: ""
+REM_BG_API_KEY:X""
 
-ARQ_API: ""
+ARQ_API:X""
 
-# Advanced
+#XAdvanced
 
-SW_API: ""
+SW_API:X""
 
-IBM_WATSON_CRED_URL: ""
+IBM_WATSON_CRED_URL:X""
 
-IBM_WATSON_CRED_PASSWORD: ""
+IBM_WATSON_CRED_PASSWORD:X""
 
-OPENWEATHERMAP_ID: ""
+OPENWEATHERMAP_ID:X""
 
-WOLFRAM_ID: ""
+WOLFRAM_ID:X""
 
-DEBUG_MODE: False
+DEBUG_MODE:XFalse
 
-LOAD_MODULES: True
+LOAD_MODULES:XTrue
 
-LOGS_CHANNEL_ID: -000000000
+LOGS_CHANNEL_ID:X-000000000
 
-ALLOW_FORWARDS_COMMANDS: False
+ALLOW_FORWARDS_COMMANDS:XFalse
 
-ALLOW_E CEL: False
+ALLOW_EXCEL:XFalse

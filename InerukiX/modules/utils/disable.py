@@ -1,52 +1,52 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-from contextlib import suppress
+fromXcontextlibXimportXsuppress
 
-from Ineruki .modules.utils.user_details import is_user_admin
-from Ineruki .services.mongo import db
-from Ineruki .utils.logger import log
+fromXInerukiX.modules.utils.user_detailsXimportXis_user_admin
+fromXInerukiX.services.mongoXimportXdb
+fromXInerukiX.utils.loggerXimportXlog
 
-DISABLABLE_COMMANDS = []
+DISABLABLE_COMMANDSX=X[]
 
 
-def disableable_dec(command):
-    log.debug(f"Adding {command} to the disableable commands...")
+defXdisableable_dec(command):
+XXXXlog.debug(f"AddingX{command}XtoXtheXdisableableXcommands...")
 
-    if command not in DISABLABLE_COMMANDS:
-        DISABLABLE_COMMANDS.append(command)
+XXXXifXcommandXnotXinXDISABLABLE_COMMANDS:
+XXXXXXXXDISABLABLE_COMMANDS.append(command)
 
-    def wrapped(func):
-        async def wrapped_1(*args, **kwargs):
-            message = args[0]
+XXXXdefXwrapped(func):
+XXXXXXXXasyncXdefXwrapped_1(*args,X**kwargs):
+XXXXXXXXXXXXmessageX=Xargs[0]
 
-            chat_id = message.chat.id
-            user_id = message.from_user.id
-            cmd = command
+XXXXXXXXXXXXchat_idX=Xmessage.chat.id
+XXXXXXXXXXXXuser_idX=Xmessage.from_user.id
+XXXXXXXXXXXXcmdX=Xcommand
 
-            with suppress(KeyError):
-                if command in (aliases := message.conf["cmds"]):
-                    cmd = aliases[0]
+XXXXXXXXXXXXwithXsuppress(KeyError):
+XXXXXXXXXXXXXXXXifXcommandXinX(aliasesX:=Xmessage.conf["cmds"]):
+XXXXXXXXXXXXXXXXXXXXcmdX=Xaliases[0]
 
-            check = await db.disabled.find_one(
-                {"chat_id": chat_id, "cmds": {"$in": [cmd]}}
-            )
-            if check and not await is_user_admin(chat_id, user_id):
-                return
-            return await func(*args, **kwargs)
+XXXXXXXXXXXXcheckX=XawaitXdb.disabled.find_one(
+XXXXXXXXXXXXXXXX{"chat_id":Xchat_id,X"cmds":X{"$in":X[cmd]}}
+XXXXXXXXXXXX)
+XXXXXXXXXXXXifXcheckXandXnotXawaitXis_user_admin(chat_id,Xuser_id):
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXreturnXawaitXfunc(*args,X**kwargs)
 
-        return wrapped_1
+XXXXXXXXreturnXwrapped_1
 
-    return wrapped
+XXXXreturnXwrapped

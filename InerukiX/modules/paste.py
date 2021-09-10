@@ -1,44 +1,44 @@
-# Copyright (C) 2020-2021 by DevsExpo@Github, < https://github.com/DevsExpo >.
+#XCopyrightX(C)X2020-2021XbyXDevsExpo@Github,X<Xhttps://github.com/DevsExpoX>.
 #
-# This file is part of < https://github.com/DevsExpo/FridayUserBot > project,
-# and is released under the "GNU v3.0 License Agreement".
-# Please see < https://github.com/DevsExpo/blob/master/LICENSE >
+#XThisXfileXisXpartXofX<Xhttps://github.com/DevsExpo/FridayUserBotX>Xproject,
+#XandXisXreleasedXunderXtheX"GNUXv3.0XLicenseXAgreement".
+#XPleaseXseeX<Xhttps://github.com/DevsExpo/blob/master/LICENSEX>
 #
-# All rights reserved.
+#XAllXrightsXreserved.
 
-import os
+importXos
 
-import requests
-from pyrogram import filters
+importXrequests
+fromXpyrogramXimportXfilters
 
-from Ineruki .function.pluginhelpers import edit_or_reply, get_text
-from Ineruki .services.pyrogram import pbot
+fromXInerukiX.function.pluginhelpersXimportXedit_or_reply,Xget_text
+fromXInerukiX.services.pyrogramXimportXpbot
 
 
-@pbot.on_message(filters.command("paste") & ~filters.edited & ~filters.bot)
-async def paste(client, message):
-    pablo = await edit_or_reply(message, "`Please Wait.....`")
-    tex_t = get_text(message)
-    message_s = tex_t
-    if not tex_t:
-        if not message.reply_to_message:
-            await pablo.edit("`Reply To File / Give Me Text To Paste!`")
-            return
-        if not message.reply_to_message.text:
-            file = await message.reply_to_message.download()
-            m_list = open(file, "r").read()
-            message_s = m_list
-            print(message_s)
-            os.remove(file)
-        elif message.reply_to_message.text:
-            message_s = message.reply_to_message.text
-    key = (
-        requests.post("https://nekobin.com/api/documents", json={"content": message_s})
-        .json()
-        .get("result")
-        .get("key")
-    )
-    url = f"https://nekobin.com/{key}"
-    raw = f"https://nekobin.com/raw/{key}"
-    reply_text = f"Pasted Text To [NekoBin]({url}) And For Raw [Click Here]({raw})"
-    await pablo.edit(reply_text)
+@pbot.on_message(filters.command("paste")X&X~filters.editedX&X~filters.bot)
+asyncXdefXpaste(client,Xmessage):
+XXXXpabloX=XawaitXedit_or_reply(message,X"`PleaseXWait.....`")
+XXXXtex_tX=Xget_text(message)
+XXXXmessage_sX=Xtex_t
+XXXXifXnotXtex_t:
+XXXXXXXXifXnotXmessage.reply_to_message:
+XXXXXXXXXXXXawaitXpablo.edit("`ReplyXToXFileX/XGiveXMeXTextXToXPaste!`")
+XXXXXXXXXXXXreturn
+XXXXXXXXifXnotXmessage.reply_to_message.text:
+XXXXXXXXXXXXfileX=XawaitXmessage.reply_to_message.download()
+XXXXXXXXXXXXm_listX=Xopen(file,X"r").read()
+XXXXXXXXXXXXmessage_sX=Xm_list
+XXXXXXXXXXXXprint(message_s)
+XXXXXXXXXXXXos.remove(file)
+XXXXXXXXelifXmessage.reply_to_message.text:
+XXXXXXXXXXXXmessage_sX=Xmessage.reply_to_message.text
+XXXXkeyX=X(
+XXXXXXXXrequests.post("https://nekobin.com/api/documents",Xjson={"content":Xmessage_s})
+XXXXXXXX.json()
+XXXXXXXX.get("result")
+XXXXXXXX.get("key")
+XXXX)
+XXXXurlX=Xf"https://nekobin.com/{key}"
+XXXXrawX=Xf"https://nekobin.com/raw/{key}"
+XXXXreply_textX=Xf"PastedXTextXToX[NekoBin]({url})XAndXForXRawX[ClickXHere]({raw})"
+XXXXawaitXpablo.edit(reply_text)

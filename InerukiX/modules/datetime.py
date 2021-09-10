@@ -1,135 +1,135 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import datetime
-from typing import List
+importXdatetime
+fromXtypingXimportXList
 
-import requests
-from telethon import types
-from telethon.tl import functions
+importXrequests
+fromXtelethonXimportXtypes
+fromXtelethon.tlXimportXfunctions
 
-from Ineruki .config import get_str_key
-from Ineruki .services.events import register
-from Ineruki .services.telethon import tbot
+fromXInerukiX.configXimportXget_str_key
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.telethonXimportXtbot
 
-TIME_API_KEY = get_str_key("TIME_API_KEY", required=False)
-
-
-async def is_register_admin(chat, user):
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
-        return isinstance(
-            (
-                await tbot(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    if isinstance(chat, types.InputPeerUser):
-        return True
+TIME_API_KEYX=Xget_str_key("TIME_API_KEY",Xrequired=False)
 
 
-def generate_time(to_find: str, findtype: List[str]) -> str:
-    data = requests.get(
-        f"http://api.timezonedb.com/v2.1/list-time-zone"
-        f"?key={TIME_API_KEY}"
-        f"&format=json"
-        f"&fields=countryCode,countryName,zoneName,gmtOffset,timestamp,dst"
-    ).json()
-
-    for zone in data["zones"]:
-        for eachtype in findtype:
-            if to_find in zone[eachtype].lower():
-                country_name = zone["countryName"]
-                country_zone = zone["zoneName"]
-                country_code = zone["countryCode"]
-
-                if zone["dst"] == 1:
-                    daylight_saving = "Yes"
-                else:
-                    daylight_saving = "No"
-
-                date_fmt = r"%d-%m-%Y"
-                time_fmt = r"%H:%M:%S"
-                day_fmt = r"%A"
-                gmt_offset = zone["gmtOffset"]
-                timestamp = datetime.datetime.now(
-                    datetime.timezone.utc
-                ) + datetime.timedelta(seconds=gmt_offset)
-                current_date = timestamp.strftime(date_fmt)
-                current_time = timestamp.strftime(time_fmt)
-                current_day = timestamp.strftime(day_fmt)
-
-                break
-
-    try:
-        result = (
-            f"<b>🌍Country :</b> <code>{country_name}</code>\n"
-            f"<b>⏳Zone Name :</b> <code>{country_zone}</code>\n"
-            f"<b>🗺Country Code :</b> <code>{country_code}</code>\n"
-            f"<b>🌞Daylight saving :</b> <code>{daylight_saving}</code>\n"
-            f"<b>🌅Day :</b> <code>{current_day}</code>\n"
-            f"<b>⌚Current Time :</b> <code>{current_time}</code>\n"
-            f"<b>📆Current Date :</b> <code>{current_date}</code>"
-        )
-    except BaseException:
-        result = None
-
-    return result
+asyncXdefXis_register_admin(chat,Xuser):
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXtbot(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXifXisinstance(chat,Xtypes.InputPeerUser):
+XXXXXXXXreturnXTrue
 
 
-@register(pattern="^/datetime ?(.*)")
-async def _(event):
-    if event.fwd_from:
-        return
-    if event.is_group:
-        if await is_register_admin(event.input_chat, event.message.sender_id):
-            pass
-        else:
-            return
+defXgenerate_time(to_find:Xstr,Xfindtype:XList[str])X->Xstr:
+XXXXdataX=Xrequests.get(
+XXXXXXXXf"http://api.timezonedb.com/v2.1/list-time-zone"
+XXXXXXXXf"?key={TIME_API_KEY}"
+XXXXXXXXf"&format=json"
+XXXXXXXXf"&fields=countryCode,countryName,zoneName,gmtOffset,timestamp,dst"
+XXXX).json()
 
-    gay = event.pattern_match.group(1)
+XXXXforXzoneXinXdata["zones"]:
+XXXXXXXXforXeachtypeXinXfindtype:
+XXXXXXXXXXXXifXto_findXinXzone[eachtype].lower():
+XXXXXXXXXXXXXXXXcountry_nameX=Xzone["countryName"]
+XXXXXXXXXXXXXXXXcountry_zoneX=Xzone["zoneName"]
+XXXXXXXXXXXXXXXXcountry_codeX=Xzone["countryCode"]
 
-    try:
-        query = gay
-    except BaseException:
-        await event.reply("Provide a country name/abbreviation/timezone to find.")
-        return
+XXXXXXXXXXXXXXXXifXzone["dst"]X==X1:
+XXXXXXXXXXXXXXXXXXXXdaylight_savingX=X"Yes"
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXdaylight_savingX=X"No"
 
-    send_message = await event.reply(
-        f"Finding timezone info for <b>{query}</b>", parse_mode="html"
-    )
+XXXXXXXXXXXXXXXXdate_fmtX=Xr"%d-%m-%Y"
+XXXXXXXXXXXXXXXXtime_fmtX=Xr"%H:%M:%S"
+XXXXXXXXXXXXXXXXday_fmtX=Xr"%A"
+XXXXXXXXXXXXXXXXgmt_offsetX=Xzone["gmtOffset"]
+XXXXXXXXXXXXXXXXtimestampX=Xdatetime.datetime.now(
+XXXXXXXXXXXXXXXXXXXXdatetime.timezone.utc
+XXXXXXXXXXXXXXXX)X+Xdatetime.timedelta(seconds=gmt_offset)
+XXXXXXXXXXXXXXXXcurrent_dateX=Xtimestamp.strftime(date_fmt)
+XXXXXXXXXXXXXXXXcurrent_timeX=Xtimestamp.strftime(time_fmt)
+XXXXXXXXXXXXXXXXcurrent_dayX=Xtimestamp.strftime(day_fmt)
 
-    query_timezone = query.lower()
-    if len(query_timezone) == 2:
-        result = generate_time(query_timezone, ["countryCode"])
-    else:
-        result = generate_time(query_timezone, ["zoneName", "countryName"])
+XXXXXXXXXXXXXXXXbreak
 
-    if not result:
-        await send_message.edit(
-            f"Timezone info not available for <b>{query}</b>", parse_mode="html"
-        )
-        return
+XXXXtry:
+XXXXXXXXresultX=X(
+XXXXXXXXXXXXf"<b>🌍CountryX:</b>X<code>{country_name}</code>\n"
+XXXXXXXXXXXXf"<b>⏳ZoneXNameX:</b>X<code>{country_zone}</code>\n"
+XXXXXXXXXXXXf"<b>🗺CountryXCodeX:</b>X<code>{country_code}</code>\n"
+XXXXXXXXXXXXf"<b>🌞DaylightXsavingX:</b>X<code>{daylight_saving}</code>\n"
+XXXXXXXXXXXXf"<b>🌅DayX:</b>X<code>{current_day}</code>\n"
+XXXXXXXXXXXXf"<b>⌚CurrentXTimeX:</b>X<code>{current_time}</code>\n"
+XXXXXXXXXXXXf"<b>📆CurrentXDateX:</b>X<code>{current_date}</code>"
+XXXXXXXX)
+XXXXexceptXBaseException:
+XXXXXXXXresultX=XNone
 
-    await send_message.edit(result, parse_mode="html")
+XXXXreturnXresult
 
 
-_mod_name_ = "Date Time"
-_help_ = """
- - /datetime [timezone]: Get the present date and time information
-**You can check out this [link](https://timezonedb.com/time-zones) for the available timezones**
+@register(pattern="^/datetimeX?(.*)")
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXifXevent.is_group:
+XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+
+XXXXgayX=Xevent.pattern_match.group(1)
+
+XXXXtry:
+XXXXXXXXqueryX=Xgay
+XXXXexceptXBaseException:
+XXXXXXXXawaitXevent.reply("ProvideXaXcountryXname/abbreviation/timezoneXtoXfind.")
+XXXXXXXXreturn
+
+XXXXsend_messageX=XawaitXevent.reply(
+XXXXXXXXf"FindingXtimezoneXinfoXforX<b>{query}</b>",Xparse_mode="html"
+XXXX)
+
+XXXXquery_timezoneX=Xquery.lower()
+XXXXifXlen(query_timezone)X==X2:
+XXXXXXXXresultX=Xgenerate_time(query_timezone,X["countryCode"])
+XXXXelse:
+XXXXXXXXresultX=Xgenerate_time(query_timezone,X["zoneName",X"countryName"])
+
+XXXXifXnotXresult:
+XXXXXXXXawaitXsend_message.edit(
+XXXXXXXXXXXXf"TimezoneXinfoXnotXavailableXforX<b>{query}</b>",Xparse_mode="html"
+XXXXXXXX)
+XXXXXXXXreturn
+
+XXXXawaitXsend_message.edit(result,Xparse_mode="html")
+
+
+_mod_name_X=X"DateXTime"
+_help_X=X"""
+X-X/datetimeX[timezone]:XGetXtheXpresentXdateXandXtimeXinformation
+**YouXcanXcheckXoutXthisX[link](https://timezonedb.com/time-zones)XforXtheXavailableXtimezones**
 """

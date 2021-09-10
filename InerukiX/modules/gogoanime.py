@@ -1,111 +1,111 @@
-"""	  Anime Download Command		
-  Repo - https://github.com/Red-Aura/WatchAnimeBot
-  Credits - @cosmicauracommunity
+"""	XXAnimeXDownloadXCommand		
+XXRepoX-Xhttps://github.com/Red-Aura/WatchAnimeBot
+XXCreditsX-X@cosmicauracommunity
 """
 
-from gogoanimeapi import gogoanime as anime
-from telethon import Button, events
+fromXgogoanimeapiXimportXgogoanimeXasXanime
+fromXtelethonXimportXButton,Xevents
 
-from Ineruki .services.telethon import tbot as GogoAnime
+fromXInerukiX.services.telethonXimportXtbotXasXGogoAnime
 
 
-@GogoAnime.on(events.NewMessage(pattern="^/gogo ?(.*)"))
-async def gogo(event):
-    args = event.pattern_match.group(1)
-    if not args:
-        return await event.respond(
-            "Your Query should be in This format: /search <space> Name of the Anime you want to Search."
-        )
-    result = anime.get_search_results(args)
-    buttons = []
-    for i in result:
-        k = [
-            Button.inline("{}".format(i["name"]), data="search_{}".format(i["animeid"]))
-        ]
-        buttons.append(k)
-        if len(buttons) == 99:
-            break
-    await event.reply("search", buttons=buttons)
+@GogoAnime.on(events.NewMessage(pattern="^/gogoX?(.*)"))
+asyncXdefXgogo(event):
+XXXXargsX=Xevent.pattern_match.group(1)
+XXXXifXnotXargs:
+XXXXXXXXreturnXawaitXevent.respond(
+XXXXXXXXXXXX"YourXQueryXshouldXbeXinXThisXformat:X/searchX<space>XNameXofXtheXAnimeXyouXwantXtoXSearch."
+XXXXXXXX)
+XXXXresultX=Xanime.get_search_results(args)
+XXXXbuttonsX=X[]
+XXXXforXiXinXresult:
+XXXXXXXXkX=X[
+XXXXXXXXXXXXButton.inline("{}".format(i["name"]),Xdata="search_{}".format(i["animeid"]))
+XXXXXXXX]
+XXXXXXXXbuttons.append(k)
+XXXXXXXXifXlen(buttons)X==X99:
+XXXXXXXXXXXXbreak
+XXXXawaitXevent.reply("search",Xbuttons=buttons)
 
 
 @GogoAnime.on(events.CallbackQuery(pattern="search(\_(.*))"))
-async def search(event):
-    tata = event.pattern_match.group(1)
-    data = tata.decode()
-    input = data.split("_", 1)[1]
-    animeid = input
-    await event.answer("Fetching Anime Details")
-    result = anime.get_anime_details(animeid)
-    episodes = result["episodes"]
-    nfo = f"{animeid}?{episodes}"
-    buttons = Button.inline("Download", data="episode_{}".format(nfo))
-    text = """
-{} (Released: {})
+asyncXdefXsearch(event):
+XXXXtataX=Xevent.pattern_match.group(1)
+XXXXdataX=Xtata.decode()
+XXXXinputX=Xdata.split("_",X1)[1]
+XXXXanimeidX=Xinput
+XXXXawaitXevent.answer("FetchingXAnimeXDetails")
+XXXXresultX=Xanime.get_anime_details(animeid)
+XXXXepisodesX=Xresult["episodes"]
+XXXXnfoX=Xf"{animeid}?{episodes}"
+XXXXbuttonsX=XButton.inline("Download",Xdata="episode_{}".format(nfo))
+XXXXtextX=X"""
+{}X(Released:X{})
 
-Type: {}
+Type:X{}
 
-Status: {}
+Status:X{}
 
-Generies: {}
+Generies:X{}
 
-Episodes: {}
+Episodes:X{}
 
-Summary: {}
+Summary:X{}
 """
-    await event.edit(
-        text.format(
-            result["title"],
-            result["year"],
-            result["type"],
-            result["status"],
-            result["genre"],
-            result["episodes"],
-            result["plot_summary"],
-        ),
-        buttons=buttons,
-    )
+XXXXawaitXevent.edit(
+XXXXXXXXtext.format(
+XXXXXXXXXXXXresult["title"],
+XXXXXXXXXXXXresult["year"],
+XXXXXXXXXXXXresult["type"],
+XXXXXXXXXXXXresult["status"],
+XXXXXXXXXXXXresult["genre"],
+XXXXXXXXXXXXresult["episodes"],
+XXXXXXXXXXXXresult["plot_summary"],
+XXXXXXXX),
+XXXXXXXXbuttons=buttons,
+XXXX)
 
 
 @GogoAnime.on(events.CallbackQuery(pattern="episode(\_(.*))"))
-async def episode(event):
-    tata = event.pattern_match.group(1)
-    data = tata.decode()
-    input = data.split("_", 1)[1]
-    animeid, episodes = input.split("?", 1)
-    animeid = animeid.strip()
-    epsd = int(episodes.strip())
-    buttons = []
-    cbutton = []
-    for i in range(epsd):
-        nfo = f"{i}?{animeid}"
-        button = Button.inline(f"{i}", data="download_{}".format(nfo))
-        buttons.append(button)
-        if len(buttons) == 4:
-            cbutton.append(buttons)
-            buttons = []
-    text = f"You selected {animeid},\n\nSelect the Episode you want :-"
-    await event.edit(text, buttons=cbutton)
+asyncXdefXepisode(event):
+XXXXtataX=Xevent.pattern_match.group(1)
+XXXXdataX=Xtata.decode()
+XXXXinputX=Xdata.split("_",X1)[1]
+XXXXanimeid,XepisodesX=Xinput.split("?",X1)
+XXXXanimeidX=Xanimeid.strip()
+XXXXepsdX=Xint(episodes.strip())
+XXXXbuttonsX=X[]
+XXXXcbuttonX=X[]
+XXXXforXiXinXrange(epsd):
+XXXXXXXXnfoX=Xf"{i}?{animeid}"
+XXXXXXXXbuttonX=XButton.inline(f"{i}",Xdata="download_{}".format(nfo))
+XXXXXXXXbuttons.append(button)
+XXXXXXXXifXlen(buttons)X==X4:
+XXXXXXXXXXXXcbutton.append(buttons)
+XXXXXXXXXXXXbuttonsX=X[]
+XXXXtextX=Xf"YouXselectedX{animeid},\n\nSelectXtheXEpisodeXyouXwantX:-"
+XXXXawaitXevent.edit(text,Xbuttons=cbutton)
 
 
 @GogoAnime.on(events.CallbackQuery(pattern="download(\_(.*))"))
-async def episode(event):
-    tata = event.pattern_match.group(1)
-    data = tata.decode()
-    input = data.split("_", 1)[1]
-    imd, episode = input.split("?", 1)
-    animeid = episode.strip()
-    epsd = imd.strip()
-    result = anime.get_episodes_link(animeid, epsd)
-    text = "You are watching Episode {} of {}:\n\nNote: Select HDP link for faster streaming.".format(
-        epsd, animeid
-    )
-    butons = []
-    cbutton = []
-    for i in result:
-        if not i == "title":
-            k = Button.url(f"{i}", f"{result[i]}")
-            butons.append(k)
-            if len(butons) == 1:
-                cbutton.append(butons)
-                butons = []
-    await event.edit(text, buttons=cbutton)
+asyncXdefXepisode(event):
+XXXXtataX=Xevent.pattern_match.group(1)
+XXXXdataX=Xtata.decode()
+XXXXinputX=Xdata.split("_",X1)[1]
+XXXXimd,XepisodeX=Xinput.split("?",X1)
+XXXXanimeidX=Xepisode.strip()
+XXXXepsdX=Ximd.strip()
+XXXXresultX=Xanime.get_episodes_link(animeid,Xepsd)
+XXXXtextX=X"YouXareXwatchingXEpisodeX{}XofX{}:\n\nNote:XSelectXHDPXlinkXforXfasterXstreaming.".format(
+XXXXXXXXepsd,Xanimeid
+XXXX)
+XXXXbutonsX=X[]
+XXXXcbuttonX=X[]
+XXXXforXiXinXresult:
+XXXXXXXXifXnotXiX==X"title":
+XXXXXXXXXXXXkX=XButton.url(f"{i}",Xf"{result[i]}")
+XXXXXXXXXXXXbutons.append(k)
+XXXXXXXXXXXXifXlen(butons)X==X1:
+XXXXXXXXXXXXXXXXcbutton.append(butons)
+XXXXXXXXXXXXXXXXbutonsX=X[]
+XXXXawaitXevent.edit(text,Xbuttons=cbutton)

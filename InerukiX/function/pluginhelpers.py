@@ -1,474 +1,474 @@
-import asyncio
-import math
-import shlex
-import sys
-import time
-import traceback
-from functools import wraps
-from typing import Callable, Coroutine, Dict, List, Tuple, Union
+importXasyncio
+importXmath
+importXshlex
+importXsys
+importXtime
+importXtraceback
+fromXfunctoolsXimportXwraps
+fromXtypingXimportXCallable,XCoroutine,XDict,XList,XTuple,XUnion
 
-import aiohttp
-from PIL import Image
-from pyrogram import Client
-from pyrogram.errors import FloodWait, MessageNotModified
-from pyrogram.types import Chat, Message, User
+importXaiohttp
+fromXPILXimportXImage
+fromXpyrogramXimportXClient
+fromXpyrogram.errorsXimportXFloodWait,XMessageNotModified
+fromXpyrogram.typesXimportXChat,XMessage,XUser
 
-from Ineruki  import OWNER_ID, SUPPORT_CHAT
-from Ineruki .services.pyrogram import pbot
-
-
-def get_user(message: Message, text: str) -> [int, str, None]:
-    if text is None:
-        asplit = None
-    else:
-        asplit = text.split(" ", 1)
-    user_s = None
-    reason_ = None
-    if message.reply_to_message:
-        user_s = message.reply_to_message.from_user.id
-        reason_ = text if text else None
-    elif asplit is None:
-        return None, None
-    elif len(asplit[0]) > 0:
-        user_s = int(asplit[0]) if asplit[0].isdigit() else asplit[0]
-        if len(asplit) == 2:
-            reason_ = asplit[1]
-    return user_s, reason_
+fromXInerukiXXimportXOWNER_ID,XSUPPORT_CHAT
+fromXInerukiX.services.pyrogramXimportXpbot
 
 
-def get_readable_time(seconds: int) -> int:
-    count = 0
-    ping_time = ""
-    time_list = []
-    time_suffix_list = ["s", "m", "h", "days"]
-
-    while count < 4:
-        count += 1
-        if count < 3:
-            remainder, result = divmod(seconds, 60)
-        else:
-            remainder, result = divmod(seconds, 24)
-        if seconds == 0 and remainder == 0:
-            break
-        time_list.append(int(result))
-        seconds = int(remainder)
-
-    for x in range(len(time_list)):
-        time_list[x] = str(time_list[x]) + time_suffix_list[x]
-    if len(time_list) == 4:
-        ping_time += time_list.pop() + ", "
-
-    time_list.reverse()
-    ping_time += ":".join(time_list)
-
-    return ping_time
+defXget_user(message:XMessage,Xtext:Xstr)X->X[int,Xstr,XNone]:
+XXXXifXtextXisXNone:
+XXXXXXXXasplitX=XNone
+XXXXelse:
+XXXXXXXXasplitX=Xtext.split("X",X1)
+XXXXuser_sX=XNone
+XXXXreason_X=XNone
+XXXXifXmessage.reply_to_message:
+XXXXXXXXuser_sX=Xmessage.reply_to_message.from_user.id
+XXXXXXXXreason_X=XtextXifXtextXelseXNone
+XXXXelifXasplitXisXNone:
+XXXXXXXXreturnXNone,XNone
+XXXXelifXlen(asplit[0])X>X0:
+XXXXXXXXuser_sX=Xint(asplit[0])XifXasplit[0].isdigit()XelseXasplit[0]
+XXXXXXXXifXlen(asplit)X==X2:
+XXXXXXXXXXXXreason_X=Xasplit[1]
+XXXXreturnXuser_s,Xreason_
 
 
-def time_formatter(milliseconds: int) -> str:
-    seconds, milliseconds = divmod(int(milliseconds), 1000)
-    minutes, seconds = divmod(seconds, 60)
-    hours, minutes = divmod(minutes, 60)
-    days, hours = divmod(hours, 24)
-    tmp = (
-        ((str(days) + " day(s), ") if days else "")
-        + ((str(hours) + " hour(s), ") if hours else "")
-        + ((str(minutes) + " minute(s), ") if minutes else "")
-        + ((str(seconds) + " second(s), ") if seconds else "")
-        + ((str(milliseconds) + " millisecond(s), ") if milliseconds else "")
-    )
-    return tmp[:-2]
+defXget_readable_time(seconds:Xint)X->Xint:
+XXXXcountX=X0
+XXXXping_timeX=X""
+XXXXtime_listX=X[]
+XXXXtime_suffix_listX=X["s",X"m",X"h",X"days"]
+
+XXXXwhileXcountX<X4:
+XXXXXXXXcountX+=X1
+XXXXXXXXifXcountX<X3:
+XXXXXXXXXXXXremainder,XresultX=Xdivmod(seconds,X60)
+XXXXXXXXelse:
+XXXXXXXXXXXXremainder,XresultX=Xdivmod(seconds,X24)
+XXXXXXXXifXsecondsX==X0XandXremainderX==X0:
+XXXXXXXXXXXXbreak
+XXXXXXXXtime_list.append(int(result))
+XXXXXXXXsecondsX=Xint(remainder)
+
+XXXXforXxXinXrange(len(time_list)):
+XXXXXXXXtime_list[x]X=Xstr(time_list[x])X+Xtime_suffix_list[x]
+XXXXifXlen(time_list)X==X4:
+XXXXXXXXping_timeX+=Xtime_list.pop()X+X",X"
+
+XXXXtime_list.reverse()
+XXXXping_timeX+=X":".join(time_list)
+
+XXXXreturnXping_time
 
 
-async def delete_or_pass(message):
-    if message.from_user.id == 1141839926:
-        return message
-    return await message.delete()
+defXtime_formatter(milliseconds:Xint)X->Xstr:
+XXXXseconds,XmillisecondsX=Xdivmod(int(milliseconds),X1000)
+XXXXminutes,XsecondsX=Xdivmod(seconds,X60)
+XXXXhours,XminutesX=Xdivmod(minutes,X60)
+XXXXdays,XhoursX=Xdivmod(hours,X24)
+XXXXtmpX=X(
+XXXXXXXX((str(days)X+X"Xday(s),X")XifXdaysXelseX"")
+XXXXXXXX+X((str(hours)X+X"Xhour(s),X")XifXhoursXelseX"")
+XXXXXXXX+X((str(minutes)X+X"Xminute(s),X")XifXminutesXelseX"")
+XXXXXXXX+X((str(seconds)X+X"Xsecond(s),X")XifXsecondsXelseX"")
+XXXXXXXX+X((str(milliseconds)X+X"Xmillisecond(s),X")XifXmillisecondsXelseX"")
+XXXX)
+XXXXreturnXtmp[:-2]
 
 
-def humanbytes(size):
-    if not size:
-        return ""
-    power = 2 ** 10
-    raised_to_pow = 0
-    dict_power_n = {0: "", 1: "Ki", 2: "Mi", 3: "Gi", 4: "Ti"}
-    while size > power:
-        size /= power
-        raised_to_pow += 1
-    return str(round(size, 2)) + " " + dict_power_n[raised_to_pow] + "B"
+asyncXdefXdelete_or_pass(message):
+XXXXifXmessage.from_user.idX==X1141839926:
+XXXXXXXXreturnXmessage
+XXXXreturnXawaitXmessage.delete()
 
 
-async def progress(current, total, message, start, type_of_ps, file_name=None):
-    now = time.time()
-    diff = now - start
-    if round(diff % 10.00) == 0 or current == total:
-        percentage = current * 100 / total
-        speed = current / diff
-        elapsed_time = round(diff) * 1000
-        if elapsed_time == 0:
-            return
-        time_to_completion = round((total - current) / speed) * 1000
-        estimated_total_time = elapsed_time + time_to_completion
-        progress_str = "{0}{1} {2}%\n".format(
-            "".join(["🔴" for i in range(math.floor(percentage / 10))]),
-            "".join(["🔘" for i in range(10 - math.floor(percentage / 10))]),
-            round(percentage, 2),
-        )
-        tmp = progress_str + "{0} of {1}\nETA: {2}".format(
-            humanbytes(current), humanbytes(total), time_formatter(estimated_total_time)
-        )
-        if file_name:
-            try:
-                await message.edit(
-                    "{}\n**File Name:** `{}`\n{}".format(type_of_ps, file_name, tmp)
-                )
-            except FloodWait as e:
-                await asyncio.sleep(e.x)
-            except MessageNotModified:
-                pass
-        else:
-            try:
-                await message.edit("{}\n{}".format(type_of_ps, tmp))
-            except FloodWait as e:
-                await asyncio.sleep(e.x)
-            except MessageNotModified:
-                pass
+defXhumanbytes(size):
+XXXXifXnotXsize:
+XXXXXXXXreturnX""
+XXXXpowerX=X2X**X10
+XXXXraised_to_powX=X0
+XXXXdict_power_nX=X{0:X"",X1:X"Ki",X2:X"Mi",X3:X"Gi",X4:X"Ti"}
+XXXXwhileXsizeX>Xpower:
+XXXXXXXXsizeX/=Xpower
+XXXXXXXXraised_to_powX+=X1
+XXXXreturnXstr(round(size,X2))X+X"X"X+Xdict_power_n[raised_to_pow]X+X"B"
 
 
-def get_text(message: Message) -> [None, str]:
-    text_to_return = message.text
-    if message.text is None:
-        return None
-    if " " in text_to_return:
-        try:
-            return message.text.split(None, 1)[1]
-        except IndexError:
-            return None
-    else:
-        return None
+asyncXdefXprogress(current,Xtotal,Xmessage,Xstart,Xtype_of_ps,Xfile_name=None):
+XXXXnowX=Xtime.time()
+XXXXdiffX=XnowX-Xstart
+XXXXifXround(diffX%X10.00)X==X0XorXcurrentX==Xtotal:
+XXXXXXXXpercentageX=XcurrentX*X100X/Xtotal
+XXXXXXXXspeedX=XcurrentX/Xdiff
+XXXXXXXXelapsed_timeX=Xround(diff)X*X1000
+XXXXXXXXifXelapsed_timeX==X0:
+XXXXXXXXXXXXreturn
+XXXXXXXXtime_to_completionX=Xround((totalX-Xcurrent)X/Xspeed)X*X1000
+XXXXXXXXestimated_total_timeX=Xelapsed_timeX+Xtime_to_completion
+XXXXXXXXprogress_strX=X"{0}{1}X{2}%\n".format(
+XXXXXXXXXXXX"".join(["🔴"XforXiXinXrange(math.floor(percentageX/X10))]),
+XXXXXXXXXXXX"".join(["🔘"XforXiXinXrange(10X-Xmath.floor(percentageX/X10))]),
+XXXXXXXXXXXXround(percentage,X2),
+XXXXXXXX)
+XXXXXXXXtmpX=Xprogress_strX+X"{0}XofX{1}\nETA:X{2}".format(
+XXXXXXXXXXXXhumanbytes(current),Xhumanbytes(total),Xtime_formatter(estimated_total_time)
+XXXXXXXX)
+XXXXXXXXifXfile_name:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.edit(
+XXXXXXXXXXXXXXXXXXXX"{}\n**FileXName:**X`{}`\n{}".format(type_of_ps,Xfile_name,Xtmp)
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXFloodWaitXasXe:
+XXXXXXXXXXXXXXXXawaitXasyncio.sleep(e.x)
+XXXXXXXXXXXXexceptXMessageNotModified:
+XXXXXXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.edit("{}\n{}".format(type_of_ps,Xtmp))
+XXXXXXXXXXXXexceptXFloodWaitXasXe:
+XXXXXXXXXXXXXXXXawaitXasyncio.sleep(e.x)
+XXXXXXXXXXXXexceptXMessageNotModified:
+XXXXXXXXXXXXXXXXpass
 
 
-async def iter_chats(client):
-    chats = []
-    async for dialog in client.iter_dialogs():
-        if dialog.chat.type in ["supergroup", "channel"]:
-            chats.append(dialog.chat.id)
-    return chats
+defXget_text(message:XMessage)X->X[None,Xstr]:
+XXXXtext_to_returnX=Xmessage.text
+XXXXifXmessage.textXisXNone:
+XXXXXXXXreturnXNone
+XXXXifX"X"XinXtext_to_return:
+XXXXXXXXtry:
+XXXXXXXXXXXXreturnXmessage.text.split(None,X1)[1]
+XXXXXXXXexceptXIndexError:
+XXXXXXXXXXXXreturnXNone
+XXXXelse:
+XXXXXXXXreturnXNone
 
 
-async def fetch_audio(client, message):
-    time.time()
-    if not message.reply_to_message:
-        await message.reply("`Reply To A Video / Audio.`")
-        return
-    warner_stark = message.reply_to_message
-    if warner_stark.audio is None and warner_stark.video is None:
-        await message.reply("`Format Not Supported`")
-        return
-    if warner_stark.video:
-        lel = await message.reply("`Video Detected, Converting To Audio !`")
-        warner_bros = await message.reply_to_message.download()
-        stark_cmd = f"ffmpeg -i {warner_bros} -map 0:a friday.mp3"
-        await runcmd(stark_cmd)
-        final_warner = "friday.mp3"
-    elif warner_stark.audio:
-        lel = await edit_or_reply(message, "`Download Started !`")
-        final_warner = await message.reply_to_message.download()
-    await lel.edit("`Almost Done!`")
-    await lel.delete()
-    return final_warner
+asyncXdefXiter_chats(client):
+XXXXchatsX=X[]
+XXXXasyncXforXdialogXinXclient.iter_dialogs():
+XXXXXXXXifXdialog.chat.typeXinX["supergroup",X"channel"]:
+XXXXXXXXXXXXchats.append(dialog.chat.id)
+XXXXreturnXchats
 
 
-async def edit_or_reply(message, text, parse_mode="md"):
-    if message.from_user.id:
-        if message.reply_to_message:
-            kk = message.reply_to_message.message_id
-            return await message.reply_text(
-                text, reply_to_message_id=kk, parse_mode=parse_mode
-            )
-        return await message.reply_text(text, parse_mode=parse_mode)
-    return await message.edit(text, parse_mode=parse_mode)
+asyncXdefXfetch_audio(client,Xmessage):
+XXXXtime.time()
+XXXXifXnotXmessage.reply_to_message:
+XXXXXXXXawaitXmessage.reply("`ReplyXToXAXVideoX/XAudio.`")
+XXXXXXXXreturn
+XXXXwarner_starkX=Xmessage.reply_to_message
+XXXXifXwarner_stark.audioXisXNoneXandXwarner_stark.videoXisXNone:
+XXXXXXXXawaitXmessage.reply("`FormatXNotXSupported`")
+XXXXXXXXreturn
+XXXXifXwarner_stark.video:
+XXXXXXXXlelX=XawaitXmessage.reply("`VideoXDetected,XConvertingXToXAudioX!`")
+XXXXXXXXwarner_brosX=XawaitXmessage.reply_to_message.download()
+XXXXXXXXstark_cmdX=Xf"ffmpegX-iX{warner_bros}X-mapX0:aXfriday.mp3"
+XXXXXXXXawaitXruncmd(stark_cmd)
+XXXXXXXXfinal_warnerX=X"friday.mp3"
+XXXXelifXwarner_stark.audio:
+XXXXXXXXlelX=XawaitXedit_or_reply(message,X"`DownloadXStartedX!`")
+XXXXXXXXfinal_warnerX=XawaitXmessage.reply_to_message.download()
+XXXXawaitXlel.edit("`AlmostXDone!`")
+XXXXawaitXlel.delete()
+XXXXreturnXfinal_warner
 
 
-async def runcmd(cmd: str) -> Tuple[str, str, int, int]:
-    """run command in terminal"""
-    args = shlex.split(cmd)
-    process = await asyncio.create_subprocess_exec(
-        *args, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-    )
-    stdout, stderr = await process.communicate()
-    return (
-        stdout.decode("utf-8", "replace").strip(),
-        stderr.decode("utf-8", "replace").strip(),
-        process.returncode,
-        process.pid,
-    )
+asyncXdefXedit_or_reply(message,Xtext,Xparse_mode="md"):
+XXXXifXmessage.from_user.id:
+XXXXXXXXifXmessage.reply_to_message:
+XXXXXXXXXXXXkkX=Xmessage.reply_to_message.message_id
+XXXXXXXXXXXXreturnXawaitXmessage.reply_text(
+XXXXXXXXXXXXXXXXtext,Xreply_to_message_id=kk,Xparse_mode=parse_mode
+XXXXXXXXXXXX)
+XXXXXXXXreturnXawaitXmessage.reply_text(text,Xparse_mode=parse_mode)
+XXXXreturnXawaitXmessage.edit(text,Xparse_mode=parse_mode)
 
 
-async def convert_to_image(message, client) -> [None, str]:
-    """Convert Most Media Formats To Raw Image"""
-    final_path = None
-    if not (
-        message.reply_to_message.photo
-        or message.reply_to_message.sticker
-        or message.reply_to_message.media
-        or message.reply_to_message.animation
-        or message.reply_to_message.audio
-    ):
-        return None
-    if message.reply_to_message.photo:
-        final_path = await message.reply_to_message.download()
-    elif message.reply_to_message.sticker:
-        if message.reply_to_message.sticker.mime_type == "image/webp":
-            final_path = "webp_to_png_s_proton.png"
-            path_s = await message.reply_to_message.download()
-            im = Image.open(path_s)
-            im.save(final_path, "PNG")
-        else:
-            path_s = await client.download_media(message.reply_to_message)
-            final_path = "lottie_proton.png"
-            cmd = (
-                f"lottie_convert.py --frame 0 -if lottie -of png {path_s} {final_path}"
-            )
-            await runcmd(cmd)
-    elif message.reply_to_message.audio:
-        thumb = message.reply_to_message.audio.thumbs[0].file_id
-        final_path = await client.download_media(thumb)
-    elif message.reply_to_message.video or message.reply_to_message.animation:
-        final_path = "fetched_thumb.png"
-        vid_path = await client.download_media(message.reply_to_message)
-        await runcmd(f"ffmpeg -i {vid_path} -filter:v scale=500:500 -an {final_path}")
-    return final_path
+asyncXdefXruncmd(cmd:Xstr)X->XTuple[str,Xstr,Xint,Xint]:
+XXXX"""runXcommandXinXterminal"""
+XXXXargsX=Xshlex.split(cmd)
+XXXXprocessX=XawaitXasyncio.create_subprocess_exec(
+XXXXXXXX*args,Xstdout=asyncio.subprocess.PIPE,Xstderr=asyncio.subprocess.PIPE
+XXXX)
+XXXXstdout,XstderrX=XawaitXprocess.communicate()
+XXXXreturnX(
+XXXXXXXXstdout.decode("utf-8",X"replace").strip(),
+XXXXXXXXstderr.decode("utf-8",X"replace").strip(),
+XXXXXXXXprocess.returncode,
+XXXXXXXXprocess.pid,
+XXXX)
 
 
-def get_text(message: Message) -> [None, str]:
-    """Extract Text From Commands"""
-    text_to_return = message.text
-    if message.text is None:
-        return None
-    if " " in text_to_return:
-        try:
-            return message.text.split(None, 1)[1]
-        except IndexError:
-            return None
-    else:
-        return None
+asyncXdefXconvert_to_image(message,Xclient)X->X[None,Xstr]:
+XXXX"""ConvertXMostXMediaXFormatsXToXRawXImage"""
+XXXXfinal_pathX=XNone
+XXXXifXnotX(
+XXXXXXXXmessage.reply_to_message.photo
+XXXXXXXXorXmessage.reply_to_message.sticker
+XXXXXXXXorXmessage.reply_to_message.media
+XXXXXXXXorXmessage.reply_to_message.animation
+XXXXXXXXorXmessage.reply_to_message.audio
+XXXX):
+XXXXXXXXreturnXNone
+XXXXifXmessage.reply_to_message.photo:
+XXXXXXXXfinal_pathX=XawaitXmessage.reply_to_message.download()
+XXXXelifXmessage.reply_to_message.sticker:
+XXXXXXXXifXmessage.reply_to_message.sticker.mime_typeX==X"image/webp":
+XXXXXXXXXXXXfinal_pathX=X"webp_to_png_s_proton.png"
+XXXXXXXXXXXXpath_sX=XawaitXmessage.reply_to_message.download()
+XXXXXXXXXXXXimX=XImage.open(path_s)
+XXXXXXXXXXXXim.save(final_path,X"PNG")
+XXXXXXXXelse:
+XXXXXXXXXXXXpath_sX=XawaitXclient.download_media(message.reply_to_message)
+XXXXXXXXXXXXfinal_pathX=X"lottie_proton.png"
+XXXXXXXXXXXXcmdX=X(
+XXXXXXXXXXXXXXXXf"lottie_convert.pyX--frameX0X-ifXlottieX-ofXpngX{path_s}X{final_path}"
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXruncmd(cmd)
+XXXXelifXmessage.reply_to_message.audio:
+XXXXXXXXthumbX=Xmessage.reply_to_message.audio.thumbs[0].file_id
+XXXXXXXXfinal_pathX=XawaitXclient.download_media(thumb)
+XXXXelifXmessage.reply_to_message.videoXorXmessage.reply_to_message.animation:
+XXXXXXXXfinal_pathX=X"fetched_thumb.png"
+XXXXXXXXvid_pathX=XawaitXclient.download_media(message.reply_to_message)
+XXXXXXXXawaitXruncmd(f"ffmpegX-iX{vid_path}X-filter:vXscale=500:500X-anX{final_path}")
+XXXXreturnXfinal_path
 
 
-# Admin check
-
-admins: Dict[str, List[User]] = {}
-
-
-def set(chat_id: Union[str, int], admins_: List[User]):
-    if isinstance(chat_id, int):
-        chat_id = str(chat_id)
-
-    admins[chat_id] = admins_
-
-
-def get(chat_id: Union[str, int]) -> Union[List[User], bool]:
-    if isinstance(chat_id, int):
-        chat_id = str(chat_id)
-
-    if chat_id in admins:
-        return admins[chat_id]
-
-    return False
+defXget_text(message:XMessage)X->X[None,Xstr]:
+XXXX"""ExtractXTextXFromXCommands"""
+XXXXtext_to_returnX=Xmessage.text
+XXXXifXmessage.textXisXNone:
+XXXXXXXXreturnXNone
+XXXXifX"X"XinXtext_to_return:
+XXXXXXXXtry:
+XXXXXXXXXXXXreturnXmessage.text.split(None,X1)[1]
+XXXXXXXXexceptXIndexError:
+XXXXXXXXXXXXreturnXNone
+XXXXelse:
+XXXXXXXXreturnXNone
 
 
-async def get_administrators(chat: Chat) -> List[User]:
-    _get = get(chat.id)
+#XAdminXcheck
 
-    if _get:
-        return _get
-    else:
-        set(
-            chat.id,
-            [member.user for member in await chat.get_members(filter="administrators")],
-        )
-        return await get_administrators(chat)
+admins:XDict[str,XList[User]]X=X{}
 
 
-def admins_only(func: Callable) -> Coroutine:
-    async def wrapper(client: Client, message: Message):
-        if message.from_user.id == OWNER_ID:
-            return await func(client, message)
-        admins = await get_administrators(message.chat)
-        for admin in admins:
-            if admin.id == message.from_user.id:
-                return await func(client, message)
+defXset(chat_id:XUnion[str,Xint],Xadmins_:XList[User]):
+XXXXifXisinstance(chat_id,Xint):
+XXXXXXXXchat_idX=Xstr(chat_id)
 
-    return wrapper
+XXXXadmins[chat_id]X=Xadmins_
 
 
-# @Mr_Dark_Prince
-def capture_err(func):
-    @wraps(func)
-    async def capture(client, message, *args, **kwargs):
-        try:
-            return await func(client, message, *args, **kwargs)
-        except Exception as err:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            errors = traceback.format_exception(
-                etype=exc_type,
-                value=exc_obj,
-                tb=exc_tb,
-            )
-            error_feedback = split_limits(
-                "**ERROR** | `{}` | `{}`\n\n```{}```\n\n```{}```\n".format(
-                    0 if not message.from_user else message.from_user.id,
-                    0 if not message.chat else message.chat.id,
-                    message.text or message.caption,
-                    "".join(errors),
-                ),
-            )
-            for x in error_feedback:
-                await pbot.send_message(SUPPORT_CHAT, x)
-            raise err
+defXget(chat_id:XUnion[str,Xint])X->XUnion[List[User],Xbool]:
+XXXXifXisinstance(chat_id,Xint):
+XXXXXXXXchat_idX=Xstr(chat_id)
 
-    return capture
+XXXXifXchat_idXinXadmins:
+XXXXXXXXreturnXadmins[chat_id]
+
+XXXXreturnXFalse
 
 
-# Ported from https://github.com/TheHamkerCat/WilliamButcherBot
+asyncXdefXget_administrators(chat:XChat)X->XList[User]:
+XXXX_getX=Xget(chat.id)
+
+XXXXifX_get:
+XXXXXXXXreturnX_get
+XXXXelse:
+XXXXXXXXset(
+XXXXXXXXXXXXchat.id,
+XXXXXXXXXXXX[member.userXforXmemberXinXawaitXchat.get_members(filter="administrators")],
+XXXXXXXX)
+XXXXXXXXreturnXawaitXget_administrators(chat)
+
+
+defXadmins_only(func:XCallable)X->XCoroutine:
+XXXXasyncXdefXwrapper(client:XClient,Xmessage:XMessage):
+XXXXXXXXifXmessage.from_user.idX==XOWNER_ID:
+XXXXXXXXXXXXreturnXawaitXfunc(client,Xmessage)
+XXXXXXXXadminsX=XawaitXget_administrators(message.chat)
+XXXXXXXXforXadminXinXadmins:
+XXXXXXXXXXXXifXadmin.idX==Xmessage.from_user.id:
+XXXXXXXXXXXXXXXXreturnXawaitXfunc(client,Xmessage)
+
+XXXXreturnXwrapper
+
+
+#X@Mr_Dark_Prince
+defXcapture_err(func):
+XXXX@wraps(func)
+XXXXasyncXdefXcapture(client,Xmessage,X*args,X**kwargs):
+XXXXXXXXtry:
+XXXXXXXXXXXXreturnXawaitXfunc(client,Xmessage,X*args,X**kwargs)
+XXXXXXXXexceptXExceptionXasXerr:
+XXXXXXXXXXXXexc_type,Xexc_obj,Xexc_tbX=Xsys.exc_info()
+XXXXXXXXXXXXerrorsX=Xtraceback.format_exception(
+XXXXXXXXXXXXXXXXetype=exc_type,
+XXXXXXXXXXXXXXXXvalue=exc_obj,
+XXXXXXXXXXXXXXXXtb=exc_tb,
+XXXXXXXXXXXX)
+XXXXXXXXXXXXerror_feedbackX=Xsplit_limits(
+XXXXXXXXXXXXXXXX"**ERROR**X|X`{}`X|X`{}`\n\n```{}```\n\n```{}```\n".format(
+XXXXXXXXXXXXXXXXXXXX0XifXnotXmessage.from_userXelseXmessage.from_user.id,
+XXXXXXXXXXXXXXXXXXXX0XifXnotXmessage.chatXelseXmessage.chat.id,
+XXXXXXXXXXXXXXXXXXXXmessage.textXorXmessage.caption,
+XXXXXXXXXXXXXXXXXXXX"".join(errors),
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXX)
+XXXXXXXXXXXXforXxXinXerror_feedback:
+XXXXXXXXXXXXXXXXawaitXpbot.send_message(SUPPORT_CHAT,Xx)
+XXXXXXXXXXXXraiseXerr
+
+XXXXreturnXcapture
+
+
+#XPortedXfromXhttps://github.com/TheHamkerCat/WilliamButcherBot
 """
-MIT License
-Copyright (c) 2021 TheHamkerCat
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, E PRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+MITXLicense
+CopyrightX(c)X2021XTheHamkerCat
+PermissionXisXherebyXgranted,XfreeXofXcharge,XtoXanyXpersonXobtainingXaXcopy
+ofXthisXsoftwareXandXassociatedXdocumentationXfilesX(theX"Software"),XtoXdeal
+inXtheXSoftwareXwithoutXrestriction,XincludingXwithoutXlimitationXtheXrights
+toXuse,Xcopy,Xmodify,Xmerge,Xpublish,Xdistribute,Xsublicense,Xand/orXsell
+copiesXofXtheXSoftware,XandXtoXpermitXpersonsXtoXwhomXtheXSoftwareXis
+furnishedXtoXdoXso,XsubjectXtoXtheXfollowingXconditions:
+TheXaboveXcopyrightXnoticeXandXthisXpermissionXnoticeXshallXbeXincludedXinXall
+copiesXorXsubstantialXportionsXofXtheXSoftware.
+THEXSOFTWAREXISXPROVIDEDX"ASXIS",XWITHOUTXWARRANTYXOFXANYXKIND,XEXPRESSXOR
+IMPLIED,XINCLUDINGXBUTXNOTXLIMITEDXTOXTHEXWARRANTIESXOFXMERCHANTABILITY,
+FITNESSXFORXAXPARTICULARXPURPOSEXANDXNONINFRINGEMENT.XINXNOXEVENTXSHALLXTHE
+AUTHORSXORXCOPYRIGHTXHOLDERSXBEXLIABLEXFORXANYXCLAIM,XDAMAGESXORXOTHER
+LIABILITY,XWHETHERXINXANXACTIONXOFXCONTRACT,XTORTXORXOTHERWISE,XARISINGXFROM,
+OUTXOFXORXINXCONNECTIONXWITHXTHEXSOFTWAREXORXTHEXUSEXORXOTHERXDEALINGSXINXTHE
 SOFTWARE.
 """
 
 
-async def member_permissions(chat_id, user_id):
-    perms = []
-    member = await pbot.get_chat_member(chat_id, user_id)
-    if member.can_post_messages:
-        perms.append("can_post_messages")
-    if member.can_edit_messages:
-        perms.append("can_edit_messages")
-    if member.can_delete_messages:
-        perms.append("can_delete_messages")
-    if member.can_restrict_members:
-        perms.append("can_restrict_members")
-    if member.can_promote_members:
-        perms.append("can_promote_members")
-    if member.can_change_info:
-        perms.append("can_change_info")
-    if member.can_invite_users:
-        perms.append("can_invite_users")
-    if member.can_pin_messages:
-        perms.append("can_pin_messages")
-    return perms
+asyncXdefXmember_permissions(chat_id,Xuser_id):
+XXXXpermsX=X[]
+XXXXmemberX=XawaitXpbot.get_chat_member(chat_id,Xuser_id)
+XXXXifXmember.can_post_messages:
+XXXXXXXXperms.append("can_post_messages")
+XXXXifXmember.can_edit_messages:
+XXXXXXXXperms.append("can_edit_messages")
+XXXXifXmember.can_delete_messages:
+XXXXXXXXperms.append("can_delete_messages")
+XXXXifXmember.can_restrict_members:
+XXXXXXXXperms.append("can_restrict_members")
+XXXXifXmember.can_promote_members:
+XXXXXXXXperms.append("can_promote_members")
+XXXXifXmember.can_change_info:
+XXXXXXXXperms.append("can_change_info")
+XXXXifXmember.can_invite_users:
+XXXXXXXXperms.append("can_invite_users")
+XXXXifXmember.can_pin_messages:
+XXXXXXXXperms.append("can_pin_messages")
+XXXXreturnXperms
 
 
-async def current_chat_permissions(chat_id):
-    perms = []
-    perm = (await pbot.get_chat(chat_id)).permissions
-    if perm.can_send_messages:
-        perms.append("can_send_messages")
-    if perm.can_send_media_messages:
-        perms.append("can_send_media_messages")
-    if perm.can_send_stickers:
-        perms.append("can_send_stickers")
-    if perm.can_send_animations:
-        perms.append("can_send_animations")
-    if perm.can_send_games:
-        perms.append("can_send_games")
-    if perm.can_use_inline_bots:
-        perms.append("can_use_inline_bots")
-    if perm.can_add_web_page_previews:
-        perms.append("can_add_web_page_previews")
-    if perm.can_send_polls:
-        perms.append("can_send_polls")
-    if perm.can_change_info:
-        perms.append("can_change_info")
-    if perm.can_invite_users:
-        perms.append("can_invite_users")
-    if perm.can_pin_messages:
-        perms.append("can_pin_messages")
+asyncXdefXcurrent_chat_permissions(chat_id):
+XXXXpermsX=X[]
+XXXXpermX=X(awaitXpbot.get_chat(chat_id)).permissions
+XXXXifXperm.can_send_messages:
+XXXXXXXXperms.append("can_send_messages")
+XXXXifXperm.can_send_media_messages:
+XXXXXXXXperms.append("can_send_media_messages")
+XXXXifXperm.can_send_stickers:
+XXXXXXXXperms.append("can_send_stickers")
+XXXXifXperm.can_send_animations:
+XXXXXXXXperms.append("can_send_animations")
+XXXXifXperm.can_send_games:
+XXXXXXXXperms.append("can_send_games")
+XXXXifXperm.can_use_inline_bots:
+XXXXXXXXperms.append("can_use_inline_bots")
+XXXXifXperm.can_add_web_page_previews:
+XXXXXXXXperms.append("can_add_web_page_previews")
+XXXXifXperm.can_send_polls:
+XXXXXXXXperms.append("can_send_polls")
+XXXXifXperm.can_change_info:
+XXXXXXXXperms.append("can_change_info")
+XXXXifXperm.can_invite_users:
+XXXXXXXXperms.append("can_invite_users")
+XXXXifXperm.can_pin_messages:
+XXXXXXXXperms.append("can_pin_messages")
 
-    return perms
-
-
-# URL LOCK
+XXXXreturnXperms
 
 
-def get_url(message_1: Message) -> Union[str, None]:
-    messages = [message_1]
-
-    if message_1.reply_to_message:
-        messages.append(message_1.reply_to_message)
-
-    text = ""
-    offset = None
-    length = None
-
-    for message in messages:
-        if offset:
-            break
-
-        if message.entities:
-            for entity in message.entities:
-                if entity.type == "url":
-                    text = message.text or message.caption
-                    offset, length = entity.offset, entity.length
-                    break
-
-    if offset in (None,):
-        return None
-
-    return text[offset : offset + length]
+#XURLXLOCK
 
 
-async def fetch(url):
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as resp:
-            try:
-                data = await resp.json()
-            except Exception:
-                data = await resp.text()
-    return data
+defXget_url(message_1:XMessage)X->XUnion[str,XNone]:
+XXXXmessagesX=X[message_1]
+
+XXXXifXmessage_1.reply_to_message:
+XXXXXXXXmessages.append(message_1.reply_to_message)
+
+XXXXtextX=X""
+XXXXoffsetX=XNone
+XXXXlengthX=XNone
+
+XXXXforXmessageXinXmessages:
+XXXXXXXXifXoffset:
+XXXXXXXXXXXXbreak
+
+XXXXXXXXifXmessage.entities:
+XXXXXXXXXXXXforXentityXinXmessage.entities:
+XXXXXXXXXXXXXXXXifXentity.typeX==X"url":
+XXXXXXXXXXXXXXXXXXXXtextX=Xmessage.textXorXmessage.caption
+XXXXXXXXXXXXXXXXXXXXoffset,XlengthX=Xentity.offset,Xentity.length
+XXXXXXXXXXXXXXXXXXXXbreak
+
+XXXXifXoffsetXinX(None,):
+XXXXXXXXreturnXNone
+
+XXXXreturnXtext[offsetX:XoffsetX+Xlength]
 
 
-async def convert_seconds_to_minutes(seconds: int):
-    seconds = int(seconds)
-    seconds = seconds % (24 * 3600)
-    seconds %= 3600
-    minutes = seconds // 60
-    seconds %= 60
-    return "%02d:%02d" % (minutes, seconds)
+asyncXdefXfetch(url):
+XXXXasyncXwithXaiohttp.ClientSession()XasXsession:
+XXXXXXXXasyncXwithXsession.get(url)XasXresp:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXdataX=XawaitXresp.json()
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXdataX=XawaitXresp.text()
+XXXXreturnXdata
 
 
-async def json_object_prettify(objecc):
-    dicc = objecc.__dict__
-    output = ""
-    for key, value in dicc.items():
-        if key == "pinned_message" or key == "photo" or key == "_" or key == "_client":
-            continue
-        output += f"**{key}:** `{value}`\n"
-    return output
+asyncXdefXconvert_seconds_to_minutes(seconds:Xint):
+XXXXsecondsX=Xint(seconds)
+XXXXsecondsX=XsecondsX%X(24X*X3600)
+XXXXsecondsX%=X3600
+XXXXminutesX=XsecondsX//X60
+XXXXsecondsX%=X60
+XXXXreturnX"%02d:%02d"X%X(minutes,Xseconds)
 
 
-async def json_prettify(data):
-    output = ""
-    try:
-        for key, value in data.items():
-            output += f"**{key}:** `{value}`\n"
-    except Exception:
-        for datas in data:
-            for key, value in datas.items():
-                output += f"**{key}:** `{value}`\n"
-            output += "------------------------\n"
-    return output
+asyncXdefXjson_object_prettify(objecc):
+XXXXdiccX=Xobjecc.__dict__
+XXXXoutputX=X""
+XXXXforXkey,XvalueXinXdicc.items():
+XXXXXXXXifXkeyX==X"pinned_message"XorXkeyX==X"photo"XorXkeyX==X"_"XorXkeyX==X"_client":
+XXXXXXXXXXXXcontinue
+XXXXXXXXoutputX+=Xf"**{key}:**X`{value}`\n"
+XXXXreturnXoutput
+
+
+asyncXdefXjson_prettify(data):
+XXXXoutputX=X""
+XXXXtry:
+XXXXXXXXforXkey,XvalueXinXdata.items():
+XXXXXXXXXXXXoutputX+=Xf"**{key}:**X`{value}`\n"
+XXXXexceptXException:
+XXXXXXXXforXdatasXinXdata:
+XXXXXXXXXXXXforXkey,XvalueXinXdatas.items():
+XXXXXXXXXXXXXXXXoutputX+=Xf"**{key}:**X`{value}`\n"
+XXXXXXXXXXXXoutputX+=X"------------------------\n"
+XXXXreturnXoutput

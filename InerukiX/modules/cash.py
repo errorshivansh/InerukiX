@@ -1,93 +1,93 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import requests
-from telethon import types
-from telethon.tl import functions
+importXrequests
+fromXtelethonXimportXtypes
+fromXtelethon.tlXimportXfunctions
 
-from Ineruki .config import get_str_key
-from Ineruki .services.events import register
-from Ineruki .services.telethon import tbot
+fromXInerukiX.configXimportXget_str_key
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.telethonXimportXtbot
 
-CASH_API_KEY = get_str_key("CASH_API_KEY", required=False)
+CASH_API_KEYX=Xget_str_key("CASH_API_KEY",Xrequired=False)
 
 
-async def is_register_admin(chat, user):
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
-        return isinstance(
-            (
-                await tbot(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    if isinstance(chat, types.InputPeerUser):
-        return True
+asyncXdefXis_register_admin(chat,Xuser):
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXtbot(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXifXisinstance(chat,Xtypes.InputPeerUser):
+XXXXXXXXreturnXTrue
 
 
 @register(pattern="^/cash")
-async def _(event):
-    if event.fwd_from:
-        return
-    """this method of approve system is made by @AyushChatterjee, god will curse your family if you kang it motherfucker"""
-    if event.is_group:
-        if await is_register_admin(event.input_chat, event.message.sender_id):
-            pass
-        else:
-            return
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXX"""thisXmethodXofXapproveXsystemXisXmadeXbyX@AyushChatterjee,XgodXwillXcurseXyourXfamilyXifXyouXkangXitXmotherfucker"""
+XXXXifXevent.is_group:
+XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
 
-    cmd = event.text
+XXXXcmdX=Xevent.text
 
-    args = cmd.split(" ")
+XXXXargsX=Xcmd.split("X")
 
-    if len(args) == 4:
-        try:
-            orig_cur_amount = float(args[1])
+XXXXifXlen(args)X==X4:
+XXXXXXXXtry:
+XXXXXXXXXXXXorig_cur_amountX=Xfloat(args[1])
 
-        except ValueError:
-            await event.reply("Invalid Amount Of Currency")
-            return
+XXXXXXXXexceptXValueError:
+XXXXXXXXXXXXawaitXevent.reply("InvalidXAmountXOfXCurrency")
+XXXXXXXXXXXXreturn
 
-        orig_cur = args[2].upper()
+XXXXXXXXorig_curX=Xargs[2].upper()
 
-        new_cur = args[3].upper()
+XXXXXXXXnew_curX=Xargs[3].upper()
 
-        request_url = (
-            f"https://www.alphavantage.co/query"
-            f"?function=CURRENCY_E CHANGE_RATE"
-            f"&from_currency={orig_cur}"
-            f"&to_currency={new_cur}"
-            f"&apikey={CASH_API_KEY}"
-        )
-        response = requests.get(request_url).json()
-        try:
-            current_rate = float(
-                response["Realtime Currency Exchange Rate"]["5. Exchange Rate"]
-            )
-        except KeyError:
-            await event.reply("Currency Not Supported.")
-            return
-        new_cur_amount = round(orig_cur_amount * current_rate, 5)
-        await event.reply(f"{orig_cur_amount} {orig_cur} = {new_cur_amount} {new_cur}")
+XXXXXXXXrequest_urlX=X(
+XXXXXXXXXXXXf"https://www.alphavantage.co/query"
+XXXXXXXXXXXXf"?function=CURRENCY_EXCHANGE_RATE"
+XXXXXXXXXXXXf"&from_currency={orig_cur}"
+XXXXXXXXXXXXf"&to_currency={new_cur}"
+XXXXXXXXXXXXf"&apikey={CASH_API_KEY}"
+XXXXXXXX)
+XXXXXXXXresponseX=Xrequests.get(request_url).json()
+XXXXXXXXtry:
+XXXXXXXXXXXXcurrent_rateX=Xfloat(
+XXXXXXXXXXXXXXXXresponse["RealtimeXCurrencyXExchangeXRate"]["5.XExchangeXRate"]
+XXXXXXXXXXXX)
+XXXXXXXXexceptXKeyError:
+XXXXXXXXXXXXawaitXevent.reply("CurrencyXNotXSupported.")
+XXXXXXXXXXXXreturn
+XXXXXXXXnew_cur_amountX=Xround(orig_cur_amountX*Xcurrent_rate,X5)
+XXXXXXXXawaitXevent.reply(f"{orig_cur_amount}X{orig_cur}X=X{new_cur_amount}X{new_cur}")
 
-    elif len(args) == 1:
-        await event.reply(__help__)
+XXXXelifXlen(args)X==X1:
+XXXXXXXXawaitXevent.reply(__help__)
 
-    else:
-        await event.reply(
-            f"**Invalid Args!!:** Required 3 But Passed {len(args) -1}",
-        )
+XXXXelse:
+XXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXf"**InvalidXArgs!!:**XRequiredX3XButXPassedX{len(args)X-1}",
+XXXXXXXX)

@@ -1,33 +1,33 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import glob
-import os.path
-
-
-def list_all_filters():
-    mod_paths = glob.glob(os.path.dirname(__file__) + "/*.py")
-    all_filters = [
-        os.path.basename(f)[:-3]
-        for f in mod_paths
-        if os.path.isfile(f) and f.endswith(".py") and not f.endswith("__init__.py")
-    ]
-
-    return all_filters
+importXglob
+importXos.path
 
 
-ALL_FILTERS = sorted(list(list_all_filters()))
+defXlist_all_filters():
+XXXXmod_pathsX=Xglob.glob(os.path.dirname(__file__)X+X"/*.py")
+XXXXall_filtersX=X[
+XXXXXXXXos.path.basename(f)[:-3]
+XXXXXXXXforXfXinXmod_paths
+XXXXXXXXifXos.path.isfile(f)XandXf.endswith(".py")XandXnotXf.endswith("__init__.py")
+XXXX]
 
-__all__ = ALL_FILTERS + ["ALL_FILTERS"]
+XXXXreturnXall_filters
+
+
+ALL_FILTERSX=Xsorted(list(list_all_filters()))
+
+__all__X=XALL_FILTERSX+X["ALL_FILTERS"]

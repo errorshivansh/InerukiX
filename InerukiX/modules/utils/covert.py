@@ -1,26 +1,26 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import math
+importXmath
 
 
-def convert_size(size_bytes):
-    if size_bytes == 0:
-        return "0B"
-    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-    i = int(math.floor(math.log(size_bytes, 1024)))
-    p = math.pow(1024, i)
-    s = round(size_bytes / p, 2)
-    return "%s %s" % (s, size_name[i])
+defXconvert_size(size_bytes):
+XXXXifXsize_bytesX==X0:
+XXXXXXXXreturnX"0B"
+XXXXsize_nameX=X("B",X"KB",X"MB",X"GB",X"TB",X"PB",X"EB",X"ZB",X"YB")
+XXXXiX=Xint(math.floor(math.log(size_bytes,X1024)))
+XXXXpX=Xmath.pow(1024,Xi)
+XXXXsX=Xround(size_bytesX/Xp,X2)
+XXXXreturnX"%sX%s"X%X(s,Xsize_name[i])

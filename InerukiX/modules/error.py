@@ -1,155 +1,155 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 errorshivansh
-# Copyright (C) 2020 Inuka Asith
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2021Xerrorshivansh
+#XCopyrightX(C)X2020XInukaXAsith
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import html
-import sys
+importXhtml
+importXsys
 
-from aiogram.types import Update
-from redis.exceptions import RedisError
+fromXaiogram.typesXimportXUpdate
+fromXredis.exceptionsXimportXRedisError
 
-from Ineruki  import OWNER_ID, bot, dp
-from Ineruki .services.redis import redis
-from Ineruki .utils.logger import log
+fromXInerukiXXimportXOWNER_ID,Xbot,Xdp
+fromXInerukiX.services.redisXimportXredis
+fromXInerukiX.utils.loggerXimportXlog
 
-SENT = []
+SENTX=X[]
 
 
-def catch_redis_error(**dec_kwargs):
-    def wrapped(func):
-        async def wrapped_1(*args, **kwargs):
-            global SENT
-            # We can't use redis here
-            # So we save data - 'message sent to' in a list variable
-            update: Update = args[0]
+defXcatch_redis_error(**dec_kwargs):
+XXXXdefXwrapped(func):
+XXXXXXXXasyncXdefXwrapped_1(*args,X**kwargs):
+XXXXXXXXXXXXglobalXSENT
+XXXXXXXXXXXX#XWeXcan'tXuseXredisXhere
+XXXXXXXXXXXX#XSoXweXsaveXdataX-X'messageXsentXto'XinXaXlistXvariable
+XXXXXXXXXXXXupdate:XUpdateX=Xargs[0]
 
-            if update.message is not None:
-                message = update.message
-            elif update.callback_query is not None:
-                message = update.callback_query.message
-            elif update.edited_message is not None:
-                message = update.edited_message
-            else:
-                return True
+XXXXXXXXXXXXifXupdate.messageXisXnotXNone:
+XXXXXXXXXXXXXXXXmessageX=Xupdate.message
+XXXXXXXXXXXXelifXupdate.callback_queryXisXnotXNone:
+XXXXXXXXXXXXXXXXmessageX=Xupdate.callback_query.message
+XXXXXXXXXXXXelifXupdate.edited_messageXisXnotXNone:
+XXXXXXXXXXXXXXXXmessageX=Xupdate.edited_message
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXreturnXTrue
 
-            chat_id = message.chat.id if "chat" in message else None
-            try:
-                return await func(*args, **kwargs)
-            except RedisError:
-                if chat_id not in SENT:
-                    text = (
-                        "Sorry for inconvenience! I encountered error in my redis DB, which is necessary for  "
-                        "running bot \n\nPlease report this to my support group immediately when you see this error!"
-                    )
-                    if await bot.send_message(chat_id, text):
-                        SENT.append(chat_id)
-                # Alert bot owner
-                if OWNER_ID not in SENT:
-                    text = "Texas panic: Got redis error"
-                    if await bot.send_message(OWNER_ID, text):
-                        SENT.append(OWNER_ID)
-                log.error(RedisError, exc_info=True)
-                return True
+XXXXXXXXXXXXchat_idX=Xmessage.chat.idXifX"chat"XinXmessageXelseXNone
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXreturnXawaitXfunc(*args,X**kwargs)
+XXXXXXXXXXXXexceptXRedisError:
+XXXXXXXXXXXXXXXXifXchat_idXnotXinXSENT:
+XXXXXXXXXXXXXXXXXXXXtextX=X(
+XXXXXXXXXXXXXXXXXXXXXXXX"SorryXforXinconvenience!XIXencounteredXerrorXinXmyXredisXDB,XwhichXisXnecessaryXforXX"
+XXXXXXXXXXXXXXXXXXXXXXXX"runningXbotX\n\nPleaseXreportXthisXtoXmyXsupportXgroupXimmediatelyXwhenXyouXseeXthisXerror!"
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXifXawaitXbot.send_message(chat_id,Xtext):
+XXXXXXXXXXXXXXXXXXXXXXXXSENT.append(chat_id)
+XXXXXXXXXXXXXXXX#XAlertXbotXowner
+XXXXXXXXXXXXXXXXifXOWNER_IDXnotXinXSENT:
+XXXXXXXXXXXXXXXXXXXXtextX=X"TexasXpanic:XGotXredisXerror"
+XXXXXXXXXXXXXXXXXXXXifXawaitXbot.send_message(OWNER_ID,Xtext):
+XXXXXXXXXXXXXXXXXXXXXXXXSENT.append(OWNER_ID)
+XXXXXXXXXXXXXXXXlog.error(RedisError,Xexc_info=True)
+XXXXXXXXXXXXXXXXreturnXTrue
 
-        return wrapped_1
+XXXXXXXXreturnXwrapped_1
 
-    return wrapped
+XXXXreturnXwrapped
 
 
 @dp.errors_handler()
 @catch_redis_error()
-async def all_errors_handler(update: Update, error):
-    if update.message is not None:
-        message = update.message
-    elif update.callback_query is not None:
-        message = update.callback_query.message
-    elif update.edited_message is not None:
-        message = update.edited_message
-    else:
-        return True  # we don't want other guys in playground
+asyncXdefXall_errors_handler(update:XUpdate,Xerror):
+XXXXifXupdate.messageXisXnotXNone:
+XXXXXXXXmessageX=Xupdate.message
+XXXXelifXupdate.callback_queryXisXnotXNone:
+XXXXXXXXmessageX=Xupdate.callback_query.message
+XXXXelifXupdate.edited_messageXisXnotXNone:
+XXXXXXXXmessageX=Xupdate.edited_message
+XXXXelse:
+XXXXXXXXreturnXTrueXX#XweXdon'tXwantXotherXguysXinXplayground
 
-    chat_id = message.chat.id
-    err_tlt = sys.exc_info()[0].__name__
-    err_msg = str(sys.exc_info()[1])
+XXXXchat_idX=Xmessage.chat.id
+XXXXerr_tltX=Xsys.exc_info()[0].__name__
+XXXXerr_msgX=Xstr(sys.exc_info()[1])
 
-    log.warn(
-        "Error caused update is: \n"
-        + html.escape(str(parse_update(message)), quote=False)
-    )
+XXXXlog.warn(
+XXXXXXXX"ErrorXcausedXupdateXis:X\n"
+XXXXXXXX+Xhtml.escape(str(parse_update(message)),Xquote=False)
+XXXX)
 
-    if redis.get(chat_id) == str(error):
-        # by err_tlt we assume that it is same error
-        return True
+XXXXifXredis.get(chat_id)X==Xstr(error):
+XXXXXXXX#XbyXerr_tltXweXassumeXthatXitXisXsameXerror
+XXXXXXXXreturnXTrue
 
-    if err_tlt == "BadRequest" and err_msg == "Have no rights to send a message":
-        return True
+XXXXifXerr_tltX==X"BadRequest"XandXerr_msgX==X"HaveXnoXrightsXtoXsendXaXmessage":
+XXXXXXXXreturnXTrue
 
-    ignored_errors = (
-        "FloodWaitError",
-        "RetryAfter",
-        "SlowModeWaitError",
-        "InvalidQueryID",
-    )
-    if err_tlt in ignored_errors:
-        return True
+XXXXignored_errorsX=X(
+XXXXXXXX"FloodWaitError",
+XXXXXXXX"RetryAfter",
+XXXXXXXX"SlowModeWaitError",
+XXXXXXXX"InvalidQueryID",
+XXXX)
+XXXXifXerr_tltXinXignored_errors:
+XXXXXXXXreturnXTrue
 
-    if err_tlt in ("NetworkError", "TelegramAPIError", "RestartingTelegram"):
-        log.error("Conn/API error detected", exc_info=error)
-        return True
+XXXXifXerr_tltXinX("NetworkError",X"TelegramAPIError",X"RestartingTelegram"):
+XXXXXXXXlog.error("Conn/APIXerrorXdetected",Xexc_info=error)
+XXXXXXXXreturnXTrue
 
-    text = "<b>Sorry, I encountered a error!</b>\n"
-    text += f"<code>{html.escape(err_tlt, quote=False)}: {html.escape(err_msg, quote=False)}</code>"
-    redis.set(chat_id, str(error), ex=600)
-    await bot.send_message(chat_id, text)
+XXXXtextX=X"<b>Sorry,XIXencounteredXaXerror!</b>\n"
+XXXXtextX+=Xf"<code>{html.escape(err_tlt,Xquote=False)}:X{html.escape(err_msg,Xquote=False)}</code>"
+XXXXredis.set(chat_id,Xstr(error),Xex=600)
+XXXXawaitXbot.send_message(chat_id,Xtext)
 
 
-def parse_update(update):
-    # The parser to hide sensitive informations in the update (for logging)
+defXparse_update(update):
+XXXX#XTheXparserXtoXhideXsensitiveXinformationsXinXtheXupdateX(forXlogging)
 
-    if isinstance(update, Update):  # Hacc
-        if update.message is not None:
-            update = update.message
-        elif update.callback_query is not None:
-            update = update.callback_query.message
-        elif update.edited_message is not None:
-            update = update.edited_message
-        else:
-            return
+XXXXifXisinstance(update,XUpdate):XX#XHacc
+XXXXXXXXifXupdate.messageXisXnotXNone:
+XXXXXXXXXXXXupdateX=Xupdate.message
+XXXXXXXXelifXupdate.callback_queryXisXnotXNone:
+XXXXXXXXXXXXupdateX=Xupdate.callback_query.message
+XXXXXXXXelifXupdate.edited_messageXisXnotXNone:
+XXXXXXXXXXXXupdateX=Xupdate.edited_message
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
 
-    if "chat" in update:
-        chat = update["chat"]
-        chat["id"] = chat["title"] = chat["username"] = chat["first_name"] = chat[
-            "last_name"
-        ] = []
-    if user := update["from"]:
-        user["id"] = user["first_name"] = user["last_name"] = user["username"] = []
-    if "reply_to_message" in update:
-        reply_msg = update["reply_to_message"]
-        reply_msg["chat"]["id"] = reply_msg["chat"]["title"] = reply_msg["chat"][
-            "first_name"
-        ] = reply_msg["chat"]["last_name"] = reply_msg["chat"]["username"] = []
-        reply_msg["from"]["id"] = reply_msg["from"]["first_name"] = reply_msg["from"][
-            "last_name"
-        ] = reply_msg["from"]["username"] = []
-        reply_msg["message_id"] = []
-        reply_msg["new_chat_members"] = reply_msg["left_chat_member"] = []
-    if ("new_chat_members", "left_chat_member") in update:
-        update["new_chat_members"] = update["left_chat_member"] = []
-    if "message_id" in update:
-        update["message_id"] = []
-    return update
+XXXXifX"chat"XinXupdate:
+XXXXXXXXchatX=Xupdate["chat"]
+XXXXXXXXchat["id"]X=Xchat["title"]X=Xchat["username"]X=Xchat["first_name"]X=Xchat[
+XXXXXXXXXXXX"last_name"
+XXXXXXXX]X=X[]
+XXXXifXuserX:=Xupdate["from"]:
+XXXXXXXXuser["id"]X=Xuser["first_name"]X=Xuser["last_name"]X=Xuser["username"]X=X[]
+XXXXifX"reply_to_message"XinXupdate:
+XXXXXXXXreply_msgX=Xupdate["reply_to_message"]
+XXXXXXXXreply_msg["chat"]["id"]X=Xreply_msg["chat"]["title"]X=Xreply_msg["chat"][
+XXXXXXXXXXXX"first_name"
+XXXXXXXX]X=Xreply_msg["chat"]["last_name"]X=Xreply_msg["chat"]["username"]X=X[]
+XXXXXXXXreply_msg["from"]["id"]X=Xreply_msg["from"]["first_name"]X=Xreply_msg["from"][
+XXXXXXXXXXXX"last_name"
+XXXXXXXX]X=Xreply_msg["from"]["username"]X=X[]
+XXXXXXXXreply_msg["message_id"]X=X[]
+XXXXXXXXreply_msg["new_chat_members"]X=Xreply_msg["left_chat_member"]X=X[]
+XXXXifX("new_chat_members",X"left_chat_member")XinXupdate:
+XXXXXXXXupdate["new_chat_members"]X=Xupdate["left_chat_member"]X=X[]
+XXXXifX"message_id"XinXupdate:
+XXXXXXXXupdate["message_id"]X=X[]
+XXXXreturnXupdate

@@ -1,91 +1,91 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 errorshivansh
-# Copyright (C) 2020 Inuka Asith
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2021Xerrorshivansh
+#XCopyrightX(C)X2020XInukaXAsith
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import asyncio
+importXasyncio
 
-from telethon.errors.rpcerrorlist import MessageDeleteForbiddenError
+fromXtelethon.errors.rpcerrorlistXimportXMessageDeleteForbiddenError
 
-from Ineruki  import bot
-from Ineruki .decorator import register
-from Ineruki .services.telethon import tbot
+fromXInerukiXXimportXbot
+fromXInerukiX.decoratorXimportXregister
+fromXInerukiX.services.telethonXimportXtbot
 
-from .utils.language import get_strings_dec
-from .utils.notes import BUTTONS
+fromX.utils.languageXimportXget_strings_dec
+fromX.utils.notesXimportXBUTTONS
 
 
-@register(cmds="del", bot_can_delete_messages=True, user_can_delete_messages=True)
+@register(cmds="del",Xbot_can_delete_messages=True,Xuser_can_delete_messages=True)
 @get_strings_dec("msg_deleting")
-async def del_message(message, strings):
-    if not message.reply_to_message:
-        await message.reply(strings["reply_to_msg"])
-        return
-    msgs = [message.message_id, message.reply_to_message.message_id]
-    await tbot.delete_messages(message.chat.id, msgs)
+asyncXdefXdel_message(message,Xstrings):
+XXXXifXnotXmessage.reply_to_message:
+XXXXXXXXawaitXmessage.reply(strings["reply_to_msg"])
+XXXXXXXXreturn
+XXXXmsgsX=X[message.message_id,Xmessage.reply_to_message.message_id]
+XXXXawaitXtbot.delete_messages(message.chat.id,Xmsgs)
 
 
 @register(
-    cmds="purge",
-    no_args=True,
-    bot_can_delete_messages=True,
-    user_can_delete_messages=True,
+XXXXcmds="purge",
+XXXXno_args=True,
+XXXXbot_can_delete_messages=True,
+XXXXuser_can_delete_messages=True,
 )
 @get_strings_dec("msg_deleting")
-async def fast_purge(message, strings):
-    if not message.reply_to_message:
-        await message.reply(strings["reply_to_msg"])
-        return
-    msg_id = message.reply_to_message.message_id
-    delete_to = message.message_id
+asyncXdefXfast_purge(message,Xstrings):
+XXXXifXnotXmessage.reply_to_message:
+XXXXXXXXawaitXmessage.reply(strings["reply_to_msg"])
+XXXXXXXXreturn
+XXXXmsg_idX=Xmessage.reply_to_message.message_id
+XXXXdelete_toX=Xmessage.message_id
 
-    chat_id = message.chat.id
-    msgs = []
-    for m_id in range(int(delete_to), msg_id - 1, -1):
-        msgs.append(m_id)
-        if len(msgs) == 100:
-            await tbot.delete_messages(chat_id, msgs)
-            msgs = []
+XXXXchat_idX=Xmessage.chat.id
+XXXXmsgsX=X[]
+XXXXforXm_idXinXrange(int(delete_to),Xmsg_idX-X1,X-1):
+XXXXXXXXmsgs.append(m_id)
+XXXXXXXXifXlen(msgs)X==X100:
+XXXXXXXXXXXXawaitXtbot.delete_messages(chat_id,Xmsgs)
+XXXXXXXXXXXXmsgsX=X[]
 
-    try:
-        await tbot.delete_messages(chat_id, msgs)
-    except MessageDeleteForbiddenError:
-        await message.reply(strings["purge_error"])
-        return
+XXXXtry:
+XXXXXXXXawaitXtbot.delete_messages(chat_id,Xmsgs)
+XXXXexceptXMessageDeleteForbiddenError:
+XXXXXXXXawaitXmessage.reply(strings["purge_error"])
+XXXXXXXXreturn
 
-    msg = await bot.send_message(chat_id, strings["fast_purge_done"])
-    await asyncio.sleep(5)
-    await msg.delete()
-
-
-BUTTONS.update({"delmsg": "btn_deletemsg_cb"})
+XXXXmsgX=XawaitXbot.send_message(chat_id,Xstrings["fast_purge_done"])
+XXXXawaitXasyncio.sleep(5)
+XXXXawaitXmsg.delete()
 
 
-@register(regexp=r"btn_deletemsg:(\w+)", f="cb", allow_kwargs=True)
-async def delmsg_btn(event, regexp=None, **kwargs):
-    await event.message.delete()
+BUTTONS.update({"delmsg":X"btn_deletemsg_cb"})
 
 
-__mod_name__ = "Purges"
+@register(regexp=r"btn_deletemsg:(\w+)",Xf="cb",Xallow_kwargs=True)
+asyncXdefXdelmsg_btn(event,Xregexp=None,X**kwargs):
+XXXXawaitXevent.message.delete()
 
-__help__ = """
-Need to delete lots of messages? That's what purges are for!
 
-<b>Available commands:</b>
-- /purge: Deletes all messages from the message you replied to, to the current message.
-- /del: Deletes the message you replied to and your "<code>/del</code>" command message.
+__mod_name__X=X"Purges"
+
+__help__X=X"""
+NeedXtoXdeleteXlotsXofXmessages?XThat'sXwhatXpurgesXareXfor!
+
+<b>AvailableXcommands:</b>
+-X/purge:XDeletesXallXmessagesXfromXtheXmessageXyouXrepliedXto,XtoXtheXcurrentXmessage.
+-X/del:XDeletesXtheXmessageXyouXrepliedXtoXandXyourX"<code>/del</code>"XcommandXmessage.
 """

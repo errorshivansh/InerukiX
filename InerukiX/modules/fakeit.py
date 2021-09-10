@@ -1,66 +1,66 @@
-#    Copyright (C) @chsaiujwal 2020-2021
-#    Edited by errorshivansh
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
+#XXXXCopyrightX(C)X@chsaiujwalX2020-2021
+#XXXXEditedXbyXerrorshivansh
+#XXXXThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XXXXitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXasXpublishedXby
+#XXXXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXtheXLicense,Xor
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
+#XXXXThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XXXXbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XXXXMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XXXXGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 #
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#XXXXYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XXXXalongXwithXthisXprogram.XXIfXnot,XseeX<https://www.gnu.org/licenses/>.
 
-import os
+importXos
 
-import requests
-from faker import Faker
-from faker.providers import internet
-from telethon import events
+importXrequests
+fromXfakerXimportXFaker
+fromXfaker.providersXimportXinternet
+fromXtelethonXimportXevents
 
-from Ineruki .function.telethonbasics import is_admin
-from Ineruki .services.telethon import tbot
+fromXInerukiX.function.telethonbasicsXimportXis_admin
+fromXInerukiX.services.telethonXimportXtbot
 
 
 @tbot.on(events.NewMessage(pattern="/fakegen$"))
-async def hi(event):
-    if event.fwd_from:
-        return
-    if event.is_group:
-        if not await is_admin(event, event.message.sender_id):
-            await event.reply("`You Should Be Admin To Do This!`")
-            return
-    fake = Faker()
-    print("FAKE DETAILS GENERATED\n")
-    name = str(fake.name())
-    fake.add_provider(internet)
-    address = str(fake.address())
-    ip = fake.ipv4_private()
-    cc = fake.credit_card_full()
-    email = fake.ascii_free_email()
-    job = fake.job()
-    android = fake.android_platform_token()
-    pc = fake.chrome()
-    await event.reply(
-        f"<b><u> Fake Information Generated</b></u>\n<b>Name :-</b><code>{name}</code>\n\n<b>Address:-</b><code>{address}</code>\n\n<b>IP ADDRESS:-</b><code>{ip}</code>\n\n<b>credit card:-</b><code>{cc}</code>\n\n<b>Email Id:-</b><code>{email}</code>\n\n<b>Job:-</b><code>{job}</code>\n\n<b>android user agent:-</b><code>{android}</code>\n\n<b>Pc user agent:-</b><code>{pc}</code>",
-        parse_mode="HTML",
-    )
+asyncXdefXhi(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXifXevent.is_group:
+XXXXXXXXifXnotXawaitXis_admin(event,Xevent.message.sender_id):
+XXXXXXXXXXXXawaitXevent.reply("`YouXShouldXBeXAdminXToXDoXThis!`")
+XXXXXXXXXXXXreturn
+XXXXfakeX=XFaker()
+XXXXprint("FAKEXDETAILSXGENERATED\n")
+XXXXnameX=Xstr(fake.name())
+XXXXfake.add_provider(internet)
+XXXXaddressX=Xstr(fake.address())
+XXXXipX=Xfake.ipv4_private()
+XXXXccX=Xfake.credit_card_full()
+XXXXemailX=Xfake.ascii_free_email()
+XXXXjobX=Xfake.job()
+XXXXandroidX=Xfake.android_platform_token()
+XXXXpcX=Xfake.chrome()
+XXXXawaitXevent.reply(
+XXXXXXXXf"<b><u>XFakeXInformationXGenerated</b></u>\n<b>NameX:-</b><code>{name}</code>\n\n<b>Address:-</b><code>{address}</code>\n\n<b>IPXADDRESS:-</b><code>{ip}</code>\n\n<b>creditXcard:-</b><code>{cc}</code>\n\n<b>EmailXId:-</b><code>{email}</code>\n\n<b>Job:-</b><code>{job}</code>\n\n<b>androidXuserXagent:-</b><code>{android}</code>\n\n<b>PcXuserXagent:-</b><code>{pc}</code>",
+XXXXXXXXparse_mode="HTML",
+XXXX)
 
 
 @tbot.on(events.NewMessage(pattern="/picgen$"))
-async def _(event):
-    if event.fwd_from:
-        return
-    if await is_admin(event, event.message.sender_id):
-        url = "https://thispersondoesnotexist.com/image"
-        response = requests.get(url)
-        if response.status_code == 200:
-            with open("FRIDAYOT.jpg", "wb") as f:
-                f.write(response.content)
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXifXawaitXis_admin(event,Xevent.message.sender_id):
+XXXXXXXXurlX=X"https://thispersondoesnotexist.com/image"
+XXXXXXXXresponseX=Xrequests.get(url)
+XXXXXXXXifXresponse.status_codeX==X200:
+XXXXXXXXXXXXwithXopen("FRIDAYOT.jpg",X"wb")XasXf:
+XXXXXXXXXXXXXXXXf.write(response.content)
 
-        captin = f"Fake Image powered by @InerukiSupport_Official."
-        fole = "FRIDAYOT.jpg"
-        await tbot.send_file(event.chat_id, fole, caption=captin)
-        await event.delete()
-        os.system("rm ./FRIDAYOT.jpg ")
+XXXXXXXXcaptinX=Xf"FakeXImageXpoweredXbyX@InerukiSupport_Official."
+XXXXXXXXfoleX=X"FRIDAYOT.jpg"
+XXXXXXXXawaitXtbot.send_file(event.chat_id,Xfole,Xcaption=captin)
+XXXXXXXXawaitXevent.delete()
+XXXXXXXXos.system("rmX./FRIDAYOT.jpgX")

@@ -1,15 +1,15 @@
-from pyrogram import filters
+fromXpyrogramXimportXfilters
 
-from Ineruki .services.pyrogram import pbot as Ineruki
+fromXInerukiX.services.pyrogramXimportXpbotXasXIneruki
 
 
-@Ineruki.on_message(filters.command("webshot", ["."]))
-async def webshot(clien, message):
-    try:
-        user = message.command[1]
-        await message.delete()
-        link = f"https://webshot.deam.io/{user}/?delay=2000"
-        await client.send_document(message.chat.id, link, caption=f"{user}")
-    except:
-        await message.delete()
-        await client.send_message(message.chat.id, "**Wrong Url**")
+@Ineruki.on_message(filters.command("webshot",X["."]))
+asyncXdefXwebshot(clien,Xmessage):
+XXXXtry:
+XXXXXXXXuserX=Xmessage.command[1]
+XXXXXXXXawaitXmessage.delete()
+XXXXXXXXlinkX=Xf"https://webshot.deam.io/{user}/?delay=2000"
+XXXXXXXXawaitXclient.send_document(message.chat.id,Xlink,Xcaption=f"{user}")
+XXXXexcept:
+XXXXXXXXawaitXmessage.delete()
+XXXXXXXXawaitXclient.send_message(message.chat.id,X"**WrongXUrl**")

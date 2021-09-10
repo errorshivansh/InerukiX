@@ -1,62 +1,62 @@
-__mod_name__ = "Misc ⚙️"
+__mod_name__X=X"MiscX⚙️"
 
-__help__ = """
-An "odds and ends" module for small, simple commands which don't really fit anywhere.
+__help__X=X"""
+AnX"oddsXandXends"XmoduleXforXsmall,XsimpleXcommandsXwhichXdon'tXreallyXfitXanywhere.
 
-<b>Available commands:</b>
+<b>AvailableXcommands:</b>
 
 <b>BASIC</b>
-- /github (username): Returns info about a GitHub user or organization.
-- /wiki (keywords): Get wikipedia articles just using this bot.
-- /imdb: Search for a movie
-- /cancel: Disables current state. Can help in cases if Ineruki Bot not responing on your message.
-- /id: get the current group id. If used by replying to a message, gets that user's id.
-- /info: get information about a user.
-- /paste: Pase the text/file in nekobin
-- /gps: Find a location
+-X/githubX(username):XReturnsXinfoXaboutXaXGitHubXuserXorXorganization.
+-X/wikiX(keywords):XGetXwikipediaXarticlesXjustXusingXthisXbot.
+-X/imdb:XSearchXforXaXmovie
+-X/cancel:XDisablesXcurrentXstate.XCanXhelpXinXcasesXifXInerukiXBotXnotXresponingXonXyourXmessage.
+-X/id:XgetXtheXcurrentXgroupXid.XIfXusedXbyXreplyingXtoXaXmessage,XgetsXthatXuser'sXid.
+-X/info:XgetXinformationXaboutXaXuser.
+-X/paste:XPaseXtheXtext/fileXinXnekobin
+-X/gps:XFindXaXlocation
 
-<b>BOOK DOWNLOAD </b>
-- /book <i>book name</i> : Usage :Gets Instant Download Link Of Given Book.
+<b>BOOKXDOWNLOADX</b>
+-X/bookX<i>bookXname</i>X:XUsageX:GetsXInstantXDownloadXLinkXOfXGivenXBook.
 
-<b>FAKE INFO</b>
-- /fakegen : Generates Fake Information
-- /picgen : generate a fake pic
+<b>FAKEXINFO</b>
+-X/fakegenX:XGeneratesXFakeXInformation
+-X/picgenX:XgenerateXaXfakeXpic
 
 <b>ZIPPER</b>
-- /zip: reply to a telegram file to compress it in .zip format
-- /unzip: reply to a telegram file to decompress it from the .zip format
+-X/zip:XreplyXtoXaXtelegramXfileXtoXcompressXitXinX.zipXformat
+-X/unzip:XreplyXtoXaXtelegramXfileXtoXdecompressXitXfromXtheX.zipXformat
 
 <b>WEATHER</b>
-- /weather: Gives weather forcast
-- /wheatherimg: Gives weather image
+-X/weather:XGivesXweatherXforcast
+-X/wheatherimg:XGivesXweatherXimage
 
-<b>PHONE INFO</b>
-- /phone [phone no]: Gathers no info
+<b>PHONEXINFO</b>
+-X/phoneX[phoneXno]:XGathersXnoXinfo
 
 <b>CURRENCY</b>
- - /cash : currency converter
-Example syntax: `/cash 1 USD INR`
+X-X/cashX:XcurrencyXconverter
+ExampleXsyntax:X`/cashX1XUSDXINR`
 
-<b>NAME HISTORY</b>
-- /namehistory [REPLY]: Get the Username and Name history of user.
+<b>NAMEXHISTORY</b>
+-X/namehistoryX[REPLY]:XGetXtheXUsernameXandXNameXhistoryXofXuser.
 
 <b>SEND</b>
-- /send [MESSAGE]: Send given text by bot.
+-X/sendX[MESSAGE]:XSendXgivenXtextXbyXbot.
 
-<b>CC CHECKER</b>
-- /au [cc]: Stripe Auth given CC
-- /pp [cc]: Paypal 1$ Guest Charge
-- /ss [cc]: Speedy Stripe Auth
-- /ch [cc]: Check If CC is Live
-- /bin [bin]: Gather's Info About the bin
-- /gen [bin]: Generates CC with given bin
-- /key [sk]: Checks if Stripe key is Live
+<b>CCXCHECKER</b>
+-X/auX[cc]:XStripeXAuthXgivenXCC
+-X/ppX[cc]:XPaypalX1$XGuestXCharge
+-X/ssX[cc]:XSpeedyXStripeXAuth
+-X/chX[cc]:XCheckXIfXCCXisXLive
+-X/binX[bin]:XGather'sXInfoXAboutXtheXbin
+-X/genX[bin]:XGeneratesXCCXwithXgivenXbin
+-X/keyX[sk]:XChecksXifXStripeXkeyXisXLive
 
-  Note: Format of cc is ccnum|mm|yy|cvv
-  Privacy warning: Don't check any of your personal CC's.
-  
-<b>URL TOOLS</b>
-- /short (url): Shortify given url.
-- /ip (url): Displays information about an IP / domain.
-- /direct (url): Generates direct links from the sourceforge.net
+XXNote:XFormatXofXccXisXccnum|mm|yy|cvv
+XXPrivacyXwarning:XDon'tXcheckXanyXofXyourXpersonalXCC's.
+XX
+<b>URLXTOOLS</b>
+-X/shortX(url):XShortifyXgivenXurl.
+-X/ipX(url):XDisplaysXinformationXaboutXanXIPX/Xdomain.
+-X/directX(url):XGeneratesXdirectXlinksXfromXtheXsourceforge.net
 """

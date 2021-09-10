@@ -1,1045 +1,1045 @@
-# Copyright (C) 2021 TheHamkerCat & errorshivansh
+#XCopyrightX(C)X2021XTheHamkerCatX&Xerrorshivansh
 
-# Ported some parts From WilliamButcherBot.
-# Pokedex Inline Credit Red-Aura[Madepranav]
-# Credits Goes to WilliamButcherBot
+#XPortedXsomeXpartsXFromXWilliamButcherBot.
+#XPokedexXInlineXCreditXRed-Aura[Madepranav]
+#XCreditsXGoesXtoXWilliamButcherBot
 
 
-# Some Parts Ported from https://github.com/TheHamkerCat/WilliamButcherBot
+#XSomeXPartsXPortedXfromXhttps://github.com/TheHamkerCat/WilliamButcherBot
 """
-MIT License
-Copyright (c) 2021 TheHamkerCat
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, E PRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+MITXLicense
+CopyrightX(c)X2021XTheHamkerCat
+PermissionXisXherebyXgranted,XfreeXofXcharge,XtoXanyXpersonXobtainingXaXcopy
+ofXthisXsoftwareXandXassociatedXdocumentationXfilesX(theX"Software"),XtoXdeal
+inXtheXSoftwareXwithoutXrestriction,XincludingXwithoutXlimitationXtheXrights
+toXuse,Xcopy,Xmodify,Xmerge,Xpublish,Xdistribute,Xsublicense,Xand/orXsell
+copiesXofXtheXSoftware,XandXtoXpermitXpersonsXtoXwhomXtheXSoftwareXis
+furnishedXtoXdoXso,XsubjectXtoXtheXfollowingXconditions:
+TheXaboveXcopyrightXnoticeXandXthisXpermissionXnoticeXshallXbeXincludedXinXall
+copiesXorXsubstantialXportionsXofXtheXSoftware.
+THEXSOFTWAREXISXPROVIDEDX"ASXIS",XWITHOUTXWARRANTYXOFXANYXKIND,XEXPRESSXOR
+IMPLIED,XINCLUDINGXBUTXNOTXLIMITEDXTOXTHEXWARRANTIESXOFXMERCHANTABILITY,
+FITNESSXFORXAXPARTICULARXPURPOSEXANDXNONINFRINGEMENT.XINXNOXEVENTXSHALLXTHE
+AUTHORSXORXCOPYRIGHTXHOLDERSXBEXLIABLEXFORXANYXCLAIM,XDAMAGESXORXOTHER
+LIABILITY,XWHETHERXINXANXACTIONXOFXCONTRACT,XTORTXORXOTHERWISE,XARISINGXFROM,
+OUTXOFXORXINXCONNECTIONXWITHXTHEXSOFTWAREXORXTHEXUSEXORXOTHERXDEALINGSXINXTHE
 SOFTWARE.
 """
 
 
-import datetime
-import re
-import time
-import urllib.request
-from datetime import datetime
-from typing import List
+importXdatetime
+importXre
+importXtime
+importXurllib.request
+fromXdatetimeXimportXdatetime
+fromXtypingXimportXList
 
-import aiohttp
-import requests
-from bs4 import BeautifulSoup
-from countryinfo import CountryInfo
-from faker import Faker
-from faker.providers import internet
-from PyDictionary import PyDictionary
-from pyrogram import errors, filters
-from pyrogram.types import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    InlineQueryResultArticle,
-    InlineQueryResultPhoto,
-    InputTextMessageContent,
+importXaiohttp
+importXrequests
+fromXbs4XimportXBeautifulSoup
+fromXcountryinfoXimportXCountryInfo
+fromXfakerXimportXFaker
+fromXfaker.providersXimportXinternet
+fromXPyDictionaryXimportXPyDictionary
+fromXpyrogramXimportXerrors,Xfilters
+fromXpyrogram.typesXimportX(
+XXXXInlineKeyboardButton,
+XXXXInlineKeyboardMarkup,
+XXXXInlineQueryResultArticle,
+XXXXInlineQueryResultPhoto,
+XXXXInputTextMessageContent,
 )
-from search_engine_parser import GoogleSearch
-from tswift import Song
-from youtubesearchpython import VideosSearch
+fromXsearch_engine_parserXimportXGoogleSearch
+fromXtswiftXimportXSong
+fromXyoutubesearchpythonXimportXVideosSearch
 
-from Ineruki .config import get_str_key
-from Ineruki .function.inlinehelper import *
-from Ineruki .function.pluginhelpers import fetch, json_prettify
-from Ineruki .services.pyrogram import pbot as app
+fromXInerukiX.configXimportXget_str_key
+fromXInerukiX.function.inlinehelperXimportX*
+fromXInerukiX.function.pluginhelpersXimportXfetch,Xjson_prettify
+fromXInerukiX.services.pyrogramXimportXpbotXasXapp
 
-OPENWEATHERMAP_ID = get_str_key("OPENWEATHERMAP_ID", "")
-TIME_API_KEY = get_str_key("TIME_API_KEY", required=False)
+OPENWEATHERMAP_IDX=Xget_str_key("OPENWEATHERMAP_ID",X"")
+TIME_API_KEYX=Xget_str_key("TIME_API_KEY",Xrequired=False)
 
-dictionary = PyDictionary()
-
-
-class AioHttp:
-    @staticmethod
-    async def get_json(link):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(link) as resp:
-                return await resp.json()
-
-    @staticmethod
-    async def get_text(link):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(link) as resp:
-                return await resp.text()
-
-    @staticmethod
-    async def get_raw(link):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(link) as resp:
-                return await resp.read()
+dictionaryX=XPyDictionary()
 
 
-__mod_name__ = "Inline"
-__help__ = """
- <b> INLINE BOT SERVICE OF @INERUKI BOT </b> 
- 
-<i> I'm more efficient when added as group admin. By the way these commands can be used by anyone in a group via inline.</i>
+classXAioHttp:
+XXXX@staticmethod
+XXXXasyncXdefXget_json(link):
+XXXXXXXXasyncXwithXaiohttp.ClientSession()XasXsession:
+XXXXXXXXXXXXasyncXwithXsession.get(link)XasXresp:
+XXXXXXXXXXXXXXXXreturnXawaitXresp.json()
+
+XXXX@staticmethod
+XXXXasyncXdefXget_text(link):
+XXXXXXXXasyncXwithXaiohttp.ClientSession()XasXsession:
+XXXXXXXXXXXXasyncXwithXsession.get(link)XasXresp:
+XXXXXXXXXXXXXXXXreturnXawaitXresp.text()
+
+XXXX@staticmethod
+XXXXasyncXdefXget_raw(link):
+XXXXXXXXasyncXwithXaiohttp.ClientSession()XasXsession:
+XXXXXXXXXXXXasyncXwithXsession.get(link)XasXresp:
+XXXXXXXXXXXXXXXXreturnXawaitXresp.read()
+
+
+__mod_name__X=X"Inline"
+__help__X=X"""
+X<b>XINLINEXBOTXSERVICEXOFX@INERUKIXBOTX</b>X
+X
+<i>XI'mXmoreXefficientXwhenXaddedXasXgroupXadmin.XByXtheXwayXtheseXcommandsXcanXbeXusedXbyXanyoneXinXaXgroupXviaXinline.</i>
 
 <b>Syntax</b>
-   @Ineruki Bot [command] [query]
+XXX@InerukiXBotX[command]X[query]
 
-<b> Commands Available</b>
-- alive - Check Bot's Stats.
-- yt [query] - Youtube Search.
-- tr [LANGUAGE_CODE] [QUERY]** - Translate Text.
-- modapk [name] - Give you direct link of mod apk.
-- ud [QUERY] - Urban Dictionary Query
-- google [QUERY] - Google Search.
-- webss [URL] - Take Screenshot Of A Website.
-- bitly [URL] - Shorten A Link.
-- wall [Query] - Find Wallpapers.
-- pic [Query] - Find pictures.
-- saavn [SONG_NAME] - Get Songs From Saavn.
-- deezer [SONG_NAME] - Get Songs From Deezer.
-- torrent [QUERY] - Torrent Search.
-- reddit [QUERY] - Get memes from reddit.
-- imdb [QUERY] - Search movies on imdb.
-- spaminfo [ID] - Get spam info of the user.
-- lyrics [QUERY] - Get lyrics of the song.
-- paste [TE T] - Paste text on pastebin.
-- define [WORD] - Get definition from Dictionary.
-- synonyms [WORD] - Get synonyms from Dictionary.
-- antonyms [WORD] - Get antonyms from Dictionary.
-- country [QUERY] - Get Information about given country.
-- cs - Gathers Cricket info (Globally).
-- covid [COUNTRY] - Get covid updates of given country.
-- fakegen - Gathers fake information.
-- weather [QUERY] - Get weather information.
-- datetime [QUERY] - Get Date & time information of given country/region.
-- app [QUERY] - Search for apps in playstore.
-- gh [QUERY] - Search github.
-- so [QUERY] - Search stack overflow.
-- wiki [QUERY] - Search wikipedia.
-- ping - Check ping rate.
-- pokedex [TE T]: Pokemon Search
+<b>XCommandsXAvailable</b>
+-XaliveX-XCheckXBot'sXStats.
+-XytX[query]X-XYoutubeXSearch.
+-XtrX[LANGUAGE_CODE]X[QUERY]**X-XTranslateXText.
+-XmodapkX[name]X-XGiveXyouXdirectXlinkXofXmodXapk.
+-XudX[QUERY]X-XUrbanXDictionaryXQuery
+-XgoogleX[QUERY]X-XGoogleXSearch.
+-XwebssX[URL]X-XTakeXScreenshotXOfXAXWebsite.
+-XbitlyX[URL]X-XShortenXAXLink.
+-XwallX[Query]X-XFindXWallpapers.
+-XpicX[Query]X-XFindXpictures.
+-XsaavnX[SONG_NAME]X-XGetXSongsXFromXSaavn.
+-XdeezerX[SONG_NAME]X-XGetXSongsXFromXDeezer.
+-XtorrentX[QUERY]X-XTorrentXSearch.
+-XredditX[QUERY]X-XGetXmemesXfromXreddit.
+-XimdbX[QUERY]X-XSearchXmoviesXonXimdb.
+-XspaminfoX[ID]X-XGetXspamXinfoXofXtheXuser.
+-XlyricsX[QUERY]X-XGetXlyricsXofXtheXsong.
+-XpasteX[TEXT]X-XPasteXtextXonXpastebin.
+-XdefineX[WORD]X-XGetXdefinitionXfromXDictionary.
+-XsynonymsX[WORD]X-XGetXsynonymsXfromXDictionary.
+-XantonymsX[WORD]X-XGetXantonymsXfromXDictionary.
+-XcountryX[QUERY]X-XGetXInformationXaboutXgivenXcountry.
+-XcsX-XGathersXCricketXinfoX(Globally).
+-XcovidX[COUNTRY]X-XGetXcovidXupdatesXofXgivenXcountry.
+-XfakegenX-XGathersXfakeXinformation.
+-XweatherX[QUERY]X-XGetXweatherXinformation.
+-XdatetimeX[QUERY]X-XGetXDateX&XtimeXinformationXofXgivenXcountry/region.
+-XappX[QUERY]X-XSearchXforXappsXinXplaystore.
+-XghX[QUERY]X-XSearchXgithub.
+-XsoX[QUERY]X-XSearchXstackXoverflow.
+-XwikiX[QUERY]X-XSearchXwikipedia.
+-XpingX-XCheckXpingXrate.
+-XpokedexX[TEXT]:XPokemonXSearch
 """
 
-__MODULE__ = "Inline"
-__HELP__ = """
- ==>> **INLINE BOT SERVICE OF @INERUKI BOT** <<==
-`I'm more efficient when added as group admin. By the way these commands can be used by anyone in a group via inline.`
+__MODULE__X=X"Inline"
+__HELP__X=X"""
+X==>>X**INLINEXBOTXSERVICEXOFX@INERUKIXBOT**X<<==
+`I'mXmoreXefficientXwhenXaddedXasXgroupXadmin.XByXtheXwayXtheseXcommandsXcanXbeXusedXbyXanyoneXinXaXgroupXviaXinline.`
 
-   >> Syntax <<
-@Ineruki Bot [command] [query]
+XXX>>XSyntaxX<<
+@InerukiXBotX[command]X[query]
 
-   >> Commands Available <<
-- **alive** - __Check Bot's Stats.__
-- **yt [query]** - __Youtube Search.__
-- **tr [LANGUAGE_CODE] [QUERY]** - __Translate Text.__
-- **ud [QUERY]** - __Urban Dictionary Query.__
-- **google [QUERY]** - __Google Search.__
-- **modapk [name]** - __Give you direct link of mod apk__
-- **webss [URL]** - __Take Screenshot Of A Website.__
-- **bitly [URL]** - __Shorten A Link.__
-- **wall [Query]** - __Find Wallpapers.__
-- **pic [Query]** - __Find pictures.__
-- **saavn [SONG_NAME]** - __Get Songs From Saavn.__
-- **deezer [SONG_NAME]** - __Get Songs From Deezer.__
-- **torrent [QUERY]** - __Torrent Search.__
-- **reddit [QUERY]** - __Get memes from redit.__
-- **imdb [QUERY]** - __Search movies on imdb.__
-- **spaminfo [id]** - __Get spam info of the user.__
-- **lyrics [QUERY]** - __Get lyrics of given song.__
-- **paste [TE T]** - __Paste text on pastebin.__
-- **define [WORD]** - __Get definition from Dictionary.__
-- **synonyms [WORD]** - __Get synonyms from Dictionary.__
-- **antonyms [WORD]** - __Get antonyms from Dictionary.__
-- **country [QUERY]** - __Get Information about given country.__
-- **cs** - __Gathers Cricket info (Globally).__
-- **covid [COUNTRY]** - __Get covid updates of given country.__
-- **fakegen** - __Gathers fake information.__
-- **weather [QUERY]** - __Get weather information.__
-- **datetime [QUERY]** - __Get Date & time information of given country/region.__
-- **app [QUERY]** - __Search for apps on playstore.
-- **gh [QUERY]** - __Search github.__
-- **so [QUERY]** - __Search stack overfolw.__
-- **wiki [QUERY]** - __Search wikipedia.__
-- **ping** - __Check ping rate.__
-- **pokedex [TE T]** - __Pokemon Search.__
+XXX>>XCommandsXAvailableX<<
+-X**alive**X-X__CheckXBot'sXStats.__
+-X**ytX[query]**X-X__YoutubeXSearch.__
+-X**trX[LANGUAGE_CODE]X[QUERY]**X-X__TranslateXText.__
+-X**udX[QUERY]**X-X__UrbanXDictionaryXQuery.__
+-X**googleX[QUERY]**X-X__GoogleXSearch.__
+-X**modapkX[name]**X-X__GiveXyouXdirectXlinkXofXmodXapk__
+-X**webssX[URL]**X-X__TakeXScreenshotXOfXAXWebsite.__
+-X**bitlyX[URL]**X-X__ShortenXAXLink.__
+-X**wallX[Query]**X-X__FindXWallpapers.__
+-X**picX[Query]**X-X__FindXpictures.__
+-X**saavnX[SONG_NAME]**X-X__GetXSongsXFromXSaavn.__
+-X**deezerX[SONG_NAME]**X-X__GetXSongsXFromXDeezer.__
+-X**torrentX[QUERY]**X-X__TorrentXSearch.__
+-X**redditX[QUERY]**X-X__GetXmemesXfromXredit.__
+-X**imdbX[QUERY]**X-X__SearchXmoviesXonXimdb.__
+-X**spaminfoX[id]**X-X__GetXspamXinfoXofXtheXuser.__
+-X**lyricsX[QUERY]**X-X__GetXlyricsXofXgivenXsong.__
+-X**pasteX[TEXT]**X-X__PasteXtextXonXpastebin.__
+-X**defineX[WORD]**X-X__GetXdefinitionXfromXDictionary.__
+-X**synonymsX[WORD]**X-X__GetXsynonymsXfromXDictionary.__
+-X**antonymsX[WORD]**X-X__GetXantonymsXfromXDictionary.__
+-X**countryX[QUERY]**X-X__GetXInformationXaboutXgivenXcountry.__
+-X**cs**X-X__GathersXCricketXinfoX(Globally).__
+-X**covidX[COUNTRY]**X-X__GetXcovidXupdatesXofXgivenXcountry.__
+-X**fakegen**X-X__GathersXfakeXinformation.__
+-X**weatherX[QUERY]**X-X__GetXweatherXinformation.__
+-X**datetimeX[QUERY]**X-X__GetXDateX&XtimeXinformationXofXgivenXcountry/region.__
+-X**appX[QUERY]**X-X__SearchXforXappsXonXplaystore.
+-X**ghX[QUERY]**X-X__SearchXgithub.__
+-X**soX[QUERY]**X-X__SearchXstackXoverfolw.__
+-X**wikiX[QUERY]**X-X__SearchXwikipedia.__
+-X**ping**X-X__CheckXpingXrate.__
+-X**pokedexX[TEXT]**X-X__PokemonXSearch.__
 """
 
 
 @app.on_message(filters.command("inline"))
-async def inline_help(_, message):
-    await app.send_message(message.chat.id, text=__HELP__)
+asyncXdefXinline_help(_,Xmessage):
+XXXXawaitXapp.send_message(message.chat.id,Xtext=__HELP__)
 
 
 @app.on_inline_query()
-async def inline_query_handler(client, query):
-    try:
-        text = query.query.lower()
-        answers = []
-        if text.strip() == "":
-            answerss = await inline_help_func(__HELP__)
-            await client.answer_inline_query(query.id, results=answerss, cache_time=10)
-            return
-        elif text.split()[0] == "alive":
-            answerss = await alive_function(answers)
-            await client.answer_inline_query(query.id, results=answerss, cache_time=10)
-        elif text.split()[0] == "tr":
-            lang = text.split()[1]
-            tex = text.split(None, 2)[2]
-            answerss = await translate_func(answers, lang, tex)
-            await client.answer_inline_query(query.id, results=answerss, cache_time=10)
-        elif text.split()[0] == "ud":
-            tex = text.split(None, 1)[1]
-            answerss = await urban_func(answers, tex)
-            await client.answer_inline_query(query.id, results=answerss, cache_time=10)
-        elif text.split()[0] == "google":
-            tex = text.split(None, 1)[1]
-            answerss = await google_search_func(answers, tex)
-            await client.answer_inline_query(query.id, results=answerss, cache_time=10)
-        elif text.split()[0] == "webss":
-            tex = text.split(None, 1)[1]
-            answerss = await webss(tex)
-            await client.answer_inline_query(query.id, results=answerss, cache_time=2)
-        elif text.split()[0] == "bitly":
-            tex = text.split(None, 1)[1]
-            answerss = await shortify(tex)
-            await client.answer_inline_query(query.id, results=answerss, cache_time=2)
-        elif text.split()[0] == "wiki":
-            if len(text.split()) < 2:
-                await client.answer_inline_query(
-                    query.id,
-                    results=answers,
-                    switch_pm_text="Wikipedia | wiki [QUERY]",
-                    switch_pm_parameter="inline",
-                )
-                return
-            tex = text.split(None, 1)[1].strip()
-            answerss = await wiki_func(answers, tex)
-            await client.answer_inline_query(query.id, results=answerss, cache_time=2)
+asyncXdefXinline_query_handler(client,Xquery):
+XXXXtry:
+XXXXXXXXtextX=Xquery.query.lower()
+XXXXXXXXanswersX=X[]
+XXXXXXXXifXtext.strip()X==X"":
+XXXXXXXXXXXXanswerssX=XawaitXinline_help_func(__HELP__)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=answerss,Xcache_time=10)
+XXXXXXXXXXXXreturn
+XXXXXXXXelifXtext.split()[0]X==X"alive":
+XXXXXXXXXXXXanswerssX=XawaitXalive_function(answers)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=answerss,Xcache_time=10)
+XXXXXXXXelifXtext.split()[0]X==X"tr":
+XXXXXXXXXXXXlangX=Xtext.split()[1]
+XXXXXXXXXXXXtexX=Xtext.split(None,X2)[2]
+XXXXXXXXXXXXanswerssX=XawaitXtranslate_func(answers,Xlang,Xtex)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=answerss,Xcache_time=10)
+XXXXXXXXelifXtext.split()[0]X==X"ud":
+XXXXXXXXXXXXtexX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXanswerssX=XawaitXurban_func(answers,Xtex)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=answerss,Xcache_time=10)
+XXXXXXXXelifXtext.split()[0]X==X"google":
+XXXXXXXXXXXXtexX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXanswerssX=XawaitXgoogle_search_func(answers,Xtex)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=answerss,Xcache_time=10)
+XXXXXXXXelifXtext.split()[0]X==X"webss":
+XXXXXXXXXXXXtexX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXanswerssX=XawaitXwebss(tex)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=answerss,Xcache_time=2)
+XXXXXXXXelifXtext.split()[0]X==X"bitly":
+XXXXXXXXXXXXtexX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXanswerssX=XawaitXshortify(tex)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=answerss,Xcache_time=2)
+XXXXXXXXelifXtext.split()[0]X==X"wiki":
+XXXXXXXXXXXXifXlen(text.split())X<X2:
+XXXXXXXXXXXXXXXXawaitXclient.answer_inline_query(
+XXXXXXXXXXXXXXXXXXXXquery.id,
+XXXXXXXXXXXXXXXXXXXXresults=answers,
+XXXXXXXXXXXXXXXXXXXXswitch_pm_text="WikipediaX|XwikiX[QUERY]",
+XXXXXXXXXXXXXXXXXXXXswitch_pm_parameter="inline",
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXtexX=Xtext.split(None,X1)[1].strip()
+XXXXXXXXXXXXanswerssX=XawaitXwiki_func(answers,Xtex)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=answerss,Xcache_time=2)
 
-        elif text.split()[0] == "ping":
-            answerss = await ping_func(answers)
-            await client.answer_inline_query(query.id, results=answerss, cache_time=2)
-            return
+XXXXXXXXelifXtext.split()[0]X==X"ping":
+XXXXXXXXXXXXanswerssX=XawaitXping_func(answers)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=answerss,Xcache_time=2)
+XXXXXXXXXXXXreturn
 
-        elif text.split()[0] == "yt":
-            answers = []
-            search_query = text.split(None, 1)[1]
-            search_query = query.query.lower().strip().rstrip()
+XXXXXXXXelifXtext.split()[0]X==X"yt":
+XXXXXXXXXXXXanswersX=X[]
+XXXXXXXXXXXXsearch_queryX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXsearch_queryX=Xquery.query.lower().strip().rstrip()
 
-            if search_query == "":
-                await client.answer_inline_query(
-                    query.id,
-                    results=answers,
-                    switch_pm_text="Type a YouTube video name...",
-                    switch_pm_parameter="help",
-                    cache_time=0,
-                )
-            else:
-                search = VideosSearch(search_query, limit=50)
+XXXXXXXXXXXXifXsearch_queryX==X"":
+XXXXXXXXXXXXXXXXawaitXclient.answer_inline_query(
+XXXXXXXXXXXXXXXXXXXXquery.id,
+XXXXXXXXXXXXXXXXXXXXresults=answers,
+XXXXXXXXXXXXXXXXXXXXswitch_pm_text="TypeXaXYouTubeXvideoXname...",
+XXXXXXXXXXXXXXXXXXXXswitch_pm_parameter="help",
+XXXXXXXXXXXXXXXXXXXXcache_time=0,
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXsearchX=XVideosSearch(search_query,Xlimit=50)
 
-                for result in search.result()["result"]:
-                    answers.append(
-                        InlineQueryResultArticle(
-                            title=result["title"],
-                            description="{}, {} views.".format(
-                                result["duration"], result["viewCount"]["short"]
-                            ),
-                            input_message_content=InputTextMessageContent(
-                                "https://www.youtube.com/watch?v={}".format(
-                                    result["id"]
-                                )
-                            ),
-                            thumb_url=result["thumbnails"][0]["url"],
-                        )
-                    )
+XXXXXXXXXXXXXXXXforXresultXinXsearch.result()["result"]:
+XXXXXXXXXXXXXXXXXXXXanswers.append(
+XXXXXXXXXXXXXXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXtitle=result["title"],
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXdescription="{},X{}Xviews.".format(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXresult["duration"],Xresult["viewCount"]["short"]
+XXXXXXXXXXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"https://www.youtube.com/watch?v={}".format(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXresult["id"]
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXthumb_url=result["thumbnails"][0]["url"],
+XXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXX)
 
-                try:
-                    await query.answer(results=answers, cache_time=0)
-                except errors.QueryIdInvalid:
-                    await query.answer(
-                        results=answers,
-                        cache_time=0,
-                        switch_pm_text="Error: Search timed out",
-                        switch_pm_parameter="",
-                    )
+XXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXawaitXquery.answer(results=answers,Xcache_time=0)
+XXXXXXXXXXXXXXXXexceptXerrors.QueryIdInvalid:
+XXXXXXXXXXXXXXXXXXXXawaitXquery.answer(
+XXXXXXXXXXXXXXXXXXXXXXXXresults=answers,
+XXXXXXXXXXXXXXXXXXXXXXXXcache_time=0,
+XXXXXXXXXXXXXXXXXXXXXXXXswitch_pm_text="Error:XSearchXtimedXout",
+XXXXXXXXXXXXXXXXXXXXXXXXswitch_pm_parameter="",
+XXXXXXXXXXXXXXXXXXXX)
 
-        elif text.split()[0] == "wall":
-            tex = text.split(None, 1)[1]
-            answerss = await wall_func(answers, tex)
-            await client.answer_inline_query(query.id, results=answerss)
+XXXXXXXXelifXtext.split()[0]X==X"wall":
+XXXXXXXXXXXXtexX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXanswerssX=XawaitXwall_func(answers,Xtex)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=answerss)
 
-        elif text.split()[0] == "pic":
-            tex = text.split(None, 1)[1]
-            answerss = await wall_func(answers, tex)
-            await client.answer_inline_query(query.id, results=answerss)
+XXXXXXXXelifXtext.split()[0]X==X"pic":
+XXXXXXXXXXXXtexX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXanswerssX=XawaitXwall_func(answers,Xtex)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=answerss)
 
-        elif text.split()[0] == "saavn":
-            tex = text.split(None, 1)[1]
-            answerss = await saavn_func(answers, tex)
-            await client.answer_inline_query(query.id, results=answerss)
+XXXXXXXXelifXtext.split()[0]X==X"saavn":
+XXXXXXXXXXXXtexX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXanswerssX=XawaitXsaavn_func(answers,Xtex)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=answerss)
 
-        elif text.split()[0] == "deezer":
-            tex = text.split(None, 1)[1]
-            answerss = await deezer_func(answers, tex)
-            await client.answer_inline_query(query.id, results=answerss)
+XXXXXXXXelifXtext.split()[0]X==X"deezer":
+XXXXXXXXXXXXtexX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXanswerssX=XawaitXdeezer_func(answers,Xtex)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=answerss)
 
-        elif text.split()[0] == "torrent":
-            tex = text.split(None, 1)[1]
-            answerss = await torrent_func(answers, tex)
-            await client.answer_inline_query(query.id, results=answerss, cache_time=10)
-        elif text.split()[0] == "modapk":
-            sgname = text.split(None, 1)[1]
-            PabloEscobar = (
-                f"https://an1.com/tags/MOD/?story={sgname}&do=search&subaction=search"
-            )
-            r = requests.get(PabloEscobar)
-            results = []
-            soup = BeautifulSoup(r.content, "html5lib")
-            mydivs = soup.find_all("div", {"class": "search-results"})
-            Pop = soup.find_all("div", {"class": "title"})
-            cnte = len(mydivs)
-            for cnt in range(cnte):
-                sucker = mydivs[cnt]
-                pH9 = sucker.find("a").contents[0]
-                file_name = pH9
-                pH = sucker.findAll("img")
-                imme = pH[0]["src"]
-                Pablo = Pop[0].a["href"]
-                ro = requests.get(Pablo)
-                soupe = BeautifulSoup(ro.content, "html5lib")
-                myopo = soupe.find_all("div", {"class": "item"})
-                capt = f"**{file_name}** \n** {myopo[0].text}**\n**{myopo[1].text}**\n**{myopo[2].text}**\n**{myopo[3].text}**"
-                mydis0 = soupe.find_all("a", {"class": "get-product"})
-                Lol9 = mydis0[0]
-                lemk = "https://an1.com" + Lol9["href"]
-                rr = requests.get(lemk)
-                soup = BeautifulSoup(rr.content, "html5lib")
-                script = soup.find("script", type="text/javascript")
-                leek = re.search(r'href=[\'"]?([^\'" >]+)', script.text).group()
-                dl_link = leek[5:]
+XXXXXXXXelifXtext.split()[0]X==X"torrent":
+XXXXXXXXXXXXtexX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXanswerssX=XawaitXtorrent_func(answers,Xtex)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=answerss,Xcache_time=10)
+XXXXXXXXelifXtext.split()[0]X==X"modapk":
+XXXXXXXXXXXXsgnameX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXPabloEscobarX=X(
+XXXXXXXXXXXXXXXXf"https://an1.com/tags/MOD/?story={sgname}&do=search&subaction=search"
+XXXXXXXXXXXX)
+XXXXXXXXXXXXrX=Xrequests.get(PabloEscobar)
+XXXXXXXXXXXXresultsX=X[]
+XXXXXXXXXXXXsoupX=XBeautifulSoup(r.content,X"html5lib")
+XXXXXXXXXXXXmydivsX=Xsoup.find_all("div",X{"class":X"search-results"})
+XXXXXXXXXXXXPopX=Xsoup.find_all("div",X{"class":X"title"})
+XXXXXXXXXXXXcnteX=Xlen(mydivs)
+XXXXXXXXXXXXforXcntXinXrange(cnte):
+XXXXXXXXXXXXXXXXsuckerX=Xmydivs[cnt]
+XXXXXXXXXXXXXXXXpH9X=Xsucker.find("a").contents[0]
+XXXXXXXXXXXXXXXXfile_nameX=XpH9
+XXXXXXXXXXXXXXXXpHX=Xsucker.findAll("img")
+XXXXXXXXXXXXXXXXimmeX=XpH[0]["src"]
+XXXXXXXXXXXXXXXXPabloX=XPop[0].a["href"]
+XXXXXXXXXXXXXXXXroX=Xrequests.get(Pablo)
+XXXXXXXXXXXXXXXXsoupeX=XBeautifulSoup(ro.content,X"html5lib")
+XXXXXXXXXXXXXXXXmyopoX=Xsoupe.find_all("div",X{"class":X"item"})
+XXXXXXXXXXXXXXXXcaptX=Xf"**{file_name}**X\n**X{myopo[0].text}**\n**{myopo[1].text}**\n**{myopo[2].text}**\n**{myopo[3].text}**"
+XXXXXXXXXXXXXXXXmydis0X=Xsoupe.find_all("a",X{"class":X"get-product"})
+XXXXXXXXXXXXXXXXLol9X=Xmydis0[0]
+XXXXXXXXXXXXXXXXlemkX=X"https://an1.com"X+XLol9["href"]
+XXXXXXXXXXXXXXXXrrX=Xrequests.get(lemk)
+XXXXXXXXXXXXXXXXsoupX=XBeautifulSoup(rr.content,X"html5lib")
+XXXXXXXXXXXXXXXXscriptX=Xsoup.find("script",Xtype="text/javascript")
+XXXXXXXXXXXXXXXXleekX=Xre.search(r'href=[\'"]?([^\'"X>]+)',Xscript.text).group()
+XXXXXXXXXXXXXXXXdl_linkX=Xleek[5:]
 
-                results.append(
-                    InlineQueryResultPhoto(
-                        photo_url=imme,
-                        title=file_name,
-                        caption=capt,
-                        reply_markup=InlineKeyboardMarkup(
-                            [
-                                [InlineKeyboardButton("Download Link", url=lemk)],
-                                [
-                                    InlineKeyboardButton(
-                                        "Direct Download Link", url=dl_link
-                                    )
-                                ],
-                            ]
-                        ),
-                    )
-                )
+XXXXXXXXXXXXXXXXresults.append(
+XXXXXXXXXXXXXXXXXXXXInlineQueryResultPhoto(
+XXXXXXXXXXXXXXXXXXXXXXXXphoto_url=imme,
+XXXXXXXXXXXXXXXXXXXXXXXXtitle=file_name,
+XXXXXXXXXXXXXXXXXXXXXXXXcaption=capt,
+XXXXXXXXXXXXXXXXXXXXXXXXreply_markup=InlineKeyboardMarkup(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXX[
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX[InlineKeyboardButton("DownloadXLink",Xurl=lemk)],
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX[
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"DirectXDownloadXLink",Xurl=dl_link
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX],
+XXXXXXXXXXXXXXXXXXXXXXXXXXXX]
+XXXXXXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXX)
 
-            await client.answer_inline_query(query.id, cache_time=0, results=results)
-        elif text.split()[0] == "reddit":
-            subreddit = text.split(None, 1)[1]
-            results = []
-            reddit = await arq.reddit(subreddit)
-            sreddit = reddit.subreddit
-            title = reddit.title
-            image = reddit.url
-            link = reddit.postLink
-            caption = f"""**Title:** `{title}`
-            Subreddit: `{sreddit}`"""
-            results.append(
-                InlineQueryResultPhoto(
-                    photo_url=image,
-                    title="Meme Search",
-                    caption=caption,
-                    reply_markup=InlineKeyboardMarkup(
-                        [
-                            [InlineKeyboardButton("PostLink", url=link)],
-                        ]
-                    ),
-                )
-            )
-            await client.answer_inline_query(query.id, cache_time=0, results=results)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xcache_time=0,Xresults=results)
+XXXXXXXXelifXtext.split()[0]X==X"reddit":
+XXXXXXXXXXXXsubredditX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXresultsX=X[]
+XXXXXXXXXXXXredditX=XawaitXarq.reddit(subreddit)
+XXXXXXXXXXXXsredditX=Xreddit.subreddit
+XXXXXXXXXXXXtitleX=Xreddit.title
+XXXXXXXXXXXXimageX=Xreddit.url
+XXXXXXXXXXXXlinkX=Xreddit.postLink
+XXXXXXXXXXXXcaptionX=Xf"""**Title:**X`{title}`
+XXXXXXXXXXXXSubreddit:X`{sreddit}`"""
+XXXXXXXXXXXXresults.append(
+XXXXXXXXXXXXXXXXInlineQueryResultPhoto(
+XXXXXXXXXXXXXXXXXXXXphoto_url=image,
+XXXXXXXXXXXXXXXXXXXXtitle="MemeXSearch",
+XXXXXXXXXXXXXXXXXXXXcaption=caption,
+XXXXXXXXXXXXXXXXXXXXreply_markup=InlineKeyboardMarkup(
+XXXXXXXXXXXXXXXXXXXXXXXX[
+XXXXXXXXXXXXXXXXXXXXXXXXXXXX[InlineKeyboardButton("PostLink",Xurl=link)],
+XXXXXXXXXXXXXXXXXXXXXXXX]
+XXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xcache_time=0,Xresults=results)
 
-        elif text.split()[0] == "imdb":
-            movie_name = text.split(None, 1)[1]
-            results = []
-            remove_space = movie_name.split(" ")
-            final_name = "+".join(remove_space)
-            page = requests.get(
-                "https://www.imdb.com/find?ref_=nv_sr_fn&q=" + final_name + "&s=all"
-            )
-            str(page.status_code)
-            soup = BeautifulSoup(page.content, "lxml")
-            odds = soup.findAll("tr", "odd")
-            mov_title = odds[0].findNext("td").findNext("td").text
-            mov_link = (
-                "http://www.imdb.com/" + odds[0].findNext("td").findNext("td").a["href"]
-            )
-            page1 = requests.get(mov_link)
-            soup = BeautifulSoup(page1.content, "lxml")
-            if soup.find("div", "poster"):
-                poster = soup.find("div", "poster").img["src"]
-            else:
-                poster = ""
-            if soup.find("div", "title_wrapper"):
-                pg = soup.find("div", "title_wrapper").findNext("div").text
-                mov_details = re.sub(r"\s+", " ", pg)
-            else:
-                mov_details = ""
-            credits = soup.findAll("div", "credit_summary_item")
-            if len(credits) == 1:
-                director = credits[0].a.text
-                writer = "Not available"
-                stars = "Not available"
-            elif len(credits) > 2:
-                director = credits[0].a.text
-                writer = credits[1].a.text
-                actors = []
-                for x in credits[2].findAll("a"):
-                    actors.append(x.text)
-                actors.pop()
-                stars = actors[0] + "," + actors[1] + "," + actors[2]
-            else:
-                director = credits[0].a.text
-                writer = "Not available"
-                actors = []
-                for x in credits[1].findAll("a"):
-                    actors.append(x.text)
-                actors.pop()
-                stars = actors[0] + "," + actors[1] + "," + actors[2]
-            if soup.find("div", "inline canwrap"):
-                story_line = soup.find("div", "inline canwrap").findAll("p")[0].text
-            else:
-                story_line = "Not available"
-            info = soup.findAll("div", "txt-block")
-            if info:
-                mov_country = []
-                mov_language = []
-                for node in info:
-                    a = node.findAll("a")
-                    for i in a:
-                        if "country_of_origin" in i["href"]:
-                            mov_country.append(i.text)
-                        elif "primary_language" in i["href"]:
-                            mov_language.append(i.text)
-            if soup.findAll("div", "ratingValue"):
-                for r in soup.findAll("div", "ratingValue"):
-                    mov_rating = r.strong["title"]
-            else:
-                mov_rating = "Not available"
-            lol = f"Movie - {mov_title}\n Click to see more"
-            msg = (
-                "<a href=" + poster + ">&#8203;</a>"
-                "<b>Title : </b><code>"
-                + mov_title
-                + "</code>\n<code>"
-                + mov_details
-                + "</code>\n<b>Rating : </b><code>"
-                + mov_rating
-                + "</code>\n<b>Country : </b><code>"
-                + mov_country[0]
-                + "</code>\n<b>Language : </b><code>"
-                + mov_language[0]
-                + "</code>\n<b>Director : </b><code>"
-                + director
-                + "</code>\n<b>Writer : </b><code>"
-                + writer
-                + "</code>\n<b>Stars : </b><code>"
-                + stars
-                + "</code>\n<b>IMDB Url : </b>"
-                + mov_link
-                + "\n<b>Story Line : </b>"
-                + story_line
-            )
-            results.append(
-                InlineQueryResultArticle(
-                    title="Imdb Search",
-                    description=lol,
-                    input_message_content=InputTextMessageContent(
-                        msg, disable_web_page_preview=False, parse_mode="HTML"
-                    ),
-                )
-            )
-            await client.answer_inline_query(query.id, cache_time=0, results=results)
-        elif text.split()[0] == "spaminfo":
-            cmd = text.split(None, 1)[1]
-            results = []
-            url = f"https://api.intellivoid.net/spamprotection/v1/lookup?query={cmd}"
-            a = await AioHttp().get_json(url)
-            response = a["success"]
-            if response is True:
-                date = a["results"]["last_updated"]
-                stats = f"**◢ Intellivoid• SpamProtection Info**:\n"
-                stats += f' • **Updated on**: `{datetime.fromtimestamp(date).strftime("%Y-%m-%d %I:%M:%S %p")}`\n'
-                stats += f" • **Chat Info**: [Link](t.me/SpamProtectionBot/?start=00_{cmd})\n"
+XXXXXXXXelifXtext.split()[0]X==X"imdb":
+XXXXXXXXXXXXmovie_nameX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXresultsX=X[]
+XXXXXXXXXXXXremove_spaceX=Xmovie_name.split("X")
+XXXXXXXXXXXXfinal_nameX=X"+".join(remove_space)
+XXXXXXXXXXXXpageX=Xrequests.get(
+XXXXXXXXXXXXXXXX"https://www.imdb.com/find?ref_=nv_sr_fn&q="X+Xfinal_nameX+X"&s=all"
+XXXXXXXXXXXX)
+XXXXXXXXXXXXstr(page.status_code)
+XXXXXXXXXXXXsoupX=XBeautifulSoup(page.content,X"lxml")
+XXXXXXXXXXXXoddsX=Xsoup.findAll("tr",X"odd")
+XXXXXXXXXXXXmov_titleX=Xodds[0].findNext("td").findNext("td").text
+XXXXXXXXXXXXmov_linkX=X(
+XXXXXXXXXXXXXXXX"http://www.imdb.com/"X+Xodds[0].findNext("td").findNext("td").a["href"]
+XXXXXXXXXXXX)
+XXXXXXXXXXXXpage1X=Xrequests.get(mov_link)
+XXXXXXXXXXXXsoupX=XBeautifulSoup(page1.content,X"lxml")
+XXXXXXXXXXXXifXsoup.find("div",X"poster"):
+XXXXXXXXXXXXXXXXposterX=Xsoup.find("div",X"poster").img["src"]
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXposterX=X""
+XXXXXXXXXXXXifXsoup.find("div",X"title_wrapper"):
+XXXXXXXXXXXXXXXXpgX=Xsoup.find("div",X"title_wrapper").findNext("div").text
+XXXXXXXXXXXXXXXXmov_detailsX=Xre.sub(r"\s+",X"X",Xpg)
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXmov_detailsX=X""
+XXXXXXXXXXXXcreditsX=Xsoup.findAll("div",X"credit_summary_item")
+XXXXXXXXXXXXifXlen(credits)X==X1:
+XXXXXXXXXXXXXXXXdirectorX=Xcredits[0].a.text
+XXXXXXXXXXXXXXXXwriterX=X"NotXavailable"
+XXXXXXXXXXXXXXXXstarsX=X"NotXavailable"
+XXXXXXXXXXXXelifXlen(credits)X>X2:
+XXXXXXXXXXXXXXXXdirectorX=Xcredits[0].a.text
+XXXXXXXXXXXXXXXXwriterX=Xcredits[1].a.text
+XXXXXXXXXXXXXXXXactorsX=X[]
+XXXXXXXXXXXXXXXXforXxXinXcredits[2].findAll("a"):
+XXXXXXXXXXXXXXXXXXXXactors.append(x.text)
+XXXXXXXXXXXXXXXXactors.pop()
+XXXXXXXXXXXXXXXXstarsX=Xactors[0]X+X","X+Xactors[1]X+X","X+Xactors[2]
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXdirectorX=Xcredits[0].a.text
+XXXXXXXXXXXXXXXXwriterX=X"NotXavailable"
+XXXXXXXXXXXXXXXXactorsX=X[]
+XXXXXXXXXXXXXXXXforXxXinXcredits[1].findAll("a"):
+XXXXXXXXXXXXXXXXXXXXactors.append(x.text)
+XXXXXXXXXXXXXXXXactors.pop()
+XXXXXXXXXXXXXXXXstarsX=Xactors[0]X+X","X+Xactors[1]X+X","X+Xactors[2]
+XXXXXXXXXXXXifXsoup.find("div",X"inlineXcanwrap"):
+XXXXXXXXXXXXXXXXstory_lineX=Xsoup.find("div",X"inlineXcanwrap").findAll("p")[0].text
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXstory_lineX=X"NotXavailable"
+XXXXXXXXXXXXinfoX=Xsoup.findAll("div",X"txt-block")
+XXXXXXXXXXXXifXinfo:
+XXXXXXXXXXXXXXXXmov_countryX=X[]
+XXXXXXXXXXXXXXXXmov_languageX=X[]
+XXXXXXXXXXXXXXXXforXnodeXinXinfo:
+XXXXXXXXXXXXXXXXXXXXaX=Xnode.findAll("a")
+XXXXXXXXXXXXXXXXXXXXforXiXinXa:
+XXXXXXXXXXXXXXXXXXXXXXXXifX"country_of_origin"XinXi["href"]:
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXmov_country.append(i.text)
+XXXXXXXXXXXXXXXXXXXXXXXXelifX"primary_language"XinXi["href"]:
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXmov_language.append(i.text)
+XXXXXXXXXXXXifXsoup.findAll("div",X"ratingValue"):
+XXXXXXXXXXXXXXXXforXrXinXsoup.findAll("div",X"ratingValue"):
+XXXXXXXXXXXXXXXXXXXXmov_ratingX=Xr.strong["title"]
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXmov_ratingX=X"NotXavailable"
+XXXXXXXXXXXXlolX=Xf"MovieX-X{mov_title}\nXClickXtoXseeXmore"
+XXXXXXXXXXXXmsgX=X(
+XXXXXXXXXXXXXXXX"<aXhref="X+XposterX+X">&#8203;</a>"
+XXXXXXXXXXXXXXXX"<b>TitleX:X</b><code>"
+XXXXXXXXXXXXXXXX+Xmov_title
+XXXXXXXXXXXXXXXX+X"</code>\n<code>"
+XXXXXXXXXXXXXXXX+Xmov_details
+XXXXXXXXXXXXXXXX+X"</code>\n<b>RatingX:X</b><code>"
+XXXXXXXXXXXXXXXX+Xmov_rating
+XXXXXXXXXXXXXXXX+X"</code>\n<b>CountryX:X</b><code>"
+XXXXXXXXXXXXXXXX+Xmov_country[0]
+XXXXXXXXXXXXXXXX+X"</code>\n<b>LanguageX:X</b><code>"
+XXXXXXXXXXXXXXXX+Xmov_language[0]
+XXXXXXXXXXXXXXXX+X"</code>\n<b>DirectorX:X</b><code>"
+XXXXXXXXXXXXXXXX+Xdirector
+XXXXXXXXXXXXXXXX+X"</code>\n<b>WriterX:X</b><code>"
+XXXXXXXXXXXXXXXX+Xwriter
+XXXXXXXXXXXXXXXX+X"</code>\n<b>StarsX:X</b><code>"
+XXXXXXXXXXXXXXXX+Xstars
+XXXXXXXXXXXXXXXX+X"</code>\n<b>IMDBXUrlX:X</b>"
+XXXXXXXXXXXXXXXX+Xmov_link
+XXXXXXXXXXXXXXXX+X"\n<b>StoryXLineX:X</b>"
+XXXXXXXXXXXXXXXX+Xstory_line
+XXXXXXXXXXXX)
+XXXXXXXXXXXXresults.append(
+XXXXXXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXXXXXtitle="ImdbXSearch",
+XXXXXXXXXXXXXXXXXXXXdescription=lol,
+XXXXXXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXXXXXmsg,Xdisable_web_page_preview=False,Xparse_mode="HTML"
+XXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xcache_time=0,Xresults=results)
+XXXXXXXXelifXtext.split()[0]X==X"spaminfo":
+XXXXXXXXXXXXcmdX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXresultsX=X[]
+XXXXXXXXXXXXurlX=Xf"https://api.intellivoid.net/spamprotection/v1/lookup?query={cmd}"
+XXXXXXXXXXXXaX=XawaitXAioHttp().get_json(url)
+XXXXXXXXXXXXresponseX=Xa["success"]
+XXXXXXXXXXXXifXresponseXisXTrue:
+XXXXXXXXXXXXXXXXdateX=Xa["results"]["last_updated"]
+XXXXXXXXXXXXXXXXstatsX=Xf"**◢XIntellivoid•XSpamProtectionXInfo**:\n"
+XXXXXXXXXXXXXXXXstatsX+=Xf'X•X**UpdatedXon**:X`{datetime.fromtimestamp(date).strftime("%Y-%m-%dX%I:%M:%SX%p")}`\n'
+XXXXXXXXXXXXXXXXstatsX+=Xf"X•X**ChatXInfo**:X[Link](t.me/SpamProtectionBot/?start=00_{cmd})\n"
 
-                if a["results"]["attributes"]["is_potential_spammer"] is True:
-                    stats += f" • **User**: `USERxSPAM`\n"
-                elif a["results"]["attributes"]["is_operator"] is True:
-                    stats += f" • **User**: `USERxOPERATOR`\n"
-                elif a["results"]["attributes"]["is_agent"] is True:
-                    stats += f" • **User**: `USERxAGENT`\n"
-                elif a["results"]["attributes"]["is_whitelisted"] is True:
-                    stats += f" • **User**: `USERxWHITELISTED`\n"
+XXXXXXXXXXXXXXXXifXa["results"]["attributes"]["is_potential_spammer"]XisXTrue:
+XXXXXXXXXXXXXXXXXXXXstatsX+=Xf"X•X**User**:X`USERxSPAM`\n"
+XXXXXXXXXXXXXXXXelifXa["results"]["attributes"]["is_operator"]XisXTrue:
+XXXXXXXXXXXXXXXXXXXXstatsX+=Xf"X•X**User**:X`USERxOPERATOR`\n"
+XXXXXXXXXXXXXXXXelifXa["results"]["attributes"]["is_agent"]XisXTrue:
+XXXXXXXXXXXXXXXXXXXXstatsX+=Xf"X•X**User**:X`USERxAGENT`\n"
+XXXXXXXXXXXXXXXXelifXa["results"]["attributes"]["is_whitelisted"]XisXTrue:
+XXXXXXXXXXXXXXXXXXXXstatsX+=Xf"X•X**User**:X`USERxWHITELISTED`\n"
 
-                stats += f' • **Type**: `{a["results"]["entity_type"]}`\n'
-                stats += f' • **Language**: `{a["results"]["language_prediction"]["language"]}`\n'
-                stats += f' • **Language Probability**: `{a["results"]["language_prediction"]["probability"]}`\n'
-                stats += f"**Spam Prediction**:\n"
-                stats += f' • **Ham Prediction**: `{a["results"]["spam_prediction"]["ham_prediction"]}`\n'
-                stats += f' • **Spam Prediction**: `{a["results"]["spam_prediction"]["spam_prediction"]}`\n'
-                stats += f'**Blacklisted**: `{a["results"]["attributes"]["is_blacklisted"]}`\n'
-                if a["results"]["attributes"]["is_blacklisted"] is True:
-                    stats += f' • **Reason**: `{a["results"]["attributes"]["blacklist_reason"]}`\n'
-                    stats += f' • **Flag**: `{a["results"]["attributes"]["blacklist_flag"]}`\n'
-                stats += f'**PTID**:\n`{a["results"]["private_telegram_id"]}`\n'
-                results.append(
-                    InlineQueryResultArticle(
-                        title="Spam Info",
-                        description="Search Users spam info",
-                        input_message_content=InputTextMessageContent(
-                            stats, disable_web_page_preview=True
-                        ),
-                    )
-                )
-                await client.answer_inline_query(
-                    query.id, cache_time=0, results=results
-                )
-        elif text.split()[0] == "lyrics":
-            cmd = text.split(None, 1)[1]
-            results = []
+XXXXXXXXXXXXXXXXstatsX+=Xf'X•X**Type**:X`{a["results"]["entity_type"]}`\n'
+XXXXXXXXXXXXXXXXstatsX+=Xf'X•X**Language**:X`{a["results"]["language_prediction"]["language"]}`\n'
+XXXXXXXXXXXXXXXXstatsX+=Xf'X•X**LanguageXProbability**:X`{a["results"]["language_prediction"]["probability"]}`\n'
+XXXXXXXXXXXXXXXXstatsX+=Xf"**SpamXPrediction**:\n"
+XXXXXXXXXXXXXXXXstatsX+=Xf'X•X**HamXPrediction**:X`{a["results"]["spam_prediction"]["ham_prediction"]}`\n'
+XXXXXXXXXXXXXXXXstatsX+=Xf'X•X**SpamXPrediction**:X`{a["results"]["spam_prediction"]["spam_prediction"]}`\n'
+XXXXXXXXXXXXXXXXstatsX+=Xf'**Blacklisted**:X`{a["results"]["attributes"]["is_blacklisted"]}`\n'
+XXXXXXXXXXXXXXXXifXa["results"]["attributes"]["is_blacklisted"]XisXTrue:
+XXXXXXXXXXXXXXXXXXXXstatsX+=Xf'X•X**Reason**:X`{a["results"]["attributes"]["blacklist_reason"]}`\n'
+XXXXXXXXXXXXXXXXXXXXstatsX+=Xf'X•X**Flag**:X`{a["results"]["attributes"]["blacklist_flag"]}`\n'
+XXXXXXXXXXXXXXXXstatsX+=Xf'**PTID**:\n`{a["results"]["private_telegram_id"]}`\n'
+XXXXXXXXXXXXXXXXresults.append(
+XXXXXXXXXXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXXXXXXXXXtitle="SpamXInfo",
+XXXXXXXXXXXXXXXXXXXXXXXXdescription="SearchXUsersXspamXinfo",
+XXXXXXXXXXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXstats,Xdisable_web_page_preview=True
+XXXXXXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXawaitXclient.answer_inline_query(
+XXXXXXXXXXXXXXXXXXXXquery.id,Xcache_time=0,Xresults=results
+XXXXXXXXXXXXXXXX)
+XXXXXXXXelifXtext.split()[0]X==X"lyrics":
+XXXXXXXXXXXXcmdX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXresultsX=X[]
 
-            song = ""
-            song = Song.find_song(cmd)
-            if song:
-                if song.lyrics:
-                    reply = song.format()
-                else:
-                    reply = "Couldn't find any lyrics for that song! try with artist name along with song if still doesnt work try `.glyrics`"
-            else:
-                reply = "lyrics not found! try with artist name along with song if still doesnt work try `.glyrics`"
+XXXXXXXXXXXXsongX=X""
+XXXXXXXXXXXXsongX=XSong.find_song(cmd)
+XXXXXXXXXXXXifXsong:
+XXXXXXXXXXXXXXXXifXsong.lyrics:
+XXXXXXXXXXXXXXXXXXXXreplyX=Xsong.format()
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXreplyX=X"Couldn'tXfindXanyXlyricsXforXthatXsong!XtryXwithXartistXnameXalongXwithXsongXifXstillXdoesntXworkXtryX`.glyrics`"
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXreplyX=X"lyricsXnotXfound!XtryXwithXartistXnameXalongXwithXsongXifXstillXdoesntXworkXtryX`.glyrics`"
 
-            if len(reply) > 4095:
-                reply = "lyrics too big, Try using /lyrics"
+XXXXXXXXXXXXifXlen(reply)X>X4095:
+XXXXXXXXXXXXXXXXreplyX=X"lyricsXtooXbig,XTryXusingX/lyrics"
 
-            results.append(
-                InlineQueryResultArticle(
-                    title="Song Lyrics",
-                    description="Click here to see lyrics",
-                    input_message_content=InputTextMessageContent(
-                        reply, disable_web_page_preview=False
-                    ),
-                )
-            )
-            await client.answer_inline_query(query.id, cache_time=0, results=results)
-        elif text.split()[0] == "pokedex":
-            if len(text.split()) < 2:
-                await client.answer_inline_query(
-                    query.id,
-                    results=answers,
-                    switch_pm_text="Pokemon [text]",
-                    switch_pm_parameter="pokedex",
-                )
-                return
-            pokedex = text.split(None, 1)[1].strip()
-            Pokedex = await pokedexinfo(answers, pokedex)
-            await client.answer_inline_query(query.id, results=Pokedex, cache_time=2)
-        elif text.split()[0] == "paste":
-            tex = text.split(None, 1)[1]
-            answerss = await paste_func(answers, tex)
-            await client.answer_inline_query(query.id, results=answerss, cache_time=2)
+XXXXXXXXXXXXresults.append(
+XXXXXXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXXXXXtitle="SongXLyrics",
+XXXXXXXXXXXXXXXXXXXXdescription="ClickXhereXtoXseeXlyrics",
+XXXXXXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXXXXXreply,Xdisable_web_page_preview=False
+XXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xcache_time=0,Xresults=results)
+XXXXXXXXelifXtext.split()[0]X==X"pokedex":
+XXXXXXXXXXXXifXlen(text.split())X<X2:
+XXXXXXXXXXXXXXXXawaitXclient.answer_inline_query(
+XXXXXXXXXXXXXXXXXXXXquery.id,
+XXXXXXXXXXXXXXXXXXXXresults=answers,
+XXXXXXXXXXXXXXXXXXXXswitch_pm_text="PokemonX[text]",
+XXXXXXXXXXXXXXXXXXXXswitch_pm_parameter="pokedex",
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXpokedexX=Xtext.split(None,X1)[1].strip()
+XXXXXXXXXXXXPokedexX=XawaitXpokedexinfo(answers,Xpokedex)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=Pokedex,Xcache_time=2)
+XXXXXXXXelifXtext.split()[0]X==X"paste":
+XXXXXXXXXXXXtexX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXanswerssX=XawaitXpaste_func(answers,Xtex)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=answerss,Xcache_time=2)
 
-        elif text.split()[0] == "covid":
-            lel = text.split(None, 1)[1]
-            results = []
-            country = lel.replace(" ", "")
-            data = await fetch(f"https://corona.lmao.ninja/v2/countries/{country}")
-            data = await json_prettify(data)
-            results.append(
-                InlineQueryResultArticle(
-                    title="Covid Info Gathered succesfully",
-                    description=data,
-                    input_message_content=InputTextMessageContent(
-                        data, disable_web_page_preview=False
-                    ),
-                )
-            )
-            await client.answer_inline_query(query.id, results=results, cache_time=2)
-        elif text.split()[0] == "country":
-            lel = text.split(None, 1)[1]
-            results = []
-            country = CountryInfo(lel)
-            try:
-                a = country.info()
-            except:
-                a = "Country Not Avaiable Currently"
-            name = a.get("name")
-            bb = a.get("altSpellings")
-            hu = ""
-            for p in bb:
-                hu += p + ",  "
+XXXXXXXXelifXtext.split()[0]X==X"covid":
+XXXXXXXXXXXXlelX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXresultsX=X[]
+XXXXXXXXXXXXcountryX=Xlel.replace("X",X"")
+XXXXXXXXXXXXdataX=XawaitXfetch(f"https://corona.lmao.ninja/v2/countries/{country}")
+XXXXXXXXXXXXdataX=XawaitXjson_prettify(data)
+XXXXXXXXXXXXresults.append(
+XXXXXXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXXXXXtitle="CovidXInfoXGatheredXsuccesfully",
+XXXXXXXXXXXXXXXXXXXXdescription=data,
+XXXXXXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXXXXXdata,Xdisable_web_page_preview=False
+XXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=results,Xcache_time=2)
+XXXXXXXXelifXtext.split()[0]X==X"country":
+XXXXXXXXXXXXlelX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXresultsX=X[]
+XXXXXXXXXXXXcountryX=XCountryInfo(lel)
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXaX=Xcountry.info()
+XXXXXXXXXXXXexcept:
+XXXXXXXXXXXXXXXXaX=X"CountryXNotXAvaiableXCurrently"
+XXXXXXXXXXXXnameX=Xa.get("name")
+XXXXXXXXXXXXbbX=Xa.get("altSpellings")
+XXXXXXXXXXXXhuX=X""
+XXXXXXXXXXXXforXpXinXbb:
+XXXXXXXXXXXXXXXXhuX+=XpX+X",XX"
 
-            area = a.get("area")
-            borders = ""
-            hell = a.get("borders")
-            for fk in hell:
-                borders += fk + ",  "
+XXXXXXXXXXXXareaX=Xa.get("area")
+XXXXXXXXXXXXbordersX=X""
+XXXXXXXXXXXXhellX=Xa.get("borders")
+XXXXXXXXXXXXforXfkXinXhell:
+XXXXXXXXXXXXXXXXbordersX+=XfkX+X",XX"
 
-            call = ""
-            WhAt = a.get("callingCodes")
-            for what in WhAt:
-                call += what + "  "
+XXXXXXXXXXXXcallX=X""
+XXXXXXXXXXXXWhAtX=Xa.get("callingCodes")
+XXXXXXXXXXXXforXwhatXinXWhAt:
+XXXXXXXXXXXXXXXXcallX+=XwhatX+X"XX"
 
-            capital = a.get("capital")
-            currencies = ""
-            fker = a.get("currencies")
-            for FKer in fker:
-                currencies += FKer + ",  "
+XXXXXXXXXXXXcapitalX=Xa.get("capital")
+XXXXXXXXXXXXcurrenciesX=X""
+XXXXXXXXXXXXfkerX=Xa.get("currencies")
+XXXXXXXXXXXXforXFKerXinXfker:
+XXXXXXXXXXXXXXXXcurrenciesX+=XFKerX+X",XX"
 
-            HmM = a.get("demonym")
-            geo = a.get("geoJSON")
-            pablo = geo.get("features")
-            Pablo = pablo[0]
-            PAblo = Pablo.get("geometry")
-            EsCoBaR = PAblo.get("type")
-            iso = ""
-            iSo = a.get("ISO")
-            for hitler in iSo:
-                po = iSo.get(hitler)
-                iso += po + ",  "
-            fla = iSo.get("alpha2")
-            fla.upper()
+XXXXXXXXXXXXHmMX=Xa.get("demonym")
+XXXXXXXXXXXXgeoX=Xa.get("geoJSON")
+XXXXXXXXXXXXpabloX=Xgeo.get("features")
+XXXXXXXXXXXXPabloX=Xpablo[0]
+XXXXXXXXXXXXPAbloX=XPablo.get("geometry")
+XXXXXXXXXXXXEsCoBaRX=XPAblo.get("type")
+XXXXXXXXXXXXisoX=X""
+XXXXXXXXXXXXiSoX=Xa.get("ISO")
+XXXXXXXXXXXXforXhitlerXinXiSo:
+XXXXXXXXXXXXXXXXpoX=XiSo.get(hitler)
+XXXXXXXXXXXXXXXXisoX+=XpoX+X",XX"
+XXXXXXXXXXXXflaX=XiSo.get("alpha2")
+XXXXXXXXXXXXfla.upper()
 
-            languages = a.get("languages")
-            lMAO = ""
-            for lmao in languages:
-                lMAO += lmao + ",  "
+XXXXXXXXXXXXlanguagesX=Xa.get("languages")
+XXXXXXXXXXXXlMAOX=X""
+XXXXXXXXXXXXforXlmaoXinXlanguages:
+XXXXXXXXXXXXXXXXlMAOX+=XlmaoX+X",XX"
 
-            nonive = a.get("nativeName")
-            waste = a.get("population")
-            reg = a.get("region")
-            sub = a.get("subregion")
-            tik = a.get("timezones")
-            tom = ""
-            for jerry in tik:
-                tom += jerry + ",   "
+XXXXXXXXXXXXnoniveX=Xa.get("nativeName")
+XXXXXXXXXXXXwasteX=Xa.get("population")
+XXXXXXXXXXXXregX=Xa.get("region")
+XXXXXXXXXXXXsubX=Xa.get("subregion")
+XXXXXXXXXXXXtikX=Xa.get("timezones")
+XXXXXXXXXXXXtomX=X""
+XXXXXXXXXXXXforXjerryXinXtik:
+XXXXXXXXXXXXXXXXtomX+=XjerryX+X",XXX"
 
-            GOT = a.get("tld")
-            lanester = ""
-            for targaryen in GOT:
-                lanester += targaryen + ",   "
+XXXXXXXXXXXXGOTX=Xa.get("tld")
+XXXXXXXXXXXXlanesterX=X""
+XXXXXXXXXXXXforXtargaryenXinXGOT:
+XXXXXXXXXXXXXXXXlanesterX+=XtargaryenX+X",XXX"
 
-            wiki = a.get("wiki")
+XXXXXXXXXXXXwikiX=Xa.get("wiki")
 
-            caption = f"""<b><u>Information Gathered Successfully</b></u>
-        <b>
-        Country Name:- {name}
-        Alternative Spellings:- {hu}
-        Country Area:- {area} square kilometers
-        Borders:- {borders}
-        Calling Codes:- {call}
-        Country's Capital:- {capital}
-        Country's currency:- {currencies}
-        Demonym:- {HmM}
-        Country Type:- {EsCoBaR}
-        ISO Names:- {iso}
-        Languages:- {lMAO}
-        Native Name:- {nonive}
-        population:- {waste}
-        Region:- {reg}
-        Sub Region:- {sub}
-        Time Zones:- {tom}
-        Top Level Domain:- {lanester}
-        wikipedia:- {wiki}</b>
-        Gathered By Ineruki  .</b>
-        """
-            results.append(
-                InlineQueryResultArticle(
-                    title=f"Infomation of {name}",
-                    description=f"""
-        Country Name:- {name}
-        Alternative Spellings:- {hu}
-        Country Area:- {area} square kilometers
-        Borders:- {borders}
-        Calling Codes:- {call}
-        Country's Capital:- {capital}
-        
-        Touch for more info
-        """,
-                    input_message_content=InputTextMessageContent(
-                        caption, parse_mode="HTML", disable_web_page_preview=True
-                    ),
-                )
-            )
-            await client.answer_inline_query(query.id, results=results, cache_time=2)
+XXXXXXXXXXXXcaptionX=Xf"""<b><u>InformationXGatheredXSuccessfully</b></u>
+XXXXXXXX<b>
+XXXXXXXXCountryXName:-X{name}
+XXXXXXXXAlternativeXSpellings:-X{hu}
+XXXXXXXXCountryXArea:-X{area}XsquareXkilometers
+XXXXXXXXBorders:-X{borders}
+XXXXXXXXCallingXCodes:-X{call}
+XXXXXXXXCountry'sXCapital:-X{capital}
+XXXXXXXXCountry'sXcurrency:-X{currencies}
+XXXXXXXXDemonym:-X{HmM}
+XXXXXXXXCountryXType:-X{EsCoBaR}
+XXXXXXXXISOXNames:-X{iso}
+XXXXXXXXLanguages:-X{lMAO}
+XXXXXXXXNativeXName:-X{nonive}
+XXXXXXXXpopulation:-X{waste}
+XXXXXXXXRegion:-X{reg}
+XXXXXXXXSubXRegion:-X{sub}
+XXXXXXXXTimeXZones:-X{tom}
+XXXXXXXXTopXLevelXDomain:-X{lanester}
+XXXXXXXXwikipedia:-X{wiki}</b>
+XXXXXXXXGatheredXByXInerukiXX.</b>
+XXXXXXXX"""
+XXXXXXXXXXXXresults.append(
+XXXXXXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXXXXXtitle=f"InfomationXofX{name}",
+XXXXXXXXXXXXXXXXXXXXdescription=f"""
+XXXXXXXXCountryXName:-X{name}
+XXXXXXXXAlternativeXSpellings:-X{hu}
+XXXXXXXXCountryXArea:-X{area}XsquareXkilometers
+XXXXXXXXBorders:-X{borders}
+XXXXXXXXCallingXCodes:-X{call}
+XXXXXXXXCountry'sXCapital:-X{capital}
+XXXXXXXX
+XXXXXXXXTouchXforXmoreXinfo
+XXXXXXXX""",
+XXXXXXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXXXXXcaption,Xparse_mode="HTML",Xdisable_web_page_preview=True
+XXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xresults=results,Xcache_time=2)
 
-        elif text.split()[0] == "fakegen":
-            results = []
-            fake = Faker()
-            name = str(fake.name())
-            fake.add_provider(internet)
-            address = str(fake.address())
-            ip = fake.ipv4_private()
-            cc = fake.credit_card_full()
-            email = fake.ascii_free_email()
-            job = fake.job()
-            android = fake.android_platform_token()
-            pc = fake.chrome()
-            res = f"<b><u> Fake Information Generated</b></u>\n<b>Name :-</b><code>{name}</code>\n\n<b>Address:-</b><code>{address}</code>\n\n<b>IP ADDRESS:-</b><code>{ip}</code>\n\n<b>credit card:-</b><code>{cc}</code>\n\n<b>Email Id:-</b><code>{email}</code>\n\n<b>Job:-</b><code>{job}</code>\n\n<b>android user agent:-</b><code>{android}</code>\n\n<b>Pc user agent:-</b><code>{pc}</code>"
-            results.append(
-                InlineQueryResultArticle(
-                    title="Fake infomation gathered",
-                    description="Click here to see them",
-                    input_message_content=InputTextMessageContent(
-                        res, parse_mode="HTML", disable_web_page_preview=True
-                    ),
-                )
-            )
-            await client.answer_inline_query(query.id, cache_time=0, results=results)
+XXXXXXXXelifXtext.split()[0]X==X"fakegen":
+XXXXXXXXXXXXresultsX=X[]
+XXXXXXXXXXXXfakeX=XFaker()
+XXXXXXXXXXXXnameX=Xstr(fake.name())
+XXXXXXXXXXXXfake.add_provider(internet)
+XXXXXXXXXXXXaddressX=Xstr(fake.address())
+XXXXXXXXXXXXipX=Xfake.ipv4_private()
+XXXXXXXXXXXXccX=Xfake.credit_card_full()
+XXXXXXXXXXXXemailX=Xfake.ascii_free_email()
+XXXXXXXXXXXXjobX=Xfake.job()
+XXXXXXXXXXXXandroidX=Xfake.android_platform_token()
+XXXXXXXXXXXXpcX=Xfake.chrome()
+XXXXXXXXXXXXresX=Xf"<b><u>XFakeXInformationXGenerated</b></u>\n<b>NameX:-</b><code>{name}</code>\n\n<b>Address:-</b><code>{address}</code>\n\n<b>IPXADDRESS:-</b><code>{ip}</code>\n\n<b>creditXcard:-</b><code>{cc}</code>\n\n<b>EmailXId:-</b><code>{email}</code>\n\n<b>Job:-</b><code>{job}</code>\n\n<b>androidXuserXagent:-</b><code>{android}</code>\n\n<b>PcXuserXagent:-</b><code>{pc}</code>"
+XXXXXXXXXXXXresults.append(
+XXXXXXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXXXXXtitle="FakeXinfomationXgathered",
+XXXXXXXXXXXXXXXXXXXXdescription="ClickXhereXtoXseeXthem",
+XXXXXXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXXXXXres,Xparse_mode="HTML",Xdisable_web_page_preview=True
+XXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xcache_time=0,Xresults=results)
 
-        elif text.split()[0] == "cs":
-            results = []
-            score_page = "http://static.cricinfo.com/rss/livescores.xml"
-            page = urllib.request.urlopen(score_page)
-            soup = BeautifulSoup(page, "html.parser")
-            result = soup.find_all("description")
-            Sed = ""
-            for match in result:
-                Sed += match.get_text() + "\n\n"
-            res = f"<b><u>Match information gathered successful</b></u>\n\n\n<code>{Sed}</code>"
-            results.append(
-                InlineQueryResultArticle(
-                    title="Match information gathered",
-                    description="Click here to see them",
-                    input_message_content=InputTextMessageContent(
-                        res, parse_mode="HTML", disable_web_page_preview=False
-                    ),
-                )
-            )
-            await client.answer_inline_query(query.id, cache_time=0, results=results)
+XXXXXXXXelifXtext.split()[0]X==X"cs":
+XXXXXXXXXXXXresultsX=X[]
+XXXXXXXXXXXXscore_pageX=X"http://static.cricinfo.com/rss/livescores.xml"
+XXXXXXXXXXXXpageX=Xurllib.request.urlopen(score_page)
+XXXXXXXXXXXXsoupX=XBeautifulSoup(page,X"html.parser")
+XXXXXXXXXXXXresultX=Xsoup.find_all("description")
+XXXXXXXXXXXXSedX=X""
+XXXXXXXXXXXXforXmatchXinXresult:
+XXXXXXXXXXXXXXXXSedX+=Xmatch.get_text()X+X"\n\n"
+XXXXXXXXXXXXresX=Xf"<b><u>MatchXinformationXgatheredXsuccessful</b></u>\n\n\n<code>{Sed}</code>"
+XXXXXXXXXXXXresults.append(
+XXXXXXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXXXXXtitle="MatchXinformationXgathered",
+XXXXXXXXXXXXXXXXXXXXdescription="ClickXhereXtoXseeXthem",
+XXXXXXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXXXXXres,Xparse_mode="HTML",Xdisable_web_page_preview=False
+XXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xcache_time=0,Xresults=results)
 
-        elif text.split()[0] == "antonyms":
-            results = []
-            lel = text.split(None, 1)[1]
-            word = f"{lel}"
-            let = dictionary.antonym(word)
-            set = str(let)
-            jet = set.replace("{", "")
-            net = jet.replace("}", "")
-            got = net.replace("'", "")
-            results.append(
-                InlineQueryResultArticle(
-                    title=f"antonyms for {lel}",
-                    description=got,
-                    input_message_content=InputTextMessageContent(
-                        got, disable_web_page_preview=False
-                    ),
-                )
-            )
-            await client.answer_inline_query(query.id, cache_time=0, results=results)
+XXXXXXXXelifXtext.split()[0]X==X"antonyms":
+XXXXXXXXXXXXresultsX=X[]
+XXXXXXXXXXXXlelX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXwordX=Xf"{lel}"
+XXXXXXXXXXXXletX=Xdictionary.antonym(word)
+XXXXXXXXXXXXsetX=Xstr(let)
+XXXXXXXXXXXXjetX=Xset.replace("{",X"")
+XXXXXXXXXXXXnetX=Xjet.replace("}",X"")
+XXXXXXXXXXXXgotX=Xnet.replace("'",X"")
+XXXXXXXXXXXXresults.append(
+XXXXXXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXXXXXtitle=f"antonymsXforX{lel}",
+XXXXXXXXXXXXXXXXXXXXdescription=got,
+XXXXXXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXXXXXgot,Xdisable_web_page_preview=False
+XXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xcache_time=0,Xresults=results)
 
-        elif text.split()[0] == "synonyms":
-            results = []
-            lel = text.split(None, 1)[1]
-            word = f"{lel}"
-            let = dictionary.synonym(word)
-            set = str(let)
-            jet = set.replace("{", "")
-            net = jet.replace("}", "")
-            got = net.replace("'", "")
-            results.append(
-                InlineQueryResultArticle(
-                    title=f"antonyms for {lel}",
-                    description=got,
-                    input_message_content=InputTextMessageContent(
-                        got, disable_web_page_preview=False
-                    ),
-                )
-            )
-            await client.answer_inline_query(query.id, cache_time=0, results=results)
+XXXXXXXXelifXtext.split()[0]X==X"synonyms":
+XXXXXXXXXXXXresultsX=X[]
+XXXXXXXXXXXXlelX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXwordX=Xf"{lel}"
+XXXXXXXXXXXXletX=Xdictionary.synonym(word)
+XXXXXXXXXXXXsetX=Xstr(let)
+XXXXXXXXXXXXjetX=Xset.replace("{",X"")
+XXXXXXXXXXXXnetX=Xjet.replace("}",X"")
+XXXXXXXXXXXXgotX=Xnet.replace("'",X"")
+XXXXXXXXXXXXresults.append(
+XXXXXXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXXXXXtitle=f"antonymsXforX{lel}",
+XXXXXXXXXXXXXXXXXXXXdescription=got,
+XXXXXXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXXXXXgot,Xdisable_web_page_preview=False
+XXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xcache_time=0,Xresults=results)
 
-        elif text.split()[0] == "define":
-            results = []
-            lel = text.split(None, 1)[1]
-            word = f"{lel}"
-            let = dictionary.meaning(word)
-            set = str(let)
-            jet = set.replace("{", "")
-            net = jet.replace("}", "")
-            got = net.replace("'", "")
-            results.append(
-                InlineQueryResultArticle(
-                    title=f"Definition for {lel}",
-                    description=got,
-                    input_message_content=InputTextMessageContent(
-                        got, disable_web_page_preview=False
-                    ),
-                )
-            )
-            await client.answer_inline_query(query.id, cache_time=0, results=results)
+XXXXXXXXelifXtext.split()[0]X==X"define":
+XXXXXXXXXXXXresultsX=X[]
+XXXXXXXXXXXXlelX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXwordX=Xf"{lel}"
+XXXXXXXXXXXXletX=Xdictionary.meaning(word)
+XXXXXXXXXXXXsetX=Xstr(let)
+XXXXXXXXXXXXjetX=Xset.replace("{",X"")
+XXXXXXXXXXXXnetX=Xjet.replace("}",X"")
+XXXXXXXXXXXXgotX=Xnet.replace("'",X"")
+XXXXXXXXXXXXresults.append(
+XXXXXXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXXXXXtitle=f"DefinitionXforX{lel}",
+XXXXXXXXXXXXXXXXXXXXdescription=got,
+XXXXXXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXXXXXgot,Xdisable_web_page_preview=False
+XXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xcache_time=0,Xresults=results)
 
-        elif text.split()[0] == "weather":
-            results = []
-            sample_url = "https://api.openweathermap.org/data/2.5/weather?q={}&APPID={}&units=metric"
-            input_str = text.split(None, 1)[1]
-            async with aiohttp.ClientSession() as session:
-                response_api_zero = await session.get(
-                    sample_url.format(input_str, OPENWEATHERMAP_ID)
-                )
-            response_api = await response_api_zero.json()
-            if response_api["cod"] == 200:
-                country_code = response_api["sys"]["country"]
-                country_time_zone = int(response_api["timezone"])
-                sun_rise_time = int(response_api["sys"]["sunrise"]) + country_time_zone
-                sun_set_time = int(response_api["sys"]["sunset"]) + country_time_zone
-                lol = """ 
-        WEATHER INFO GATHERED
-        Location: {}
-        Temperature ☀️: {}°С
-            minimium: {}°С
-            maximum : {}°С
-        Humidity 🌤**: {}%
-        Wind 💨: {}m/s
-        Clouds ☁️: {}hpa
-        Sunrise 🌤: {} {}
-        Sunset 🌝: {} {}""".format(
-                    input_str,
-                    response_api["main"]["temp"],
-                    response_api["main"]["temp_min"],
-                    response_api["main"]["temp_max"],
-                    response_api["main"]["humidity"],
-                    response_api["wind"]["speed"],
-                    response_api["clouds"]["all"],
-                    # response_api["main"]["pressure"],
-                    time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(sun_rise_time)),
-                    country_code,
-                    time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(sun_set_time)),
-                    country_code,
-                )
-                results.append(
-                    InlineQueryResultArticle(
-                        title=f"Weather Information",
-                        description=lol,
-                        input_message_content=InputTextMessageContent(
-                            lol, disable_web_page_preview=True
-                        ),
-                    )
-                )
-                await client.answer_inline_query(
-                    query.id, cache_time=0, results=results
-                )
+XXXXXXXXelifXtext.split()[0]X==X"weather":
+XXXXXXXXXXXXresultsX=X[]
+XXXXXXXXXXXXsample_urlX=X"https://api.openweathermap.org/data/2.5/weather?q={}&APPID={}&units=metric"
+XXXXXXXXXXXXinput_strX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXasyncXwithXaiohttp.ClientSession()XasXsession:
+XXXXXXXXXXXXXXXXresponse_api_zeroX=XawaitXsession.get(
+XXXXXXXXXXXXXXXXXXXXsample_url.format(input_str,XOPENWEATHERMAP_ID)
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXresponse_apiX=XawaitXresponse_api_zero.json()
+XXXXXXXXXXXXifXresponse_api["cod"]X==X200:
+XXXXXXXXXXXXXXXXcountry_codeX=Xresponse_api["sys"]["country"]
+XXXXXXXXXXXXXXXXcountry_time_zoneX=Xint(response_api["timezone"])
+XXXXXXXXXXXXXXXXsun_rise_timeX=Xint(response_api["sys"]["sunrise"])X+Xcountry_time_zone
+XXXXXXXXXXXXXXXXsun_set_timeX=Xint(response_api["sys"]["sunset"])X+Xcountry_time_zone
+XXXXXXXXXXXXXXXXlolX=X"""X
+XXXXXXXXWEATHERXINFOXGATHERED
+XXXXXXXXLocation:X{}
+XXXXXXXXTemperatureX☀️:X{}°С
+XXXXXXXXXXXXminimium:X{}°С
+XXXXXXXXXXXXmaximumX:X{}°С
+XXXXXXXXHumidityX🌤**:X{}%
+XXXXXXXXWindX💨:X{}m/s
+XXXXXXXXCloudsX☁️:X{}hpa
+XXXXXXXXSunriseX🌤:X{}X{}
+XXXXXXXXSunsetX🌝:X{}X{}""".format(
+XXXXXXXXXXXXXXXXXXXXinput_str,
+XXXXXXXXXXXXXXXXXXXXresponse_api["main"]["temp"],
+XXXXXXXXXXXXXXXXXXXXresponse_api["main"]["temp_min"],
+XXXXXXXXXXXXXXXXXXXXresponse_api["main"]["temp_max"],
+XXXXXXXXXXXXXXXXXXXXresponse_api["main"]["humidity"],
+XXXXXXXXXXXXXXXXXXXXresponse_api["wind"]["speed"],
+XXXXXXXXXXXXXXXXXXXXresponse_api["clouds"]["all"],
+XXXXXXXXXXXXXXXXXXXX#Xresponse_api["main"]["pressure"],
+XXXXXXXXXXXXXXXXXXXXtime.strftime("%Y-%m-%dX%H:%M:%S",Xtime.gmtime(sun_rise_time)),
+XXXXXXXXXXXXXXXXXXXXcountry_code,
+XXXXXXXXXXXXXXXXXXXXtime.strftime("%Y-%m-%dX%H:%M:%S",Xtime.gmtime(sun_set_time)),
+XXXXXXXXXXXXXXXXXXXXcountry_code,
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXresults.append(
+XXXXXXXXXXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXXXXXXXXXtitle=f"WeatherXInformation",
+XXXXXXXXXXXXXXXXXXXXXXXXdescription=lol,
+XXXXXXXXXXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXlol,Xdisable_web_page_preview=True
+XXXXXXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXawaitXclient.answer_inline_query(
+XXXXXXXXXXXXXXXXXXXXquery.id,Xcache_time=0,Xresults=results
+XXXXXXXXXXXXXXXX)
 
-        elif text.split()[0] == "datetime":
-            results = []
-            gay = text.split(None, 1)[1]
-            lel = gay
-            query_timezone = lel.lower()
-            if len(query_timezone) == 2:
-                result = generate_time(query_timezone, ["countryCode"])
-            else:
-                result = generate_time(query_timezone, ["zoneName", "countryName"])
+XXXXXXXXelifXtext.split()[0]X==X"datetime":
+XXXXXXXXXXXXresultsX=X[]
+XXXXXXXXXXXXgayX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXlelX=Xgay
+XXXXXXXXXXXXquery_timezoneX=Xlel.lower()
+XXXXXXXXXXXXifXlen(query_timezone)X==X2:
+XXXXXXXXXXXXXXXXresultX=Xgenerate_time(query_timezone,X["countryCode"])
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXresultX=Xgenerate_time(query_timezone,X["zoneName",X"countryName"])
 
-            if not result:
-                result = f"Timezone info not available for <b>{lel}</b>"
+XXXXXXXXXXXXifXnotXresult:
+XXXXXXXXXXXXXXXXresultX=Xf"TimezoneXinfoXnotXavailableXforX<b>{lel}</b>"
 
-            results.append(
-                InlineQueryResultArticle(
-                    title=f"Date & Time info of {lel}",
-                    description=result,
-                    input_message_content=InputTextMessageContent(
-                        result, disable_web_page_preview=False, parse_mode="html"
-                    ),
-                )
-            )
-            await client.answer_inline_query(query.id, cache_time=0, results=results)
+XXXXXXXXXXXXresults.append(
+XXXXXXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXXXXXtitle=f"DateX&XTimeXinfoXofX{lel}",
+XXXXXXXXXXXXXXXXXXXXdescription=result,
+XXXXXXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXXXXXresult,Xdisable_web_page_preview=False,Xparse_mode="html"
+XXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xcache_time=0,Xresults=results)
 
-        elif text.split()[0] == "app":
-            rip = []
-            app_name = text.split(None, 1)[1]
-            remove_space = app_name.split(" ")
-            final_name = "+".join(remove_space)
-            page = requests.get(
-                "https://play.google.com/store/search?q=" + final_name + "&c=apps"
-            )
-            str(page.status_code)
-            soup = BeautifulSoup(page.content, "lxml", from_encoding="utf-8")
-            results = soup.findAll("div", "ZmHEEd")
-            app_name = (
-                results[0]
-                .findNext("div", "Vpfmgd")
-                .findNext("div", "WsMG1c nnK0zc")
-                .text
-            )
-            app_dev = (
-                results[0].findNext("div", "Vpfmgd").findNext("div", "KoLSrc").text
-            )
-            app_dev_link = (
-                "https://play.google.com"
-                + results[0].findNext("div", "Vpfmgd").findNext("a", "mnKHRc")["href"]
-            )
-            app_rating = (
-                results[0]
-                .findNext("div", "Vpfmgd")
-                .findNext("div", "pf5lIe")
-                .find("div")["aria-label"]
-            )
-            app_link = (
-                "https://play.google.com"
-                + results[0]
-                .findNext("div", "Vpfmgd")
-                .findNext("div", "vU6FJ p63iDd")
-                .a["href"]
-            )
-            app_icon = (
-                results[0]
-                .findNext("div", "Vpfmgd")
-                .findNext("div", "uzcko")
-                .img["data-src"]
-            )
-            app_details = "<a href='" + app_icon + "'>📲&#8203;</a>"
-            app_details += " <b>" + app_name + "</b>"
-            app_details += (
-                "\n\n<code>Developer :</code> <a href='"
-                + app_dev_link
-                + "'>"
-                + app_dev
-                + "</a>"
-            )
-            app_details += "\n<code>Rating :</code> " + app_rating.replace(
-                "Rated ", "⭐ "
-            ).replace(" out of ", "/").replace(" stars", "", 1).replace(
-                " stars", "⭐ "
-            ).replace(
-                "five", "5"
-            )
-            app_details += (
-                "\n<code>Features :</code> <a href='"
-                + app_link
-                + "'>View in Play Store</a>"
-            )
-            app_details += "\n\n===> @InerukiSupport_Official <==="
-            rip.append(
-                InlineQueryResultArticle(
-                    title=f"Datails of {app_name}",
-                    description=app_details,
-                    input_message_content=InputTextMessageContent(
-                        app_details, disable_web_page_preview=True, parse_mode="html"
-                    ),
-                )
-            )
-            await client.answer_inline_query(query.id, cache_time=0, results=rip)
+XXXXXXXXelifXtext.split()[0]X==X"app":
+XXXXXXXXXXXXripX=X[]
+XXXXXXXXXXXXapp_nameX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXremove_spaceX=Xapp_name.split("X")
+XXXXXXXXXXXXfinal_nameX=X"+".join(remove_space)
+XXXXXXXXXXXXpageX=Xrequests.get(
+XXXXXXXXXXXXXXXX"https://play.google.com/store/search?q="X+Xfinal_nameX+X"&c=apps"
+XXXXXXXXXXXX)
+XXXXXXXXXXXXstr(page.status_code)
+XXXXXXXXXXXXsoupX=XBeautifulSoup(page.content,X"lxml",Xfrom_encoding="utf-8")
+XXXXXXXXXXXXresultsX=Xsoup.findAll("div",X"ZmHEEd")
+XXXXXXXXXXXXapp_nameX=X(
+XXXXXXXXXXXXXXXXresults[0]
+XXXXXXXXXXXXXXXX.findNext("div",X"Vpfmgd")
+XXXXXXXXXXXXXXXX.findNext("div",X"WsMG1cXnnK0zc")
+XXXXXXXXXXXXXXXX.text
+XXXXXXXXXXXX)
+XXXXXXXXXXXXapp_devX=X(
+XXXXXXXXXXXXXXXXresults[0].findNext("div",X"Vpfmgd").findNext("div",X"KoLSrc").text
+XXXXXXXXXXXX)
+XXXXXXXXXXXXapp_dev_linkX=X(
+XXXXXXXXXXXXXXXX"https://play.google.com"
+XXXXXXXXXXXXXXXX+Xresults[0].findNext("div",X"Vpfmgd").findNext("a",X"mnKHRc")["href"]
+XXXXXXXXXXXX)
+XXXXXXXXXXXXapp_ratingX=X(
+XXXXXXXXXXXXXXXXresults[0]
+XXXXXXXXXXXXXXXX.findNext("div",X"Vpfmgd")
+XXXXXXXXXXXXXXXX.findNext("div",X"pf5lIe")
+XXXXXXXXXXXXXXXX.find("div")["aria-label"]
+XXXXXXXXXXXX)
+XXXXXXXXXXXXapp_linkX=X(
+XXXXXXXXXXXXXXXX"https://play.google.com"
+XXXXXXXXXXXXXXXX+Xresults[0]
+XXXXXXXXXXXXXXXX.findNext("div",X"Vpfmgd")
+XXXXXXXXXXXXXXXX.findNext("div",X"vU6FJXp63iDd")
+XXXXXXXXXXXXXXXX.a["href"]
+XXXXXXXXXXXX)
+XXXXXXXXXXXXapp_iconX=X(
+XXXXXXXXXXXXXXXXresults[0]
+XXXXXXXXXXXXXXXX.findNext("div",X"Vpfmgd")
+XXXXXXXXXXXXXXXX.findNext("div",X"uzcko")
+XXXXXXXXXXXXXXXX.img["data-src"]
+XXXXXXXXXXXX)
+XXXXXXXXXXXXapp_detailsX=X"<aXhref='"X+Xapp_iconX+X"'>📲&#8203;</a>"
+XXXXXXXXXXXXapp_detailsX+=X"X<b>"X+Xapp_nameX+X"</b>"
+XXXXXXXXXXXXapp_detailsX+=X(
+XXXXXXXXXXXXXXXX"\n\n<code>DeveloperX:</code>X<aXhref='"
+XXXXXXXXXXXXXXXX+Xapp_dev_link
+XXXXXXXXXXXXXXXX+X"'>"
+XXXXXXXXXXXXXXXX+Xapp_dev
+XXXXXXXXXXXXXXXX+X"</a>"
+XXXXXXXXXXXX)
+XXXXXXXXXXXXapp_detailsX+=X"\n<code>RatingX:</code>X"X+Xapp_rating.replace(
+XXXXXXXXXXXXXXXX"RatedX",X"⭐X"
+XXXXXXXXXXXX).replace("XoutXofX",X"/").replace("Xstars",X"",X1).replace(
+XXXXXXXXXXXXXXXX"Xstars",X"⭐X"
+XXXXXXXXXXXX).replace(
+XXXXXXXXXXXXXXXX"five",X"5"
+XXXXXXXXXXXX)
+XXXXXXXXXXXXapp_detailsX+=X(
+XXXXXXXXXXXXXXXX"\n<code>FeaturesX:</code>X<aXhref='"
+XXXXXXXXXXXXXXXX+Xapp_link
+XXXXXXXXXXXXXXXX+X"'>ViewXinXPlayXStore</a>"
+XXXXXXXXXXXX)
+XXXXXXXXXXXXapp_detailsX+=X"\n\n===>X@InerukiSupport_OfficialX<==="
+XXXXXXXXXXXXrip.append(
+XXXXXXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXXXXXtitle=f"DatailsXofX{app_name}",
+XXXXXXXXXXXXXXXXXXXXdescription=app_details,
+XXXXXXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXXXXXapp_details,Xdisable_web_page_preview=True,Xparse_mode="html"
+XXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xcache_time=0,Xresults=rip)
 
-        elif text.split()[0] == "gh":
-            results = []
-            gett = text.split(None, 1)[1]
-            text = gett + ' "site:github.com"'
-            gresults = await GoogleSearch().async_search(text, 1)
-            result = ""
-            for i in range(4):
-                try:
-                    title = gresults["titles"][i].replace("\n", " ")
-                    source = gresults["links"][i]
-                    description = gresults["descriptions"][i]
-                    result += f"[{title}]({source})\n"
-                    result += f"`{description}`\n\n"
-                except IndexError:
-                    pass
-            results.append(
-                InlineQueryResultArticle(
-                    title=f"Results for {gett}",
-                    description=f" Github info of {title}\n  Touch to read",
-                    input_message_content=InputTextMessageContent(
-                        result, disable_web_page_preview=True
-                    ),
-                )
-            )
-            await client.answer_inline_query(query.id, cache_time=0, results=results)
+XXXXXXXXelifXtext.split()[0]X==X"gh":
+XXXXXXXXXXXXresultsX=X[]
+XXXXXXXXXXXXgettX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXtextX=XgettX+X'X"site:github.com"'
+XXXXXXXXXXXXgresultsX=XawaitXGoogleSearch().async_search(text,X1)
+XXXXXXXXXXXXresultX=X""
+XXXXXXXXXXXXforXiXinXrange(4):
+XXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXtitleX=Xgresults["titles"][i].replace("\n",X"X")
+XXXXXXXXXXXXXXXXXXXXsourceX=Xgresults["links"][i]
+XXXXXXXXXXXXXXXXXXXXdescriptionX=Xgresults["descriptions"][i]
+XXXXXXXXXXXXXXXXXXXXresultX+=Xf"[{title}]({source})\n"
+XXXXXXXXXXXXXXXXXXXXresultX+=Xf"`{description}`\n\n"
+XXXXXXXXXXXXXXXXexceptXIndexError:
+XXXXXXXXXXXXXXXXXXXXpass
+XXXXXXXXXXXXresults.append(
+XXXXXXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXXXXXtitle=f"ResultsXforX{gett}",
+XXXXXXXXXXXXXXXXXXXXdescription=f"XGithubXinfoXofX{title}\nXXTouchXtoXread",
+XXXXXXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXXXXXresult,Xdisable_web_page_preview=True
+XXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xcache_time=0,Xresults=results)
 
-        elif text.split()[0] == "so":
-            results = []
-            gett = text.split(None, 1)[1]
-            text = gett + ' "site:stackoverflow.com"'
-            gresults = await GoogleSearch().async_search(text, 1)
-            result = ""
-            for i in range(4):
-                try:
-                    title = gresults["titles"][i].replace("\n", " ")
-                    source = gresults["links"][i]
-                    description = gresults["descriptions"][i]
-                    result += f"[{title}]({source})\n"
-                    result += f"`{description}`\n\n"
-                except IndexError:
-                    pass
-            results.append(
-                InlineQueryResultArticle(
-                    title=f"Stack overflow saerch - {title}",
-                    description=f" Touch to view search results on {title}",
-                    input_message_content=InputTextMessageContent(
-                        result, disable_web_page_preview=True
-                    ),
-                )
-            )
-            await client.answer_inline_query(query.id, cache_time=0, results=results)
+XXXXXXXXelifXtext.split()[0]X==X"so":
+XXXXXXXXXXXXresultsX=X[]
+XXXXXXXXXXXXgettX=Xtext.split(None,X1)[1]
+XXXXXXXXXXXXtextX=XgettX+X'X"site:stackoverflow.com"'
+XXXXXXXXXXXXgresultsX=XawaitXGoogleSearch().async_search(text,X1)
+XXXXXXXXXXXXresultX=X""
+XXXXXXXXXXXXforXiXinXrange(4):
+XXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXtitleX=Xgresults["titles"][i].replace("\n",X"X")
+XXXXXXXXXXXXXXXXXXXXsourceX=Xgresults["links"][i]
+XXXXXXXXXXXXXXXXXXXXdescriptionX=Xgresults["descriptions"][i]
+XXXXXXXXXXXXXXXXXXXXresultX+=Xf"[{title}]({source})\n"
+XXXXXXXXXXXXXXXXXXXXresultX+=Xf"`{description}`\n\n"
+XXXXXXXXXXXXXXXXexceptXIndexError:
+XXXXXXXXXXXXXXXXXXXXpass
+XXXXXXXXXXXXresults.append(
+XXXXXXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXXXXXtitle=f"StackXoverflowXsaerchX-X{title}",
+XXXXXXXXXXXXXXXXXXXXdescription=f"XTouchXtoXviewXsearchXresultsXonX{title}",
+XXXXXXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXXXXXresult,Xdisable_web_page_preview=True
+XXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.answer_inline_query(query.id,Xcache_time=0,Xresults=results)
 
-    except (IndexError, TypeError, KeyError, ValueError):
-        return
+XXXXexceptX(IndexError,XTypeError,XKeyError,XValueError):
+XXXXXXXXreturn
 
 
-def generate_time(to_find: str, findtype: List[str]) -> str:
-    data = requests.get(
-        f"http://api.timezonedb.com/v2.1/list-time-zone"
-        f"?key={TIME_API_KEY}"
-        f"&format=json"
-        f"&fields=countryCode,countryName,zoneName,gmtOffset,timestamp,dst"
-    ).json()
+defXgenerate_time(to_find:Xstr,Xfindtype:XList[str])X->Xstr:
+XXXXdataX=Xrequests.get(
+XXXXXXXXf"http://api.timezonedb.com/v2.1/list-time-zone"
+XXXXXXXXf"?key={TIME_API_KEY}"
+XXXXXXXXf"&format=json"
+XXXXXXXXf"&fields=countryCode,countryName,zoneName,gmtOffset,timestamp,dst"
+XXXX).json()
 
-    for zone in data["zones"]:
-        for eachtype in findtype:
-            if to_find in zone[eachtype].lower():
-                country_name = zone["countryName"]
-                country_zone = zone["zoneName"]
-                country_code = zone["countryCode"]
+XXXXforXzoneXinXdata["zones"]:
+XXXXXXXXforXeachtypeXinXfindtype:
+XXXXXXXXXXXXifXto_findXinXzone[eachtype].lower():
+XXXXXXXXXXXXXXXXcountry_nameX=Xzone["countryName"]
+XXXXXXXXXXXXXXXXcountry_zoneX=Xzone["zoneName"]
+XXXXXXXXXXXXXXXXcountry_codeX=Xzone["countryCode"]
 
-                if zone["dst"] == 1:
-                    daylight_saving = "Yes"
-                else:
-                    daylight_saving = "No"
+XXXXXXXXXXXXXXXXifXzone["dst"]X==X1:
+XXXXXXXXXXXXXXXXXXXXdaylight_savingX=X"Yes"
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXdaylight_savingX=X"No"
 
-                date_fmt = r"%d-%m-%Y"
-                time_fmt = r"%H:%M:%S"
-                day_fmt = r"%A"
-                gmt_offset = zone["gmtOffset"]
-                timestamp = datetime.datetime.now(
-                    datetime.timezone.utc
-                ) + datetime.timedelta(seconds=gmt_offset)
-                current_date = timestamp.strftime(date_fmt)
-                current_time = timestamp.strftime(time_fmt)
-                current_day = timestamp.strftime(day_fmt)
+XXXXXXXXXXXXXXXXdate_fmtX=Xr"%d-%m-%Y"
+XXXXXXXXXXXXXXXXtime_fmtX=Xr"%H:%M:%S"
+XXXXXXXXXXXXXXXXday_fmtX=Xr"%A"
+XXXXXXXXXXXXXXXXgmt_offsetX=Xzone["gmtOffset"]
+XXXXXXXXXXXXXXXXtimestampX=Xdatetime.datetime.now(
+XXXXXXXXXXXXXXXXXXXXdatetime.timezone.utc
+XXXXXXXXXXXXXXXX)X+Xdatetime.timedelta(seconds=gmt_offset)
+XXXXXXXXXXXXXXXXcurrent_dateX=Xtimestamp.strftime(date_fmt)
+XXXXXXXXXXXXXXXXcurrent_timeX=Xtimestamp.strftime(time_fmt)
+XXXXXXXXXXXXXXXXcurrent_dayX=Xtimestamp.strftime(day_fmt)
 
-                break
+XXXXXXXXXXXXXXXXbreak
 
-    try:
-        result = (
-            f" DATE AND TIME OF COUNTRY"
-            f"🌍Country :{country_name}\n"
-            f"⏳Zone Name : {country_zone}\n"
-            f"🗺Country Code: {country_code}\n"
-            f"🌞Daylight saving : {daylight_saving}\n"
-            f"🌅Day : {current_day}\n"
-            f"⌚Current Time : {current_time}\n"
-            f"📆Current Date :{current_date}"
-        )
-    except BaseException:
-        result = None
+XXXXtry:
+XXXXXXXXresultX=X(
+XXXXXXXXXXXXf"XDATEXANDXTIMEXOFXCOUNTRY"
+XXXXXXXXXXXXf"🌍CountryX:{country_name}\n"
+XXXXXXXXXXXXf"⏳ZoneXNameX:X{country_zone}\n"
+XXXXXXXXXXXXf"🗺CountryXCode:X{country_code}\n"
+XXXXXXXXXXXXf"🌞DaylightXsavingX:X{daylight_saving}\n"
+XXXXXXXXXXXXf"🌅DayX:X{current_day}\n"
+XXXXXXXXXXXXf"⌚CurrentXTimeX:X{current_time}\n"
+XXXXXXXXXXXXf"📆CurrentXDateX:{current_date}"
+XXXXXXXX)
+XXXXexceptXBaseException:
+XXXXXXXXresultX=XNone
 
-    return result
+XXXXreturnXresult

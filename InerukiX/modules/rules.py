@@ -1,144 +1,144 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 errorshivansh
-# Copyright (C) 2020 Inuka Asith
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2021Xerrorshivansh
+#XCopyrightX(C)X2020XInukaXAsith
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import re
+importXre
 
-from aiogram.dispatcher.filters import CommandStart
+fromXaiogram.dispatcher.filtersXimportXCommandStart
 
-from Ineruki .decorator import register
-from Ineruki .services.mongo import db
+fromXInerukiX.decoratorXimportXregister
+fromXInerukiX.services.mongoXimportXdb
 
-from .utils.connections import chat_connection
-from .utils.disable import disableable_dec
-from .utils.language import get_strings_dec
-from .utils.notes import (
-    ALLOWED_COLUMNS,
-    BUTTONS,
-    get_parsed_note_list,
-    send_note,
-    t_unparse_note_item,
+fromX.utils.connectionsXimportXchat_connection
+fromX.utils.disableXimportXdisableable_dec
+fromX.utils.languageXimportXget_strings_dec
+fromX.utils.notesXimportX(
+XXXXALLOWED_COLUMNS,
+XXXXBUTTONS,
+XXXXget_parsed_note_list,
+XXXXsend_note,
+XXXXt_unparse_note_item,
 )
 
 
-@register(cmds=["setrules", "saverules"], user_admin=True)
-@chat_connection(admin=True, only_groups=True)
+@register(cmds=["setrules",X"saverules"],Xuser_admin=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_strings_dec("rules")
-async def set_rules(message, chat, strings):
-    chat_id = chat["chat_id"]
+asyncXdefXset_rules(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
 
-    # FI ME: documents are allow to saved (why?), check for args if no 'reply_to_message'
-    note = await get_parsed_note_list(message, allow_reply_message=True, split_args=-1)
-    note["chat_id"] = chat_id
+XXXX#XFIXME:XdocumentsXareXallowXtoXsavedX(why?),XcheckXforXargsXifXnoX'reply_to_message'
+XXXXnoteX=XawaitXget_parsed_note_list(message,Xallow_reply_message=True,Xsplit_args=-1)
+XXXXnote["chat_id"]X=Xchat_id
 
-    if (
-        await db.rules.replace_one({"chat_id": chat_id}, note, upsert=True)
-    ).modified_count > 0:
-        text = strings["updated"]
-    else:
-        text = strings["saved"]
+XXXXifX(
+XXXXXXXXawaitXdb.rules.replace_one({"chat_id":Xchat_id},Xnote,Xupsert=True)
+XXXX).modified_countX>X0:
+XXXXXXXXtextX=Xstrings["updated"]
+XXXXelse:
+XXXXXXXXtextX=Xstrings["saved"]
 
-    await message.reply(text % chat["chat_title"])
+XXXXawaitXmessage.reply(textX%Xchat["chat_title"])
 
 
 @register(cmds="rules")
 @disableable_dec("rules")
 @chat_connection(only_groups=True)
 @get_strings_dec("rules")
-async def rules(message, chat, strings):
-    chat_id = chat["chat_id"]
-    send_id = message.chat.id
+asyncXdefXrules(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
+XXXXsend_idX=Xmessage.chat.id
 
-    if "reply_to_message" in message:
-        rpl_id = message.reply_to_message.message_id
-    else:
-        rpl_id = message.message_id
+XXXXifX"reply_to_message"XinXmessage:
+XXXXXXXXrpl_idX=Xmessage.reply_to_message.message_id
+XXXXelse:
+XXXXXXXXrpl_idX=Xmessage.message_id
 
-    if len(args := message.get_args().split()) > 0:
-        arg1 = args[0].lower()
-    else:
-        arg1 = None
-    noformat = arg1 in ("noformat", "raw")
+XXXXifXlen(argsX:=Xmessage.get_args().split())X>X0:
+XXXXXXXXarg1X=Xargs[0].lower()
+XXXXelse:
+XXXXXXXXarg1X=XNone
+XXXXnoformatX=Xarg1XinX("noformat",X"raw")
 
-    if not (db_item := await db.rules.find_one({"chat_id": chat_id})):
-        await message.reply(strings["not_found"])
-        return
+XXXXifXnotX(db_itemX:=XawaitXdb.rules.find_one({"chat_id":Xchat_id})):
+XXXXXXXXawaitXmessage.reply(strings["not_found"])
+XXXXXXXXreturn
 
-    text, kwargs = await t_unparse_note_item(
-        message, db_item, chat_id, noformat=noformat
-    )
-    kwargs["reply_to"] = rpl_id
+XXXXtext,XkwargsX=XawaitXt_unparse_note_item(
+XXXXXXXXmessage,Xdb_item,Xchat_id,Xnoformat=noformat
+XXXX)
+XXXXkwargs["reply_to"]X=Xrpl_id
 
-    await send_note(send_id, text, **kwargs)
+XXXXawaitXsend_note(send_id,Xtext,X**kwargs)
 
 
-@register(cmds="resetrules", user_admin=True)
-@chat_connection(admin=True, only_groups=True)
+@register(cmds="resetrules",Xuser_admin=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_strings_dec("rules")
-async def reset_rules(message, chat, strings):
-    chat_id = chat["chat_id"]
+asyncXdefXreset_rules(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
 
-    if (await db.rules.delete_one({"chat_id": chat_id})).deleted_count < 1:
-        await message.reply(strings["not_found"])
-        return
+XXXXifX(awaitXdb.rules.delete_one({"chat_id":Xchat_id})).deleted_countX<X1:
+XXXXXXXXawaitXmessage.reply(strings["not_found"])
+XXXXXXXXreturn
 
-    await message.reply(strings["deleted"])
+XXXXawaitXmessage.reply(strings["deleted"])
 
 
-BUTTONS.update({"rules": "btn_rules"})
+BUTTONS.update({"rules":X"btn_rules"})
 
 
 @register(CommandStart(re.compile("btn_rules")))
 @get_strings_dec("rules")
-async def rules_btn(message, strings):
-    chat_id = (message.get_args().split("_"))[2]
-    user_id = message.chat.id
-    if not (db_item := await db.rules.find_one({"chat_id": int(chat_id)})):
-        await message.answer(strings["not_found"])
-        return
+asyncXdefXrules_btn(message,Xstrings):
+XXXXchat_idX=X(message.get_args().split("_"))[2]
+XXXXuser_idX=Xmessage.chat.id
+XXXXifXnotX(db_itemX:=XawaitXdb.rules.find_one({"chat_id":Xint(chat_id)})):
+XXXXXXXXawaitXmessage.answer(strings["not_found"])
+XXXXXXXXreturn
 
-    text, kwargs = await t_unparse_note_item(message, db_item, chat_id)
-    await send_note(user_id, text, **kwargs)
-
-
-async def __export__(chat_id):
-    rules = await db.rules.find_one({"chat_id": chat_id})
-    if rules:
-        del rules["_id"]
-        del rules["chat_id"]
-
-        return {"rules": rules}
+XXXXtext,XkwargsX=XawaitXt_unparse_note_item(message,Xdb_item,Xchat_id)
+XXXXawaitXsend_note(user_id,Xtext,X**kwargs)
 
 
-async def __import__(chat_id, data):
-    rules = data
-    for column in [i for i in data if i not in ALLOWED_COLUMNS]:
-        del rules[column]
+asyncXdefX__export__(chat_id):
+XXXXrulesX=XawaitXdb.rules.find_one({"chat_id":Xchat_id})
+XXXXifXrules:
+XXXXXXXXdelXrules["_id"]
+XXXXXXXXdelXrules["chat_id"]
 
-    rules["chat_id"] = chat_id
-    await db.rules.replace_one({"chat_id": rules["chat_id"]}, rules, upsert=True)
+XXXXXXXXreturnX{"rules":Xrules}
 
 
-__mod_name__ = "Rules"
+asyncXdefX__import__(chat_id,Xdata):
+XXXXrulesX=Xdata
+XXXXforXcolumnXinX[iXforXiXinXdataXifXiXnotXinXALLOWED_COLUMNS]:
+XXXXXXXXdelXrules[column]
 
-__help__ = """
-<b>Available Commands:</b>
-- /setrules (rules): saves the rules (also works with reply)
-- /rules: Shows the rules of chat if any!
-- /resetrules: Resets group's rules
+XXXXrules["chat_id"]X=Xchat_id
+XXXXawaitXdb.rules.replace_one({"chat_id":Xrules["chat_id"]},Xrules,Xupsert=True)
+
+
+__mod_name__X=X"Rules"
+
+__help__X=X"""
+<b>AvailableXCommands:</b>
+-X/setrulesX(rules):XsavesXtheXrulesX(alsoXworksXwithXreply)
+-X/rules:XShowsXtheXrulesXofXchatXifXany!
+-X/resetrules:XResetsXgroup'sXrules
 """

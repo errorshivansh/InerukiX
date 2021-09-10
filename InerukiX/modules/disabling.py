@@ -1,200 +1,200 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 errorshivansh
-# Copyright (C) 2020 Inuka Asith
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2021Xerrorshivansh
+#XCopyrightX(C)X2020XInukaXAsith
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
+fromXaiogram.types.inline_keyboardXimportXInlineKeyboardButton,XInlineKeyboardMarkup
 
-from Ineruki .decorator import COMMANDS_ALIASES, register
-from Ineruki .services.mongo import db
+fromXInerukiX.decoratorXimportXCOMMANDS_ALIASES,Xregister
+fromXInerukiX.services.mongoXimportXdb
 
-from .utils.connections import chat_connection
-from .utils.disable import DISABLABLE_COMMANDS, disableable_dec
-from .utils.language import get_strings_dec
-from .utils.message import get_arg, need_args_dec
+fromX.utils.connectionsXimportXchat_connection
+fromX.utils.disableXimportXDISABLABLE_COMMANDS,Xdisableable_dec
+fromX.utils.languageXimportXget_strings_dec
+fromX.utils.messageXimportXget_arg,Xneed_args_dec
 
 
 @register(cmds="disableable")
 @disableable_dec("disableable")
 @get_strings_dec("disable")
-async def list_disablable(message, strings):
-    text = strings["disablable"]
-    for command in DISABLABLE_COMMANDS:
-        text += f"* <code>/{command}</code>\n"
-    await message.reply(text)
+asyncXdefXlist_disablable(message,Xstrings):
+XXXXtextX=Xstrings["disablable"]
+XXXXforXcommandXinXDISABLABLE_COMMANDS:
+XXXXXXXXtextX+=Xf"*X<code>/{command}</code>\n"
+XXXXawaitXmessage.reply(text)
 
 
 @register(cmds="disabled")
 @chat_connection(only_groups=True)
 @get_strings_dec("disable")
-async def list_disabled(message, chat, strings):
-    text = strings["disabled_list"].format(chat_name=chat["chat_title"])
+asyncXdefXlist_disabled(message,Xchat,Xstrings):
+XXXXtextX=Xstrings["disabled_list"].format(chat_name=chat["chat_title"])
 
-    if not (disabled := await db.disabled.find_one({"chat_id": chat["chat_id"]})):
-        await message.reply(
-            strings["no_disabled_cmds"].format(chat_name=chat["chat_title"])
-        )
-        return
+XXXXifXnotX(disabledX:=XawaitXdb.disabled.find_one({"chat_id":Xchat["chat_id"]})):
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["no_disabled_cmds"].format(chat_name=chat["chat_title"])
+XXXXXXXX)
+XXXXXXXXreturn
 
-    commands = disabled["cmds"]
-    for command in commands:
-        text += f"* <code>/{command}</code>\n"
-    await message.reply(text)
+XXXXcommandsX=Xdisabled["cmds"]
+XXXXforXcommandXinXcommands:
+XXXXXXXXtextX+=Xf"*X<code>/{command}</code>\n"
+XXXXawaitXmessage.reply(text)
 
 
-@register(cmds="disable", user_admin=True)
+@register(cmds="disable",Xuser_admin=True)
 @need_args_dec()
-@chat_connection(admin=True, only_groups=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_strings_dec("disable")
-async def disable_command(message, chat, strings):
-    cmd = get_arg(message).lower()
-    if cmd[0] == "/" or cmd[0] == "!":
-        cmd = cmd[1:]
+asyncXdefXdisable_command(message,Xchat,Xstrings):
+XXXXcmdX=Xget_arg(message).lower()
+XXXXifXcmd[0]X==X"/"XorXcmd[0]X==X"!":
+XXXXXXXXcmdX=Xcmd[1:]
 
-    # Check on commands aliases
-    for name, keys in COMMANDS_ALIASES.items():
-        if cmd in keys:
-            cmd = name
-            break
+XXXX#XCheckXonXcommandsXaliases
+XXXXforXname,XkeysXinXCOMMANDS_ALIASES.items():
+XXXXXXXXifXcmdXinXkeys:
+XXXXXXXXXXXXcmdX=Xname
+XXXXXXXXXXXXbreak
 
-    if cmd not in DISABLABLE_COMMANDS:
-        await message.reply(strings["wot_to_disable"])
-        return
+XXXXifXcmdXnotXinXDISABLABLE_COMMANDS:
+XXXXXXXXawaitXmessage.reply(strings["wot_to_disable"])
+XXXXXXXXreturn
 
-    if await db.disabled.find_one({"chat_id": chat["chat_id"], "cmds": {"$in": [cmd]}}):
-        await message.reply(strings["already_disabled"])
-        return
+XXXXifXawaitXdb.disabled.find_one({"chat_id":Xchat["chat_id"],X"cmds":X{"$in":X[cmd]}}):
+XXXXXXXXawaitXmessage.reply(strings["already_disabled"])
+XXXXXXXXreturn
 
-    await db.disabled.update_one(
-        {"chat_id": chat["chat_id"]},
-        {"$addToSet": {"cmds": {"$each": [cmd]}}},
-        upsert=True,
-    )
+XXXXawaitXdb.disabled.update_one(
+XXXXXXXX{"chat_id":Xchat["chat_id"]},
+XXXXXXXX{"$addToSet":X{"cmds":X{"$each":X[cmd]}}},
+XXXXXXXXupsert=True,
+XXXX)
 
-    await message.reply(
-        strings["disabled"].format(cmd=cmd, chat_name=chat["chat_title"])
-    )
+XXXXawaitXmessage.reply(
+XXXXXXXXstrings["disabled"].format(cmd=cmd,Xchat_name=chat["chat_title"])
+XXXX)
 
 
 @register(cmds="enable")
 @need_args_dec()
-@chat_connection(admin=True, only_groups=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_strings_dec("disable")
-async def enable_command(message, chat, strings):
-    chat_id = chat["chat_id"]
-    cmd = get_arg(message).lower()
-    if cmd[0] == "/" or cmd[0] == "!":
-        cmd = cmd[1:]
+asyncXdefXenable_command(message,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]
+XXXXcmdX=Xget_arg(message).lower()
+XXXXifXcmd[0]X==X"/"XorXcmd[0]X==X"!":
+XXXXXXXXcmdX=Xcmd[1:]
 
-    # Check on commands aliases
-    for name, keys in COMMANDS_ALIASES.items():
-        if cmd in keys:
-            cmd = name
-            break
+XXXX#XCheckXonXcommandsXaliases
+XXXXforXname,XkeysXinXCOMMANDS_ALIASES.items():
+XXXXXXXXifXcmdXinXkeys:
+XXXXXXXXXXXXcmdX=Xname
+XXXXXXXXXXXXbreak
 
-    if cmd not in DISABLABLE_COMMANDS:
-        await message.reply(strings["wot_to_enable"])
-        return
+XXXXifXcmdXnotXinXDISABLABLE_COMMANDS:
+XXXXXXXXawaitXmessage.reply(strings["wot_to_enable"])
+XXXXXXXXreturn
 
-    if not await db.disabled.find_one(
-        {"chat_id": chat["chat_id"], "cmds": {"$in": [cmd]}}
-    ):
-        await message.reply(strings["already_enabled"])
-        return
+XXXXifXnotXawaitXdb.disabled.find_one(
+XXXXXXXX{"chat_id":Xchat["chat_id"],X"cmds":X{"$in":X[cmd]}}
+XXXX):
+XXXXXXXXawaitXmessage.reply(strings["already_enabled"])
+XXXXXXXXreturn
 
-    await db.disabled.update_one({"chat_id": chat_id}, {"$pull": {"cmds": cmd}})
+XXXXawaitXdb.disabled.update_one({"chat_id":Xchat_id},X{"$pull":X{"cmds":Xcmd}})
 
-    await message.reply(
-        strings["enabled"].format(cmd=cmd, chat_name=chat["chat_title"])
-    )
+XXXXawaitXmessage.reply(
+XXXXXXXXstrings["enabled"].format(cmd=cmd,Xchat_name=chat["chat_title"])
+XXXX)
 
 
-@register(cmds="enableall", is_admin=True)
-@chat_connection(admin=True, only_groups=True)
+@register(cmds="enableall",Xis_admin=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_strings_dec("disable")
-async def enable_all(message, chat, strings):
-    # Ensure that something is disabled
-    if not await db.disabled.find_one({"chat_id": chat["chat_id"]}):
-        await message.reply(
-            strings["not_disabled_anything"].format(chat_title=chat["chat_title"])
-        )
-        return
+asyncXdefXenable_all(message,Xchat,Xstrings):
+XXXX#XEnsureXthatXsomethingXisXdisabled
+XXXXifXnotXawaitXdb.disabled.find_one({"chat_id":Xchat["chat_id"]}):
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["not_disabled_anything"].format(chat_title=chat["chat_title"])
+XXXXXXXX)
+XXXXXXXXreturn
 
-    text = strings["enable_all_text"].format(chat_name=chat["chat_title"])
-    buttons = InlineKeyboardMarkup()
-    buttons.add(
-        InlineKeyboardButton(
-            strings["enable_all_btn_yes"], callback_data="enable_all_notes_cb"
-        )
-    )
-    buttons.add(
-        InlineKeyboardButton(strings["enable_all_btn_no"], callback_data="cancel")
-    )
-    await message.reply(text, reply_markup=buttons)
+XXXXtextX=Xstrings["enable_all_text"].format(chat_name=chat["chat_title"])
+XXXXbuttonsX=XInlineKeyboardMarkup()
+XXXXbuttons.add(
+XXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXstrings["enable_all_btn_yes"],Xcallback_data="enable_all_notes_cb"
+XXXXXXXX)
+XXXX)
+XXXXbuttons.add(
+XXXXXXXXInlineKeyboardButton(strings["enable_all_btn_no"],Xcallback_data="cancel")
+XXXX)
+XXXXawaitXmessage.reply(text,Xreply_markup=buttons)
 
 
-@register(regexp="enable_all_notes_cb", f="cb", is_admin=True)
+@register(regexp="enable_all_notes_cb",Xf="cb",Xis_admin=True)
 @chat_connection(admin=True)
 @get_strings_dec("disable")
-async def enable_all_notes_cb(event, chat, strings):
-    data = await db.disabled.find_one({"chat_id": chat["chat_id"]})
-    await db.disabled.delete_one({"_id": data["_id"]})
+asyncXdefXenable_all_notes_cb(event,Xchat,Xstrings):
+XXXXdataX=XawaitXdb.disabled.find_one({"chat_id":Xchat["chat_id"]})
+XXXXawaitXdb.disabled.delete_one({"_id":Xdata["_id"]})
 
-    text = strings["enable_all_done"].format(
-        num=len(data["cmds"]), chat_name=chat["chat_title"]
-    )
-    await event.message.edit_text(text)
-
-
-async def __export__(chat_id):
-    disabled = await db.disabled.find_one({"chat_id": chat_id})
-
-    return {"disabling": disabled["cmds"] if disabled else []}
+XXXXtextX=Xstrings["enable_all_done"].format(
+XXXXXXXXnum=len(data["cmds"]),Xchat_name=chat["chat_title"]
+XXXX)
+XXXXawaitXevent.message.edit_text(text)
 
 
-async def __import__(chat_id, data):
-    new = []
-    for cmd in data:
-        if cmd not in DISABLABLE_COMMANDS:
-            continue
+asyncXdefX__export__(chat_id):
+XXXXdisabledX=XawaitXdb.disabled.find_one({"chat_id":Xchat_id})
 
-        new.append(cmd)
-
-    await db.disabled.update_one(
-        {"chat_id": chat_id}, {"$set": {"cmds": new}}, upsert=True
-    )
+XXXXreturnX{"disabling":Xdisabled["cmds"]XifXdisabledXelseX[]}
 
 
-__mod_name__ = "Disabling"
+asyncXdefX__import__(chat_id,Xdata):
+XXXXnewX=X[]
+XXXXforXcmdXinXdata:
+XXXXXXXXifXcmdXnotXinXDISABLABLE_COMMANDS:
+XXXXXXXXXXXXcontinue
 
-__help__ = """
-Disabling module is allow you to disable certain commands from be executed by users.
+XXXXXXXXnew.append(cmd)
 
-<b>Available commands:</b>
-- /disableable: Shows commands which can be disabled
-- /disabled: Shows the all disabled commands of the chat
-- /disable (command name): Disables the command. Command should be disable-able
-- /enable (command name): Enables the disabled command back.
-- /enableall: Enables all disabled commands
+XXXXawaitXdb.disabled.update_one(
+XXXXXXXX{"chat_id":Xchat_id},X{"$set":X{"cmds":Xnew}},Xupsert=True
+XXXX)
+
+
+__mod_name__X=X"Disabling"
+
+__help__X=X"""
+DisablingXmoduleXisXallowXyouXtoXdisableXcertainXcommandsXfromXbeXexecutedXbyXusers.
+
+<b>AvailableXcommands:</b>
+-X/disableable:XShowsXcommandsXwhichXcanXbeXdisabled
+-X/disabled:XShowsXtheXallXdisabledXcommandsXofXtheXchat
+-X/disableX(commandXname):XDisablesXtheXcommand.XCommandXshouldXbeXdisable-able
+-X/enableX(commandXname):XEnablesXtheXdisabledXcommandXback.
+-X/enableall:XEnablesXallXdisabledXcommands
 
 <b>Examples:</b>
-<code>/disable help</code>
-It would disable usauge of <code>/help</code> command in the chat!
+<code>/disableXhelp</code>
+ItXwouldXdisableXusaugeXofX<code>/help</code>XcommandXinXtheXchat!
 
-<code>/enable help</code>
-This enables previously disable command <code>/help</code>.
+<code>/enableXhelp</code>
+ThisXenablesXpreviouslyXdisableXcommandX<code>/help</code>.
 """

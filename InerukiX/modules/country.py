@@ -1,121 +1,121 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-from countryinfo import CountryInfo
+fromXcountryinfoXimportXCountryInfo
 
-from Ineruki .services.events import register
-from Ineruki .services.telethon import tbot as borg
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.telethonXimportXtbotXasXborg
 
 
-@register(pattern="^/country (.*)")
-async def msg(event):
-    if event.fwd_from:
-        return
-    input_str = event.pattern_match.group(1)
-    lol = input_str
-    country = CountryInfo(lol)
-    try:
-        a = country.info()
-    except:
-        await event.reply("Country Not Avaiable Currently")
-    name = a.get("name")
-    bb = a.get("altSpellings")
-    hu = ""
-    for p in bb:
-        hu += p + ",  "
+@register(pattern="^/countryX(.*)")
+asyncXdefXmsg(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXinput_strX=Xevent.pattern_match.group(1)
+XXXXlolX=Xinput_str
+XXXXcountryX=XCountryInfo(lol)
+XXXXtry:
+XXXXXXXXaX=Xcountry.info()
+XXXXexcept:
+XXXXXXXXawaitXevent.reply("CountryXNotXAvaiableXCurrently")
+XXXXnameX=Xa.get("name")
+XXXXbbX=Xa.get("altSpellings")
+XXXXhuX=X""
+XXXXforXpXinXbb:
+XXXXXXXXhuX+=XpX+X",XX"
 
-    area = a.get("area")
-    borders = ""
-    hell = a.get("borders")
-    for fk in hell:
-        borders += fk + ",  "
+XXXXareaX=Xa.get("area")
+XXXXbordersX=X""
+XXXXhellX=Xa.get("borders")
+XXXXforXfkXinXhell:
+XXXXXXXXbordersX+=XfkX+X",XX"
 
-    call = ""
-    WhAt = a.get("callingCodes")
-    for what in WhAt:
-        call += what + "  "
+XXXXcallX=X""
+XXXXWhAtX=Xa.get("callingCodes")
+XXXXforXwhatXinXWhAt:
+XXXXXXXXcallX+=XwhatX+X"XX"
 
-    capital = a.get("capital")
-    currencies = ""
-    fker = a.get("currencies")
-    for FKer in fker:
-        currencies += FKer + ",  "
+XXXXcapitalX=Xa.get("capital")
+XXXXcurrenciesX=X""
+XXXXfkerX=Xa.get("currencies")
+XXXXforXFKerXinXfker:
+XXXXXXXXcurrenciesX+=XFKerX+X",XX"
 
-    HmM = a.get("demonym")
-    geo = a.get("geoJSON")
-    pablo = geo.get("features")
-    Pablo = pablo[0]
-    PAblo = Pablo.get("geometry")
-    EsCoBaR = PAblo.get("type")
-    iso = ""
-    iSo = a.get("ISO")
-    for hitler in iSo:
-        po = iSo.get(hitler)
-        iso += po + ",  "
-    fla = iSo.get("alpha2")
-    fla.upper()
+XXXXHmMX=Xa.get("demonym")
+XXXXgeoX=Xa.get("geoJSON")
+XXXXpabloX=Xgeo.get("features")
+XXXXPabloX=Xpablo[0]
+XXXXPAbloX=XPablo.get("geometry")
+XXXXEsCoBaRX=XPAblo.get("type")
+XXXXisoX=X""
+XXXXiSoX=Xa.get("ISO")
+XXXXforXhitlerXinXiSo:
+XXXXXXXXpoX=XiSo.get(hitler)
+XXXXXXXXisoX+=XpoX+X",XX"
+XXXXflaX=XiSo.get("alpha2")
+XXXXfla.upper()
 
-    languages = a.get("languages")
-    lMAO = ""
-    for lmao in languages:
-        lMAO += lmao + ",  "
+XXXXlanguagesX=Xa.get("languages")
+XXXXlMAOX=X""
+XXXXforXlmaoXinXlanguages:
+XXXXXXXXlMAOX+=XlmaoX+X",XX"
 
-    nonive = a.get("nativeName")
-    waste = a.get("population")
-    reg = a.get("region")
-    sub = a.get("subregion")
-    tik = a.get("timezones")
-    tom = ""
-    for jerry in tik:
-        tom += jerry + ",   "
+XXXXnoniveX=Xa.get("nativeName")
+XXXXwasteX=Xa.get("population")
+XXXXregX=Xa.get("region")
+XXXXsubX=Xa.get("subregion")
+XXXXtikX=Xa.get("timezones")
+XXXXtomX=X""
+XXXXforXjerryXinXtik:
+XXXXXXXXtomX+=XjerryX+X",XXX"
 
-    GOT = a.get("tld")
-    lanester = ""
-    for targaryen in GOT:
-        lanester += targaryen + ",   "
+XXXXGOTX=Xa.get("tld")
+XXXXlanesterX=X""
+XXXXforXtargaryenXinXGOT:
+XXXXXXXXlanesterX+=XtargaryenX+X",XXX"
 
-    wiki = a.get("wiki")
+XXXXwikiX=Xa.get("wiki")
 
-    caption = f"""<b><u>Information Gathered Successfully</b></u>
+XXXXcaptionX=Xf"""<b><u>InformationXGatheredXSuccessfully</b></u>
 <b>
-Country Name:- {name}
-Alternative Spellings:- {hu}
-Country Area:- {area} square kilometers
-Borders:- {borders}
-Calling Codes:- {call}
-Country's Capital:- {capital}
-Country's currency:- {currencies}
-Demonym:- {HmM}
-Country Type:- {EsCoBaR}
-ISO Names:- {iso}
-Languages:- {lMAO}
-Native Name:- {nonive}
-population:- {waste}
-Region:- {reg}
-Sub Region:- {sub}
-Time Zones:- {tom}
-Top Level Domain:- {lanester}
-wikipedia:- {wiki}</b>
-Gathered By Ineruki  .</b>
+CountryXName:-X{name}
+AlternativeXSpellings:-X{hu}
+CountryXArea:-X{area}XsquareXkilometers
+Borders:-X{borders}
+CallingXCodes:-X{call}
+Country'sXCapital:-X{capital}
+Country'sXcurrency:-X{currencies}
+Demonym:-X{HmM}
+CountryXType:-X{EsCoBaR}
+ISOXNames:-X{iso}
+Languages:-X{lMAO}
+NativeXName:-X{nonive}
+population:-X{waste}
+Region:-X{reg}
+SubXRegion:-X{sub}
+TimeXZones:-X{tom}
+TopXLevelXDomain:-X{lanester}
+wikipedia:-X{wiki}</b>
+GatheredXByXInerukiXX.</b>
 """
 
-    await borg.send_message(
-        event.chat_id,
-        caption,
-        parse_mode="HTML",
-    )
+XXXXawaitXborg.send_message(
+XXXXXXXXevent.chat_id,
+XXXXXXXXcaption,
+XXXXXXXXparse_mode="HTML",
+XXXX)

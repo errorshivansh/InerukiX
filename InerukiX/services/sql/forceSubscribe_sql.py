@@ -1,46 +1,46 @@
-from sqlalchemy import Column, Numeric, String
+fromXsqlalchemyXimportXColumn,XNumeric,XString
 
-from Ineruki .services.sql import BASE, SESSION
+fromXInerukiX.services.sqlXimportXBASE,XSESSION
 
 
-class forceSubscribe(BASE):
-    __tablename__ = "forceSubscribe"
-    chat_id = Column(Numeric, primary_key=True)
-    channel = Column(String)
+classXforceSubscribe(BASE):
+XXXX__tablename__X=X"forceSubscribe"
+XXXXchat_idX=XColumn(Numeric,Xprimary_key=True)
+XXXXchannelX=XColumn(String)
 
-    def __init__(self, chat_id, channel):
-        self.chat_id = chat_id
-        self.channel = channel
+XXXXdefX__init__(self,Xchat_id,Xchannel):
+XXXXXXXXself.chat_idX=Xchat_id
+XXXXXXXXself.channelX=Xchannel
 
 
 forceSubscribe.__table__.create(checkfirst=True)
 
 
-def fs_settings(chat_id):
-    try:
-        return (
-            SESSION.query(forceSubscribe)
-            .filter(forceSubscribe.chat_id == chat_id)
-            .one()
-        )
-    except:
-        return None
-    finally:
-        SESSION.close()
+defXfs_settings(chat_id):
+XXXXtry:
+XXXXXXXXreturnX(
+XXXXXXXXXXXXSESSION.query(forceSubscribe)
+XXXXXXXXXXXX.filter(forceSubscribe.chat_idX==Xchat_id)
+XXXXXXXXXXXX.one()
+XXXXXXXX)
+XXXXexcept:
+XXXXXXXXreturnXNone
+XXXXfinally:
+XXXXXXXXSESSION.close()
 
 
-def add_channel(chat_id, channel):
-    adder = SESSION.query(forceSubscribe).get(chat_id)
-    if adder:
-        adder.channel = channel
-    else:
-        adder = forceSubscribe(chat_id, channel)
-    SESSION.add(adder)
-    SESSION.commit()
+defXadd_channel(chat_id,Xchannel):
+XXXXadderX=XSESSION.query(forceSubscribe).get(chat_id)
+XXXXifXadder:
+XXXXXXXXadder.channelX=Xchannel
+XXXXelse:
+XXXXXXXXadderX=XforceSubscribe(chat_id,Xchannel)
+XXXXSESSION.add(adder)
+XXXXSESSION.commit()
 
 
-def disapprove(chat_id):
-    rem = SESSION.query(forceSubscribe).get(chat_id)
-    if rem:
-        SESSION.delete(rem)
-        SESSION.commit()
+defXdisapprove(chat_id):
+XXXXremX=XSESSION.query(forceSubscribe).get(chat_id)
+XXXXifXrem:
+XXXXXXXXSESSION.delete(rem)
+XXXXXXXXSESSION.commit()

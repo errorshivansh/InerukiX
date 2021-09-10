@@ -1,120 +1,120 @@
-import pymongo
+importXpymongo
 
-from Ineruki .config import get_str_key
+fromXInerukiX.configXimportXget_str_key
 
-MONGO2 = get_str_key("FILTERS_MONGO", None)
-MONGO = get_str_key("MONGO_URI", required=True)
-if MONGO2 == None:
-    MONGO2 = MONGO
-myclient = pymongo.MongoClient(MONGO2)
-mydb = myclient["Ineruki"]
-
-
-async def add_filter(grp_id, text, reply_text, btn, file, alert):
-    mycol = mydb[str(grp_id)]
-    # mycol.create_index([('text', 'text')])
-
-    data = {
-        "text": str(text),
-        "reply": str(reply_text),
-        "btn": str(btn),
-        "file": str(file),
-        "alert": str(alert),
-    }
-
-    try:
-        mycol.update_one({"text": str(text)}, {"$set": data}, upsert=True)
-    except:
-        print("Couldnt save, check your db")
+MONGO2X=Xget_str_key("FILTERS_MONGO",XNone)
+MONGOX=Xget_str_key("MONGO_URI",Xrequired=True)
+ifXMONGO2X==XNone:
+XXXXMONGO2X=XMONGO
+myclientX=Xpymongo.MongoClient(MONGO2)
+mydbX=Xmyclient["Ineruki"]
 
 
-async def find_filter(group_id, name):
-    mycol = mydb[str(group_id)]
+asyncXdefXadd_filter(grp_id,Xtext,Xreply_text,Xbtn,Xfile,Xalert):
+XXXXmycolX=Xmydb[str(grp_id)]
+XXXX#Xmycol.create_index([('text',X'text')])
 
-    query = mycol.find({"text": name})
-    # query = mycol.find( { "$text": {"$search": name}})
-    try:
-        for file in query:
-            reply_text = file["reply"]
-            btn = file["btn"]
-            fileid = file["file"]
-            try:
-                alert = file["alert"]
-            except:
-                alert = None
-        return reply_text, btn, alert, fileid
-    except:
-        return None, None, None, None
+XXXXdataX=X{
+XXXXXXXX"text":Xstr(text),
+XXXXXXXX"reply":Xstr(reply_text),
+XXXXXXXX"btn":Xstr(btn),
+XXXXXXXX"file":Xstr(file),
+XXXXXXXX"alert":Xstr(alert),
+XXXX}
 
-
-async def get_filters(group_id):
-    mycol = mydb[str(group_id)]
-
-    texts = []
-    query = mycol.find()
-    try:
-        for file in query:
-            text = file["text"]
-            texts.append(text)
-    except:
-        pass
-    return texts
+XXXXtry:
+XXXXXXXXmycol.update_one({"text":Xstr(text)},X{"$set":Xdata},Xupsert=True)
+XXXXexcept:
+XXXXXXXXprint("CouldntXsave,XcheckXyourXdb")
 
 
-async def delete_filter(message, text, group_id):
-    mycol = mydb[str(group_id)]
+asyncXdefXfind_filter(group_id,Xname):
+XXXXmycolX=Xmydb[str(group_id)]
 
-    myquery = {"text": text}
-    query = mycol.count_documents(myquery)
-    if query == 1:
-        mycol.delete_one(myquery)
-        await message.reply_text(
-            f"'`{text}`'  deleted. I'll not respond to that filter anymore.",
-            quote=True,
-            parse_mode="md",
-        )
-    else:
-        await message.reply_text("Couldn't find that filter!", quote=True)
-
-
-async def del_all(message, group_id, title):
-    if str(group_id) not in mydb.list_collection_names():
-        await message.edit_text(f"Nothing to remove in {title}!")
-        return
-
-    mycol = mydb[str(group_id)]
-    try:
-        mycol.drop()
-        await message.edit_text(f"All filters from {title} has been removed")
-    except:
-        await message.edit_text(f"Couldn't remove all filters from group!")
-        return
+XXXXqueryX=Xmycol.find({"text":Xname})
+XXXX#XqueryX=Xmycol.find(X{X"$text":X{"$search":Xname}})
+XXXXtry:
+XXXXXXXXforXfileXinXquery:
+XXXXXXXXXXXXreply_textX=Xfile["reply"]
+XXXXXXXXXXXXbtnX=Xfile["btn"]
+XXXXXXXXXXXXfileidX=Xfile["file"]
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXalertX=Xfile["alert"]
+XXXXXXXXXXXXexcept:
+XXXXXXXXXXXXXXXXalertX=XNone
+XXXXXXXXreturnXreply_text,Xbtn,Xalert,Xfileid
+XXXXexcept:
+XXXXXXXXreturnXNone,XNone,XNone,XNone
 
 
-async def count_filters(group_id):
-    mycol = mydb[str(group_id)]
+asyncXdefXget_filters(group_id):
+XXXXmycolX=Xmydb[str(group_id)]
 
-    count = mycol.count()
-    if count == 0:
-        return False
-    else:
-        return count
+XXXXtextsX=X[]
+XXXXqueryX=Xmycol.find()
+XXXXtry:
+XXXXXXXXforXfileXinXquery:
+XXXXXXXXXXXXtextX=Xfile["text"]
+XXXXXXXXXXXXtexts.append(text)
+XXXXexcept:
+XXXXXXXXpass
+XXXXreturnXtexts
 
 
-async def filter_stats():
-    collections = mydb.list_collection_names()
+asyncXdefXdelete_filter(message,Xtext,Xgroup_id):
+XXXXmycolX=Xmydb[str(group_id)]
 
-    if "CONNECTION" in collections:
-        collections.remove("CONNECTION")
-    if "USERS" in collections:
-        collections.remove("USERS")
+XXXXmyqueryX=X{"text":Xtext}
+XXXXqueryX=Xmycol.count_documents(myquery)
+XXXXifXqueryX==X1:
+XXXXXXXXmycol.delete_one(myquery)
+XXXXXXXXawaitXmessage.reply_text(
+XXXXXXXXXXXXf"'`{text}`'XXdeleted.XI'llXnotXrespondXtoXthatXfilterXanymore.",
+XXXXXXXXXXXXquote=True,
+XXXXXXXXXXXXparse_mode="md",
+XXXXXXXX)
+XXXXelse:
+XXXXXXXXawaitXmessage.reply_text("Couldn'tXfindXthatXfilter!",Xquote=True)
 
-    totalcount = 0
-    for collection in collections:
-        mycol = mydb[collection]
-        count = mycol.count()
-        totalcount = totalcount + count
 
-    totalcollections = len(collections)
+asyncXdefXdel_all(message,Xgroup_id,Xtitle):
+XXXXifXstr(group_id)XnotXinXmydb.list_collection_names():
+XXXXXXXXawaitXmessage.edit_text(f"NothingXtoXremoveXinX{title}!")
+XXXXXXXXreturn
 
-    return totalcollections, totalcount
+XXXXmycolX=Xmydb[str(group_id)]
+XXXXtry:
+XXXXXXXXmycol.drop()
+XXXXXXXXawaitXmessage.edit_text(f"AllXfiltersXfromX{title}XhasXbeenXremoved")
+XXXXexcept:
+XXXXXXXXawaitXmessage.edit_text(f"Couldn'tXremoveXallXfiltersXfromXgroup!")
+XXXXXXXXreturn
+
+
+asyncXdefXcount_filters(group_id):
+XXXXmycolX=Xmydb[str(group_id)]
+
+XXXXcountX=Xmycol.count()
+XXXXifXcountX==X0:
+XXXXXXXXreturnXFalse
+XXXXelse:
+XXXXXXXXreturnXcount
+
+
+asyncXdefXfilter_stats():
+XXXXcollectionsX=Xmydb.list_collection_names()
+
+XXXXifX"CONNECTION"XinXcollections:
+XXXXXXXXcollections.remove("CONNECTION")
+XXXXifX"USERS"XinXcollections:
+XXXXXXXXcollections.remove("USERS")
+
+XXXXtotalcountX=X0
+XXXXforXcollectionXinXcollections:
+XXXXXXXXmycolX=Xmydb[collection]
+XXXXXXXXcountX=Xmycol.count()
+XXXXXXXXtotalcountX=XtotalcountX+Xcount
+
+XXXXtotalcollectionsX=Xlen(collections)
+
+XXXXreturnXtotalcollections,Xtotalcount

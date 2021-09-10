@@ -1,219 +1,219 @@
-import asyncio
-import os
+importXasyncio
+importXos
 
-from pymongo import MongoClient
-from telethon import events
-from telethon.tl.functions.channels import EditBannedRequest
-from telethon.tl.types import ChatBannedRights
+fromXpymongoXimportXMongoClient
+fromXtelethonXimportXevents
+fromXtelethon.tl.functions.channelsXimportXEditBannedRequest
+fromXtelethon.tl.typesXimportXChatBannedRights
 
-from Ineruki  import OWNER_ID, SUDO_USERS, tbot
+fromXInerukiXXimportXOWNER_ID,XSUDO_USERS,Xtbot
 
-BANNED_RIGHTS = ChatBannedRights(
-    until_date=None,
-    view_messages=True,
-    send_messages=True,
-    send_media=True,
-    send_stickers=True,
-    send_gifs=True,
-    send_games=True,
-    send_inline=True,
-    embed_links=True,
+BANNED_RIGHTSX=XChatBannedRights(
+XXXXuntil_date=None,
+XXXXview_messages=True,
+XXXXsend_messages=True,
+XXXXsend_media=True,
+XXXXsend_stickers=True,
+XXXXsend_gifs=True,
+XXXXsend_games=True,
+XXXXsend_inline=True,
+XXXXembed_links=True,
 )
 
 
-MONGO_DB_URI = os.environ.get("MONGO_DB_URI")
-sed = os.environ.get("GBAN_LOGS")
+MONGO_DB_URIX=Xos.environ.get("MONGO_DB_URI")
+sedX=Xos.environ.get("GBAN_LOGS")
 
 
-def get_reason(id):
-    return gbanned.find_one({"user": id})
+defXget_reason(id):
+XXXXreturnXgbanned.find_one({"user":Xid})
 
 
-client = MongoClient()
-client = MongoClient(MONGO_DB_URI)
-db = client["Inerukix"]
-gbanned = db.gban
+clientX=XMongoClient()
+clientX=XMongoClient(MONGO_DB_URI)
+dbX=Xclient["Inerukix"]
+gbannedX=Xdb.gban
 
-edit_time = 3
-
-
-@tbot.on(events.NewMessage(pattern="^/gban (.*)"))
-async def _(event):
-    if event.fwd_from:
-        return
-    if event.sender_id in SUDO_USERS:
-        pass
-    elif event.sender_id == OWNER_ID:
-        pass
-    else:
-        return
-
-    quew = event.pattern_match.group(1)
-    sun = "None"
-    if "|" in quew:
-        iid, reasonn = quew.split("|")
-        cid = iid.strip()
-        reason = reasonn.strip()
-    elif "|" not in quew:
-        cid = quew
-        reason = sun
-    if cid.isnumeric():
-        cid = int(cid)
-    entity = await tbot.get_input_entity(cid)
-    try:
-        r_sender_id = entity.user_id
-    except Exception:
-        await event.reply("Couldn't fetch that user.")
-        return
-    if not reason:
-        await event.reply("Need a reason for gban.")
-        return
-    chats = gbanned.find({})
-
-    if r_sender_id == OWNER_ID:
-        await event.reply("Fool, how can I gban my master ?")
-        return
-    if r_sender_id in SUDO_USERS:
-        await event.reply("Hey that's a sudo user idiot.")
-        return
-
-    for c in chats:
-        if r_sender_id == c["user"]:
-            to_check = get_reason(id=r_sender_id)
-            gbanned.update_one(
-                {
-                    "_id": to_check["_id"],
-                    "bannerid": to_check["bannerid"],
-                    "user": to_check["user"],
-                    "reason": to_check["reason"],
-                },
-                {"$set": {"reason": reason, "bannerid": event.sender_id}},
-            )
-            await event.reply(
-                "This user is already gbanned, I am updating the reason of the gban with your reason."
-            )
-            await event.client.send_message(
-                sed,
-                "**GLOBAL BAN UPDATE**\n\n**PERMALINK:** [user](tg://user?id={})\n**UPDATER:** `{}`**\nREASON:** `{}`".format(
-                    r_sender_id, event.sender_id, reason
-                ),
-            )
-            return
-
-    gbanned.insert_one(
-        {"bannerid": event.sender_id, "user": r_sender_id, "reason": reason}
-    )
-    k = await event.reply("Initiating Gban.")
-    await asyncio.sleep(edit_time)
-    await k.edit("Gbanned Successfully !")
-    await event.client.send_message(
-        GBAN_LOGS,
-        "**NEW GLOBAL BAN**\n\n**PERMALINK:** [user](tg://user?id={})\n**BANNER:** `{}`\n**REASON:** `{}`".format(
-            r_sender_id, event.sender_id, reason
-        ),
-    )
+edit_timeX=X3
 
 
-@tbot.on(events.NewMessage(pattern="^/ungban (.*)"))
-async def _(event):
-    if event.fwd_from:
-        return
-    if event.sender_id in SUDO_USERS:
-        pass
-    elif event.sender_id == OWNER_ID:
-        pass
-    else:
-        return
+@tbot.on(events.NewMessage(pattern="^/gbanX(.*)"))
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXifXevent.sender_idXinXSUDO_USERS:
+XXXXXXXXpass
+XXXXelifXevent.sender_idX==XOWNER_ID:
+XXXXXXXXpass
+XXXXelse:
+XXXXXXXXreturn
 
-    quew = event.pattern_match.group(1)
+XXXXquewX=Xevent.pattern_match.group(1)
+XXXXsunX=X"None"
+XXXXifX"|"XinXquew:
+XXXXXXXXiid,XreasonnX=Xquew.split("|")
+XXXXXXXXcidX=Xiid.strip()
+XXXXXXXXreasonX=Xreasonn.strip()
+XXXXelifX"|"XnotXinXquew:
+XXXXXXXXcidX=Xquew
+XXXXXXXXreasonX=Xsun
+XXXXifXcid.isnumeric():
+XXXXXXXXcidX=Xint(cid)
+XXXXentityX=XawaitXtbot.get_input_entity(cid)
+XXXXtry:
+XXXXXXXXr_sender_idX=Xentity.user_id
+XXXXexceptXException:
+XXXXXXXXawaitXevent.reply("Couldn'tXfetchXthatXuser.")
+XXXXXXXXreturn
+XXXXifXnotXreason:
+XXXXXXXXawaitXevent.reply("NeedXaXreasonXforXgban.")
+XXXXXXXXreturn
+XXXXchatsX=Xgbanned.find({})
 
-    if "|" in quew:
-        iid, reasonn = quew.split("|")
-    cid = iid.strip()
-    reason = reasonn.strip()
-    if cid.isnumeric():
-        cid = int(cid)
-    entity = await tbot.get_input_entity(cid)
-    try:
-        r_sender_id = entity.user_id
-    except Exception:
-        await event.reply("Couldn't fetch that user.")
-        return
-    if not reason:
-        await event.reply("Need a reason for ungban.")
-        return
-    chats = gbanned.find({})
+XXXXifXr_sender_idX==XOWNER_ID:
+XXXXXXXXawaitXevent.reply("Fool,XhowXcanXIXgbanXmyXmasterX?")
+XXXXXXXXreturn
+XXXXifXr_sender_idXinXSUDO_USERS:
+XXXXXXXXawaitXevent.reply("HeyXthat'sXaXsudoXuserXidiot.")
+XXXXXXXXreturn
 
-    if r_sender_id == OWNER_ID:
-        await event.reply("Fool, how can I ungban my master ?")
-        return
-    if r_sender_id in SUDO_USERS:
-        await event.reply("Hey that's a sudo user idiot.")
-        return
+XXXXforXcXinXchats:
+XXXXXXXXifXr_sender_idX==Xc["user"]:
+XXXXXXXXXXXXto_checkX=Xget_reason(id=r_sender_id)
+XXXXXXXXXXXXgbanned.update_one(
+XXXXXXXXXXXXXXXX{
+XXXXXXXXXXXXXXXXXXXX"_id":Xto_check["_id"],
+XXXXXXXXXXXXXXXXXXXX"bannerid":Xto_check["bannerid"],
+XXXXXXXXXXXXXXXXXXXX"user":Xto_check["user"],
+XXXXXXXXXXXXXXXXXXXX"reason":Xto_check["reason"],
+XXXXXXXXXXXXXXXX},
+XXXXXXXXXXXXXXXX{"$set":X{"reason":Xreason,X"bannerid":Xevent.sender_id}},
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXX"ThisXuserXisXalreadyXgbanned,XIXamXupdatingXtheXreasonXofXtheXgbanXwithXyourXreason."
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXevent.client.send_message(
+XXXXXXXXXXXXXXXXsed,
+XXXXXXXXXXXXXXXX"**GLOBALXBANXUPDATE**\n\n**PERMALINK:**X[user](tg://user?id={})\n**UPDATER:**X`{}`**\nREASON:**X`{}`".format(
+XXXXXXXXXXXXXXXXXXXXr_sender_id,Xevent.sender_id,Xreason
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXX)
+XXXXXXXXXXXXreturn
 
-    for c in chats:
-        if r_sender_id == c["user"]:
-            to_check = get_reason(id=r_sender_id)
-            gbanned.delete_one({"user": r_sender_id})
-            h = await event.reply("Initiating Ungban")
-            await asyncio.sleep(edit_time)
-            await h.edit("Ungbanned Successfully !")
-            await event.client.send_message(
-                GBAN_LOGS,
-                "**REMOVAL OF GLOBAL BAN**\n\n**PERMALINK:** [user](tg://user?id={})\n**REMOVER:** `{}`\n**REASON:** `{}`".format(
-                    r_sender_id, event.sender_id, reason
-                ),
-            )
-            return
-    await event.reply("Is that user even gbanned ?")
+XXXXgbanned.insert_one(
+XXXXXXXX{"bannerid":Xevent.sender_id,X"user":Xr_sender_id,X"reason":Xreason}
+XXXX)
+XXXXkX=XawaitXevent.reply("InitiatingXGban.")
+XXXXawaitXasyncio.sleep(edit_time)
+XXXXawaitXk.edit("GbannedXSuccessfullyX!")
+XXXXawaitXevent.client.send_message(
+XXXXXXXXGBAN_LOGS,
+XXXXXXXX"**NEWXGLOBALXBAN**\n\n**PERMALINK:**X[user](tg://user?id={})\n**BANNER:**X`{}`\n**REASON:**X`{}`".format(
+XXXXXXXXXXXXr_sender_id,Xevent.sender_id,Xreason
+XXXXXXXX),
+XXXX)
+
+
+@tbot.on(events.NewMessage(pattern="^/ungbanX(.*)"))
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXifXevent.sender_idXinXSUDO_USERS:
+XXXXXXXXpass
+XXXXelifXevent.sender_idX==XOWNER_ID:
+XXXXXXXXpass
+XXXXelse:
+XXXXXXXXreturn
+
+XXXXquewX=Xevent.pattern_match.group(1)
+
+XXXXifX"|"XinXquew:
+XXXXXXXXiid,XreasonnX=Xquew.split("|")
+XXXXcidX=Xiid.strip()
+XXXXreasonX=Xreasonn.strip()
+XXXXifXcid.isnumeric():
+XXXXXXXXcidX=Xint(cid)
+XXXXentityX=XawaitXtbot.get_input_entity(cid)
+XXXXtry:
+XXXXXXXXr_sender_idX=Xentity.user_id
+XXXXexceptXException:
+XXXXXXXXawaitXevent.reply("Couldn'tXfetchXthatXuser.")
+XXXXXXXXreturn
+XXXXifXnotXreason:
+XXXXXXXXawaitXevent.reply("NeedXaXreasonXforXungban.")
+XXXXXXXXreturn
+XXXXchatsX=Xgbanned.find({})
+
+XXXXifXr_sender_idX==XOWNER_ID:
+XXXXXXXXawaitXevent.reply("Fool,XhowXcanXIXungbanXmyXmasterX?")
+XXXXXXXXreturn
+XXXXifXr_sender_idXinXSUDO_USERS:
+XXXXXXXXawaitXevent.reply("HeyXthat'sXaXsudoXuserXidiot.")
+XXXXXXXXreturn
+
+XXXXforXcXinXchats:
+XXXXXXXXifXr_sender_idX==Xc["user"]:
+XXXXXXXXXXXXto_checkX=Xget_reason(id=r_sender_id)
+XXXXXXXXXXXXgbanned.delete_one({"user":Xr_sender_id})
+XXXXXXXXXXXXhX=XawaitXevent.reply("InitiatingXUngban")
+XXXXXXXXXXXXawaitXasyncio.sleep(edit_time)
+XXXXXXXXXXXXawaitXh.edit("UngbannedXSuccessfullyX!")
+XXXXXXXXXXXXawaitXevent.client.send_message(
+XXXXXXXXXXXXXXXXGBAN_LOGS,
+XXXXXXXXXXXXXXXX"**REMOVALXOFXGLOBALXBAN**\n\n**PERMALINK:**X[user](tg://user?id={})\n**REMOVER:**X`{}`\n**REASON:**X`{}`".format(
+XXXXXXXXXXXXXXXXXXXXr_sender_id,Xevent.sender_id,Xreason
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXX)
+XXXXXXXXXXXXreturn
+XXXXawaitXevent.reply("IsXthatXuserXevenXgbannedX?")
 
 
 @tbot.on(events.ChatAction())
-async def join_ban(event):
-    if event.chat_id == int(sed):
-        return
-    if event.chat_id == int(sed):
-        return
-    user = event.user_id
-    chats = gbanned.find({})
-    for c in chats:
-        if user == c["user"]:
-            if event.user_joined:
-                try:
-                    to_check = get_reason(id=user)
-                    reason = to_check["reason"]
-                    bannerid = to_check["bannerid"]
-                    await tbot(EditBannedRequest(event.chat_id, user, BANNED_RIGHTS))
-                    await event.reply(
-                        "This user is gbanned and has been removed !\n\n**Gbanned By**: `{}`\n**Reason**: `{}`".format(
-                            bannerid, reason
-                        )
-                    )
-                except Exception as e:
-                    print(e)
-                    return
+asyncXdefXjoin_ban(event):
+XXXXifXevent.chat_idX==Xint(sed):
+XXXXXXXXreturn
+XXXXifXevent.chat_idX==Xint(sed):
+XXXXXXXXreturn
+XXXXuserX=Xevent.user_id
+XXXXchatsX=Xgbanned.find({})
+XXXXforXcXinXchats:
+XXXXXXXXifXuserX==Xc["user"]:
+XXXXXXXXXXXXifXevent.user_joined:
+XXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXto_checkX=Xget_reason(id=user)
+XXXXXXXXXXXXXXXXXXXXreasonX=Xto_check["reason"]
+XXXXXXXXXXXXXXXXXXXXbanneridX=Xto_check["bannerid"]
+XXXXXXXXXXXXXXXXXXXXawaitXtbot(EditBannedRequest(event.chat_id,Xuser,XBANNED_RIGHTS))
+XXXXXXXXXXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXXXXXXXXXX"ThisXuserXisXgbannedXandXhasXbeenXremovedX!\n\n**GbannedXBy**:X`{}`\n**Reason**:X`{}`".format(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXbannerid,Xreason
+XXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXexceptXExceptionXasXe:
+XXXXXXXXXXXXXXXXXXXXprint(e)
+XXXXXXXXXXXXXXXXXXXXreturn
 
 
 @tbot.on(events.NewMessage(pattern=None))
-async def type_ban(event):
-    if event.chat_id == int(sed):
-        return
-    if event.chat_id == int(sed):
-        return
-    chats = gbanned.find({})
-    for c in chats:
-        if event.sender_id == c["user"]:
-            try:
-                to_check = get_reason(id=event.sender_id)
-                reason = to_check["reason"]
-                bannerid = to_check["bannerid"]
-                await tbot(
-                    EditBannedRequest(event.chat_id, event.sender_id, BANNED_RIGHTS)
-                )
-                await event.reply(
-                    "This user is gbanned and has been removed !\n\n**Gbanned By**: `{}`\n**Reason**: `{}`".format(
-                        bannerid, reason
-                    )
-                )
-            except Exception:
-                return
+asyncXdefXtype_ban(event):
+XXXXifXevent.chat_idX==Xint(sed):
+XXXXXXXXreturn
+XXXXifXevent.chat_idX==Xint(sed):
+XXXXXXXXreturn
+XXXXchatsX=Xgbanned.find({})
+XXXXforXcXinXchats:
+XXXXXXXXifXevent.sender_idX==Xc["user"]:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXto_checkX=Xget_reason(id=event.sender_id)
+XXXXXXXXXXXXXXXXreasonX=Xto_check["reason"]
+XXXXXXXXXXXXXXXXbanneridX=Xto_check["bannerid"]
+XXXXXXXXXXXXXXXXawaitXtbot(
+XXXXXXXXXXXXXXXXXXXXEditBannedRequest(event.chat_id,Xevent.sender_id,XBANNED_RIGHTS)
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXXXXXX"ThisXuserXisXgbannedXandXhasXbeenXremovedX!\n\n**GbannedXBy**:X`{}`\n**Reason**:X`{}`".format(
+XXXXXXXXXXXXXXXXXXXXXXXXbannerid,Xreason
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn

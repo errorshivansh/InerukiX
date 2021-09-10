@@ -1,81 +1,81 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-from aiogram import types
-from aiogram.dispatcher.filters import BoundFilter
+fromXaiogramXimportXtypes
+fromXaiogram.dispatcher.filtersXimportXBoundFilter
 
-from Ineruki  import OPERATORS, dp
-from Ineruki .config import get_int_key
-from Ineruki .modules.utils.language import get_strings_dec
-from Ineruki .modules.utils.user_details import is_user_admin
-from Ineruki .services.mongo import mongodb
-
-
-class IsAdmin(BoundFilter):
-    key = "is_admin"
-
-    def __init__(self, is_admin):
-        self.is_admin = is_admin
-
-    @get_strings_dec("global")
-    async def check(self, event, strings):
-
-        if hasattr(event, "message"):
-            chat_id = event.message.chat.id
-        else:
-            chat_id = event.chat.id
-
-        if not await is_user_admin(chat_id, event.from_user.id):
-            task = event.answer if hasattr(event, "message") else event.reply
-            await task(strings["u_not_admin"])
-            return False
-        return True
+fromXInerukiXXimportXOPERATORS,Xdp
+fromXInerukiX.configXimportXget_int_key
+fromXInerukiX.modules.utils.languageXimportXget_strings_dec
+fromXInerukiX.modules.utils.user_detailsXimportXis_user_admin
+fromXInerukiX.services.mongoXimportXmongodb
 
 
-class IsOwner(BoundFilter):
-    key = "is_owner"
+classXIsAdmin(BoundFilter):
+XXXXkeyX=X"is_admin"
 
-    def __init__(self, is_owner):
-        self.is_owner = is_owner
+XXXXdefX__init__(self,Xis_admin):
+XXXXXXXXself.is_adminX=Xis_admin
 
-    async def check(self, message: types.Message):
-        if message.from_user.id == get_int_key("OWNER_ID"):
-            return True
+XXXX@get_strings_dec("global")
+XXXXasyncXdefXcheck(self,Xevent,Xstrings):
+
+XXXXXXXXifXhasattr(event,X"message"):
+XXXXXXXXXXXXchat_idX=Xevent.message.chat.id
+XXXXXXXXelse:
+XXXXXXXXXXXXchat_idX=Xevent.chat.id
+
+XXXXXXXXifXnotXawaitXis_user_admin(chat_id,Xevent.from_user.id):
+XXXXXXXXXXXXtaskX=Xevent.answerXifXhasattr(event,X"message")XelseXevent.reply
+XXXXXXXXXXXXawaitXtask(strings["u_not_admin"])
+XXXXXXXXXXXXreturnXFalse
+XXXXXXXXreturnXTrue
 
 
-class IsOP(BoundFilter):
-    key = "is_op"
+classXIsOwner(BoundFilter):
+XXXXkeyX=X"is_owner"
 
-    def __init__(self, is_op):
-        self.is_owner = is_op
+XXXXdefX__init__(self,Xis_owner):
+XXXXXXXXself.is_ownerX=Xis_owner
 
-    async def check(self, message: types.Message):
-        if message.from_user.id in OPERATORS:
-            return True
+XXXXasyncXdefXcheck(self,Xmessage:Xtypes.Message):
+XXXXXXXXifXmessage.from_user.idX==Xget_int_key("OWNER_ID"):
+XXXXXXXXXXXXreturnXTrue
 
 
-class NotGbanned(BoundFilter):
-    key = "not_gbanned"
+classXIsOP(BoundFilter):
+XXXXkeyX=X"is_op"
 
-    def __init__(self, not_gbanned):
-        self.not_gbanned = not_gbanned
+XXXXdefX__init__(self,Xis_op):
+XXXXXXXXself.is_ownerX=Xis_op
 
-    async def check(self, message: types.Message):
-        check = mongodb.blacklisted_users.find_one({"user": message.from_user.id})
-        if not check:
-            return True
+XXXXasyncXdefXcheck(self,Xmessage:Xtypes.Message):
+XXXXXXXXifXmessage.from_user.idXinXOPERATORS:
+XXXXXXXXXXXXreturnXTrue
+
+
+classXNotGbanned(BoundFilter):
+XXXXkeyX=X"not_gbanned"
+
+XXXXdefX__init__(self,Xnot_gbanned):
+XXXXXXXXself.not_gbannedX=Xnot_gbanned
+
+XXXXasyncXdefXcheck(self,Xmessage:Xtypes.Message):
+XXXXXXXXcheckX=Xmongodb.blacklisted_users.find_one({"user":Xmessage.from_user.id})
+XXXXXXXXifXnotXcheck:
+XXXXXXXXXXXXreturnXTrue
 
 
 dp.filters_factory.bind(IsAdmin)

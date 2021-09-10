@@ -1,37 +1,37 @@
-import pymongo
+importXpymongo
 
-from Ineruki .config import get_str_key
+fromXInerukiX.configXimportXget_str_key
 
-MONGO2 = get_str_key("FILTERS_MONGO", None)
-MONGO = get_str_key("MONGO_URI", required=True)
-if MONGO2 == None:
-    MONGO2 = MONGO
-myclient = pymongo.MongoClient(MONGO2)
-mydb = myclient["Ineruki"]
-mycol = mydb["USERS"]
-
-
-async def add_user(id, username, name, dcid):
-    data = {"_id": id, "username": username, "name": name, "dc_id": dcid}
-    try:
-        mycol.update_one({"_id": id}, {"$set": data}, upsert=True)
-    except:
-        pass
+MONGO2X=Xget_str_key("FILTERS_MONGO",XNone)
+MONGOX=Xget_str_key("MONGO_URI",Xrequired=True)
+ifXMONGO2X==XNone:
+XXXXMONGO2X=XMONGO
+myclientX=Xpymongo.MongoClient(MONGO2)
+mydbX=Xmyclient["Ineruki"]
+mycolX=Xmydb["USERS"]
 
 
-async def all_users():
-    count = mycol.count()
-    return count
+asyncXdefXadd_user(id,Xusername,Xname,Xdcid):
+XXXXdataX=X{"_id":Xid,X"username":Xusername,X"name":Xname,X"dc_id":Xdcid}
+XXXXtry:
+XXXXXXXXmycol.update_one({"_id":Xid},X{"$set":Xdata},Xupsert=True)
+XXXXexcept:
+XXXXXXXXpass
 
 
-async def find_user(id):
-    query = mycol.find({"_id": id})
+asyncXdefXall_users():
+XXXXcountX=Xmycol.count()
+XXXXreturnXcount
 
-    try:
-        for file in query:
-            name = file["name"]
-            username = file["username"]
-            dc_id = file["dc_id"]
-        return name, username, dc_id
-    except:
-        return None, None, None
+
+asyncXdefXfind_user(id):
+XXXXqueryX=Xmycol.find({"_id":Xid})
+
+XXXXtry:
+XXXXXXXXforXfileXinXquery:
+XXXXXXXXXXXXnameX=Xfile["name"]
+XXXXXXXXXXXXusernameX=Xfile["username"]
+XXXXXXXXXXXXdc_idX=Xfile["dc_id"]
+XXXXXXXXreturnXname,Xusername,Xdc_id
+XXXXexcept:
+XXXXXXXXreturnXNone,XNone,XNone

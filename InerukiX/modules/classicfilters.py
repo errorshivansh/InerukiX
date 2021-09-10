@@ -1,279 +1,279 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import asyncio
-import os
-import re
+importXasyncio
+importXos
+importXre
 
-from telethon import Button, events, utils
-from telethon.tl import functions, types
+fromXtelethonXimportXButton,Xevents,Xutils
+fromXtelethon.tlXimportXfunctions,Xtypes
 
-from Ineruki .services.events import register
-from Ineruki .services.sql.filters_sql import (
-    add_filter,
-    get_all_filters,
-    remove_all_filters,
-    remove_filter,
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.sql.filters_sqlXimportX(
+XXXXadd_filter,
+XXXXget_all_filters,
+XXXXremove_all_filters,
+XXXXremove_filter,
 )
-from Ineruki .services.telethon import tbot
+fromXInerukiX.services.telethonXimportXtbot
 
-DELETE_TIMEOUT = 0
-TYPE_TE T = 0
-TYPE_PHOTO = 1
-TYPE_DOCUMENT = 2
-last_triggered_filters = {}
+DELETE_TIMEOUTX=X0
+TYPE_TEXTX=X0
+TYPE_PHOTOX=X1
+TYPE_DOCUMENTX=X2
+last_triggered_filtersX=X{}
 
 
-async def can_change_info(message):
-    result = await tbot(
-        functions.channels.GetParticipantRequest(
-            channel=message.chat_id,
-            user_id=message.sender_id,
-        )
-    )
-    p = result.participant
-    return isinstance(p, types.ChannelParticipantCreator) or (
-        isinstance(p, types.ChannelParticipantAdmin) and p.admin_rights.change_info
-    )
+asyncXdefXcan_change_info(message):
+XXXXresultX=XawaitXtbot(
+XXXXXXXXfunctions.channels.GetParticipantRequest(
+XXXXXXXXXXXXchannel=message.chat_id,
+XXXXXXXXXXXXuser_id=message.sender_id,
+XXXXXXXX)
+XXXX)
+XXXXpX=Xresult.participant
+XXXXreturnXisinstance(p,Xtypes.ChannelParticipantCreator)XorX(
+XXXXXXXXisinstance(p,Xtypes.ChannelParticipantAdmin)XandXp.admin_rights.change_info
+XXXX)
 
 
 @tbot.on(events.NewMessage(pattern=None))
-async def on_snip(event):
+asyncXdefXon_snip(event):
 
-    global last_triggered_filters
+XXXXglobalXlast_triggered_filters
 
-    name = event.raw_text
+XXXXnameX=Xevent.raw_text
 
-    if event.chat_id in last_triggered_filters:
+XXXXifXevent.chat_idXinXlast_triggered_filters:
 
-        if name in last_triggered_filters[event.chat_id]:
+XXXXXXXXifXnameXinXlast_triggered_filters[event.chat_id]:
 
-            return False
+XXXXXXXXXXXXreturnXFalse
 
-    snips = get_all_filters(event.chat_id)
+XXXXsnipsX=Xget_all_filters(event.chat_id)
 
-    if snips:
+XXXXifXsnips:
 
-        for snip in snips:
+XXXXXXXXforXsnipXinXsnips:
 
-            pattern = r"( |^|[^\w])" + re.escape(snip.keyword) + r"( |$|[^\w])"
+XXXXXXXXXXXXpatternX=Xr"(X|^|[^\w])"X+Xre.escape(snip.keyword)X+Xr"(X|$|[^\w])"
 
-            if re.search(pattern, name, flags=re.IGNORECASE):
+XXXXXXXXXXXXifXre.search(pattern,Xname,Xflags=re.IGNORECASE):
 
-                if snip.snip_type == TYPE_PHOTO:
+XXXXXXXXXXXXXXXXifXsnip.snip_typeX==XTYPE_PHOTO:
 
-                    media = types.InputPhoto(
-                        int(snip.media_id),
-                        int(snip.media_access_hash),
-                        snip.media_file_reference,
-                    )
+XXXXXXXXXXXXXXXXXXXXmediaX=Xtypes.InputPhoto(
+XXXXXXXXXXXXXXXXXXXXXXXXint(snip.media_id),
+XXXXXXXXXXXXXXXXXXXXXXXXint(snip.media_access_hash),
+XXXXXXXXXXXXXXXXXXXXXXXXsnip.media_file_reference,
+XXXXXXXXXXXXXXXXXXXX)
 
-                elif snip.snip_type == TYPE_DOCUMENT:
+XXXXXXXXXXXXXXXXelifXsnip.snip_typeX==XTYPE_DOCUMENT:
 
-                    media = types.InputDocument(
-                        int(snip.media_id),
-                        int(snip.media_access_hash),
-                        snip.media_file_reference,
-                    )
+XXXXXXXXXXXXXXXXXXXXmediaX=Xtypes.InputDocument(
+XXXXXXXXXXXXXXXXXXXXXXXXint(snip.media_id),
+XXXXXXXXXXXXXXXXXXXXXXXXint(snip.media_access_hash),
+XXXXXXXXXXXXXXXXXXXXXXXXsnip.media_file_reference,
+XXXXXXXXXXXXXXXXXXXX)
 
-                else:
+XXXXXXXXXXXXXXXXelse:
 
-                    media = None
+XXXXXXXXXXXXXXXXXXXXmediaX=XNone
 
-                event.message.id
+XXXXXXXXXXXXXXXXevent.message.id
 
-                if event.reply_to_msg_id:
+XXXXXXXXXXXXXXXXifXevent.reply_to_msg_id:
 
-                    event.reply_to_msg_id
+XXXXXXXXXXXXXXXXXXXXevent.reply_to_msg_id
 
-                filter = ""
-                options = ""
-                butto = None
+XXXXXXXXXXXXXXXXfilterX=X""
+XXXXXXXXXXXXXXXXoptionsX=X""
+XXXXXXXXXXXXXXXXbuttoX=XNone
 
-                if "|" in snip.reply:
-                    filter, options = snip.reply.split("|")
-                else:
-                    filter = str(snip.reply)
-                try:
-                    filter = filter.strip()
-                    button = options.strip()
-                    if "•" in button:
-                        mbutton = button.split("•")
-                        lbutton = []
-                        for i in mbutton:
-                            params = re.findall(r"\'(.*?)\'", i) or re.findall(
-                                r"\"(.*?)\"", i
-                            )
-                            lbutton.append(params)
-                        longbutton = []
-                        for c in lbutton:
-                            butto = [Button.url(*c)]
-                            longbutton.append(butto)
-                    else:
-                        params = re.findall(r"\'(.*?)\'", button) or re.findall(
-                            r"\"(.*?)\"", button
-                        )
-                        butto = [Button.url(*params)]
-                except BaseException:
-                    filter = filter.strip()
-                    butto = None
+XXXXXXXXXXXXXXXXifX"|"XinXsnip.reply:
+XXXXXXXXXXXXXXXXXXXXfilter,XoptionsX=Xsnip.reply.split("|")
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXfilterX=Xstr(snip.reply)
+XXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXfilterX=Xfilter.strip()
+XXXXXXXXXXXXXXXXXXXXbuttonX=Xoptions.strip()
+XXXXXXXXXXXXXXXXXXXXifX"•"XinXbutton:
+XXXXXXXXXXXXXXXXXXXXXXXXmbuttonX=Xbutton.split("•")
+XXXXXXXXXXXXXXXXXXXXXXXXlbuttonX=X[]
+XXXXXXXXXXXXXXXXXXXXXXXXforXiXinXmbutton:
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXparamsX=Xre.findall(r"\'(.*?)\'",Xi)XorXre.findall(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXr"\"(.*?)\"",Xi
+XXXXXXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXlbutton.append(params)
+XXXXXXXXXXXXXXXXXXXXXXXXlongbuttonX=X[]
+XXXXXXXXXXXXXXXXXXXXXXXXforXcXinXlbutton:
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXbuttoX=X[Button.url(*c)]
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXlongbutton.append(butto)
+XXXXXXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXXXXXparamsX=Xre.findall(r"\'(.*?)\'",Xbutton)XorXre.findall(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXr"\"(.*?)\"",Xbutton
+XXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXXXXXbuttoX=X[Button.url(*params)]
+XXXXXXXXXXXXXXXXexceptXBaseException:
+XXXXXXXXXXXXXXXXXXXXfilterX=Xfilter.strip()
+XXXXXXXXXXXXXXXXXXXXbuttoX=XNone
 
-                try:
-                    await event.reply(filter, buttons=longbutton, file=media)
-                except:
-                    await event.reply(filter, buttons=butto, file=media)
+XXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXawaitXevent.reply(filter,Xbuttons=longbutton,Xfile=media)
+XXXXXXXXXXXXXXXXexcept:
+XXXXXXXXXXXXXXXXXXXXawaitXevent.reply(filter,Xbuttons=butto,Xfile=media)
 
-                if event.chat_id not in last_triggered_filters:
+XXXXXXXXXXXXXXXXifXevent.chat_idXnotXinXlast_triggered_filters:
 
-                    last_triggered_filters[event.chat_id] = []
+XXXXXXXXXXXXXXXXXXXXlast_triggered_filters[event.chat_id]X=X[]
 
-                last_triggered_filters[event.chat_id].append(name)
+XXXXXXXXXXXXXXXXlast_triggered_filters[event.chat_id].append(name)
 
-                await asyncio.sleep(DELETE_TIMEOUT)
+XXXXXXXXXXXXXXXXawaitXasyncio.sleep(DELETE_TIMEOUT)
 
-                last_triggered_filters[event.chat_id].remove(name)
-
-
-@register(pattern="^/cfilter (.*)")
-async def on_snip_save(event):
-    if event.is_group:
-        if not await can_change_info(message=event):
-            return
-    else:
-        return
-
-    name = event.pattern_match.group(1)
-    msg = await event.get_reply_message()
-
-    if msg:
-
-        snip = {"type": TYPE_TE T, "text": msg.message or ""}
-
-        if msg.media:
-
-            media = None
-
-            if isinstance(msg.media, types.MessageMediaPhoto):
-
-                media = utils.get_input_photo(msg.media.photo)
-
-                snip["type"] = TYPE_PHOTO
-
-            elif isinstance(msg.media, types.MessageMediaDocument):
-
-                media = utils.get_input_document(msg.media.document)
-
-                snip["type"] = TYPE_DOCUMENT
-
-            if media:
-
-                snip["id"] = media.id
-
-                snip["hash"] = media.access_hash
-
-                snip["fr"] = media.file_reference
-
-        add_filter(
-            event.chat_id,
-            name,
-            snip["text"],
-            snip["type"],
-            snip.get("id"),
-            snip.get("hash"),
-            snip.get("fr"),
-        )
-
-        await event.reply(
-            f"Classic Filter {name} saved successfully. you can get it with {name}\nNote: Try our new filter system /addfilter "
-        )
-
-    else:
-
-        await event.reply(
-            "Usage: Reply to user message with /cfilter <text>.. \nNot Recomended use new filter system /savefilter"
-        )
+XXXXXXXXXXXXXXXXlast_triggered_filters[event.chat_id].remove(name)
 
 
-@register(pattern="^/stopcfilter (.*)")
-async def on_snip_delete(event):
-    if event.is_group:
-        if not await can_change_info(message=event):
-            return
-    else:
-        return
-    name = event.pattern_match.group(1)
+@register(pattern="^/cfilterX(.*)")
+asyncXdefXon_snip_save(event):
+XXXXifXevent.is_group:
+XXXXXXXXifXnotXawaitXcan_change_info(message=event):
+XXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXreturn
 
-    remove_filter(event.chat_id, name)
+XXXXnameX=Xevent.pattern_match.group(1)
+XXXXmsgX=XawaitXevent.get_reply_message()
 
-    await event.reply(f"Filter **{name}** deleted successfully")
+XXXXifXmsg:
+
+XXXXXXXXsnipX=X{"type":XTYPE_TEXT,X"text":Xmsg.messageXorX""}
+
+XXXXXXXXifXmsg.media:
+
+XXXXXXXXXXXXmediaX=XNone
+
+XXXXXXXXXXXXifXisinstance(msg.media,Xtypes.MessageMediaPhoto):
+
+XXXXXXXXXXXXXXXXmediaX=Xutils.get_input_photo(msg.media.photo)
+
+XXXXXXXXXXXXXXXXsnip["type"]X=XTYPE_PHOTO
+
+XXXXXXXXXXXXelifXisinstance(msg.media,Xtypes.MessageMediaDocument):
+
+XXXXXXXXXXXXXXXXmediaX=Xutils.get_input_document(msg.media.document)
+
+XXXXXXXXXXXXXXXXsnip["type"]X=XTYPE_DOCUMENT
+
+XXXXXXXXXXXXifXmedia:
+
+XXXXXXXXXXXXXXXXsnip["id"]X=Xmedia.id
+
+XXXXXXXXXXXXXXXXsnip["hash"]X=Xmedia.access_hash
+
+XXXXXXXXXXXXXXXXsnip["fr"]X=Xmedia.file_reference
+
+XXXXXXXXadd_filter(
+XXXXXXXXXXXXevent.chat_id,
+XXXXXXXXXXXXname,
+XXXXXXXXXXXXsnip["text"],
+XXXXXXXXXXXXsnip["type"],
+XXXXXXXXXXXXsnip.get("id"),
+XXXXXXXXXXXXsnip.get("hash"),
+XXXXXXXXXXXXsnip.get("fr"),
+XXXXXXXX)
+
+XXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXf"ClassicXFilterX{name}XsavedXsuccessfully.XyouXcanXgetXitXwithX{name}\nNote:XTryXourXnewXfilterXsystemX/addfilterX"
+XXXXXXXX)
+
+XXXXelse:
+
+XXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXX"Usage:XReplyXtoXuserXmessageXwithX/cfilterX<text>..X\nNotXRecomendedXuseXnewXfilterXsystemX/savefilter"
+XXXXXXXX)
+
+
+@register(pattern="^/stopcfilterX(.*)")
+asyncXdefXon_snip_delete(event):
+XXXXifXevent.is_group:
+XXXXXXXXifXnotXawaitXcan_change_info(message=event):
+XXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXreturn
+XXXXnameX=Xevent.pattern_match.group(1)
+
+XXXXremove_filter(event.chat_id,Xname)
+
+XXXXawaitXevent.reply(f"FilterX**{name}**XdeletedXsuccessfully")
 
 
 @register(pattern="^/cfilters$")
-async def on_snip_list(event):
-    if event.is_group:
-        pass
-    else:
-        return
-    all_snips = get_all_filters(event.chat_id)
+asyncXdefXon_snip_list(event):
+XXXXifXevent.is_group:
+XXXXXXXXpass
+XXXXelse:
+XXXXXXXXreturn
+XXXXall_snipsX=Xget_all_filters(event.chat_id)
 
-    OUT_STR = "Available Classic Filters in the Current Chat:\n"
+XXXXOUT_STRX=X"AvailableXClassicXFiltersXinXtheXCurrentXChat:\n"
 
-    if len(all_snips) > 0:
+XXXXifXlen(all_snips)X>X0:
 
-        for a_snip in all_snips:
+XXXXXXXXforXa_snipXinXall_snips:
 
-            OUT_STR += f"👉{a_snip.keyword} \n"
+XXXXXXXXXXXXOUT_STRX+=Xf"👉{a_snip.keyword}X\n"
 
-    else:
+XXXXelse:
 
-        OUT_STR = "No Classic Filters in this chat. "
+XXXXXXXXOUT_STRX=X"NoXClassicXFiltersXinXthisXchat.X"
 
-    if len(OUT_STR) > 4096:
+XXXXifXlen(OUT_STR)X>X4096:
 
-        with io.BytesIO(str.encode(OUT_STR)) as out_file:
+XXXXXXXXwithXio.BytesIO(str.encode(OUT_STR))XasXout_file:
 
-            out_file.name = "filters.text"
+XXXXXXXXXXXXout_file.nameX=X"filters.text"
 
-            await tbot.send_file(
-                event.chat_id,
-                out_file,
-                force_document=True,
-                allow_cache=False,
-                caption="Available Classic Filters in the Current Chat",
-                reply_to=event,
-            )
+XXXXXXXXXXXXawaitXtbot.send_file(
+XXXXXXXXXXXXXXXXevent.chat_id,
+XXXXXXXXXXXXXXXXout_file,
+XXXXXXXXXXXXXXXXforce_document=True,
+XXXXXXXXXXXXXXXXallow_cache=False,
+XXXXXXXXXXXXXXXXcaption="AvailableXClassicXFiltersXinXtheXCurrentXChat",
+XXXXXXXXXXXXXXXXreply_to=event,
+XXXXXXXXXXXX)
 
-    else:
+XXXXelse:
 
-        await event.reply(OUT_STR)
+XXXXXXXXawaitXevent.reply(OUT_STR)
 
 
 @register(pattern="^/stopallcfilters$")
-async def on_all_snip_delete(event):
-    if event.is_group:
-        if not await can_change_info(message=event):
-            return
-    else:
-        return
-    remove_all_filters(event.chat_id)
-    await event.reply(f"Classic Filter in current chat deleted !")
+asyncXdefXon_all_snip_delete(event):
+XXXXifXevent.is_group:
+XXXXXXXXifXnotXawaitXcan_change_info(message=event):
+XXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXreturn
+XXXXremove_all_filters(event.chat_id)
+XXXXawaitXevent.reply(f"ClassicXFilterXinXcurrentXchatXdeletedX!")
 
 
-file_help = os.path.basename(__file__)
-file_help = file_help.replace(".py", "")
-file_helpo = file_help.replace("_", " ")
+file_helpX=Xos.path.basename(__file__)
+file_helpX=Xfile_help.replace(".py",X"")
+file_helpoX=Xfile_help.replace("_",X"X")

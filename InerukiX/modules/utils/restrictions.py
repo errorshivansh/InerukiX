@@ -1,77 +1,77 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-from aiogram.types.chat_permissions import ChatPermissions
-from aiogram.utils.exceptions import BadRequest, MigrateToChat, Unauthorized
+fromXaiogram.types.chat_permissionsXimportXChatPermissions
+fromXaiogram.utils.exceptionsXimportXBadRequest,XMigrateToChat,XUnauthorized
 
-from Ineruki  import bot
-
-
-async def ban_user(chat_id, user_id, until_date=None):
-    try:
-        await bot.kick_chat_member(chat_id, user_id, until_date=until_date)
-    except (BadRequest, MigrateToChat, Unauthorized):
-        return False
-    return True
+fromXInerukiXXimportXbot
 
 
-async def kick_user(chat_id, user_id):
-    await bot.unban_chat_member(chat_id, user_id)
-    return True
+asyncXdefXban_user(chat_id,Xuser_id,Xuntil_date=None):
+XXXXtry:
+XXXXXXXXawaitXbot.kick_chat_member(chat_id,Xuser_id,Xuntil_date=until_date)
+XXXXexceptX(BadRequest,XMigrateToChat,XUnauthorized):
+XXXXXXXXreturnXFalse
+XXXXreturnXTrue
 
 
-async def mute_user(chat_id, user_id, until_date=None):
-    await bot.restrict_chat_member(
-        chat_id,
-        user_id,
-        permissions=ChatPermissions(can_send_messages=False, until_date=until_date),
-        until_date=until_date,
-    )
-    return True
+asyncXdefXkick_user(chat_id,Xuser_id):
+XXXXawaitXbot.unban_chat_member(chat_id,Xuser_id)
+XXXXreturnXTrue
 
 
-async def restrict_user(chat_id, user_id, until_date=None):
-    await bot.restrict_chat_member(
-        chat_id,
-        user_id,
-        permissions=ChatPermissions(
-            can_send_messages=True,
-            can_send_media_messages=False,
-            can_send_other_messages=False,
-            can_add_web_page_previews=False,
-            until_date=until_date,
-        ),
-        until_date=until_date,
-    )
-    return True
+asyncXdefXmute_user(chat_id,Xuser_id,Xuntil_date=None):
+XXXXawaitXbot.restrict_chat_member(
+XXXXXXXXchat_id,
+XXXXXXXXuser_id,
+XXXXXXXXpermissions=ChatPermissions(can_send_messages=False,Xuntil_date=until_date),
+XXXXXXXXuntil_date=until_date,
+XXXX)
+XXXXreturnXTrue
 
 
-async def unmute_user(chat_id, user_id):
-    await bot.restrict_chat_member(
-        chat_id,
-        user_id,
-        can_send_messages=True,
-        can_send_media_messages=True,
-        can_send_other_messages=True,
-        can_add_web_page_previews=True,
-    )
-    return True
+asyncXdefXrestrict_user(chat_id,Xuser_id,Xuntil_date=None):
+XXXXawaitXbot.restrict_chat_member(
+XXXXXXXXchat_id,
+XXXXXXXXuser_id,
+XXXXXXXXpermissions=ChatPermissions(
+XXXXXXXXXXXXcan_send_messages=True,
+XXXXXXXXXXXXcan_send_media_messages=False,
+XXXXXXXXXXXXcan_send_other_messages=False,
+XXXXXXXXXXXXcan_add_web_page_previews=False,
+XXXXXXXXXXXXuntil_date=until_date,
+XXXXXXXX),
+XXXXXXXXuntil_date=until_date,
+XXXX)
+XXXXreturnXTrue
 
 
-async def unban_user(chat_id, user_id):
-    try:
-        return await bot.unban_chat_member(chat_id, user_id, only_if_banned=True)
-    except (BadRequest, Unauthorized):
-        return False
+asyncXdefXunmute_user(chat_id,Xuser_id):
+XXXXawaitXbot.restrict_chat_member(
+XXXXXXXXchat_id,
+XXXXXXXXuser_id,
+XXXXXXXXcan_send_messages=True,
+XXXXXXXXcan_send_media_messages=True,
+XXXXXXXXcan_send_other_messages=True,
+XXXXXXXXcan_add_web_page_previews=True,
+XXXX)
+XXXXreturnXTrue
+
+
+asyncXdefXunban_user(chat_id,Xuser_id):
+XXXXtry:
+XXXXXXXXreturnXawaitXbot.unban_chat_member(chat_id,Xuser_id,Xonly_if_banned=True)
+XXXXexceptX(BadRequest,XUnauthorized):
+XXXXXXXXreturnXFalse

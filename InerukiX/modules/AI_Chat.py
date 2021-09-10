@@ -1,380 +1,380 @@
-# Copyright (C) 2021 Red-Aura & errorshivansh & HamkerCat
+#XCopyrightX(C)X2021XRed-AuraX&XerrorshivanshX&XHamkerCat
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import re
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+importXre
 
-import emoji
+importXemoji
 
-url = "https://acobot-brainshop-ai-v1.p.rapidapi.com/get"
-import re
+urlX=X"https://acobot-brainshop-ai-v1.p.rapidapi.com/get"
+importXre
 
-import aiohttp
+importXaiohttp
 
-# from google_trans_new import google_translator
-from googletrans import Translator as google_translator
-from pyrogram import filters
+#XfromXgoogle_trans_newXimportXgoogle_translator
+fromXgoogletransXimportXTranslatorXasXgoogle_translator
+fromXpyrogramXimportXfilters
 
-from Ineruki  import BOT_ID
-from Ineruki .db.mongo_helpers.aichat import add_chat, get_session, remove_chat
-from Ineruki .function.inlinehelper import arq
-from Ineruki .function.pluginhelpers import admins_only, edit_or_reply
-from Ineruki .services.pyrogram import pbot as Inerukix
+fromXInerukiXXimportXBOT_ID
+fromXInerukiX.db.mongo_helpers.aichatXimportXadd_chat,Xget_session,Xremove_chat
+fromXInerukiX.function.inlinehelperXimportXarq
+fromXInerukiX.function.pluginhelpersXimportXadmins_only,Xedit_or_reply
+fromXInerukiX.services.pyrogramXimportXpbotXasXInerukix
 
-translator = google_translator()
-
-
-async def lunaQuery(query: str, user_id: int):
-    luna = await arq.luna(query, user_id)
-    return luna.result
+translatorX=Xgoogle_translator()
 
 
-def extract_emojis(s):
-    return "".join(c for c in s if c in emoji.UNICODE_EMOJI)
+asyncXdefXlunaQuery(query:Xstr,Xuser_id:Xint):
+XXXXlunaX=XawaitXarq.luna(query,Xuser_id)
+XXXXreturnXluna.result
 
 
-async def fetch(url):
-    try:
-        async with aiohttp.Timeout(10.0):
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url) as resp:
-                    try:
-                        data = await resp.json()
-                    except:
-                        data = await resp.text()
-            return data
-    except:
-        print("AI response Timeout")
-        return
+defXextract_emojis(s):
+XXXXreturnX"".join(cXforXcXinXsXifXcXinXemoji.UNICODE_EMOJI)
 
 
-Ineruki_chats = []
-en_chats = []
-# AI Chat (C) 2020-2021 by @InukaAsith
+asyncXdefXfetch(url):
+XXXXtry:
+XXXXXXXXasyncXwithXaiohttp.Timeout(10.0):
+XXXXXXXXXXXXasyncXwithXaiohttp.ClientSession()XasXsession:
+XXXXXXXXXXXXXXXXasyncXwithXsession.get(url)XasXresp:
+XXXXXXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXXXXXdataX=XawaitXresp.json()
+XXXXXXXXXXXXXXXXXXXXexcept:
+XXXXXXXXXXXXXXXXXXXXXXXXdataX=XawaitXresp.text()
+XXXXXXXXXXXXreturnXdata
+XXXXexcept:
+XXXXXXXXprint("AIXresponseXTimeout")
+XXXXXXXXreturn
+
+
+Ineruki_chatsX=X[]
+en_chatsX=X[]
+#XAIXChatX(C)X2020-2021XbyX@InukaAsith
 
 
 @Inerukix.on_message(
-    filters.command("chatbot") & ~filters.edited & ~filters.bot & ~filters.private
+XXXXfilters.command("chatbot")X&X~filters.editedX&X~filters.botX&X~filters.private
 )
 @admins_only
-async def hmm(_, message):
-    global Ineruki_chats
-    if len(message.command) != 2:
-        await message.reply_text(
-            "I only recognize `/chatbot on` and /chatbot `off only`"
-        )
-        message.continue_propagation()
-    status = message.text.split(None, 1)[1]
-    chat_id = message.chat.id
-    if status == "ON" or status == "on" or status == "On":
-        lel = await edit_or_reply(message, "`Processing...`")
-        lol = add_chat(int(message.chat.id))
-        if not lol:
-            await lel.edit("Ineruki AI Already Activated In This Chat")
-            return
-        await lel.edit(
-            f"Ineruki AI Successfully Added For Users In The Chat {message.chat.id}"
-        )
+asyncXdefXhmm(_,Xmessage):
+XXXXglobalXIneruki_chats
+XXXXifXlen(message.command)X!=X2:
+XXXXXXXXawaitXmessage.reply_text(
+XXXXXXXXXXXX"IXonlyXrecognizeX`/chatbotXon`XandX/chatbotX`offXonly`"
+XXXXXXXX)
+XXXXXXXXmessage.continue_propagation()
+XXXXstatusX=Xmessage.text.split(None,X1)[1]
+XXXXchat_idX=Xmessage.chat.id
+XXXXifXstatusX==X"ON"XorXstatusX==X"on"XorXstatusX==X"On":
+XXXXXXXXlelX=XawaitXedit_or_reply(message,X"`Processing...`")
+XXXXXXXXlolX=Xadd_chat(int(message.chat.id))
+XXXXXXXXifXnotXlol:
+XXXXXXXXXXXXawaitXlel.edit("InerukiXAIXAlreadyXActivatedXInXThisXChat")
+XXXXXXXXXXXXreturn
+XXXXXXXXawaitXlel.edit(
+XXXXXXXXXXXXf"InerukiXAIXSuccessfullyXAddedXForXUsersXInXTheXChatX{message.chat.id}"
+XXXXXXXX)
 
-    elif status == "OFF" or status == "off" or status == "Off":
-        lel = await edit_or_reply(message, "`Processing...`")
-        Escobar = remove_chat(int(message.chat.id))
-        if not Escobar:
-            await lel.edit("Ineruki AI Was Not Activated In This Chat")
-            return
-        await lel.edit(
-            f"Ineruki AI Successfully Deactivated For Users In The Chat {message.chat.id}"
-        )
+XXXXelifXstatusX==X"OFF"XorXstatusX==X"off"XorXstatusX==X"Off":
+XXXXXXXXlelX=XawaitXedit_or_reply(message,X"`Processing...`")
+XXXXXXXXEscobarX=Xremove_chat(int(message.chat.id))
+XXXXXXXXifXnotXEscobar:
+XXXXXXXXXXXXawaitXlel.edit("InerukiXAIXWasXNotXActivatedXInXThisXChat")
+XXXXXXXXXXXXreturn
+XXXXXXXXawaitXlel.edit(
+XXXXXXXXXXXXf"InerukiXAIXSuccessfullyXDeactivatedXForXUsersXInXTheXChatX{message.chat.id}"
+XXXXXXXX)
 
-    elif status == "EN" or status == "en" or status == "english":
-        if not chat_id in en_chats:
-            en_chats.append(chat_id)
-            await message.reply_text("English AI chat Enabled!")
-            return
-        await message.reply_text("AI Chat Is Already Disabled.")
-        message.continue_propagation()
-    else:
-        await message.reply_text(
-            "I only recognize `/chatbot on` and /chatbot `off only`"
-        )
-
-
-@Inerukix.on_message(
-    filters.text
-    & filters.reply
-    & ~filters.bot
-    & ~filters.edited
-    & ~filters.via_bot
-    & ~filters.forwarded,
-    group=2,
-)
-async def hmm(client, message):
-    if not get_session(int(message.chat.id)):
-        return
-    if not message.reply_to_message:
-        return
-    try:
-        senderr = message.reply_to_message.from_user.id
-    except:
-        return
-    if senderr != BOT_ID:
-        return
-    msg = message.text
-    chat_id = message.chat.id
-    if msg.startswith("/") or msg.startswith("@"):
-        message.continue_propagation()
-    if chat_id in en_chats:
-        test = msg
-        test = test.replace("Ineruki", "Aco")
-        test = test.replace("Ineruki", "Aco")
-        response = await lunaQuery(
-            test, message.from_user.id if message.from_user else 0
-        )
-        response = response.replace("Aco", "Ineruki")
-        response = response.replace("aco", "Ineruki")
-
-        pro = response
-        try:
-            await Inerukix.send_chat_action(message.chat.id, "typing")
-            await message.reply_text(pro)
-        except CFError:
-            return
-
-    else:
-        u = msg.split()
-        emj = extract_emojis(msg)
-        msg = msg.replace(emj, "")
-        if (
-            [(k) for k in u if k.startswith("@")]
-            and [(k) for k in u if k.startswith("#")]
-            and [(k) for k in u if k.startswith("/")]
-            and re.findall(r"\[([^]]+)]\(\s*([^)]+)\s*\)", msg) != []
-        ):
-
-            h = " ".join(filter(lambda x: x[0] != "@", u))
-            km = re.sub(r"\[([^]]+)]\(\s*([^)]+)\s*\)", r"", h)
-            tm = km.split()
-            jm = " ".join(filter(lambda x: x[0] != "#", tm))
-            hm = jm.split()
-            rm = " ".join(filter(lambda x: x[0] != "/", hm))
-        elif [(k) for k in u if k.startswith("@")]:
-
-            rm = " ".join(filter(lambda x: x[0] != "@", u))
-        elif [(k) for k in u if k.startswith("#")]:
-            rm = " ".join(filter(lambda x: x[0] != "#", u))
-        elif [(k) for k in u if k.startswith("/")]:
-            rm = " ".join(filter(lambda x: x[0] != "/", u))
-        elif re.findall(r"\[([^]]+)]\(\s*([^)]+)\s*\)", msg) != []:
-            rm = re.sub(r"\[([^]]+)]\(\s*([^)]+)\s*\)", r"", msg)
-        else:
-            rm = msg
-            # print (rm)
-        try:
-            lan = translator.detect(rm)
-            lan = lan.lang
-        except:
-            return
-        test = rm
-        if not "en" in lan and not lan == "":
-            try:
-                test = translator.translate(test, dest="en")
-                test = test.text
-            except:
-                return
-        # test = emoji.demojize(test.strip())
-
-        test = test.replace("Ineruki", "Aco")
-        test = test.replace("Ineruki", "Aco")
-        response = await lunaQuery(
-            test, message.from_user.id if message.from_user else 0
-        )
-        response = response.replace("Aco", "Ineruki")
-        response = response.replace("aco", "Ineruki")
-        response = response.replace("Luna", "Ineruki")
-        response = response.replace("luna", "Ineruki")
-        pro = response
-        if not "en" in lan and not lan == "":
-            try:
-                pro = translator.translate(pro, dest=lan)
-                pro = pro.text
-            except:
-                return
-        try:
-            await Inerukix.send_chat_action(message.chat.id, "typing")
-            await message.reply_text(pro)
-        except CFError:
-            return
+XXXXelifXstatusX==X"EN"XorXstatusX==X"en"XorXstatusX==X"english":
+XXXXXXXXifXnotXchat_idXinXen_chats:
+XXXXXXXXXXXXen_chats.append(chat_id)
+XXXXXXXXXXXXawaitXmessage.reply_text("EnglishXAIXchatXEnabled!")
+XXXXXXXXXXXXreturn
+XXXXXXXXawaitXmessage.reply_text("AIXChatXIsXAlreadyXDisabled.")
+XXXXXXXXmessage.continue_propagation()
+XXXXelse:
+XXXXXXXXawaitXmessage.reply_text(
+XXXXXXXXXXXX"IXonlyXrecognizeX`/chatbotXon`XandX/chatbotX`offXonly`"
+XXXXXXXX)
 
 
 @Inerukix.on_message(
-    filters.text & filters.private & ~filters.edited & filters.reply & ~filters.bot
+XXXXfilters.text
+XXXX&Xfilters.reply
+XXXX&X~filters.bot
+XXXX&X~filters.edited
+XXXX&X~filters.via_bot
+XXXX&X~filters.forwarded,
+XXXXgroup=2,
 )
-async def inuka(client, message):
-    msg = message.text
-    if msg.startswith("/") or msg.startswith("@"):
-        message.continue_propagation()
-    u = msg.split()
-    emj = extract_emojis(msg)
-    msg = msg.replace(emj, "")
-    if (
-        [(k) for k in u if k.startswith("@")]
-        and [(k) for k in u if k.startswith("#")]
-        and [(k) for k in u if k.startswith("/")]
-        and re.findall(r"\[([^]]+)]\(\s*([^)]+)\s*\)", msg) != []
-    ):
+asyncXdefXhmm(client,Xmessage):
+XXXXifXnotXget_session(int(message.chat.id)):
+XXXXXXXXreturn
+XXXXifXnotXmessage.reply_to_message:
+XXXXXXXXreturn
+XXXXtry:
+XXXXXXXXsenderrX=Xmessage.reply_to_message.from_user.id
+XXXXexcept:
+XXXXXXXXreturn
+XXXXifXsenderrX!=XBOT_ID:
+XXXXXXXXreturn
+XXXXmsgX=Xmessage.text
+XXXXchat_idX=Xmessage.chat.id
+XXXXifXmsg.startswith("/")XorXmsg.startswith("@"):
+XXXXXXXXmessage.continue_propagation()
+XXXXifXchat_idXinXen_chats:
+XXXXXXXXtestX=Xmsg
+XXXXXXXXtestX=Xtest.replace("Ineruki",X"Aco")
+XXXXXXXXtestX=Xtest.replace("Ineruki",X"Aco")
+XXXXXXXXresponseX=XawaitXlunaQuery(
+XXXXXXXXXXXXtest,Xmessage.from_user.idXifXmessage.from_userXelseX0
+XXXXXXXX)
+XXXXXXXXresponseX=Xresponse.replace("Aco",X"Ineruki")
+XXXXXXXXresponseX=Xresponse.replace("aco",X"Ineruki")
 
-        h = " ".join(filter(lambda x: x[0] != "@", u))
-        km = re.sub(r"\[([^]]+)]\(\s*([^)]+)\s*\)", r"", h)
-        tm = km.split()
-        jm = " ".join(filter(lambda x: x[0] != "#", tm))
-        hm = jm.split()
-        rm = " ".join(filter(lambda x: x[0] != "/", hm))
-    elif [(k) for k in u if k.startswith("@")]:
+XXXXXXXXproX=Xresponse
+XXXXXXXXtry:
+XXXXXXXXXXXXawaitXInerukix.send_chat_action(message.chat.id,X"typing")
+XXXXXXXXXXXXawaitXmessage.reply_text(pro)
+XXXXXXXXexceptXCFError:
+XXXXXXXXXXXXreturn
 
-        rm = " ".join(filter(lambda x: x[0] != "@", u))
-    elif [(k) for k in u if k.startswith("#")]:
-        rm = " ".join(filter(lambda x: x[0] != "#", u))
-    elif [(k) for k in u if k.startswith("/")]:
-        rm = " ".join(filter(lambda x: x[0] != "/", u))
-    elif re.findall(r"\[([^]]+)]\(\s*([^)]+)\s*\)", msg) != []:
-        rm = re.sub(r"\[([^]]+)]\(\s*([^)]+)\s*\)", r"", msg)
-    else:
-        rm = msg
-        # print (rm)
-    try:
-        lan = translator.detect(rm)
-        lan = lan.lang
-    except:
-        return
-    test = rm
-    if not "en" in lan and not lan == "":
-        try:
-            test = translator.translate(test, dest="en")
-            test = test.text
-        except:
-            return
+XXXXelse:
+XXXXXXXXuX=Xmsg.split()
+XXXXXXXXemjX=Xextract_emojis(msg)
+XXXXXXXXmsgX=Xmsg.replace(emj,X"")
+XXXXXXXXifX(
+XXXXXXXXXXXX[(k)XforXkXinXuXifXk.startswith("@")]
+XXXXXXXXXXXXandX[(k)XforXkXinXuXifXk.startswith("#")]
+XXXXXXXXXXXXandX[(k)XforXkXinXuXifXk.startswith("/")]
+XXXXXXXXXXXXandXre.findall(r"\[([^]]+)]\(\s*([^)]+)\s*\)",Xmsg)X!=X[]
+XXXXXXXX):
 
-    # test = emoji.demojize(test.strip())
+XXXXXXXXXXXXhX=X"X".join(filter(lambdaXx:Xx[0]X!=X"@",Xu))
+XXXXXXXXXXXXkmX=Xre.sub(r"\[([^]]+)]\(\s*([^)]+)\s*\)",Xr"",Xh)
+XXXXXXXXXXXXtmX=Xkm.split()
+XXXXXXXXXXXXjmX=X"X".join(filter(lambdaXx:Xx[0]X!=X"#",Xtm))
+XXXXXXXXXXXXhmX=Xjm.split()
+XXXXXXXXXXXXrmX=X"X".join(filter(lambdaXx:Xx[0]X!=X"/",Xhm))
+XXXXXXXXelifX[(k)XforXkXinXuXifXk.startswith("@")]:
 
-    # Kang with the credits bitches @InukaASiTH
-    test = test.replace("Ineruki", "Aco")
-    test = test.replace("Ineruki", "Aco")
+XXXXXXXXXXXXrmX=X"X".join(filter(lambdaXx:Xx[0]X!=X"@",Xu))
+XXXXXXXXelifX[(k)XforXkXinXuXifXk.startswith("#")]:
+XXXXXXXXXXXXrmX=X"X".join(filter(lambdaXx:Xx[0]X!=X"#",Xu))
+XXXXXXXXelifX[(k)XforXkXinXuXifXk.startswith("/")]:
+XXXXXXXXXXXXrmX=X"X".join(filter(lambdaXx:Xx[0]X!=X"/",Xu))
+XXXXXXXXelifXre.findall(r"\[([^]]+)]\(\s*([^)]+)\s*\)",Xmsg)X!=X[]:
+XXXXXXXXXXXXrmX=Xre.sub(r"\[([^]]+)]\(\s*([^)]+)\s*\)",Xr"",Xmsg)
+XXXXXXXXelse:
+XXXXXXXXXXXXrmX=Xmsg
+XXXXXXXXXXXX#XprintX(rm)
+XXXXXXXXtry:
+XXXXXXXXXXXXlanX=Xtranslator.detect(rm)
+XXXXXXXXXXXXlanX=Xlan.lang
+XXXXXXXXexcept:
+XXXXXXXXXXXXreturn
+XXXXXXXXtestX=Xrm
+XXXXXXXXifXnotX"en"XinXlanXandXnotXlanX==X"":
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXtestX=Xtranslator.translate(test,Xdest="en")
+XXXXXXXXXXXXXXXXtestX=Xtest.text
+XXXXXXXXXXXXexcept:
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXX#XtestX=Xemoji.demojize(test.strip())
 
-    response = await lunaQuery(test, message.from_user.id if message.from_user else 0)
-    response = response.replace("Aco", "Ineruki")
-    response = response.replace("aco", "Ineruki")
-
-    pro = response
-    if not "en" in lan and not lan == "":
-        pro = translator.translate(pro, dest=lan)
-        pro = pro.text
-    try:
-        await Inerukix.send_chat_action(message.chat.id, "typing")
-        await message.reply_text(pro)
-    except CFError:
-        return
+XXXXXXXXtestX=Xtest.replace("Ineruki",X"Aco")
+XXXXXXXXtestX=Xtest.replace("Ineruki",X"Aco")
+XXXXXXXXresponseX=XawaitXlunaQuery(
+XXXXXXXXXXXXtest,Xmessage.from_user.idXifXmessage.from_userXelseX0
+XXXXXXXX)
+XXXXXXXXresponseX=Xresponse.replace("Aco",X"Ineruki")
+XXXXXXXXresponseX=Xresponse.replace("aco",X"Ineruki")
+XXXXXXXXresponseX=Xresponse.replace("Luna",X"Ineruki")
+XXXXXXXXresponseX=Xresponse.replace("luna",X"Ineruki")
+XXXXXXXXproX=Xresponse
+XXXXXXXXifXnotX"en"XinXlanXandXnotXlanX==X"":
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXproX=Xtranslator.translate(pro,Xdest=lan)
+XXXXXXXXXXXXXXXXproX=Xpro.text
+XXXXXXXXXXXXexcept:
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXtry:
+XXXXXXXXXXXXawaitXInerukix.send_chat_action(message.chat.id,X"typing")
+XXXXXXXXXXXXawaitXmessage.reply_text(pro)
+XXXXXXXXexceptXCFError:
+XXXXXXXXXXXXreturn
 
 
 @Inerukix.on_message(
-    filters.regex("Ineruki|Ineruki|Ineruki |Inerukix|Inerukix")
-    & ~filters.bot
-    & ~filters.via_bot
-    & ~filters.forwarded
-    & ~filters.reply
-    & ~filters.channel
-    & ~filters.edited
+XXXXfilters.textX&Xfilters.privateX&X~filters.editedX&Xfilters.replyX&X~filters.bot
 )
-async def inuka(client, message):
-    msg = message.text
-    if msg.startswith("/") or msg.startswith("@"):
-        message.continue_propagation()
-    u = msg.split()
-    emj = extract_emojis(msg)
-    msg = msg.replace(emj, "")
-    if (
-        [(k) for k in u if k.startswith("@")]
-        and [(k) for k in u if k.startswith("#")]
-        and [(k) for k in u if k.startswith("/")]
-        and re.findall(r"\[([^]]+)]\(\s*([^)]+)\s*\)", msg) != []
-    ):
+asyncXdefXinuka(client,Xmessage):
+XXXXmsgX=Xmessage.text
+XXXXifXmsg.startswith("/")XorXmsg.startswith("@"):
+XXXXXXXXmessage.continue_propagation()
+XXXXuX=Xmsg.split()
+XXXXemjX=Xextract_emojis(msg)
+XXXXmsgX=Xmsg.replace(emj,X"")
+XXXXifX(
+XXXXXXXX[(k)XforXkXinXuXifXk.startswith("@")]
+XXXXXXXXandX[(k)XforXkXinXuXifXk.startswith("#")]
+XXXXXXXXandX[(k)XforXkXinXuXifXk.startswith("/")]
+XXXXXXXXandXre.findall(r"\[([^]]+)]\(\s*([^)]+)\s*\)",Xmsg)X!=X[]
+XXXX):
 
-        h = " ".join(filter(lambda x: x[0] != "@", u))
-        km = re.sub(r"\[([^]]+)]\(\s*([^)]+)\s*\)", r"", h)
-        tm = km.split()
-        jm = " ".join(filter(lambda x: x[0] != "#", tm))
-        hm = jm.split()
-        rm = " ".join(filter(lambda x: x[0] != "/", hm))
-    elif [(k) for k in u if k.startswith("@")]:
+XXXXXXXXhX=X"X".join(filter(lambdaXx:Xx[0]X!=X"@",Xu))
+XXXXXXXXkmX=Xre.sub(r"\[([^]]+)]\(\s*([^)]+)\s*\)",Xr"",Xh)
+XXXXXXXXtmX=Xkm.split()
+XXXXXXXXjmX=X"X".join(filter(lambdaXx:Xx[0]X!=X"#",Xtm))
+XXXXXXXXhmX=Xjm.split()
+XXXXXXXXrmX=X"X".join(filter(lambdaXx:Xx[0]X!=X"/",Xhm))
+XXXXelifX[(k)XforXkXinXuXifXk.startswith("@")]:
 
-        rm = " ".join(filter(lambda x: x[0] != "@", u))
-    elif [(k) for k in u if k.startswith("#")]:
-        rm = " ".join(filter(lambda x: x[0] != "#", u))
-    elif [(k) for k in u if k.startswith("/")]:
-        rm = " ".join(filter(lambda x: x[0] != "/", u))
-    elif re.findall(r"\[([^]]+)]\(\s*([^)]+)\s*\)", msg) != []:
-        rm = re.sub(r"\[([^]]+)]\(\s*([^)]+)\s*\)", r"", msg)
-    else:
-        rm = msg
-        # print (rm)
-    try:
-        lan = translator.detect(rm)
-        lan = lan.lang
-    except:
-        return
-    test = rm
-    if not "en" in lan and not lan == "":
-        try:
-            test = translator.translate(test, dest="en")
-            test = test.text
-        except:
-            return
+XXXXXXXXrmX=X"X".join(filter(lambdaXx:Xx[0]X!=X"@",Xu))
+XXXXelifX[(k)XforXkXinXuXifXk.startswith("#")]:
+XXXXXXXXrmX=X"X".join(filter(lambdaXx:Xx[0]X!=X"#",Xu))
+XXXXelifX[(k)XforXkXinXuXifXk.startswith("/")]:
+XXXXXXXXrmX=X"X".join(filter(lambdaXx:Xx[0]X!=X"/",Xu))
+XXXXelifXre.findall(r"\[([^]]+)]\(\s*([^)]+)\s*\)",Xmsg)X!=X[]:
+XXXXXXXXrmX=Xre.sub(r"\[([^]]+)]\(\s*([^)]+)\s*\)",Xr"",Xmsg)
+XXXXelse:
+XXXXXXXXrmX=Xmsg
+XXXXXXXX#XprintX(rm)
+XXXXtry:
+XXXXXXXXlanX=Xtranslator.detect(rm)
+XXXXXXXXlanX=Xlan.lang
+XXXXexcept:
+XXXXXXXXreturn
+XXXXtestX=Xrm
+XXXXifXnotX"en"XinXlanXandXnotXlanX==X"":
+XXXXXXXXtry:
+XXXXXXXXXXXXtestX=Xtranslator.translate(test,Xdest="en")
+XXXXXXXXXXXXtestX=Xtest.text
+XXXXXXXXexcept:
+XXXXXXXXXXXXreturn
 
-    # test = emoji.demojize(test.strip())
+XXXX#XtestX=Xemoji.demojize(test.strip())
 
-    test = test.replace("Ineruki", "Aco")
-    test = test.replace("Ineruki", "Aco")
-    response = await lunaQuery(test, message.from_user.id if message.from_user else 0)
-    response = response.replace("Aco", "Ineruki")
-    response = response.replace("aco", "Ineruki")
+XXXX#XKangXwithXtheXcreditsXbitchesX@InukaASiTH
+XXXXtestX=Xtest.replace("Ineruki",X"Aco")
+XXXXtestX=Xtest.replace("Ineruki",X"Aco")
 
-    pro = response
-    if not "en" in lan and not lan == "":
-        try:
-            pro = translator.translate(pro, dest=lan)
-            pro = pro.text
-        except Exception:
-            return
-    try:
-        await Inerukix.send_chat_action(message.chat.id, "typing")
-        await message.reply_text(pro)
-    except CFError:
-        return
+XXXXresponseX=XawaitXlunaQuery(test,Xmessage.from_user.idXifXmessage.from_userXelseX0)
+XXXXresponseX=Xresponse.replace("Aco",X"Ineruki")
+XXXXresponseX=Xresponse.replace("aco",X"Ineruki")
+
+XXXXproX=Xresponse
+XXXXifXnotX"en"XinXlanXandXnotXlanX==X"":
+XXXXXXXXproX=Xtranslator.translate(pro,Xdest=lan)
+XXXXXXXXproX=Xpro.text
+XXXXtry:
+XXXXXXXXawaitXInerukix.send_chat_action(message.chat.id,X"typing")
+XXXXXXXXawaitXmessage.reply_text(pro)
+XXXXexceptXCFError:
+XXXXXXXXreturn
 
 
-__help__ = """
-<b> Chatbot </b>
-INERUKI AI 3.0 IS THE ONLY AI SYSTEM WHICH CAN DETECT & REPLY UPTO 200 LANGUAGES
+@Inerukix.on_message(
+XXXXfilters.regex("Ineruki|Ineruki|InerukiX|Inerukix|Inerukix")
+XXXX&X~filters.bot
+XXXX&X~filters.via_bot
+XXXX&X~filters.forwarded
+XXXX&X~filters.reply
+XXXX&X~filters.channel
+XXXX&X~filters.edited
+)
+asyncXdefXinuka(client,Xmessage):
+XXXXmsgX=Xmessage.text
+XXXXifXmsg.startswith("/")XorXmsg.startswith("@"):
+XXXXXXXXmessage.continue_propagation()
+XXXXuX=Xmsg.split()
+XXXXemjX=Xextract_emojis(msg)
+XXXXmsgX=Xmsg.replace(emj,X"")
+XXXXifX(
+XXXXXXXX[(k)XforXkXinXuXifXk.startswith("@")]
+XXXXXXXXandX[(k)XforXkXinXuXifXk.startswith("#")]
+XXXXXXXXandX[(k)XforXkXinXuXifXk.startswith("/")]
+XXXXXXXXandXre.findall(r"\[([^]]+)]\(\s*([^)]+)\s*\)",Xmsg)X!=X[]
+XXXX):
 
- - /chatbot [ON/OFF]: Enables and disables AI Chat mode (E CLUSIVE)
- - /chatbot EN : Enables English only chatbot
- 
- 
-<b> Assistant </b>
- - /ask [question]: Ask question from Ineruki
- - /ask [reply to voice note]: Get voice reply
- 
+XXXXXXXXhX=X"X".join(filter(lambdaXx:Xx[0]X!=X"@",Xu))
+XXXXXXXXkmX=Xre.sub(r"\[([^]]+)]\(\s*([^)]+)\s*\)",Xr"",Xh)
+XXXXXXXXtmX=Xkm.split()
+XXXXXXXXjmX=X"X".join(filter(lambdaXx:Xx[0]X!=X"#",Xtm))
+XXXXXXXXhmX=Xjm.split()
+XXXXXXXXrmX=X"X".join(filter(lambdaXx:Xx[0]X!=X"/",Xhm))
+XXXXelifX[(k)XforXkXinXuXifXk.startswith("@")]:
+
+XXXXXXXXrmX=X"X".join(filter(lambdaXx:Xx[0]X!=X"@",Xu))
+XXXXelifX[(k)XforXkXinXuXifXk.startswith("#")]:
+XXXXXXXXrmX=X"X".join(filter(lambdaXx:Xx[0]X!=X"#",Xu))
+XXXXelifX[(k)XforXkXinXuXifXk.startswith("/")]:
+XXXXXXXXrmX=X"X".join(filter(lambdaXx:Xx[0]X!=X"/",Xu))
+XXXXelifXre.findall(r"\[([^]]+)]\(\s*([^)]+)\s*\)",Xmsg)X!=X[]:
+XXXXXXXXrmX=Xre.sub(r"\[([^]]+)]\(\s*([^)]+)\s*\)",Xr"",Xmsg)
+XXXXelse:
+XXXXXXXXrmX=Xmsg
+XXXXXXXX#XprintX(rm)
+XXXXtry:
+XXXXXXXXlanX=Xtranslator.detect(rm)
+XXXXXXXXlanX=Xlan.lang
+XXXXexcept:
+XXXXXXXXreturn
+XXXXtestX=Xrm
+XXXXifXnotX"en"XinXlanXandXnotXlanX==X"":
+XXXXXXXXtry:
+XXXXXXXXXXXXtestX=Xtranslator.translate(test,Xdest="en")
+XXXXXXXXXXXXtestX=Xtest.text
+XXXXXXXXexcept:
+XXXXXXXXXXXXreturn
+
+XXXX#XtestX=Xemoji.demojize(test.strip())
+
+XXXXtestX=Xtest.replace("Ineruki",X"Aco")
+XXXXtestX=Xtest.replace("Ineruki",X"Aco")
+XXXXresponseX=XawaitXlunaQuery(test,Xmessage.from_user.idXifXmessage.from_userXelseX0)
+XXXXresponseX=Xresponse.replace("Aco",X"Ineruki")
+XXXXresponseX=Xresponse.replace("aco",X"Ineruki")
+
+XXXXproX=Xresponse
+XXXXifXnotX"en"XinXlanXandXnotXlanX==X"":
+XXXXXXXXtry:
+XXXXXXXXXXXXproX=Xtranslator.translate(pro,Xdest=lan)
+XXXXXXXXXXXXproX=Xpro.text
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXreturn
+XXXXtry:
+XXXXXXXXawaitXInerukix.send_chat_action(message.chat.id,X"typing")
+XXXXXXXXawaitXmessage.reply_text(pro)
+XXXXexceptXCFError:
+XXXXXXXXreturn
+
+
+__help__X=X"""
+<b>XChatbotX</b>
+INERUKIXAIX3.0XISXTHEXONLYXAIXSYSTEMXWHICHXCANXDETECTX&XREPLYXUPTOX200XLANGUAGES
+
+X-X/chatbotX[ON/OFF]:XEnablesXandXdisablesXAIXChatXmodeX(EXCLUSIVE)
+X-X/chatbotXENX:XEnablesXEnglishXonlyXchatbot
+X
+X
+<b>XAssistantX</b>
+X-X/askX[question]:XAskXquestionXfromXIneruki
+X-X/askX[replyXtoXvoiceXnote]:XGetXvoiceXreply
+X
 """
 
-__mod_name__ = "AI Assistant"
+__mod_name__X=X"AIXAssistant"

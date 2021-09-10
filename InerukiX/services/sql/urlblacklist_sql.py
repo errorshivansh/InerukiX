@@ -1,83 +1,83 @@
-#    MissJuliaRobot (A Telegram Bot Project)
-#    Copyright (C) 2019-Present Anonymous (https://t.me/MissJulia_Robot)
+#XXXXMissJuliaRobotX(AXTelegramXBotXProject)
+#XXXXCopyrightX(C)X2019-PresentXAnonymousX(https://t.me/MissJulia_Robot)
 
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published by
-#    the Free Software Foundation, in version 3 of the License.
+#XXXXThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XXXXitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXasXpublishedXby
+#XXXXtheXFreeXSoftwareXFoundation,XinXversionX3XofXtheXLicense.
 
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
+#XXXXThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XXXXbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XXXXMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XXXXGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see < https://www.gnu.org/licenses/agpl-3.0.en.html >
-
-
-import threading
-
-from sqlalchemy import Column, String, UnicodeText
-
-from Ineruki .services.sql import BASE, SESSION
+#XXXXYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XXXXalongXwithXthisXprogram.XXIfXnot,XseeX<Xhttps://www.gnu.org/licenses/agpl-3.0.en.htmlX>
 
 
-class URLBlackListFilters(BASE):
-    __tablename__ = "url_blacklist"
-    chat_id = Column(String(14), primary_key=True)
-    domain = Column(UnicodeText, primary_key=True, nullable=False)
+importXthreading
 
-    def __init__(self, chat_id, domain):
-        self.chat_id = str(chat_id)
-        self.domain = str(domain)
+fromXsqlalchemyXimportXColumn,XString,XUnicodeText
+
+fromXInerukiX.services.sqlXimportXBASE,XSESSION
+
+
+classXURLBlackListFilters(BASE):
+XXXX__tablename__X=X"url_blacklist"
+XXXXchat_idX=XColumn(String(14),Xprimary_key=True)
+XXXXdomainX=XColumn(UnicodeText,Xprimary_key=True,Xnullable=False)
+
+XXXXdefX__init__(self,Xchat_id,Xdomain):
+XXXXXXXXself.chat_idX=Xstr(chat_id)
+XXXXXXXXself.domainX=Xstr(domain)
 
 
 URLBlackListFilters.__table__.create(checkfirst=True)
 
-URL_BLACKLIST_FILTER_INSERTION_LOCK = threading.RLock()
+URL_BLACKLIST_FILTER_INSERTION_LOCKX=Xthreading.RLock()
 
-CHAT_URL_BLACKLISTS = {}
-
-
-def blacklist_url(chat_id, domain):
-    with URL_BLACKLIST_FILTER_INSERTION_LOCK:
-        domain_filt = URLBlackListFilters(str(chat_id), domain)
-
-        SESSION.merge(domain_filt)
-        SESSION.commit()
-        CHAT_URL_BLACKLISTS.setdefault(str(chat_id), set()).add(domain)
+CHAT_URL_BLACKLISTSX=X{}
 
 
-def rm_url_from_blacklist(chat_id, domain):
-    with URL_BLACKLIST_FILTER_INSERTION_LOCK:
-        domain_filt = SESSION.query(URLBlackListFilters).get((str(chat_id), domain))
-        if domain_filt:
-            if domain in CHAT_URL_BLACKLISTS.get(str(chat_id), set()):
-                CHAT_URL_BLACKLISTS.get(str(chat_id), set()).remove(domain)
-            SESSION.delete(domain_filt)
-            SESSION.commit()
-            return True
+defXblacklist_url(chat_id,Xdomain):
+XXXXwithXURL_BLACKLIST_FILTER_INSERTION_LOCK:
+XXXXXXXXdomain_filtX=XURLBlackListFilters(str(chat_id),Xdomain)
 
-        SESSION.close()
-        return False
+XXXXXXXXSESSION.merge(domain_filt)
+XXXXXXXXSESSION.commit()
+XXXXXXXXCHAT_URL_BLACKLISTS.setdefault(str(chat_id),Xset()).add(domain)
 
 
-def get_blacklisted_urls(chat_id):
-    return CHAT_URL_BLACKLISTS.get(str(chat_id), set())
+defXrm_url_from_blacklist(chat_id,Xdomain):
+XXXXwithXURL_BLACKLIST_FILTER_INSERTION_LOCK:
+XXXXXXXXdomain_filtX=XSESSION.query(URLBlackListFilters).get((str(chat_id),Xdomain))
+XXXXXXXXifXdomain_filt:
+XXXXXXXXXXXXifXdomainXinXCHAT_URL_BLACKLISTS.get(str(chat_id),Xset()):
+XXXXXXXXXXXXXXXXCHAT_URL_BLACKLISTS.get(str(chat_id),Xset()).remove(domain)
+XXXXXXXXXXXXSESSION.delete(domain_filt)
+XXXXXXXXXXXXSESSION.commit()
+XXXXXXXXXXXXreturnXTrue
+
+XXXXXXXXSESSION.close()
+XXXXXXXXreturnXFalse
 
 
-def _load_chat_blacklist():
-    global CHAT_URL_BLACKLISTS
-    try:
-        chats = SESSION.query(URLBlackListFilters.chat_id).distinct().all()
-        for (chat_id,) in chats:
-            CHAT_URL_BLACKLISTS[chat_id] = []
+defXget_blacklisted_urls(chat_id):
+XXXXreturnXCHAT_URL_BLACKLISTS.get(str(chat_id),Xset())
 
-        all_urls = SESSION.query(URLBlackListFilters).all()
-        for url in all_urls:
-            CHAT_URL_BLACKLISTS[url.chat_id] += [url.domain]
-        CHAT_URL_BLACKLISTS = {k: set(v) for k, v in CHAT_URL_BLACKLISTS.items()}
-    finally:
-        SESSION.close()
+
+defX_load_chat_blacklist():
+XXXXglobalXCHAT_URL_BLACKLISTS
+XXXXtry:
+XXXXXXXXchatsX=XSESSION.query(URLBlackListFilters.chat_id).distinct().all()
+XXXXXXXXforX(chat_id,)XinXchats:
+XXXXXXXXXXXXCHAT_URL_BLACKLISTS[chat_id]X=X[]
+
+XXXXXXXXall_urlsX=XSESSION.query(URLBlackListFilters).all()
+XXXXXXXXforXurlXinXall_urls:
+XXXXXXXXXXXXCHAT_URL_BLACKLISTS[url.chat_id]X+=X[url.domain]
+XXXXXXXXCHAT_URL_BLACKLISTSX=X{k:Xset(v)XforXk,XvXinXCHAT_URL_BLACKLISTS.items()}
+XXXXfinally:
+XXXXXXXXSESSION.close()
 
 
 _load_chat_blacklist()

@@ -1,140 +1,140 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-from asyncio import sleep
+fromXasyncioXimportXsleep
 
-from telethon import events
-from telethon.errors import ChatAdminRequiredError, UserAdminInvalidError
-from telethon.tl.functions.channels import EditBannedRequest
-from telethon.tl.types import ChatBannedRights
+fromXtelethonXimportXevents
+fromXtelethon.errorsXimportXChatAdminRequiredError,XUserAdminInvalidError
+fromXtelethon.tl.functions.channelsXimportXEditBannedRequest
+fromXtelethon.tl.typesXimportXChatBannedRights
 
-from Ineruki  import OWNER_ID
-from Ineruki .services.telethon import tbot as client
+fromXInerukiXXimportXOWNER_ID
+fromXInerukiX.services.telethonXimportXtbotXasXclient
 
-# =================== CONSTANT ===================
+#X===================XCONSTANTX===================
 
-BANNED_RIGHTS = ChatBannedRights(
-    until_date=None,
-    view_messages=True,
-    send_messages=True,
-    send_media=True,
-    send_stickers=True,
-    send_gifs=True,
-    send_games=True,
-    send_inline=True,
-    embed_links=True,
+BANNED_RIGHTSX=XChatBannedRights(
+XXXXuntil_date=None,
+XXXXview_messages=True,
+XXXXsend_messages=True,
+XXXXsend_media=True,
+XXXXsend_stickers=True,
+XXXXsend_gifs=True,
+XXXXsend_games=True,
+XXXXsend_inline=True,
+XXXXembed_links=True,
 )
 
 
-UNBAN_RIGHTS = ChatBannedRights(
-    until_date=None,
-    send_messages=None,
-    send_media=None,
-    send_stickers=None,
-    send_gifs=None,
-    send_games=None,
-    send_inline=None,
-    embed_links=None,
+UNBAN_RIGHTSX=XChatBannedRights(
+XXXXuntil_date=None,
+XXXXsend_messages=None,
+XXXXsend_media=None,
+XXXXsend_stickers=None,
+XXXXsend_gifs=None,
+XXXXsend_games=None,
+XXXXsend_inline=None,
+XXXXembed_links=None,
 )
 
-OFFICERS = OWNER_ID
+OFFICERSX=XOWNER_ID
 
-# Check if user has admin rights
-async def is_register_admin(chat, user):
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
+#XCheckXifXuserXhasXadminXrights
+asyncXdefXis_register_admin(chat,Xuser):
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
 
-        return isinstance(
-            (
-                await tbot(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    if isinstance(chat, types.InputPeerChat):
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXtbot(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXifXisinstance(chat,Xtypes.InputPeerChat):
 
-        ui = await tbot.get_peer_id(user)
-        ps = (
-            await tbot(functions.messages.GetFullChatRequest(chat.chat_id))
-        ).full_chat.participants.participants
-        return isinstance(
-            next((p for p in ps if p.user_id == ui), None),
-            (types.ChatParticipantAdmin, types.ChatParticipantCreator),
-        )
-    return None
+XXXXXXXXuiX=XawaitXtbot.get_peer_id(user)
+XXXXXXXXpsX=X(
+XXXXXXXXXXXXawaitXtbot(functions.messages.GetFullChatRequest(chat.chat_id))
+XXXXXXXX).full_chat.participants.participants
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXXnext((pXforXpXinXpsXifXp.user_idX==Xui),XNone),
+XXXXXXXXXXXX(types.ChatParticipantAdmin,Xtypes.ChatParticipantCreator),
+XXXXXXXX)
+XXXXreturnXNone
 
 
-@client.on(events.NewMessage(pattern=f"^[!/]zombies ?(.*)"))
-async def zombies(event):
-    """For .zombies command, list all the zombies in a chat."""
-    if event.fwd_from:
-        return
-    if event.is_group:
-        if await is_register_admin(event.input_chat, event.message.sender_id):
-            pass
-        else:
-            return
-    con = event.pattern_match.group(1).lower()
-    del_u = 0
-    del_status = "No Deleted Accounts Found, Group Is Clean."
+@client.on(events.NewMessage(pattern=f"^[!/]zombiesX?(.*)"))
+asyncXdefXzombies(event):
+XXXX"""ForX.zombiesXcommand,XlistXallXtheXzombiesXinXaXchat."""
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXifXevent.is_group:
+XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+XXXXconX=Xevent.pattern_match.group(1).lower()
+XXXXdel_uX=X0
+XXXXdel_statusX=X"NoXDeletedXAccountsXFound,XGroupXIsXClean."
 
-    if con != "clean":
-        find_zombies = await event.respond("Searching For Zombies...")
-        async for user in event.client.iter_participants(event.chat_id):
+XXXXifXconX!=X"clean":
+XXXXXXXXfind_zombiesX=XawaitXevent.respond("SearchingXForXZombies...")
+XXXXXXXXasyncXforXuserXinXevent.client.iter_participants(event.chat_id):
 
-            if user.deleted:
-                del_u += 1
-                await sleep(1)
-        if del_u > 0:
-            del_status = f"Found **{del_u}** Zombies In This Group.\
-            \nClean Them By Using - `/zombies clean`"
-        await find_zombies.edit(del_status)
-        return
+XXXXXXXXXXXXifXuser.deleted:
+XXXXXXXXXXXXXXXXdel_uX+=X1
+XXXXXXXXXXXXXXXXawaitXsleep(1)
+XXXXXXXXifXdel_uX>X0:
+XXXXXXXXXXXXdel_statusX=Xf"FoundX**{del_u}**XZombiesXInXThisXGroup.\
+XXXXXXXXXXXX\nCleanXThemXByXUsingX-X`/zombiesXclean`"
+XXXXXXXXawaitXfind_zombies.edit(del_status)
+XXXXXXXXreturn
 
-    # Here laying the sanity check
-    chat = await event.get_chat()
-    chat.admin_rights
-    chat.creator
+XXXX#XHereXlayingXtheXsanityXcheck
+XXXXchatX=XawaitXevent.get_chat()
+XXXXchat.admin_rights
+XXXXchat.creator
 
-    # Well
+XXXX#XWell
 
-    cleaning_zombies = await event.respond("Cleaning Zombies...")
-    del_u = 0
-    del_a = 0
+XXXXcleaning_zombiesX=XawaitXevent.respond("CleaningXZombies...")
+XXXXdel_uX=X0
+XXXXdel_aX=X0
 
-    async for user in event.client.iter_participants(event.chat_id):
-        if user.deleted:
-            try:
-                await event.client(
-                    EditBannedRequest(event.chat_id, user.id, BANNED_RIGHTS)
-                )
-            except ChatAdminRequiredError:
-                await cleaning_zombies.edit("I Don't Have Ban Rights In This Group.")
-                return
-            except UserAdminInvalidError:
-                del_u -= 1
-                del_a += 1
-            await event.client(EditBannedRequest(event.chat_id, user.id, UNBAN_RIGHTS))
-            del_u += 1
+XXXXasyncXforXuserXinXevent.client.iter_participants(event.chat_id):
+XXXXXXXXifXuser.deleted:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXevent.client(
+XXXXXXXXXXXXXXXXXXXXEditBannedRequest(event.chat_id,Xuser.id,XBANNED_RIGHTS)
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXChatAdminRequiredError:
+XXXXXXXXXXXXXXXXawaitXcleaning_zombies.edit("IXDon'tXHaveXBanXRightsXInXThisXGroup.")
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXexceptXUserAdminInvalidError:
+XXXXXXXXXXXXXXXXdel_uX-=X1
+XXXXXXXXXXXXXXXXdel_aX+=X1
+XXXXXXXXXXXXawaitXevent.client(EditBannedRequest(event.chat_id,Xuser.id,XUNBAN_RIGHTS))
+XXXXXXXXXXXXdel_uX+=X1
 
-    if del_u > 0:
-        del_status = f"Cleaned `{del_u}` Zombies"
+XXXXifXdel_uX>X0:
+XXXXXXXXdel_statusX=Xf"CleanedX`{del_u}`XZombies"
 
-    if del_a > 0:
-        del_status = f"Cleaned `{del_u}` Zombies \
-        \n`{del_a}` Zombie Admin Accounts Are Not Removed!"
+XXXXifXdel_aX>X0:
+XXXXXXXXdel_statusX=Xf"CleanedX`{del_u}`XZombiesX\
+XXXXXXXX\n`{del_a}`XZombieXAdminXAccountsXAreXNotXRemoved!"
 
-    await cleaning_zombies.edit(del_status)
+XXXXawaitXcleaning_zombies.edit(del_status)

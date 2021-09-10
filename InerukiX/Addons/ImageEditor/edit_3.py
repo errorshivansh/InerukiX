@@ -1,165 +1,165 @@
-# By @TroJanzHE 
-import os
-import shutil
+#XByX@TroJanzHEX
+importXos
+importXshutil
 
-from PIL import Image, ImageOps
-
-
-async def black_border(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "imaged-black-border.png"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            a = await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            img = Image.open(a)
-            img_with_border = ImageOps.expand(img, border=100, fill="black")
-            img_with_border.save(edit_img_loc)
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("black_border-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+fromXPILXimportXImage,XImageOps
 
 
-async def green_border(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "imaged-green-border.png"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            a = await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            img = Image.open(a)
-            img_with_border = ImageOps.expand(img, border=100, fill="green")
-            img_with_border.save(edit_img_loc)
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("green_border-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXblack_border(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"imaged-black-border.png"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXaX=XawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXimgX=XImage.open(a)
+XXXXXXXXXXXXimg_with_borderX=XImageOps.expand(img,Xborder=100,Xfill="black")
+XXXXXXXXXXXXimg_with_border.save(edit_img_loc)
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("black_border-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def blue_border(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "imaged-blue-border.png"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            a = await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            img = Image.open(a)
-            img_with_border = ImageOps.expand(img, border=100, fill="blue")
-            img_with_border.save(edit_img_loc)
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("blue_border-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXgreen_border(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"imaged-green-border.png"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXaX=XawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXimgX=XImage.open(a)
+XXXXXXXXXXXXimg_with_borderX=XImageOps.expand(img,Xborder=100,Xfill="green")
+XXXXXXXXXXXXimg_with_border.save(edit_img_loc)
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("green_border-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def red_border(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "imaged-red-border.png"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            a = await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            img = Image.open(a)
-            img_with_border = ImageOps.expand(img, border=100, fill="red")
-            img_with_border.save(edit_img_loc)
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("red_border-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXblue_border(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"imaged-blue-border.png"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXaX=XawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXimgX=XImage.open(a)
+XXXXXXXXXXXXimg_with_borderX=XImageOps.expand(img,Xborder=100,Xfill="blue")
+XXXXXXXXXXXXimg_with_border.save(edit_img_loc)
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("blue_border-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
+
+
+asyncXdefXred_border(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"imaged-red-border.png"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXaX=XawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXimgX=XImage.open(a)
+XXXXXXXXXXXXimg_with_borderX=XImageOps.expand(img,Xborder=100,Xfill="red")
+XXXXXXXXXXXXimg_with_border.save(edit_img_loc)
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("red_border-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn

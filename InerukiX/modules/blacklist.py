@@ -1,219 +1,219 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-import html
-
-import tldextract
-from telethon import events, types
-from telethon.tl import functions
-
-import Ineruki .services.sql.urlblacklist_sql as urlsql
-from Ineruki .services.events import register
-from Ineruki .services.telethon import tbot
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
 
-async def can_change_info(message):
-    result = await tbot(
-        functions.channels.GetParticipantRequest(
-            channel=message.chat_id,
-            user_id=message.sender_id,
-        )
-    )
-    p = result.participant
-    return isinstance(p, types.ChannelParticipantCreator) or (
-        isinstance(p, types.ChannelParticipantAdmin) and p.admin_rights.change_info
-    )
+importXhtml
+
+importXtldextract
+fromXtelethonXimportXevents,Xtypes
+fromXtelethon.tlXimportXfunctions
+
+importXInerukiX.services.sql.urlblacklist_sqlXasXurlsql
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.telethonXimportXtbot
 
 
-async def is_register_admin(chat, user):
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
-        return isinstance(
-            (
-                await tbot(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    if isinstance(chat, types.InputPeerUser):
-        return True
+asyncXdefXcan_change_info(message):
+XXXXresultX=XawaitXtbot(
+XXXXXXXXfunctions.channels.GetParticipantRequest(
+XXXXXXXXXXXXchannel=message.chat_id,
+XXXXXXXXXXXXuser_id=message.sender_id,
+XXXXXXXX)
+XXXX)
+XXXXpX=Xresult.participant
+XXXXreturnXisinstance(p,Xtypes.ChannelParticipantCreator)XorX(
+XXXXXXXXisinstance(p,Xtypes.ChannelParticipantAdmin)XandXp.admin_rights.change_info
+XXXX)
+
+
+asyncXdefXis_register_admin(chat,Xuser):
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXtbot(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXifXisinstance(chat,Xtypes.InputPeerUser):
+XXXXXXXXreturnXTrue
 
 
 @register(pattern="^/addurl")
-async def _(event):
-    if event.fwd_from:
-        return
-    if event.is_private:
-        return
-    if event.is_group:
-        if await can_change_info(message=event):
-            pass
-        else:
-            return
-    chat = event.chat
-    urls = event.text.split(None, 1)
-    if len(urls) > 1:
-        urls = urls[1]
-        to_blacklist = list({uri.strip() for uri in urls.split("\n") if uri.strip()})
-        blacklisted = []
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXifXevent.is_private:
+XXXXXXXXreturn
+XXXXifXevent.is_group:
+XXXXXXXXifXawaitXcan_change_info(message=event):
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+XXXXchatX=Xevent.chat
+XXXXurlsX=Xevent.text.split(None,X1)
+XXXXifXlen(urls)X>X1:
+XXXXXXXXurlsX=Xurls[1]
+XXXXXXXXto_blacklistX=Xlist({uri.strip()XforXuriXinXurls.split("\n")XifXuri.strip()})
+XXXXXXXXblacklistedX=X[]
 
-        for uri in to_blacklist:
-            extract_url = tldextract.extract(uri)
-            if extract_url.domain and extract_url.suffix:
-                blacklisted.append(extract_url.domain + "." + extract_url.suffix)
-                urlsql.blacklist_url(
-                    chat.id, extract_url.domain + "." + extract_url.suffix
-                )
+XXXXXXXXforXuriXinXto_blacklist:
+XXXXXXXXXXXXextract_urlX=Xtldextract.extract(uri)
+XXXXXXXXXXXXifXextract_url.domainXandXextract_url.suffix:
+XXXXXXXXXXXXXXXXblacklisted.append(extract_url.domainX+X"."X+Xextract_url.suffix)
+XXXXXXXXXXXXXXXXurlsql.blacklist_url(
+XXXXXXXXXXXXXXXXXXXXchat.id,Xextract_url.domainX+X"."X+Xextract_url.suffix
+XXXXXXXXXXXXXXXX)
 
-        if len(to_blacklist) == 1:
-            extract_url = tldextract.extract(to_blacklist[0])
-            if extract_url.domain and extract_url.suffix:
-                await event.reply(
-                    "Added <code>{}</code> domain to the blacklist!".format(
-                        html.escape(extract_url.domain + "." + extract_url.suffix)
-                    ),
-                    parse_mode="html",
-                )
-            else:
-                await event.reply("You are trying to blacklist an invalid url")
-        else:
-            await event.reply(
-                "Added <code>{}</code> domains to the blacklist.".format(
-                    len(blacklisted)
-                ),
-                parse_mode="html",
-            )
-    else:
-        await event.reply("Tell me which urls you would like to add to the blacklist.")
+XXXXXXXXifXlen(to_blacklist)X==X1:
+XXXXXXXXXXXXextract_urlX=Xtldextract.extract(to_blacklist[0])
+XXXXXXXXXXXXifXextract_url.domainXandXextract_url.suffix:
+XXXXXXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXXXXXX"AddedX<code>{}</code>XdomainXtoXtheXblacklist!".format(
+XXXXXXXXXXXXXXXXXXXXXXXXhtml.escape(extract_url.domainX+X"."X+Xextract_url.suffix)
+XXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXXXXXparse_mode="html",
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXawaitXevent.reply("YouXareXtryingXtoXblacklistXanXinvalidXurl")
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXX"AddedX<code>{}</code>XdomainsXtoXtheXblacklist.".format(
+XXXXXXXXXXXXXXXXXXXXlen(blacklisted)
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXparse_mode="html",
+XXXXXXXXXXXX)
+XXXXelse:
+XXXXXXXXawaitXevent.reply("TellXmeXwhichXurlsXyouXwouldXlikeXtoXaddXtoXtheXblacklist.")
 
 
 @register(pattern="^/delurl")
-async def _(event):
-    if event.fwd_from:
-        return
-    if event.is_private:
-        return
-    if event.is_group:
-        if await can_change_info(message=event):
-            pass
-        else:
-            return
-    chat = event.chat
-    urls = event.text.split(None, 1)
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXifXevent.is_private:
+XXXXXXXXreturn
+XXXXifXevent.is_group:
+XXXXXXXXifXawaitXcan_change_info(message=event):
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+XXXXchatX=Xevent.chat
+XXXXurlsX=Xevent.text.split(None,X1)
 
-    if len(urls) > 1:
-        urls = urls[1]
-        to_unblacklist = list({uri.strip() for uri in urls.split("\n") if uri.strip()})
-        unblacklisted = 0
-        for uri in to_unblacklist:
-            extract_url = tldextract.extract(uri)
-            success = urlsql.rm_url_from_blacklist(
-                chat.id, extract_url.domain + "." + extract_url.suffix
-            )
-            if success:
-                unblacklisted += 1
+XXXXifXlen(urls)X>X1:
+XXXXXXXXurlsX=Xurls[1]
+XXXXXXXXto_unblacklistX=Xlist({uri.strip()XforXuriXinXurls.split("\n")XifXuri.strip()})
+XXXXXXXXunblacklistedX=X0
+XXXXXXXXforXuriXinXto_unblacklist:
+XXXXXXXXXXXXextract_urlX=Xtldextract.extract(uri)
+XXXXXXXXXXXXsuccessX=Xurlsql.rm_url_from_blacklist(
+XXXXXXXXXXXXXXXXchat.id,Xextract_url.domainX+X"."X+Xextract_url.suffix
+XXXXXXXXXXXX)
+XXXXXXXXXXXXifXsuccess:
+XXXXXXXXXXXXXXXXunblacklistedX+=X1
 
-        if len(to_unblacklist) == 1:
-            if unblacklisted:
-                await event.reply(
-                    "Removed <code>{}</code> from the blacklist!".format(
-                        html.escape(to_unblacklist[0])
-                    ),
-                    parse_mode="html",
-                )
-            else:
-                await event.reply("This isn't a blacklisted domain...!")
-        elif unblacklisted == len(to_unblacklist):
-            await event.reply(
-                "Removed <code>{}</code> domains from the blacklist.".format(
-                    unblacklisted
-                ),
-                parse_mode="html",
-            )
-        elif not unblacklisted:
-            await event.reply("None of these domains exist, so they weren't removed.")
-        else:
-            await event.reply(
-                "Removed <code>{}</code> domains from the blacklist. {} did not exist, so were not removed.".format(
-                    unblacklisted, len(to_unblacklist) - unblacklisted
-                ),
-                parse_mode="html",
-            )
-    else:
-        await event.reply(
-            "Tell me which domains you would like to remove from the blacklist."
-        )
+XXXXXXXXifXlen(to_unblacklist)X==X1:
+XXXXXXXXXXXXifXunblacklisted:
+XXXXXXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXXXXXX"RemovedX<code>{}</code>XfromXtheXblacklist!".format(
+XXXXXXXXXXXXXXXXXXXXXXXXhtml.escape(to_unblacklist[0])
+XXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXXXXXparse_mode="html",
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXawaitXevent.reply("ThisXisn'tXaXblacklistedXdomain...!")
+XXXXXXXXelifXunblacklistedX==Xlen(to_unblacklist):
+XXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXX"RemovedX<code>{}</code>XdomainsXfromXtheXblacklist.".format(
+XXXXXXXXXXXXXXXXXXXXunblacklisted
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXparse_mode="html",
+XXXXXXXXXXXX)
+XXXXXXXXelifXnotXunblacklisted:
+XXXXXXXXXXXXawaitXevent.reply("NoneXofXtheseXdomainsXexist,XsoXtheyXweren'tXremoved.")
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXX"RemovedX<code>{}</code>XdomainsXfromXtheXblacklist.X{}XdidXnotXexist,XsoXwereXnotXremoved.".format(
+XXXXXXXXXXXXXXXXXXXXunblacklisted,Xlen(to_unblacklist)X-Xunblacklisted
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXparse_mode="html",
+XXXXXXXXXXXX)
+XXXXelse:
+XXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXX"TellXmeXwhichXdomainsXyouXwouldXlikeXtoXremoveXfromXtheXblacklist."
+XXXXXXXX)
 
 
 @tbot.on(events.NewMessage(incoming=True))
-async def on_url_message(event):
-    if event.is_private:
-        return
-    chat = event.chat
-    extracted_domains = []
-    for (ent, txt) in event.get_entities_text():
-        if ent.offset != 0:
-            break
-        if isinstance(ent, types.MessageEntityUrl):
-            url = txt
-            extract_url = tldextract.extract(url)
-            extracted_domains.append(extract_url.domain + "." + extract_url.suffix)
-    for url in urlsql.get_blacklisted_urls(chat.id):
-        if url in extracted_domains:
-            try:
-                await event.delete()
-            except:
-                return
+asyncXdefXon_url_message(event):
+XXXXifXevent.is_private:
+XXXXXXXXreturn
+XXXXchatX=Xevent.chat
+XXXXextracted_domainsX=X[]
+XXXXforX(ent,Xtxt)XinXevent.get_entities_text():
+XXXXXXXXifXent.offsetX!=X0:
+XXXXXXXXXXXXbreak
+XXXXXXXXifXisinstance(ent,Xtypes.MessageEntityUrl):
+XXXXXXXXXXXXurlX=Xtxt
+XXXXXXXXXXXXextract_urlX=Xtldextract.extract(url)
+XXXXXXXXXXXXextracted_domains.append(extract_url.domainX+X"."X+Xextract_url.suffix)
+XXXXforXurlXinXurlsql.get_blacklisted_urls(chat.id):
+XXXXXXXXifXurlXinXextracted_domains:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXevent.delete()
+XXXXXXXXXXXXexcept:
+XXXXXXXXXXXXXXXXreturn
 
 
 @register(pattern="^/geturl$")
-async def _(event):
-    if event.fwd_from:
-        return
-    if event.is_private:
-        return
-    if event.is_group:
-        if await can_change_info(message=event):
-            pass
-        else:
-            return
-    chat = event.chat
-    base_string = "Current <b>blacklisted</b> domains:\n"
-    blacklisted = urlsql.get_blacklisted_urls(chat.id)
-    if not blacklisted:
-        await event.reply("There are no blacklisted domains here!")
-        return
-    for domain in blacklisted:
-        base_string += "- <code>{}</code>\n".format(domain)
-    await event.reply(base_string, parse_mode="html")
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXifXevent.is_private:
+XXXXXXXXreturn
+XXXXifXevent.is_group:
+XXXXXXXXifXawaitXcan_change_info(message=event):
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+XXXXchatX=Xevent.chat
+XXXXbase_stringX=X"CurrentX<b>blacklisted</b>Xdomains:\n"
+XXXXblacklistedX=Xurlsql.get_blacklisted_urls(chat.id)
+XXXXifXnotXblacklisted:
+XXXXXXXXawaitXevent.reply("ThereXareXnoXblacklistedXdomainsXhere!")
+XXXXXXXXreturn
+XXXXforXdomainXinXblacklisted:
+XXXXXXXXbase_stringX+=X"-X<code>{}</code>\n".format(domain)
+XXXXawaitXevent.reply(base_string,Xparse_mode="html")
 
 
-__help__ = """
-<b> Ineruki's filters are the blacklist too </b>
- - /addfilter [trigger] Select action: blacklists the trigger
- - /delfilter [trigger] : stop blacklisting a certain blacklist trigger
- - /filters: list all active blacklist filters
- 
-<b> Url Blacklist </B>
- - /geturl: View the current blacklisted urls
- - /addurl [urls]: Add a domain to the blacklist. The bot will automatically parse the url.
- - /delurl [urls]: Remove urls from the blacklist.
-<b> Example:</b>
- - /addblacklist the admins suck: This will remove "the admins suck" everytime some non-admin types it
- - /addurl bit.ly: This would delete any message containing url "bit.ly"
+__help__X=X"""
+<b>XIneruki'sXfiltersXareXtheXblacklistXtooX</b>
+X-X/addfilterX[trigger]XSelectXaction:XblacklistsXtheXtrigger
+X-X/delfilterX[trigger]X:XstopXblacklistingXaXcertainXblacklistXtrigger
+X-X/filters:XlistXallXactiveXblacklistXfilters
+X
+<b>XUrlXBlacklistX</B>
+X-X/geturl:XViewXtheXcurrentXblacklistedXurls
+X-X/addurlX[urls]:XAddXaXdomainXtoXtheXblacklist.XTheXbotXwillXautomaticallyXparseXtheXurl.
+X-X/delurlX[urls]:XRemoveXurlsXfromXtheXblacklist.
+<b>XExample:</b>
+X-X/addblacklistXtheXadminsXsuck:XThisXwillXremoveX"theXadminsXsuck"XeverytimeXsomeXnon-adminXtypesXit
+X-X/addurlXbit.ly:XThisXwouldXdeleteXanyXmessageXcontainingXurlX"bit.ly"
 """
-__mod_name__ = "Blacklist"
+__mod_name__X=X"Blacklist"

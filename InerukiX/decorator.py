@@ -1,132 +1,132 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import time
-from importlib import import_module
+importXtime
+fromXimportlibXimportXimport_module
 
-from aiogram import types
-from aiogram.dispatcher.handler import SkipHandler
-from sentry_sdk import configure_scope
+fromXaiogramXimportXtypes
+fromXaiogram.dispatcher.handlerXimportXSkipHandler
+fromXsentry_sdkXimportXconfigure_scope
 
-from Ineruki  import BOT_USERNAME, dp
-from Ineruki .config import get_bool_key
-from Ineruki .modules.error import parse_update
-from Ineruki .utils.filters import ALL_FILTERS
-from Ineruki .utils.logger import log
+fromXInerukiXXimportXBOT_USERNAME,Xdp
+fromXInerukiX.configXimportXget_bool_key
+fromXInerukiX.modules.errorXimportXparse_update
+fromXInerukiX.utils.filtersXimportXALL_FILTERS
+fromXInerukiX.utils.loggerXimportXlog
 
-DEBUG_MODE = get_bool_key("DEBUG_MODE")
-ALLOW_F_COMMANDS = get_bool_key("ALLOW_FORWARDS_COMMANDS")
-ALLOW_COMMANDS_FROM_E C = get_bool_key("ALLOW_E CEL")
-CMD_NOT_MONO = get_bool_key("DISALLOW_MONO_CMDS")
+DEBUG_MODEX=Xget_bool_key("DEBUG_MODE")
+ALLOW_F_COMMANDSX=Xget_bool_key("ALLOW_FORWARDS_COMMANDS")
+ALLOW_COMMANDS_FROM_EXCX=Xget_bool_key("ALLOW_EXCEL")
+CMD_NOT_MONOX=Xget_bool_key("DISALLOW_MONO_CMDS")
 
-REGISTRED_COMMANDS = []
-COMMANDS_ALIASES = {}
+REGISTRED_COMMANDSX=X[]
+COMMANDS_ALIASESX=X{}
 
-# Import filters
-log.info("Filters to load: %s", str(ALL_FILTERS))
-for module_name in ALL_FILTERS:
-    log.debug("Importing " + module_name)
-    imported_module = import_module("Ineruki .utils.filters." + module_name)
-log.info("Filters loaded!")
+#XImportXfilters
+log.info("FiltersXtoXload:X%s",Xstr(ALL_FILTERS))
+forXmodule_nameXinXALL_FILTERS:
+XXXXlog.debug("ImportingX"X+Xmodule_name)
+XXXXimported_moduleX=Ximport_module("InerukiX.utils.filters."X+Xmodule_name)
+log.info("FiltersXloaded!")
 
 
-def register(*args, cmds=None, f=None, allow_edited=True, allow_kwargs=False, **kwargs):
-    if cmds and type(cmds) is str:
-        cmds = [cmds]
+defXregister(*args,Xcmds=None,Xf=None,Xallow_edited=True,Xallow_kwargs=False,X**kwargs):
+XXXXifXcmdsXandXtype(cmds)XisXstr:
+XXXXXXXXcmdsX=X[cmds]
 
-    register_kwargs = {}
+XXXXregister_kwargsX=X{}
 
-    if cmds and not f:
-        regex = r"\A^{}(".format("[!/]" if ALLOW_COMMANDS_FROM_E C else "/")
+XXXXifXcmdsXandXnotXf:
+XXXXXXXXregexX=Xr"\A^{}(".format("[!/]"XifXALLOW_COMMANDS_FROM_EXCXelseX"/")
 
-        if "not_forwarded" not in kwargs and ALLOW_F_COMMANDS is False:
-            kwargs["not_forwarded"] = True
+XXXXXXXXifX"not_forwarded"XnotXinXkwargsXandXALLOW_F_COMMANDSXisXFalse:
+XXXXXXXXXXXXkwargs["not_forwarded"]X=XTrue
 
-        if "cmd_not_mono" not in kwargs and CMD_NOT_MONO:
-            kwargs["cmd_not_mono"] = True
+XXXXXXXXifX"cmd_not_mono"XnotXinXkwargsXandXCMD_NOT_MONO:
+XXXXXXXXXXXXkwargs["cmd_not_mono"]X=XTrue
 
-        for idx, cmd in enumerate(cmds):
-            if cmd in REGISTRED_COMMANDS:
-                log.warn(f"Duplication of /{cmd} command")
-            REGISTRED_COMMANDS.append(cmd)
-            regex += cmd
+XXXXXXXXforXidx,XcmdXinXenumerate(cmds):
+XXXXXXXXXXXXifXcmdXinXREGISTRED_COMMANDS:
+XXXXXXXXXXXXXXXXlog.warn(f"DuplicationXofX/{cmd}Xcommand")
+XXXXXXXXXXXXREGISTRED_COMMANDS.append(cmd)
+XXXXXXXXXXXXregexX+=Xcmd
 
-            if not idx == len(cmds) - 1:
-                if not cmds[0] in COMMANDS_ALIASES:
-                    COMMANDS_ALIASES[cmds[0]] = [cmds[idx + 1]]
-                else:
-                    COMMANDS_ALIASES[cmds[0]].append(cmds[idx + 1])
-                regex += "|"
+XXXXXXXXXXXXifXnotXidxX==Xlen(cmds)X-X1:
+XXXXXXXXXXXXXXXXifXnotXcmds[0]XinXCOMMANDS_ALIASES:
+XXXXXXXXXXXXXXXXXXXXCOMMANDS_ALIASES[cmds[0]]X=X[cmds[idxX+X1]]
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXCOMMANDS_ALIASES[cmds[0]].append(cmds[idxX+X1])
+XXXXXXXXXXXXXXXXregexX+=X"|"
 
-        if "disable_args" in kwargs:
-            del kwargs["disable_args"]
-            regex += f")($|@{BOT_USERNAME}$)"
-        else:
-            regex += f")(|@{BOT_USERNAME})(:? |$)"
+XXXXXXXXifX"disable_args"XinXkwargs:
+XXXXXXXXXXXXdelXkwargs["disable_args"]
+XXXXXXXXXXXXregexX+=Xf")($|@{BOT_USERNAME}$)"
+XXXXXXXXelse:
+XXXXXXXXXXXXregexX+=Xf")(|@{BOT_USERNAME})(:?X|$)"
 
-        register_kwargs["regexp"] = regex
+XXXXXXXXregister_kwargs["regexp"]X=Xregex
 
-    elif f == "text":
-        register_kwargs["content_types"] = types.ContentTypes.TE T
+XXXXelifXfX==X"text":
+XXXXXXXXregister_kwargs["content_types"]X=Xtypes.ContentTypes.TEXT
 
-    elif f == "welcome":
-        register_kwargs["content_types"] = types.ContentTypes.NEW_CHAT_MEMBERS
+XXXXelifXfX==X"welcome":
+XXXXXXXXregister_kwargs["content_types"]X=Xtypes.ContentTypes.NEW_CHAT_MEMBERS
 
-    elif f == "leave":
-        register_kwargs["content_types"] = types.ContentTypes.LEFT_CHAT_MEMBER
+XXXXelifXfX==X"leave":
+XXXXXXXXregister_kwargs["content_types"]X=Xtypes.ContentTypes.LEFT_CHAT_MEMBER
 
-    elif f == "service":
-        register_kwargs["content_types"] = types.ContentTypes.NEW_CHAT_MEMBERS
-    elif f == "any":
-        register_kwargs["content_types"] = types.ContentTypes.ANY
+XXXXelifXfX==X"service":
+XXXXXXXXregister_kwargs["content_types"]X=Xtypes.ContentTypes.NEW_CHAT_MEMBERS
+XXXXelifXfX==X"any":
+XXXXXXXXregister_kwargs["content_types"]X=Xtypes.ContentTypes.ANY
 
-    log.debug(f"Registred new handler: <d><n>{str(register_kwargs)}</></>")
+XXXXlog.debug(f"RegistredXnewXhandler:X<d><n>{str(register_kwargs)}</></>")
 
-    register_kwargs.update(kwargs)
+XXXXregister_kwargs.update(kwargs)
 
-    def decorator(func):
-        async def new_func(*def_args, **def_kwargs):
-            message = def_args[0]
+XXXXdefXdecorator(func):
+XXXXXXXXasyncXdefXnew_func(*def_args,X**def_kwargs):
+XXXXXXXXXXXXmessageX=Xdef_args[0]
 
-            if cmds:
-                message.conf["cmds"] = cmds
+XXXXXXXXXXXXifXcmds:
+XXXXXXXXXXXXXXXXmessage.conf["cmds"]X=Xcmds
 
-            if allow_kwargs is False:
-                def_kwargs = dict()
+XXXXXXXXXXXXifXallow_kwargsXisXFalse:
+XXXXXXXXXXXXXXXXdef_kwargsX=Xdict()
 
-            with configure_scope() as scope:
-                parsed_update = parse_update(dict(message))
-                scope.set_extra("update", str(parsed_update))
+XXXXXXXXXXXXwithXconfigure_scope()XasXscope:
+XXXXXXXXXXXXXXXXparsed_updateX=Xparse_update(dict(message))
+XXXXXXXXXXXXXXXXscope.set_extra("update",Xstr(parsed_update))
 
-            if DEBUG_MODE:
-                # log.debug('[*] Starting {}.'.format(func.__name__))
-                # log.debug('Event: \n' + str(message))
-                start = time.time()
-                await func(*def_args, **def_kwargs)
-                log.debug(
-                    "[*] {} Time: {} sec.".format(func.__name__, time.time() - start)
-                )
-            else:
-                await func(*def_args, **def_kwargs)
-            raise SkipHandler()
+XXXXXXXXXXXXifXDEBUG_MODE:
+XXXXXXXXXXXXXXXX#Xlog.debug('[*]XStartingX{}.'.format(func.__name__))
+XXXXXXXXXXXXXXXX#Xlog.debug('Event:X\n'X+Xstr(message))
+XXXXXXXXXXXXXXXXstartX=Xtime.time()
+XXXXXXXXXXXXXXXXawaitXfunc(*def_args,X**def_kwargs)
+XXXXXXXXXXXXXXXXlog.debug(
+XXXXXXXXXXXXXXXXXXXX"[*]X{}XTime:X{}Xsec.".format(func.__name__,Xtime.time()X-Xstart)
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXawaitXfunc(*def_args,X**def_kwargs)
+XXXXXXXXXXXXraiseXSkipHandler()
 
-        if f == "cb":
-            dp.register_callback_query_handler(new_func, *args, **register_kwargs)
-        else:
-            dp.register_message_handler(new_func, *args, **register_kwargs)
-            if allow_edited is True:
-                dp.register_edited_message_handler(new_func, *args, **register_kwargs)
+XXXXXXXXifXfX==X"cb":
+XXXXXXXXXXXXdp.register_callback_query_handler(new_func,X*args,X**register_kwargs)
+XXXXXXXXelse:
+XXXXXXXXXXXXdp.register_message_handler(new_func,X*args,X**register_kwargs)
+XXXXXXXXXXXXifXallow_editedXisXTrue:
+XXXXXXXXXXXXXXXXdp.register_edited_message_handler(new_func,X*args,X**register_kwargs)
 
-    return decorator
+XXXXreturnXdecorator

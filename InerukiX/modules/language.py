@@ -1,178 +1,178 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 errorshivansh
-# Copyright (C) 2020 Inuka Asith
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2021Xerrorshivansh
+#XCopyrightX(C)X2020XInukaXAsith
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-from contextlib import suppress
+fromXcontextlibXimportXsuppress
 
-from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
-from aiogram.utils.callback_data import CallbackData
-from aiogram.utils.exceptions import MessageNotModified
+fromXaiogram.types.inline_keyboardXimportXInlineKeyboardButton,XInlineKeyboardMarkup
+fromXaiogram.utils.callback_dataXimportXCallbackData
+fromXaiogram.utils.exceptionsXimportXMessageNotModified
 
-from Ineruki .decorator import register
-from Ineruki .services.mongo import db
+fromXInerukiX.decoratorXimportXregister
+fromXInerukiX.services.mongoXimportXdb
 
-from .utils.language import (
-    LANGUAGES,
-    change_chat_lang,
-    get_chat_lang_info,
-    get_strings,
-    get_strings_dec,
+fromX.utils.languageXimportX(
+XXXXLANGUAGES,
+XXXXchange_chat_lang,
+XXXXget_chat_lang_info,
+XXXXget_strings,
+XXXXget_strings_dec,
 )
-from .utils.message import get_arg
+fromX.utils.messageXimportXget_arg
 
-select_lang_cb = CallbackData("select_lang_cb", "lang", "back_btn")
-translators_lang_cb = CallbackData("translators_lang_cb", "lang")
+select_lang_cbX=XCallbackData("select_lang_cb",X"lang",X"back_btn")
+translators_lang_cbX=XCallbackData("translators_lang_cb",X"lang")
 
 
-@register(cmds="lang", no_args=True, user_can_change_info=True)
-async def select_lang_cmd(message):
-    await select_lang_keyboard(message)
+@register(cmds="lang",Xno_args=True,Xuser_can_change_info=True)
+asyncXdefXselect_lang_cmd(message):
+XXXXawaitXselect_lang_keyboard(message)
 
 
 @get_strings_dec("language")
-async def select_lang_keyboard(message, strings, edit=False):
-    markup = InlineKeyboardMarkup(row_width=2)
-    task = message.reply if edit is False else message.edit_text
+asyncXdefXselect_lang_keyboard(message,Xstrings,Xedit=False):
+XXXXmarkupX=XInlineKeyboardMarkup(row_width=2)
+XXXXtaskX=Xmessage.replyXifXeditXisXFalseXelseXmessage.edit_text
 
-    lang_info = await get_chat_lang_info(message.chat.id)
+XXXXlang_infoX=XawaitXget_chat_lang_info(message.chat.id)
 
-    if message.chat.type == "private":
-        text = strings["your_lang"].format(
-            lang=lang_info["flag"] + " " + lang_info["babel"].display_name
-        )
-        text += strings["select_pm_lang"]
+XXXXifXmessage.chat.typeX==X"private":
+XXXXXXXXtextX=Xstrings["your_lang"].format(
+XXXXXXXXXXXXlang=lang_info["flag"]X+X"X"X+Xlang_info["babel"].display_name
+XXXXXXXX)
+XXXXXXXXtextX+=Xstrings["select_pm_lang"]
 
-    # TODO: Connected chat lang info
+XXXX#XTODO:XConnectedXchatXlangXinfo
 
-    else:
-        text = strings["chat_lang"].format(
-            lang=lang_info["flag"] + " " + lang_info["babel"].display_name
-        )
-        text += strings["select_chat_lang"]
+XXXXelse:
+XXXXXXXXtextX=Xstrings["chat_lang"].format(
+XXXXXXXXXXXXlang=lang_info["flag"]X+X"X"X+Xlang_info["babel"].display_name
+XXXXXXXX)
+XXXXXXXXtextX+=Xstrings["select_chat_lang"]
 
-    for lang in LANGUAGES.values():
-        lang_info = lang["language_info"]
-        markup.insert(
-            InlineKeyboardButton(
-                lang_info["flag"] + " " + lang_info["babel"].display_name,
-                callback_data=select_lang_cb.new(
-                    lang=lang_info["code"], back_btn=False if edit is False else True
-                ),
-            )
-        )
+XXXXforXlangXinXLANGUAGES.values():
+XXXXXXXXlang_infoX=Xlang["language_info"]
+XXXXXXXXmarkup.insert(
+XXXXXXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXXXXXlang_info["flag"]X+X"X"X+Xlang_info["babel"].display_name,
+XXXXXXXXXXXXXXXXcallback_data=select_lang_cb.new(
+XXXXXXXXXXXXXXXXXXXXlang=lang_info["code"],Xback_btn=FalseXifXeditXisXFalseXelseXTrue
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXX)
+XXXXXXXX)
 
-    markup.add(
-        InlineKeyboardButton(
-            strings["crowdin_btn"], url="https://t.me/Inerukisupport_official"
-        )
-    )
-    if edit:
-        markup.add(InlineKeyboardButton(strings["back"], callback_data="go_to_start"))
-    with suppress(MessageNotModified):
-        await task(text, reply_markup=markup)
-
-
-async def change_lang(message, lang, e=False, back_btn=False):
-    chat_id = message.chat.id
-    await change_chat_lang(chat_id, lang)
-
-    strings = await get_strings(chat_id, "language")
-
-    lang_info = LANGUAGES[lang]["language_info"]
-
-    text = strings["lang_changed"].format(
-        lang_name=lang_info["flag"] + " " + lang_info["babel"].display_name
-    )
-    text += strings["help_us_translate"]
-
-    markup = InlineKeyboardMarkup()
-
-    if "translators" in lang_info:
-        markup.add(
-            InlineKeyboardButton(
-                strings["see_translators"],
-                callback_data=translators_lang_cb.new(lang=lang),
-            )
-        )
-
-    if back_btn == "True":
-        # Callback_data converts boolean to str
-        markup.add(InlineKeyboardButton(strings["back"], callback_data="go_to_start"))
-
-    if e:
-        with suppress(MessageNotModified):
-            await message.edit_text(
-                text, reply_markup=markup, disable_web_page_preview=True
-            )
-    else:
-        await message.reply(text, reply_markup=markup, disable_web_page_preview=True)
+XXXXmarkup.add(
+XXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXstrings["crowdin_btn"],Xurl="https://t.me/Inerukisupport_official"
+XXXXXXXX)
+XXXX)
+XXXXifXedit:
+XXXXXXXXmarkup.add(InlineKeyboardButton(strings["back"],Xcallback_data="go_to_start"))
+XXXXwithXsuppress(MessageNotModified):
+XXXXXXXXawaitXtask(text,Xreply_markup=markup)
 
 
-@register(cmds="lang", has_args=True, user_can_change_info=True)
+asyncXdefXchange_lang(message,Xlang,Xe=False,Xback_btn=False):
+XXXXchat_idX=Xmessage.chat.id
+XXXXawaitXchange_chat_lang(chat_id,Xlang)
+
+XXXXstringsX=XawaitXget_strings(chat_id,X"language")
+
+XXXXlang_infoX=XLANGUAGES[lang]["language_info"]
+
+XXXXtextX=Xstrings["lang_changed"].format(
+XXXXXXXXlang_name=lang_info["flag"]X+X"X"X+Xlang_info["babel"].display_name
+XXXX)
+XXXXtextX+=Xstrings["help_us_translate"]
+
+XXXXmarkupX=XInlineKeyboardMarkup()
+
+XXXXifX"translators"XinXlang_info:
+XXXXXXXXmarkup.add(
+XXXXXXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXXXXXstrings["see_translators"],
+XXXXXXXXXXXXXXXXcallback_data=translators_lang_cb.new(lang=lang),
+XXXXXXXXXXXX)
+XXXXXXXX)
+
+XXXXifXback_btnX==X"True":
+XXXXXXXX#XCallback_dataXconvertsXbooleanXtoXstr
+XXXXXXXXmarkup.add(InlineKeyboardButton(strings["back"],Xcallback_data="go_to_start"))
+
+XXXXifXe:
+XXXXXXXXwithXsuppress(MessageNotModified):
+XXXXXXXXXXXXawaitXmessage.edit_text(
+XXXXXXXXXXXXXXXXtext,Xreply_markup=markup,Xdisable_web_page_preview=True
+XXXXXXXXXXXX)
+XXXXelse:
+XXXXXXXXawaitXmessage.reply(text,Xreply_markup=markup,Xdisable_web_page_preview=True)
+
+
+@register(cmds="lang",Xhas_args=True,Xuser_can_change_info=True)
 @get_strings_dec("language")
-async def select_lang_msg(message, strings):
-    lang = get_arg(message).lower()
+asyncXdefXselect_lang_msg(message,Xstrings):
+XXXXlangX=Xget_arg(message).lower()
 
-    if lang not in LANGUAGES:
-        await message.reply(strings["not_supported_lang"])
-        return
+XXXXifXlangXnotXinXLANGUAGES:
+XXXXXXXXawaitXmessage.reply(strings["not_supported_lang"])
+XXXXXXXXreturn
 
-    await change_lang(message, lang)
+XXXXawaitXchange_lang(message,Xlang)
 
 
 @register(
-    select_lang_cb.filter(),
-    f="cb",
-    allow_kwargs=True,
+XXXXselect_lang_cb.filter(),
+XXXXf="cb",
+XXXXallow_kwargs=True,
 )
-async def select_lang_callback(query, callback_data=None, **kwargs):
-    lang = callback_data["lang"]
-    back_btn = callback_data["back_btn"]
-    await change_lang(query.message, lang, e=True, back_btn=back_btn)
+asyncXdefXselect_lang_callback(query,Xcallback_data=None,X**kwargs):
+XXXXlangX=Xcallback_data["lang"]
+XXXXback_btnX=Xcallback_data["back_btn"]
+XXXXawaitXchange_lang(query.message,Xlang,Xe=True,Xback_btn=back_btn)
 
 
-async def __stats__():
-    return f"* <code>{len(LANGUAGES)}</code> languages loaded.\n"
+asyncXdefX__stats__():
+XXXXreturnXf"*X<code>{len(LANGUAGES)}</code>XlanguagesXloaded.\n"
 
 
-async def __export__(chat_id):
-    lang = await get_chat_lang_info(chat_id)
+asyncXdefX__export__(chat_id):
+XXXXlangX=XawaitXget_chat_lang_info(chat_id)
 
-    return {"language": lang["code"]}
-
-
-async def __import__(chat_id, data):
-    if data not in LANGUAGES:
-        return
-    await db.lang.update_one(
-        {"chat_id": chat_id}, {"$set": {"lang": data}}, upsert=True
-    )
+XXXXreturnX{"language":Xlang["code"]}
 
 
-__mod_name__ = "Languages"
+asyncXdefX__import__(chat_id,Xdata):
+XXXXifXdataXnotXinXLANGUAGES:
+XXXXXXXXreturn
+XXXXawaitXdb.lang.update_one(
+XXXXXXXX{"chat_id":Xchat_id},X{"$set":X{"lang":Xdata}},Xupsert=True
+XXXX)
 
-__help__ = """
-This module is dedicated towards utlising Ineruki's localization feature! You can also <a href='https://crowdin.com/project/Ineruki x'>contribute</a> for improving localization in Ineruki!
 
-<b>Available commands:</b>
-- /lang: Shows a list of avaible languages
-- /lang (language codename): Sets a language
+__mod_name__X=X"Languages"
 
-<b>Example:</b> <code>/lang</code>
-Ineruki will send you bunch of inline buttons where you can select your prefered language interatively without any hassles!
+__help__X=X"""
+ThisXmoduleXisXdedicatedXtowardsXutlisingXIneruki'sXlocalizationXfeature!XYouXcanXalsoX<aXhref='https://crowdin.com/project/InerukiXx'>contribute</a>XforXimprovingXlocalizationXinXIneruki!
+
+<b>AvailableXcommands:</b>
+-X/lang:XShowsXaXlistXofXavaibleXlanguages
+-X/langX(languageXcodename):XSetsXaXlanguage
+
+<b>Example:</b>X<code>/lang</code>
+InerukiXwillXsendXyouXbunchXofXinlineXbuttonsXwhereXyouXcanXselectXyourXpreferedXlanguageXinterativelyXwithoutXanyXhassles!
 """

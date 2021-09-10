@@ -1,16 +1,16 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session, sessionmaker
+fromXsqlalchemyXimportXcreate_engine
+fromXsqlalchemy.ext.declarativeXimportXdeclarative_base
+fromXsqlalchemy.ormXimportXscoped_session,Xsessionmaker
 
-from Ineruki  import POSTGRESS_URL as DB_URI
-
-
-def start() -> scoped_session:
-    engine = create_engine(DB_URI, client_encoding="utf8")
-    BASE.metadata.bind = engine
-    BASE.metadata.create_all(engine)
-    return scoped_session(sessionmaker(bind=engine, autoflush=False))
+fromXInerukiXXimportXPOSTGRESS_URLXasXDB_URI
 
 
-BASE = declarative_base()
-SESSION = start()
+defXstart()X->Xscoped_session:
+XXXXengineX=Xcreate_engine(DB_URI,Xclient_encoding="utf8")
+XXXXBASE.metadata.bindX=Xengine
+XXXXBASE.metadata.create_all(engine)
+XXXXreturnXscoped_session(sessionmaker(bind=engine,Xautoflush=False))
+
+
+BASEX=Xdeclarative_base()
+SESSIONX=Xstart()

@@ -1,109 +1,109 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-from asyncio import sleep
-from datetime import datetime
+fromXasyncioXimportXsleep
+fromXdatetimeXimportXdatetime
 
-import aiohttp
-from pyrogram import filters
-from pyrogram.errors import PeerIdInvalid
+importXaiohttp
+fromXpyrogramXimportXfilters
+fromXpyrogram.errorsXimportXPeerIdInvalid
 
-from Ineruki .services.pyrogram import pbot
-
-
-class AioHttp:
-    @staticmethod
-    async def get_json(link):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(link) as resp:
-                return await resp.json()
-
-    @staticmethod
-    async def get_text(link):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(link) as resp:
-                return await resp.text()
-
-    @staticmethod
-    async def get_raw(link):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(link) as resp:
-                return await resp.read()
+fromXInerukiX.services.pyrogramXimportXpbot
 
 
-@pbot.on_message(filters.command("spwinfo") & ~filters.edited & ~filters.bot)
-async def lookup(client, message):
-    cmd = message.command
-    if not message.reply_to_message and len(cmd) == 1:
-        get_user = message.from_user.id
-    elif len(cmd) == 1:
-        if message.reply_to_message.forward_from:
-            get_user = message.reply_to_message.forward_from.id
-        else:
-            get_user = message.reply_to_message.from_user.id
-    elif len(cmd) > 1:
-        get_user = cmd[1]
-        try:
-            get_user = int(cmd[1])
-        except ValueError:
-            pass
-    try:
-        user = await client.get_chat(get_user)
-    except PeerIdInvalid:
-        await message.reply_text("I don't know that User.")
-        sleep(2)
-        return
-    url = f"https://api.intellivoid.net/spamprotection/v1/lookup?query={user.id}"
-    a = await AioHttp().get_json(url)
-    response = a["success"]
-    if response is True:
-        date = a["results"]["last_updated"]
-        stats = f"**◢ Intellivoid• SpamProtection Info**:\n"
-        stats += f' • **Updated on**: `{datetime.fromtimestamp(date).strftime("%Y-%m-%d %I:%M:%S %p")}`\n'
-        stats += (
-            f" • **Chat Info**: [Link](t.me/SpamProtectionBot/?start=00_{user.id})\n"
-        )
+classXAioHttp:
+XXXX@staticmethod
+XXXXasyncXdefXget_json(link):
+XXXXXXXXasyncXwithXaiohttp.ClientSession()XasXsession:
+XXXXXXXXXXXXasyncXwithXsession.get(link)XasXresp:
+XXXXXXXXXXXXXXXXreturnXawaitXresp.json()
 
-        if a["results"]["attributes"]["is_potential_spammer"] is True:
-            stats += f" • **User**: `USERxSPAM`\n"
-        elif a["results"]["attributes"]["is_operator"] is True:
-            stats += f" • **User**: `USERxOPERATOR`\n"
-        elif a["results"]["attributes"]["is_agent"] is True:
-            stats += f" • **User**: `USERxAGENT`\n"
-        elif a["results"]["attributes"]["is_whitelisted"] is True:
-            stats += f" • **User**: `USERxWHITELISTED`\n"
+XXXX@staticmethod
+XXXXasyncXdefXget_text(link):
+XXXXXXXXasyncXwithXaiohttp.ClientSession()XasXsession:
+XXXXXXXXXXXXasyncXwithXsession.get(link)XasXresp:
+XXXXXXXXXXXXXXXXreturnXawaitXresp.text()
 
-        stats += f' • **Type**: `{a["results"]["entity_type"]}`\n'
-        stats += (
-            f' • **Language**: `{a["results"]["language_prediction"]["language"]}`\n'
-        )
-        stats += f' • **Language Probability**: `{a["results"]["language_prediction"]["probability"]}`\n'
-        stats += f"**Spam Prediction**:\n"
-        stats += f' • **Ham Prediction**: `{a["results"]["spam_prediction"]["ham_prediction"]}`\n'
-        stats += f' • **Spam Prediction**: `{a["results"]["spam_prediction"]["spam_prediction"]}`\n'
-        stats += f'**Blacklisted**: `{a["results"]["attributes"]["is_blacklisted"]}`\n'
-        if a["results"]["attributes"]["is_blacklisted"] is True:
-            stats += (
-                f' • **Reason**: `{a["results"]["attributes"]["blacklist_reason"]}`\n'
-            )
-            stats += f' • **Flag**: `{a["results"]["attributes"]["blacklist_flag"]}`\n'
-        stats += f'**PTID**:\n`{a["results"]["private_telegram_id"]}`\n'
-        await message.reply_text(stats, disable_web_page_preview=True)
-    else:
-        await message.reply_text("`Cannot reach SpamProtection API`")
-        await sleep(3)
+XXXX@staticmethod
+XXXXasyncXdefXget_raw(link):
+XXXXXXXXasyncXwithXaiohttp.ClientSession()XasXsession:
+XXXXXXXXXXXXasyncXwithXsession.get(link)XasXresp:
+XXXXXXXXXXXXXXXXreturnXawaitXresp.read()
+
+
+@pbot.on_message(filters.command("spwinfo")X&X~filters.editedX&X~filters.bot)
+asyncXdefXlookup(client,Xmessage):
+XXXXcmdX=Xmessage.command
+XXXXifXnotXmessage.reply_to_messageXandXlen(cmd)X==X1:
+XXXXXXXXget_userX=Xmessage.from_user.id
+XXXXelifXlen(cmd)X==X1:
+XXXXXXXXifXmessage.reply_to_message.forward_from:
+XXXXXXXXXXXXget_userX=Xmessage.reply_to_message.forward_from.id
+XXXXXXXXelse:
+XXXXXXXXXXXXget_userX=Xmessage.reply_to_message.from_user.id
+XXXXelifXlen(cmd)X>X1:
+XXXXXXXXget_userX=Xcmd[1]
+XXXXXXXXtry:
+XXXXXXXXXXXXget_userX=Xint(cmd[1])
+XXXXXXXXexceptXValueError:
+XXXXXXXXXXXXpass
+XXXXtry:
+XXXXXXXXuserX=XawaitXclient.get_chat(get_user)
+XXXXexceptXPeerIdInvalid:
+XXXXXXXXawaitXmessage.reply_text("IXdon'tXknowXthatXUser.")
+XXXXXXXXsleep(2)
+XXXXXXXXreturn
+XXXXurlX=Xf"https://api.intellivoid.net/spamprotection/v1/lookup?query={user.id}"
+XXXXaX=XawaitXAioHttp().get_json(url)
+XXXXresponseX=Xa["success"]
+XXXXifXresponseXisXTrue:
+XXXXXXXXdateX=Xa["results"]["last_updated"]
+XXXXXXXXstatsX=Xf"**◢XIntellivoid•XSpamProtectionXInfo**:\n"
+XXXXXXXXstatsX+=Xf'X•X**UpdatedXon**:X`{datetime.fromtimestamp(date).strftime("%Y-%m-%dX%I:%M:%SX%p")}`\n'
+XXXXXXXXstatsX+=X(
+XXXXXXXXXXXXf"X•X**ChatXInfo**:X[Link](t.me/SpamProtectionBot/?start=00_{user.id})\n"
+XXXXXXXX)
+
+XXXXXXXXifXa["results"]["attributes"]["is_potential_spammer"]XisXTrue:
+XXXXXXXXXXXXstatsX+=Xf"X•X**User**:X`USERxSPAM`\n"
+XXXXXXXXelifXa["results"]["attributes"]["is_operator"]XisXTrue:
+XXXXXXXXXXXXstatsX+=Xf"X•X**User**:X`USERxOPERATOR`\n"
+XXXXXXXXelifXa["results"]["attributes"]["is_agent"]XisXTrue:
+XXXXXXXXXXXXstatsX+=Xf"X•X**User**:X`USERxAGENT`\n"
+XXXXXXXXelifXa["results"]["attributes"]["is_whitelisted"]XisXTrue:
+XXXXXXXXXXXXstatsX+=Xf"X•X**User**:X`USERxWHITELISTED`\n"
+
+XXXXXXXXstatsX+=Xf'X•X**Type**:X`{a["results"]["entity_type"]}`\n'
+XXXXXXXXstatsX+=X(
+XXXXXXXXXXXXf'X•X**Language**:X`{a["results"]["language_prediction"]["language"]}`\n'
+XXXXXXXX)
+XXXXXXXXstatsX+=Xf'X•X**LanguageXProbability**:X`{a["results"]["language_prediction"]["probability"]}`\n'
+XXXXXXXXstatsX+=Xf"**SpamXPrediction**:\n"
+XXXXXXXXstatsX+=Xf'X•X**HamXPrediction**:X`{a["results"]["spam_prediction"]["ham_prediction"]}`\n'
+XXXXXXXXstatsX+=Xf'X•X**SpamXPrediction**:X`{a["results"]["spam_prediction"]["spam_prediction"]}`\n'
+XXXXXXXXstatsX+=Xf'**Blacklisted**:X`{a["results"]["attributes"]["is_blacklisted"]}`\n'
+XXXXXXXXifXa["results"]["attributes"]["is_blacklisted"]XisXTrue:
+XXXXXXXXXXXXstatsX+=X(
+XXXXXXXXXXXXXXXXf'X•X**Reason**:X`{a["results"]["attributes"]["blacklist_reason"]}`\n'
+XXXXXXXXXXXX)
+XXXXXXXXXXXXstatsX+=Xf'X•X**Flag**:X`{a["results"]["attributes"]["blacklist_flag"]}`\n'
+XXXXXXXXstatsX+=Xf'**PTID**:\n`{a["results"]["private_telegram_id"]}`\n'
+XXXXXXXXawaitXmessage.reply_text(stats,Xdisable_web_page_preview=True)
+XXXXelse:
+XXXXXXXXawaitXmessage.reply_text("`CannotXreachXSpamProtectionXAPI`")
+XXXXXXXXawaitXsleep(3)

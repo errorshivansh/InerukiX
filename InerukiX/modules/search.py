@@ -1,290 +1,290 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import re
-import urllib
-import urllib.request
+importXre
+importXurllib
+importXurllib.request
 
-import bs4
-import requests
-from bs4 import BeautifulSoup
-from pyrogram import filters
+importXbs4
+importXrequests
+fromXbs4XimportXBeautifulSoup
+fromXpyrogramXimportXfilters
 
-# This plugin is ported from https://github.com/thehamkercat/WilliamButcherBot
-from search_engine_parser import GoogleSearch
+#XThisXpluginXisXportedXfromXhttps://github.com/thehamkercat/WilliamButcherBot
+fromXsearch_engine_parserXimportXGoogleSearch
 
-from Ineruki .modules.utils.fetch import fetch
-from Ineruki .services.events import register
-from Ineruki .services.pyrogram import pbot as app
+fromXInerukiX.modules.utils.fetchXimportXfetch
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.pyrogramXimportXpbotXasXapp
 
-ARQ = "https://thearq.tech/"
-
-
-@app.on_message(filters.command("ud") & ~filters.edited)
-async def urbandict(_, message):
-    if len(message.command) < 2:
-        await message.reply_text('"/ud" Needs An Argument.')
-        return
-    text = message.text.split(None, 1)[1]
-    try:
-        results = await fetch(f"{ARQ}ud?query={text}")
-        reply_text = f"""**Definition:** __{results["list"][0]["definition"]}__
-**Example:** __{results["list"][0]["example"]}__"""
-    except IndexError:
-        reply_text = "Sorry could not find any matching results!"
-    ignore_chars = "[]"
-    reply = reply_text
-    for chars in ignore_chars:
-        reply = reply.replace(chars, "")
-    if len(reply) >= 4096:
-        reply = reply[:4096]
-    await message.reply_text(reply)
+ARQX=X"https://thearq.tech/"
 
 
-# google
+@app.on_message(filters.command("ud")X&X~filters.edited)
+asyncXdefXurbandict(_,Xmessage):
+XXXXifXlen(message.command)X<X2:
+XXXXXXXXawaitXmessage.reply_text('"/ud"XNeedsXAnXArgument.')
+XXXXXXXXreturn
+XXXXtextX=Xmessage.text.split(None,X1)[1]
+XXXXtry:
+XXXXXXXXresultsX=XawaitXfetch(f"{ARQ}ud?query={text}")
+XXXXXXXXreply_textX=Xf"""**Definition:**X__{results["list"][0]["definition"]}__
+**Example:**X__{results["list"][0]["example"]}__"""
+XXXXexceptXIndexError:
+XXXXXXXXreply_textX=X"SorryXcouldXnotXfindXanyXmatchingXresults!"
+XXXXignore_charsX=X"[]"
+XXXXreplyX=Xreply_text
+XXXXforXcharsXinXignore_chars:
+XXXXXXXXreplyX=Xreply.replace(chars,X"")
+XXXXifXlen(reply)X>=X4096:
+XXXXXXXXreplyX=Xreply[:4096]
+XXXXawaitXmessage.reply_text(reply)
 
 
-@app.on_message(filters.command("google") & ~filters.edited)
-async def google(_, message):
-    try:
-        if len(message.command) < 2:
-            await message.reply_text("/google Needs An Argument")
-            return
-        text = message.text.split(None, 1)[1]
-        gresults = await GoogleSearch().async_search(text, 1)
-        result = ""
-        for i in range(4):
-            try:
-                title = gresults["titles"][i].replace("\n", " ")
-                source = gresults["links"][i]
-                description = gresults["descriptions"][i]
-                result += f"[{title}]({source})\n"
-                result += f"`{description}`\n\n"
-            except IndexError:
-                pass
-        await message.reply_text(result, disable_web_page_preview=True)
-    except Exception as e:
-        await message.reply_text(str(e))
+#Xgoogle
 
 
-# StackOverflow [This is also a google search with some added args]
+@app.on_message(filters.command("google")X&X~filters.edited)
+asyncXdefXgoogle(_,Xmessage):
+XXXXtry:
+XXXXXXXXifXlen(message.command)X<X2:
+XXXXXXXXXXXXawaitXmessage.reply_text("/googleXNeedsXAnXArgument")
+XXXXXXXXXXXXreturn
+XXXXXXXXtextX=Xmessage.text.split(None,X1)[1]
+XXXXXXXXgresultsX=XawaitXGoogleSearch().async_search(text,X1)
+XXXXXXXXresultX=X""
+XXXXXXXXforXiXinXrange(4):
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXtitleX=Xgresults["titles"][i].replace("\n",X"X")
+XXXXXXXXXXXXXXXXsourceX=Xgresults["links"][i]
+XXXXXXXXXXXXXXXXdescriptionX=Xgresults["descriptions"][i]
+XXXXXXXXXXXXXXXXresultX+=Xf"[{title}]({source})\n"
+XXXXXXXXXXXXXXXXresultX+=Xf"`{description}`\n\n"
+XXXXXXXXXXXXexceptXIndexError:
+XXXXXXXXXXXXXXXXpass
+XXXXXXXXawaitXmessage.reply_text(result,Xdisable_web_page_preview=True)
+XXXXexceptXExceptionXasXe:
+XXXXXXXXawaitXmessage.reply_text(str(e))
 
 
-@app.on_message(filters.command("so") & ~filters.edited)
-async def stack(_, message):
-    try:
-        if len(message.command) < 2:
-            await message.reply_text('"/so" Needs An Argument')
-            return
-        gett = message.text.split(None, 1)[1]
-        text = gett + ' "site:stackoverflow.com"'
-        gresults = await GoogleSearch().async_search(text, 1)
-        result = ""
-        for i in range(4):
-            try:
-                title = gresults["titles"][i].replace("\n", " ")
-                source = gresults["links"][i]
-                description = gresults["descriptions"][i]
-                result += f"[{title}]({source})\n"
-                result += f"`{description}`\n\n"
-            except IndexError:
-                pass
-        await message.reply_text(result, disable_web_page_preview=True)
-    except Exception as e:
-        await message.reply_text(str(e))
+#XStackOverflowX[ThisXisXalsoXaXgoogleXsearchXwithXsomeXaddedXargs]
 
 
-# Github [This is also a google search with some added args]
+@app.on_message(filters.command("so")X&X~filters.edited)
+asyncXdefXstack(_,Xmessage):
+XXXXtry:
+XXXXXXXXifXlen(message.command)X<X2:
+XXXXXXXXXXXXawaitXmessage.reply_text('"/so"XNeedsXAnXArgument')
+XXXXXXXXXXXXreturn
+XXXXXXXXgettX=Xmessage.text.split(None,X1)[1]
+XXXXXXXXtextX=XgettX+X'X"site:stackoverflow.com"'
+XXXXXXXXgresultsX=XawaitXGoogleSearch().async_search(text,X1)
+XXXXXXXXresultX=X""
+XXXXXXXXforXiXinXrange(4):
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXtitleX=Xgresults["titles"][i].replace("\n",X"X")
+XXXXXXXXXXXXXXXXsourceX=Xgresults["links"][i]
+XXXXXXXXXXXXXXXXdescriptionX=Xgresults["descriptions"][i]
+XXXXXXXXXXXXXXXXresultX+=Xf"[{title}]({source})\n"
+XXXXXXXXXXXXXXXXresultX+=Xf"`{description}`\n\n"
+XXXXXXXXXXXXexceptXIndexError:
+XXXXXXXXXXXXXXXXpass
+XXXXXXXXawaitXmessage.reply_text(result,Xdisable_web_page_preview=True)
+XXXXexceptXExceptionXasXe:
+XXXXXXXXawaitXmessage.reply_text(str(e))
 
 
-@app.on_message(filters.command("gh") & ~filters.edited)
-async def github(_, message):
-    try:
-        if len(message.command) < 2:
-            await message.reply_text('"/gh" Needs An Argument')
-            return
-        gett = message.text.split(None, 1)[1]
-        text = gett + ' "site:github.com"'
-        gresults = await GoogleSearch().async_search(text, 1)
-        result = ""
-        for i in range(4):
-            try:
-                title = gresults["titles"][i].replace("\n", " ")
-                source = gresults["links"][i]
-                description = gresults["descriptions"][i]
-                result += f"[{title}]({source})\n"
-                result += f"`{description}`\n\n"
-            except IndexError:
-                pass
-        await message.reply_text(result, disable_web_page_preview=True)
-    except Exception as e:
-        await message.reply_text(str(e))
+#XGithubX[ThisXisXalsoXaXgoogleXsearchXwithXsomeXaddedXargs]
 
 
-# YouTube
+@app.on_message(filters.command("gh")X&X~filters.edited)
+asyncXdefXgithub(_,Xmessage):
+XXXXtry:
+XXXXXXXXifXlen(message.command)X<X2:
+XXXXXXXXXXXXawaitXmessage.reply_text('"/gh"XNeedsXAnXArgument')
+XXXXXXXXXXXXreturn
+XXXXXXXXgettX=Xmessage.text.split(None,X1)[1]
+XXXXXXXXtextX=XgettX+X'X"site:github.com"'
+XXXXXXXXgresultsX=XawaitXGoogleSearch().async_search(text,X1)
+XXXXXXXXresultX=X""
+XXXXXXXXforXiXinXrange(4):
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXtitleX=Xgresults["titles"][i].replace("\n",X"X")
+XXXXXXXXXXXXXXXXsourceX=Xgresults["links"][i]
+XXXXXXXXXXXXXXXXdescriptionX=Xgresults["descriptions"][i]
+XXXXXXXXXXXXXXXXresultX+=Xf"[{title}]({source})\n"
+XXXXXXXXXXXXXXXXresultX+=Xf"`{description}`\n\n"
+XXXXXXXXXXXXexceptXIndexError:
+XXXXXXXXXXXXXXXXpass
+XXXXXXXXawaitXmessage.reply_text(result,Xdisable_web_page_preview=True)
+XXXXexceptXExceptionXasXe:
+XXXXXXXXawaitXmessage.reply_text(str(e))
 
 
-@app.on_message(filters.command("yts") & ~filters.edited)
-async def ytsearch(_, message):
-    try:
-        if len(message.command) < 2:
-            await message.reply_text("/yt needs an argument")
-            return
-        query = message.text.split(None, 1)[1]
-        m = await message.reply_text("Searching....")
-        results = await fetch(f"{ARQ}youtube?query={query}&count=3")
-        i = 0
-        text = ""
-        while i < 3:
-            text += f"Title - {results[i]['title']}\n"
-            text += f"Duration - {results[i]['duration']}\n"
-            text += f"Views - {results[i]['views']}\n"
-            text += f"Channel - {results[i]['channel']}\n"
-            text += f"https://youtube.com{results[i]['url_suffix']}\n\n"
-            i += 1
-        await m.edit(text, disable_web_page_preview=True)
-    except Exception as e:
-        await message.reply_text(str(e))
+#XYouTube
 
 
-opener = urllib.request.build_opener()
-useragent = "Mozilla/5.0 (Linux; Android 9; SM-G960F Build/PPR1.180610.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.157 Mobile Safari/537.36"
-opener.addheaders = [("User-agent", useragent)]
+@app.on_message(filters.command("yts")X&X~filters.edited)
+asyncXdefXytsearch(_,Xmessage):
+XXXXtry:
+XXXXXXXXifXlen(message.command)X<X2:
+XXXXXXXXXXXXawaitXmessage.reply_text("/ytXneedsXanXargument")
+XXXXXXXXXXXXreturn
+XXXXXXXXqueryX=Xmessage.text.split(None,X1)[1]
+XXXXXXXXmX=XawaitXmessage.reply_text("Searching....")
+XXXXXXXXresultsX=XawaitXfetch(f"{ARQ}youtube?query={query}&count=3")
+XXXXXXXXiX=X0
+XXXXXXXXtextX=X""
+XXXXXXXXwhileXiX<X3:
+XXXXXXXXXXXXtextX+=Xf"TitleX-X{results[i]['title']}\n"
+XXXXXXXXXXXXtextX+=Xf"DurationX-X{results[i]['duration']}\n"
+XXXXXXXXXXXXtextX+=Xf"ViewsX-X{results[i]['views']}\n"
+XXXXXXXXXXXXtextX+=Xf"ChannelX-X{results[i]['channel']}\n"
+XXXXXXXXXXXXtextX+=Xf"https://youtube.com{results[i]['url_suffix']}\n\n"
+XXXXXXXXXXXXiX+=X1
+XXXXXXXXawaitXm.edit(text,Xdisable_web_page_preview=True)
+XXXXexceptXExceptionXasXe:
+XXXXXXXXawaitXmessage.reply_text(str(e))
 
 
-async def ParseSauce(googleurl):
-    """Parse/Scrape the HTML code for the info we want."""
-
-    source = opener.open(googleurl).read()
-    soup = BeautifulSoup(source, "html.parser")
-
-    results = {"similar_images": "", "best_guess": ""}
-
-    try:
-        for similar_image in soup.findAll("input", {"class": "gLFyf"}):
-            url = "https://www.google.com/search?tbm=isch&q=" + urllib.parse.quote_plus(
-                similar_image.get("value")
-            )
-            results["similar_images"] = url
-    except BaseException:
-        pass
-
-    for best_guess in soup.findAll("div", attrs={"class": "r5a77d"}):
-        results["best_guess"] = best_guess.get_text()
-
-    return results
+openerX=Xurllib.request.build_opener()
+useragentX=X"Mozilla/5.0X(Linux;XAndroidX9;XSM-G960FXBuild/PPR1.180610.011;Xwv)XAppleWebKit/537.36X(KHTML,XlikeXGecko)XVersion/4.0XChrome/74.0.3729.157XMobileXSafari/537.36"
+opener.addheadersX=X[("User-agent",Xuseragent)]
 
 
-async def scam(results, lim):
+asyncXdefXParseSauce(googleurl):
+XXXX"""Parse/ScrapeXtheXHTMLXcodeXforXtheXinfoXweXwant."""
 
-    single = opener.open(results["similar_images"]).read()
-    decoded = single.decode("utf-8")
+XXXXsourceX=Xopener.open(googleurl).read()
+XXXXsoupX=XBeautifulSoup(source,X"html.parser")
 
-    imglinks = []
-    counter = 0
+XXXXresultsX=X{"similar_images":X"",X"best_guess":X""}
 
-    pattern = r"^,\[\"(.*[.png|.jpg|.jpeg])\",[0-9]+,[0-9]+\]$"
-    oboi = re.findall(pattern, decoded, re.I | re.M)
+XXXXtry:
+XXXXXXXXforXsimilar_imageXinXsoup.findAll("input",X{"class":X"gLFyf"}):
+XXXXXXXXXXXXurlX=X"https://www.google.com/search?tbm=isch&q="X+Xurllib.parse.quote_plus(
+XXXXXXXXXXXXXXXXsimilar_image.get("value")
+XXXXXXXXXXXX)
+XXXXXXXXXXXXresults["similar_images"]X=Xurl
+XXXXexceptXBaseException:
+XXXXXXXXpass
 
-    for imglink in oboi:
-        counter += 1
-        if counter < int(lim):
-            imglinks.append(imglink)
-        else:
-            break
+XXXXforXbest_guessXinXsoup.findAll("div",Xattrs={"class":X"r5a77d"}):
+XXXXXXXXresults["best_guess"]X=Xbest_guess.get_text()
 
-    return imglinks
-
-
-@register(pattern="^/app (.*)")
-async def apk(e):
-    try:
-        app_name = e.pattern_match.group(1)
-        remove_space = app_name.split(" ")
-        final_name = "+".join(remove_space)
-        page = requests.get(
-            "https://play.google.com/store/search?q=" + final_name + "&c=apps"
-        )
-        str(page.status_code)
-        soup = bs4.BeautifulSoup(page.content, "lxml", from_encoding="utf-8")
-        results = soup.findAll("div", "ZmHEEd")
-        app_name = (
-            results[0].findNext("div", "Vpfmgd").findNext("div", "WsMG1c nnK0zc").text
-        )
-        app_dev = results[0].findNext("div", "Vpfmgd").findNext("div", "KoLSrc").text
-        app_dev_link = (
-            "https://play.google.com"
-            + results[0].findNext("div", "Vpfmgd").findNext("a", "mnKHRc")["href"]
-        )
-        app_rating = (
-            results[0]
-            .findNext("div", "Vpfmgd")
-            .findNext("div", "pf5lIe")
-            .find("div")["aria-label"]
-        )
-        app_link = (
-            "https://play.google.com"
-            + results[0]
-            .findNext("div", "Vpfmgd")
-            .findNext("div", "vU6FJ p63iDd")
-            .a["href"]
-        )
-        app_icon = (
-            results[0]
-            .findNext("div", "Vpfmgd")
-            .findNext("div", "uzcko")
-            .img["data-src"]
-        )
-        app_details = "<a href='" + app_icon + "'>📲&#8203;</a>"
-        app_details += " <b>" + app_name + "</b>"
-        app_details += (
-            "\n\n<code>Developer :</code> <a href='"
-            + app_dev_link
-            + "'>"
-            + app_dev
-            + "</a>"
-        )
-        app_details += "\n<code>Rating :</code> " + app_rating.replace(
-            "Rated ", "⭐ "
-        ).replace(" out of ", "/").replace(" stars", "", 1).replace(
-            " stars", "⭐ "
-        ).replace(
-            "five", "5"
-        )
-        app_details += (
-            "\n<code>Features :</code> <a href='"
-            + app_link
-            + "'>View in Play Store</a>"
-        )
-        app_details += "\n\n===> @InerukiSupport_Official <==="
-        await e.reply(app_details, link_preview=True, parse_mode="HTML")
-    except IndexError:
-        await e.reply("No result found in search. Please enter **Valid app name**")
-    except Exception as err:
-        await e.reply("Exception Occured:- " + str(err))
+XXXXreturnXresults
 
 
-__help__ = """
- - /google <i>text</i>: Perform a google search
- - /so - Search For Something On Stack OverFlow
- - /gh - Search For Something On GitHub
- - /yts - Search For Something On YouTub
- - /app <i>appname</i>: Searches for an app in Play Store and returns its details.
+asyncXdefXscam(results,Xlim):
+
+XXXXsingleX=Xopener.open(results["similar_images"]).read()
+XXXXdecodedX=Xsingle.decode("utf-8")
+
+XXXXimglinksX=X[]
+XXXXcounterX=X0
+
+XXXXpatternX=Xr"^,\[\"(.*[.png|.jpg|.jpeg])\",[0-9]+,[0-9]+\]$"
+XXXXoboiX=Xre.findall(pattern,Xdecoded,Xre.IX|Xre.M)
+
+XXXXforXimglinkXinXoboi:
+XXXXXXXXcounterX+=X1
+XXXXXXXXifXcounterX<Xint(lim):
+XXXXXXXXXXXXimglinks.append(imglink)
+XXXXXXXXelse:
+XXXXXXXXXXXXbreak
+
+XXXXreturnXimglinks
+
+
+@register(pattern="^/appX(.*)")
+asyncXdefXapk(e):
+XXXXtry:
+XXXXXXXXapp_nameX=Xe.pattern_match.group(1)
+XXXXXXXXremove_spaceX=Xapp_name.split("X")
+XXXXXXXXfinal_nameX=X"+".join(remove_space)
+XXXXXXXXpageX=Xrequests.get(
+XXXXXXXXXXXX"https://play.google.com/store/search?q="X+Xfinal_nameX+X"&c=apps"
+XXXXXXXX)
+XXXXXXXXstr(page.status_code)
+XXXXXXXXsoupX=Xbs4.BeautifulSoup(page.content,X"lxml",Xfrom_encoding="utf-8")
+XXXXXXXXresultsX=Xsoup.findAll("div",X"ZmHEEd")
+XXXXXXXXapp_nameX=X(
+XXXXXXXXXXXXresults[0].findNext("div",X"Vpfmgd").findNext("div",X"WsMG1cXnnK0zc").text
+XXXXXXXX)
+XXXXXXXXapp_devX=Xresults[0].findNext("div",X"Vpfmgd").findNext("div",X"KoLSrc").text
+XXXXXXXXapp_dev_linkX=X(
+XXXXXXXXXXXX"https://play.google.com"
+XXXXXXXXXXXX+Xresults[0].findNext("div",X"Vpfmgd").findNext("a",X"mnKHRc")["href"]
+XXXXXXXX)
+XXXXXXXXapp_ratingX=X(
+XXXXXXXXXXXXresults[0]
+XXXXXXXXXXXX.findNext("div",X"Vpfmgd")
+XXXXXXXXXXXX.findNext("div",X"pf5lIe")
+XXXXXXXXXXXX.find("div")["aria-label"]
+XXXXXXXX)
+XXXXXXXXapp_linkX=X(
+XXXXXXXXXXXX"https://play.google.com"
+XXXXXXXXXXXX+Xresults[0]
+XXXXXXXXXXXX.findNext("div",X"Vpfmgd")
+XXXXXXXXXXXX.findNext("div",X"vU6FJXp63iDd")
+XXXXXXXXXXXX.a["href"]
+XXXXXXXX)
+XXXXXXXXapp_iconX=X(
+XXXXXXXXXXXXresults[0]
+XXXXXXXXXXXX.findNext("div",X"Vpfmgd")
+XXXXXXXXXXXX.findNext("div",X"uzcko")
+XXXXXXXXXXXX.img["data-src"]
+XXXXXXXX)
+XXXXXXXXapp_detailsX=X"<aXhref='"X+Xapp_iconX+X"'>📲&#8203;</a>"
+XXXXXXXXapp_detailsX+=X"X<b>"X+Xapp_nameX+X"</b>"
+XXXXXXXXapp_detailsX+=X(
+XXXXXXXXXXXX"\n\n<code>DeveloperX:</code>X<aXhref='"
+XXXXXXXXXXXX+Xapp_dev_link
+XXXXXXXXXXXX+X"'>"
+XXXXXXXXXXXX+Xapp_dev
+XXXXXXXXXXXX+X"</a>"
+XXXXXXXX)
+XXXXXXXXapp_detailsX+=X"\n<code>RatingX:</code>X"X+Xapp_rating.replace(
+XXXXXXXXXXXX"RatedX",X"⭐X"
+XXXXXXXX).replace("XoutXofX",X"/").replace("Xstars",X"",X1).replace(
+XXXXXXXXXXXX"Xstars",X"⭐X"
+XXXXXXXX).replace(
+XXXXXXXXXXXX"five",X"5"
+XXXXXXXX)
+XXXXXXXXapp_detailsX+=X(
+XXXXXXXXXXXX"\n<code>FeaturesX:</code>X<aXhref='"
+XXXXXXXXXXXX+Xapp_link
+XXXXXXXXXXXX+X"'>ViewXinXPlayXStore</a>"
+XXXXXXXX)
+XXXXXXXXapp_detailsX+=X"\n\n===>X@InerukiSupport_OfficialX<==="
+XXXXXXXXawaitXe.reply(app_details,Xlink_preview=True,Xparse_mode="HTML")
+XXXXexceptXIndexError:
+XXXXXXXXawaitXe.reply("NoXresultXfoundXinXsearch.XPleaseXenterX**ValidXappXname**")
+XXXXexceptXExceptionXasXerr:
+XXXXXXXXawaitXe.reply("ExceptionXOccured:-X"X+Xstr(err))
+
+
+__help__X=X"""
+X-X/googleX<i>text</i>:XPerformXaXgoogleXsearch
+X-X/soX-XSearchXForXSomethingXOnXStackXOverFlow
+X-X/ghX-XSearchXForXSomethingXOnXGitHub
+X-X/ytsX-XSearchXForXSomethingXOnXYouTub
+X-X/appX<i>appname</i>:XSearchesXforXanXappXinXPlayXStoreXandXreturnsXitsXdetails.
 """
 
-__mod_name__ = "Search"
+__mod_name__X=X"Search"

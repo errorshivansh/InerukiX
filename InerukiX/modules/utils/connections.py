@@ -1,161 +1,161 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from aiogram.utils.exceptions import Unauthorized
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+fromXaiogram.utils.exceptionsXimportXUnauthorized
 
-from Ineruki .modules.utils.user_details import is_user_admin
-from Ineruki .services.mongo import db
-from Ineruki .services.redis import redis
-from Ineruki .utils.cached import cached
+fromXInerukiX.modules.utils.user_detailsXimportXis_user_admin
+fromXInerukiX.services.mongoXimportXdb
+fromXInerukiX.services.redisXimportXredis
+fromXInerukiX.utils.cachedXimportXcached
 
 
-async def get_connected_chat(
-    message, admin=False, only_groups=False, from_id=None, command=None
+asyncXdefXget_connected_chat(
+XXXXmessage,Xadmin=False,Xonly_groups=False,Xfrom_id=None,Xcommand=None
 ):
-    # admin - Require admin rights in connected chat
-    # only_in_groups - disable command when bot's pm not connected to any chat
-    real_chat_id = message.chat.id
-    user_id = from_id or message.from_user.id
-    key = "connection_cache_" + str(user_id)
+XXXX#XadminX-XRequireXadminXrightsXinXconnectedXchat
+XXXX#Xonly_in_groupsX-XdisableXcommandXwhenXbot'sXpmXnotXconnectedXtoXanyXchat
+XXXXreal_chat_idX=Xmessage.chat.id
+XXXXuser_idX=Xfrom_idXorXmessage.from_user.id
+XXXXkeyX=X"connection_cache_"X+Xstr(user_id)
 
-    if not message.chat.type == "private":
-        _chat = await db.chat_list.find_one({"chat_id": real_chat_id})
-        chat_title = _chat["chat_title"] if _chat is not None else message.chat.title
-        # On some strange cases such as Database is fresh or new ; it doesn't contain chat data
-        # Only to "handle" the error, we do the above workaround - getting chat title from the update
-        return {"status": "chat", "chat_id": real_chat_id, "chat_title": chat_title}
+XXXXifXnotXmessage.chat.typeX==X"private":
+XXXXXXXX_chatX=XawaitXdb.chat_list.find_one({"chat_id":Xreal_chat_id})
+XXXXXXXXchat_titleX=X_chat["chat_title"]XifX_chatXisXnotXNoneXelseXmessage.chat.title
+XXXXXXXX#XOnXsomeXstrangeXcasesXsuchXasXDatabaseXisXfreshXorXnewX;XitXdoesn'tXcontainXchatXdata
+XXXXXXXX#XOnlyXtoX"handle"XtheXerror,XweXdoXtheXaboveXworkaroundX-XgettingXchatXtitleXfromXtheXupdate
+XXXXXXXXreturnX{"status":X"chat",X"chat_id":Xreal_chat_id,X"chat_title":Xchat_title}
 
-    # Cached
-    if cached := redis.hgetall(key):
-        cached["status"] = True
-        cached["chat_id"] = int(cached["chat_id"])
-        # return cached
+XXXX#XCached
+XXXXifXcachedX:=Xredis.hgetall(key):
+XXXXXXXXcached["status"]X=XTrue
+XXXXXXXXcached["chat_id"]X=Xint(cached["chat_id"])
+XXXXXXXX#XreturnXcached
 
-    # if pm and not connected
-    if (
-        not (connected := await get_connection_data(user_id))
-        or "chat_id" not in connected
-    ):
-        if only_groups:
-            return {"status": None, "err_msg": "usage_only_in_groups"}
-        else:
-            return {"status": "private", "chat_id": user_id, "chat_title": "Local chat"}
+XXXX#XifXpmXandXnotXconnected
+XXXXifX(
+XXXXXXXXnotX(connectedX:=XawaitXget_connection_data(user_id))
+XXXXXXXXorX"chat_id"XnotXinXconnected
+XXXX):
+XXXXXXXXifXonly_groups:
+XXXXXXXXXXXXreturnX{"status":XNone,X"err_msg":X"usage_only_in_groups"}
+XXXXXXXXelse:
+XXXXXXXXXXXXreturnX{"status":X"private",X"chat_id":Xuser_id,X"chat_title":X"LocalXchat"}
 
-    chat_id = connected["chat_id"]
+XXXXchat_idX=Xconnected["chat_id"]
 
-    # Get chats where user was detected and check if user in connected chat
-    # TODO: Really get the user and check on banned
-    user_chats = (await db.user_list.find_one({"user_id": user_id}))["chats"]
-    if chat_id not in user_chats:
-        return {"status": None, "err_msg": "not_in_chat"}
+XXXX#XGetXchatsXwhereXuserXwasXdetectedXandXcheckXifXuserXinXconnectedXchat
+XXXX#XTODO:XReallyXgetXtheXuserXandXcheckXonXbanned
+XXXXuser_chatsX=X(awaitXdb.user_list.find_one({"user_id":Xuser_id}))["chats"]
+XXXXifXchat_idXnotXinXuser_chats:
+XXXXXXXXreturnX{"status":XNone,X"err_msg":X"not_in_chat"}
 
-    chat_title = (await db.chat_list.find_one({"chat_id": chat_id}))["chat_title"]
+XXXXchat_titleX=X(awaitXdb.chat_list.find_one({"chat_id":Xchat_id}))["chat_title"]
 
-    # Admin rights check if admin=True
-    try:
-        user_admin = await is_user_admin(chat_id, user_id)
-    except Unauthorized:
-        return {"status": None, "err_msg": "bot_not_in_chat, please /disconnect"}
+XXXX#XAdminXrightsXcheckXifXadmin=True
+XXXXtry:
+XXXXXXXXuser_adminX=XawaitXis_user_admin(chat_id,Xuser_id)
+XXXXexceptXUnauthorized:
+XXXXXXXXreturnX{"status":XNone,X"err_msg":X"bot_not_in_chat,XpleaseX/disconnect"}
 
-    if admin:
-        if not user_admin:
-            return {"status": None, "err_msg": "u_should_be_admin"}
+XXXXifXadmin:
+XXXXXXXXifXnotXuser_admin:
+XXXXXXXXXXXXreturnX{"status":XNone,X"err_msg":X"u_should_be_admin"}
 
-    if "command" in connected:
-        if command in connected["command"]:
-            return {"status": True, "chat_id": chat_id, "chat_title": chat_title}
-        else:
-            # Return local chat if user is accessing non connected command
-            return {"status": "private", "chat_id": user_id, "chat_title": "Local chat"}
+XXXXifX"command"XinXconnected:
+XXXXXXXXifXcommandXinXconnected["command"]:
+XXXXXXXXXXXXreturnX{"status":XTrue,X"chat_id":Xchat_id,X"chat_title":Xchat_title}
+XXXXXXXXelse:
+XXXXXXXXXXXX#XReturnXlocalXchatXifXuserXisXaccessingXnonXconnectedXcommand
+XXXXXXXXXXXXreturnX{"status":X"private",X"chat_id":Xuser_id,X"chat_title":X"LocalXchat"}
 
-    # Check on /allowusersconnect enabled
-    if settings := await db.chat_connection_settings.find_one({"chat_id": chat_id}):
-        if (
-            "allow_users_connect" in settings
-            and settings["allow_users_connect"] is False
-            and not user_admin
-        ):
-            return {"status": None, "err_msg": "conn_not_allowed"}
+XXXX#XCheckXonX/allowusersconnectXenabled
+XXXXifXsettingsX:=XawaitXdb.chat_connection_settings.find_one({"chat_id":Xchat_id}):
+XXXXXXXXifX(
+XXXXXXXXXXXX"allow_users_connect"XinXsettings
+XXXXXXXXXXXXandXsettings["allow_users_connect"]XisXFalse
+XXXXXXXXXXXXandXnotXuser_admin
+XXXXXXXX):
+XXXXXXXXXXXXreturnX{"status":XNone,X"err_msg":X"conn_not_allowed"}
 
-    data = {"status": True, "chat_id": chat_id, "chat_title": chat_title}
+XXXXdataX=X{"status":XTrue,X"chat_id":Xchat_id,X"chat_title":Xchat_title}
 
-    # Cache connection status for 15 minutes
-    cached = data
-    cached["status"] = 1
-    redis.hmset(key, cached)
-    redis.expire(key, 900)
+XXXX#XCacheXconnectionXstatusXforX15Xminutes
+XXXXcachedX=Xdata
+XXXXcached["status"]X=X1
+XXXXredis.hmset(key,Xcached)
+XXXXredis.expire(key,X900)
 
-    return data
-
-
-def chat_connection(**dec_kwargs):
-    def wrapped(func):
-        async def wrapped_1(*args, **kwargs):
-
-            message = args[0]
-            from_id = None
-            if hasattr(message, "message"):
-                from_id = message.from_user.id
-                message = message.message
-
-            if (
-                check := await get_connected_chat(
-                    message, from_id=from_id, **dec_kwargs
-                )
-            )["status"] is None:
-                await message.reply(check["err_msg"])
-                return
-            else:
-                return await func(*args, check, **kwargs)
-
-        return wrapped_1
-
-    return wrapped
+XXXXreturnXdata
 
 
-async def set_connected_chat(user_id, chat_id):
-    key = f"connection_cache_{user_id}"
-    redis.delete(key)
-    if not chat_id:
-        await db.connections.update_one(
-            {"user_id": user_id}, {"$unset": {"chat_id": 1, "command": 1}}, upsert=True
-        )
-        await get_connection_data.reset_cache(user_id)
-        return
+defXchat_connection(**dec_kwargs):
+XXXXdefXwrapped(func):
+XXXXXXXXasyncXdefXwrapped_1(*args,X**kwargs):
 
-    await db.connections.update_one(
-        {"user_id": user_id},
-        {
-            "$set": {"user_id": user_id, "chat_id": chat_id},
-            "$unset": {"command": 1},
-            "$addToSet": {"history": {"$each": [chat_id]}},
-        },
-        upsert=True,
-    )
-    return await get_connection_data.reset_cache(user_id)
+XXXXXXXXXXXXmessageX=Xargs[0]
+XXXXXXXXXXXXfrom_idX=XNone
+XXXXXXXXXXXXifXhasattr(message,X"message"):
+XXXXXXXXXXXXXXXXfrom_idX=Xmessage.from_user.id
+XXXXXXXXXXXXXXXXmessageX=Xmessage.message
+
+XXXXXXXXXXXXifX(
+XXXXXXXXXXXXXXXXcheckX:=XawaitXget_connected_chat(
+XXXXXXXXXXXXXXXXXXXXmessage,Xfrom_id=from_id,X**dec_kwargs
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)["status"]XisXNone:
+XXXXXXXXXXXXXXXXawaitXmessage.reply(check["err_msg"])
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXreturnXawaitXfunc(*args,Xcheck,X**kwargs)
+
+XXXXXXXXreturnXwrapped_1
+
+XXXXreturnXwrapped
 
 
-async def set_connected_command(user_id, chat_id, command):
-    command.append("disconnect")
-    await db.connections.update_one(
-        {"user_id": user_id},
-        {"$set": {"user_id": user_id, "chat_id": chat_id, "command": list(command)}},
-        upsert=True,
-    )
-    return await get_connection_data.reset_cache(user_id)
+asyncXdefXset_connected_chat(user_id,Xchat_id):
+XXXXkeyX=Xf"connection_cache_{user_id}"
+XXXXredis.delete(key)
+XXXXifXnotXchat_id:
+XXXXXXXXawaitXdb.connections.update_one(
+XXXXXXXXXXXX{"user_id":Xuser_id},X{"$unset":X{"chat_id":X1,X"command":X1}},Xupsert=True
+XXXXXXXX)
+XXXXXXXXawaitXget_connection_data.reset_cache(user_id)
+XXXXXXXXreturn
+
+XXXXawaitXdb.connections.update_one(
+XXXXXXXX{"user_id":Xuser_id},
+XXXXXXXX{
+XXXXXXXXXXXX"$set":X{"user_id":Xuser_id,X"chat_id":Xchat_id},
+XXXXXXXXXXXX"$unset":X{"command":X1},
+XXXXXXXXXXXX"$addToSet":X{"history":X{"$each":X[chat_id]}},
+XXXXXXXX},
+XXXXXXXXupsert=True,
+XXXX)
+XXXXreturnXawaitXget_connection_data.reset_cache(user_id)
+
+
+asyncXdefXset_connected_command(user_id,Xchat_id,Xcommand):
+XXXXcommand.append("disconnect")
+XXXXawaitXdb.connections.update_one(
+XXXXXXXX{"user_id":Xuser_id},
+XXXXXXXX{"$set":X{"user_id":Xuser_id,X"chat_id":Xchat_id,X"command":Xlist(command)}},
+XXXXXXXXupsert=True,
+XXXX)
+XXXXreturnXawaitXget_connection_data.reset_cache(user_id)
 
 
 @cached()
-async def get_connection_data(user_id: int) -> dict:
-    return await db.connections.find_one({"user_id": user_id})
+asyncXdefXget_connection_data(user_id:Xint)X->Xdict:
+XXXXreturnXawaitXdb.connections.find_one({"user_id":Xuser_id})

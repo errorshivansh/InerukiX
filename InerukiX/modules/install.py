@@ -1,29 +1,29 @@
-# All Credit To William Butcher Bot.
-# Ported This Plugin here By Devil from wbb.
-import os
+#XAllXCreditXToXWilliamXButcherXBot.
+#XPortedXThisXPluginXhereXByXDevilXfromXwbb.
+importXos
 
-from pyrogram import filters
+fromXpyrogramXimportXfilters
 
-from Ineruki  import OWNER_ID
-from Ineruki .services.pyrogram import pbot as app
+fromXInerukiXXimportXOWNER_ID
+fromXInerukiX.services.pyrogramXimportXpbotXasXapp
 
 
-@app.on_message(filters.command("install") & filters.user(OWNER_ID))
-async def install_module(_, message):
-    if not message.reply_to_message:
-        await message.reply_text("Reply To A .py File To Install It.")
-        return
-    if not message.reply_to_message.document:
-        await message.reply_text("Reply To A .py File To Install It.")
-        return
-    document = message.reply_to_message.document
-    if document.mime_type != "text/x-python":
-        await message.reply_text("INVALID_MIME_TYPE, Reply To A Correct .py File.")
-        return
-    m = await message.reply_text("**Installing Module**")
-    await message.reply_to_message.download(f"./Ineruki /modules/{document.file_name}")
-    await m.edit("**Restarting**")
-    os.execvp(
-        f"python{str(pyver.split(' ')[0])[:3]}",
-        [f"python{str(pyver.split(' ')[0])[:3]}", "-m", "Ineruki "],
-    )
+@app.on_message(filters.command("install")X&Xfilters.user(OWNER_ID))
+asyncXdefXinstall_module(_,Xmessage):
+XXXXifXnotXmessage.reply_to_message:
+XXXXXXXXawaitXmessage.reply_text("ReplyXToXAX.pyXFileXToXInstallXIt.")
+XXXXXXXXreturn
+XXXXifXnotXmessage.reply_to_message.document:
+XXXXXXXXawaitXmessage.reply_text("ReplyXToXAX.pyXFileXToXInstallXIt.")
+XXXXXXXXreturn
+XXXXdocumentX=Xmessage.reply_to_message.document
+XXXXifXdocument.mime_typeX!=X"text/x-python":
+XXXXXXXXawaitXmessage.reply_text("INVALID_MIME_TYPE,XReplyXToXAXCorrectX.pyXFile.")
+XXXXXXXXreturn
+XXXXmX=XawaitXmessage.reply_text("**InstallingXModule**")
+XXXXawaitXmessage.reply_to_message.download(f"./InerukiX/modules/{document.file_name}")
+XXXXawaitXm.edit("**Restarting**")
+XXXXos.execvp(
+XXXXXXXXf"python{str(pyver.split('X')[0])[:3]}",
+XXXXXXXX[f"python{str(pyver.split('X')[0])[:3]}",X"-m",X"InerukiX"],
+XXXX)

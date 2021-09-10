@@ -1,391 +1,391 @@
-from re import compile as compile_re
+fromXreXimportXcompileXasXcompile_re
 
-from pyrogram import filters
-from pyrogram.errors import ChatAdminRequired, RightForbidden, RPCError
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+fromXpyrogramXimportXfilters
+fromXpyrogram.errorsXimportXChatAdminRequired,XRightForbidden,XRPCError
+fromXpyrogram.typesXimportXInlineKeyboardButton,XInlineKeyboardMarkup,XMessage
 
-from Ineruki .function.pluginhelpers import member_permissions
-from Ineruki .services.mongo import mongodb as db
-from Ineruki .services.pyrogram import pbot as app
+fromXInerukiX.function.pluginhelpersXimportXmember_permissions
+fromXInerukiX.services.mongoXimportXmongodbXasXdb
+fromXInerukiX.services.pyrogramXimportXpbotXasXapp
 
-BTN_URL_REGE  = compile_re(r"(\[([^\[]+?)\]\(buttonurl:(?:/{0,2})(.+?)(:same)?\))")
-
-
-async def parse_button(text: str):
-    """Parse button from text."""
-    markdown_note = text
-    prev = 0
-    note_data = ""
-    buttons = []
-    for match in BTN_URL_REGE .finditer(markdown_note):
-        # Check if btnurl is escaped
-        n_escapes = 0
-        to_check = match.start(1) - 1
-        while to_check > 0 and markdown_note[to_check] == "\\":
-            n_escapes += 1
-            to_check -= 1
-
-        # if even, not escaped -> create button
-        if n_escapes % 2 == 0:
-            # create a thruple with button label, url, and newline status
-            buttons.append((match.group(2), match.group(3), bool(match.group(4))))
-            note_data += markdown_note[prev : match.start(1)]
-            prev = match.end(1)
-        # if odd, escaped -> move along
-        else:
-            note_data += markdown_note[prev:to_check]
-            prev = match.start(1) - 1
-
-    note_data += markdown_note[prev:]
-
-    return note_data, buttons
+BTN_URL_REGEXX=Xcompile_re(r"(\[([^\[]+?)\]\(buttonurl:(?:/{0,2})(.+?)(:same)?\))")
 
 
-async def build_keyboard(buttons):
-    """Build keyboards from provided buttons."""
-    keyb = []
-    for btn in buttons:
-        if btn[-1] and keyb:
-            keyb[-1].append(InlineKeyboardButton(btn[0], url=btn[1]))
-        else:
-            keyb.append([InlineKeyboardButton(btn[0], url=btn[1])])
+asyncXdefXparse_button(text:Xstr):
+XXXX"""ParseXbuttonXfromXtext."""
+XXXXmarkdown_noteX=Xtext
+XXXXprevX=X0
+XXXXnote_dataX=X""
+XXXXbuttonsX=X[]
+XXXXforXmatchXinXBTN_URL_REGEX.finditer(markdown_note):
+XXXXXXXX#XCheckXifXbtnurlXisXescaped
+XXXXXXXXn_escapesX=X0
+XXXXXXXXto_checkX=Xmatch.start(1)X-X1
+XXXXXXXXwhileXto_checkX>X0XandXmarkdown_note[to_check]X==X"\\":
+XXXXXXXXXXXXn_escapesX+=X1
+XXXXXXXXXXXXto_checkX-=X1
 
-    return keyb
+XXXXXXXX#XifXeven,XnotXescapedX->XcreateXbutton
+XXXXXXXXifXn_escapesX%X2X==X0:
+XXXXXXXXXXXX#XcreateXaXthrupleXwithXbuttonXlabel,Xurl,XandXnewlineXstatus
+XXXXXXXXXXXXbuttons.append((match.group(2),Xmatch.group(3),Xbool(match.group(4))))
+XXXXXXXXXXXXnote_dataX+=Xmarkdown_note[prevX:Xmatch.start(1)]
+XXXXXXXXXXXXprevX=Xmatch.end(1)
+XXXXXXXX#XifXodd,XescapedX->XmoveXalong
+XXXXXXXXelse:
+XXXXXXXXXXXXnote_dataX+=Xmarkdown_note[prev:to_check]
+XXXXXXXXXXXXprevX=Xmatch.start(1)X-X1
 
+XXXXnote_dataX+=Xmarkdown_note[prev:]
 
-class MongoDB:
-    """Class for interacting with Bot database."""
-
-    def __init__(self, collection) -> None:
-        self.collection = db[collection]
-
-    # Insert one entry into collection
-    def insert_one(self, document):
-        result = self.collection.insert_one(document)
-        return repr(result.inserted_id)
-
-    # Find one entry from collection
-    def find_one(self, query):
-        result = self.collection.find_one(query)
-        if result:
-            return result
-        return False
-
-    # Find entries from collection
-    def find_all(self, query=None):
-        if query is None:
-            query = {}
-        lst = []
-        for document in self.collection.find(query):
-            lst.append(document)
-        return lst
-
-    # Count entries from collection
-    def count(self, query=None):
-        if query is None:
-            query = {}
-        return self.collection.count_documents(query)
-
-    # Delete entry/entries from collection
-    def delete_one(self, query):
-        self.collection.delete_many(query)
-        after_delete = self.collection.count_documents({})
-        return after_delete
-
-    # Replace one entry in collection
-    def replace(self, query, new_data):
-        old = self.collection.find_one(query)
-        _id = old["_id"]
-        self.collection.replace_one({"_id": _id}, new_data)
-        new = self.collection.find_one({"_id": _id})
-        return old, new
-
-    # Update one entry from collection
-    def update(self, query, update):
-        result = self.collection.update_one(query, {"$set": update})
-        new_document = self.collection.find_one(query)
-        return result.modified_count, new_document
-
-    # Close connection
-    @staticmethod
-    def close():
-        return mongodb_client.close()
+XXXXreturnXnote_data,Xbuttons
 
 
-def __connect_first():
-    _ = MongoDB("test")
+asyncXdefXbuild_keyboard(buttons):
+XXXX"""BuildXkeyboardsXfromXprovidedXbuttons."""
+XXXXkeybX=X[]
+XXXXforXbtnXinXbuttons:
+XXXXXXXXifXbtn[-1]XandXkeyb:
+XXXXXXXXXXXXkeyb[-1].append(InlineKeyboardButton(btn[0],Xurl=btn[1]))
+XXXXXXXXelse:
+XXXXXXXXXXXXkeyb.append([InlineKeyboardButton(btn[0],Xurl=btn[1])])
+
+XXXXreturnXkeyb
+
+
+classXMongoDB:
+XXXX"""ClassXforXinteractingXwithXBotXdatabase."""
+
+XXXXdefX__init__(self,Xcollection)X->XNone:
+XXXXXXXXself.collectionX=Xdb[collection]
+
+XXXX#XInsertXoneXentryXintoXcollection
+XXXXdefXinsert_one(self,Xdocument):
+XXXXXXXXresultX=Xself.collection.insert_one(document)
+XXXXXXXXreturnXrepr(result.inserted_id)
+
+XXXX#XFindXoneXentryXfromXcollection
+XXXXdefXfind_one(self,Xquery):
+XXXXXXXXresultX=Xself.collection.find_one(query)
+XXXXXXXXifXresult:
+XXXXXXXXXXXXreturnXresult
+XXXXXXXXreturnXFalse
+
+XXXX#XFindXentriesXfromXcollection
+XXXXdefXfind_all(self,Xquery=None):
+XXXXXXXXifXqueryXisXNone:
+XXXXXXXXXXXXqueryX=X{}
+XXXXXXXXlstX=X[]
+XXXXXXXXforXdocumentXinXself.collection.find(query):
+XXXXXXXXXXXXlst.append(document)
+XXXXXXXXreturnXlst
+
+XXXX#XCountXentriesXfromXcollection
+XXXXdefXcount(self,Xquery=None):
+XXXXXXXXifXqueryXisXNone:
+XXXXXXXXXXXXqueryX=X{}
+XXXXXXXXreturnXself.collection.count_documents(query)
+
+XXXX#XDeleteXentry/entriesXfromXcollection
+XXXXdefXdelete_one(self,Xquery):
+XXXXXXXXself.collection.delete_many(query)
+XXXXXXXXafter_deleteX=Xself.collection.count_documents({})
+XXXXXXXXreturnXafter_delete
+
+XXXX#XReplaceXoneXentryXinXcollection
+XXXXdefXreplace(self,Xquery,Xnew_data):
+XXXXXXXXoldX=Xself.collection.find_one(query)
+XXXXXXXX_idX=Xold["_id"]
+XXXXXXXXself.collection.replace_one({"_id":X_id},Xnew_data)
+XXXXXXXXnewX=Xself.collection.find_one({"_id":X_id})
+XXXXXXXXreturnXold,Xnew
+
+XXXX#XUpdateXoneXentryXfromXcollection
+XXXXdefXupdate(self,Xquery,Xupdate):
+XXXXXXXXresultX=Xself.collection.update_one(query,X{"$set":Xupdate})
+XXXXXXXXnew_documentX=Xself.collection.find_one(query)
+XXXXXXXXreturnXresult.modified_count,Xnew_document
+
+XXXX#XCloseXconnection
+XXXX@staticmethod
+XXXXdefXclose():
+XXXXXXXXreturnXmongodb_client.close()
+
+
+defX__connect_first():
+XXXX_X=XMongoDB("test")
 
 
 __connect_first()
 
 
-@app.on_message(filters.command("unpinall") & ~filters.private)
-async def unpinall_message(_, m: Message):
-    try:
-        chat_id = m.chat.id
-        user_id = m.from_user.id
-        permissions = await member_permissions(chat_id, user_id)
-        if "can_change_info" not in permissions:
-            await m.reply_text("You Don't Have Enough Permissions.")
-            return
-        if "can_pin_messages" not in permissions:
-            await m.reply_text("You Don't Have Enough Permissions.")
-            return
-        if "can_restrict_members" not in permissions:
-            await m.reply_text("You Don't Have Enough Permissions.")
-            return
-        if "can_promote_members" not in permissions:
-            await m.reply_text("You Don't Have Enough Permissions.")
-            return
-        try:
-            await _.unpin_all_chat_messages(m.chat.id)
-            await m.reply("I have unpinned all messages")
-        except ChatAdminRequired:
-            await m.reply("I'm not admin here")
-        except RightForbidden:
-            await m.reply("I don't have enough rights to unpin here")
-        except RPCError as ef:
-            await m.reply_text(ef)
-            return
+@app.on_message(filters.command("unpinall")X&X~filters.private)
+asyncXdefXunpinall_message(_,Xm:XMessage):
+XXXXtry:
+XXXXXXXXchat_idX=Xm.chat.id
+XXXXXXXXuser_idX=Xm.from_user.id
+XXXXXXXXpermissionsX=XawaitXmember_permissions(chat_id,Xuser_id)
+XXXXXXXXifX"can_change_info"XnotXinXpermissions:
+XXXXXXXXXXXXawaitXm.reply_text("YouXDon'tXHaveXEnoughXPermissions.")
+XXXXXXXXXXXXreturn
+XXXXXXXXifX"can_pin_messages"XnotXinXpermissions:
+XXXXXXXXXXXXawaitXm.reply_text("YouXDon'tXHaveXEnoughXPermissions.")
+XXXXXXXXXXXXreturn
+XXXXXXXXifX"can_restrict_members"XnotXinXpermissions:
+XXXXXXXXXXXXawaitXm.reply_text("YouXDon'tXHaveXEnoughXPermissions.")
+XXXXXXXXXXXXreturn
+XXXXXXXXifX"can_promote_members"XnotXinXpermissions:
+XXXXXXXXXXXXawaitXm.reply_text("YouXDon'tXHaveXEnoughXPermissions.")
+XXXXXXXXXXXXreturn
+XXXXXXXXtry:
+XXXXXXXXXXXXawaitX_.unpin_all_chat_messages(m.chat.id)
+XXXXXXXXXXXXawaitXm.reply("IXhaveXunpinnedXallXmessages")
+XXXXXXXXexceptXChatAdminRequired:
+XXXXXXXXXXXXawaitXm.reply("I'mXnotXadminXhere")
+XXXXXXXXexceptXRightForbidden:
+XXXXXXXXXXXXawaitXm.reply("IXdon'tXhaveXenoughXrightsXtoXunpinXhere")
+XXXXXXXXexceptXRPCErrorXasXef:
+XXXXXXXXXXXXawaitXm.reply_text(ef)
+XXXXXXXXXXXXreturn
 
-    except Exception as e:
-        print(e)
-        await m.reply_text(e)
-        return
-
-
-from threading import RLock
-
-INSERTION_LOCK = RLock()
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint(e)
+XXXXXXXXawaitXm.reply_text(e)
+XXXXXXXXreturn
 
 
-class Pins:
-    """Class for managing antichannelpins in chats."""
+fromXthreadingXimportXRLock
 
-    # Database name to connect to to preform operations
-    db_name = "antichannelpin"
-
-    def __init__(self, chat_id: int) -> None:
-        self.collection = MongoDB(self.db_name)
-        self.chat_id = chat_id
-        self.chat_info = self.__ensure_in_db()
-
-    def get_settings(self):
-        with INSERTION_LOCK:
-            return self.chat_info
-
-    def antichannelpin_on(self):
-        with INSERTION_LOCK:
-            return self.set_on("antichannelpin")
-
-    def cleanlinked_on(self):
-        with INSERTION_LOCK:
-            return self.set_on("cleanlinked")
-
-    def antichannelpin_off(self):
-        with INSERTION_LOCK:
-            return self.set_off("antichannelpin")
-
-    def cleanlinked_off(self):
-        with INSERTION_LOCK:
-            return self.set_off("cleanlinked")
-
-    def set_on(self, atype: str):
-        with INSERTION_LOCK:
-            otype = "cleanlinked" if atype == "antichannelpin" else "antichannelpin"
-            return self.collection.update(
-                {"_id": self.chat_id},
-                {atype: True, otype: False},
-            )
-
-    def set_off(self, atype: str):
-        with INSERTION_LOCK:
-            otype = "cleanlinked" if atype == "antichannelpin" else "antichannelpin"
-            return self.collection.update(
-                {"_id": self.chat_id},
-                {atype: False, otype: False},
-            )
-
-    def __ensure_in_db(self):
-        chat_data = self.collection.find_one({"_id": self.chat_id})
-        if not chat_data:
-            new_data = {
-                "_id": self.chat_id,
-                "antichannelpin": False,
-                "cleanlinked": False,
-            }
-            self.collection.insert_one(new_data)
-            return new_data
-        return chat_data
-
-    # Migrate if chat id changes!
-    def migrate_chat(self, new_chat_id: int):
-        old_chat_db = self.collection.find_one({"_id": self.chat_id})
-        new_data = old_chat_db.update({"_id": new_chat_id})
-        self.collection.insert_one(new_data)
-        self.collection.delete_one({"_id": self.chat_id})
-
-    # ----- Static Methods -----
-    @staticmethod
-    def count_chats(atype: str):
-        with INSERTION_LOCK:
-            collection = MongoDB(Pins.db_name)
-            return collection.count({atype: True})
-
-    @staticmethod
-    def list_chats(query: str):
-        with INSERTION_LOCK:
-            collection = MongoDB(Pins.db_name)
-            return collection.find_all({query: True})
-
-    @staticmethod
-    def load_from_db():
-        with INSERTION_LOCK:
-            collection = MongoDB(Pins.db_name)
-            return collection.findall()
-
-    @staticmethod
-    def repair_db(collection):
-        all_data = collection.find_all()
-        keys = {"antichannelpin": False, "cleanlinked": False}
-        for data in all_data:
-            for key, val in keys.items():
-                try:
-                    _ = data[key]
-                except KeyError:
-                    collection.update({"_id": data["_id"]}, {key: val})
+INSERTION_LOCKX=XRLock()
 
 
-def __pre_req_pins_chats():
-    collection = MongoDB(Pins.db_name)
-    Pins.repair_db(collection)
+classXPins:
+XXXX"""ClassXforXmanagingXantichannelpinsXinXchats."""
+
+XXXX#XDatabaseXnameXtoXconnectXtoXtoXpreformXoperations
+XXXXdb_nameX=X"antichannelpin"
+
+XXXXdefX__init__(self,Xchat_id:Xint)X->XNone:
+XXXXXXXXself.collectionX=XMongoDB(self.db_name)
+XXXXXXXXself.chat_idX=Xchat_id
+XXXXXXXXself.chat_infoX=Xself.__ensure_in_db()
+
+XXXXdefXget_settings(self):
+XXXXXXXXwithXINSERTION_LOCK:
+XXXXXXXXXXXXreturnXself.chat_info
+
+XXXXdefXantichannelpin_on(self):
+XXXXXXXXwithXINSERTION_LOCK:
+XXXXXXXXXXXXreturnXself.set_on("antichannelpin")
+
+XXXXdefXcleanlinked_on(self):
+XXXXXXXXwithXINSERTION_LOCK:
+XXXXXXXXXXXXreturnXself.set_on("cleanlinked")
+
+XXXXdefXantichannelpin_off(self):
+XXXXXXXXwithXINSERTION_LOCK:
+XXXXXXXXXXXXreturnXself.set_off("antichannelpin")
+
+XXXXdefXcleanlinked_off(self):
+XXXXXXXXwithXINSERTION_LOCK:
+XXXXXXXXXXXXreturnXself.set_off("cleanlinked")
+
+XXXXdefXset_on(self,Xatype:Xstr):
+XXXXXXXXwithXINSERTION_LOCK:
+XXXXXXXXXXXXotypeX=X"cleanlinked"XifXatypeX==X"antichannelpin"XelseX"antichannelpin"
+XXXXXXXXXXXXreturnXself.collection.update(
+XXXXXXXXXXXXXXXX{"_id":Xself.chat_id},
+XXXXXXXXXXXXXXXX{atype:XTrue,Xotype:XFalse},
+XXXXXXXXXXXX)
+
+XXXXdefXset_off(self,Xatype:Xstr):
+XXXXXXXXwithXINSERTION_LOCK:
+XXXXXXXXXXXXotypeX=X"cleanlinked"XifXatypeX==X"antichannelpin"XelseX"antichannelpin"
+XXXXXXXXXXXXreturnXself.collection.update(
+XXXXXXXXXXXXXXXX{"_id":Xself.chat_id},
+XXXXXXXXXXXXXXXX{atype:XFalse,Xotype:XFalse},
+XXXXXXXXXXXX)
+
+XXXXdefX__ensure_in_db(self):
+XXXXXXXXchat_dataX=Xself.collection.find_one({"_id":Xself.chat_id})
+XXXXXXXXifXnotXchat_data:
+XXXXXXXXXXXXnew_dataX=X{
+XXXXXXXXXXXXXXXX"_id":Xself.chat_id,
+XXXXXXXXXXXXXXXX"antichannelpin":XFalse,
+XXXXXXXXXXXXXXXX"cleanlinked":XFalse,
+XXXXXXXXXXXX}
+XXXXXXXXXXXXself.collection.insert_one(new_data)
+XXXXXXXXXXXXreturnXnew_data
+XXXXXXXXreturnXchat_data
+
+XXXX#XMigrateXifXchatXidXchanges!
+XXXXdefXmigrate_chat(self,Xnew_chat_id:Xint):
+XXXXXXXXold_chat_dbX=Xself.collection.find_one({"_id":Xself.chat_id})
+XXXXXXXXnew_dataX=Xold_chat_db.update({"_id":Xnew_chat_id})
+XXXXXXXXself.collection.insert_one(new_data)
+XXXXXXXXself.collection.delete_one({"_id":Xself.chat_id})
+
+XXXX#X-----XStaticXMethodsX-----
+XXXX@staticmethod
+XXXXdefXcount_chats(atype:Xstr):
+XXXXXXXXwithXINSERTION_LOCK:
+XXXXXXXXXXXXcollectionX=XMongoDB(Pins.db_name)
+XXXXXXXXXXXXreturnXcollection.count({atype:XTrue})
+
+XXXX@staticmethod
+XXXXdefXlist_chats(query:Xstr):
+XXXXXXXXwithXINSERTION_LOCK:
+XXXXXXXXXXXXcollectionX=XMongoDB(Pins.db_name)
+XXXXXXXXXXXXreturnXcollection.find_all({query:XTrue})
+
+XXXX@staticmethod
+XXXXdefXload_from_db():
+XXXXXXXXwithXINSERTION_LOCK:
+XXXXXXXXXXXXcollectionX=XMongoDB(Pins.db_name)
+XXXXXXXXXXXXreturnXcollection.findall()
+
+XXXX@staticmethod
+XXXXdefXrepair_db(collection):
+XXXXXXXXall_dataX=Xcollection.find_all()
+XXXXXXXXkeysX=X{"antichannelpin":XFalse,X"cleanlinked":XFalse}
+XXXXXXXXforXdataXinXall_data:
+XXXXXXXXXXXXforXkey,XvalXinXkeys.items():
+XXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXX_X=Xdata[key]
+XXXXXXXXXXXXXXXXexceptXKeyError:
+XXXXXXXXXXXXXXXXXXXXcollection.update({"_id":Xdata["_id"]},X{key:Xval})
 
 
-@app.on_message(filters.command("antichannelpin") & ~filters.private)
-async def anti_channel_pin(_, m: Message):
-    chat_id = m.chat.id
-    user_id = m.from_user.id
-    permissions = await member_permissions(chat_id, user_id)
-    if "can_change_info" not in permissions:
-        await m.reply_text("You Don't Have Enough Permissions.")
-        return
-    if "can_pin_messages" not in permissions:
-        await m.reply_text("You Don't Have Enough Permissions.")
-        return
-    if "can_restrict_members" not in permissions:
-        await m.reply_text("You Don't Have Enough Permissions.")
-        return
-    if "can_promote_members" not in permissions:
-        await m.reply_text("You Don't Have Enough Permissions.")
-        return
-    pinsdb = Pins(m.chat.id)
-    if len(m.text.split()) == 1:
-        status = pinsdb.get_settings()["antichannelpin"]
-        await m.reply_text(f"Antichannelpin currently: {status}")
-        return
-
-    if len(m.text.split()) == 2:
-        if m.command[1] in ("yes", "on", "true"):
-            pinsdb.antichannelpin_on()
-            msg = "Antichannelpin turned on for this chat"
-        elif m.command[1] in ("no", "off", "false"):
-            pinsdb.antichannelpin_off()
-            msg = "Antichannelpin turned off for this chat"
-        else:
-            await m.reply_text("Invalid syntax")
-            return
-
-    await m.reply_text(msg)
-    return
+defX__pre_req_pins_chats():
+XXXXcollectionX=XMongoDB(Pins.db_name)
+XXXXPins.repair_db(collection)
 
 
-@app.on_message(filters.command("cleanlinked") & ~filters.private)
-async def clean_linked(_, m: Message):
-    chat_id = m.chat.id
-    user_id = m.from_user.id
-    permissions = await member_permissions(chat_id, user_id)
-    if "can_change_info" not in permissions:
-        await m.reply_text("You Don't Have Enough Permissions.")
-        return
-    if "can_pin_messages" not in permissions:
-        await m.reply_text("You Don't Have Enough Permissions.")
-        return
-    if "can_restrict_members" not in permissions:
-        await m.reply_text("You Don't Have Enough Permissions.")
-        return
-    if "can_promote_members" not in permissions:
-        await m.reply_text("You Don't Have Enough Permissions.")
-        return
-    pinsdb = Pins(m.chat.id)
+@app.on_message(filters.command("antichannelpin")X&X~filters.private)
+asyncXdefXanti_channel_pin(_,Xm:XMessage):
+XXXXchat_idX=Xm.chat.id
+XXXXuser_idX=Xm.from_user.id
+XXXXpermissionsX=XawaitXmember_permissions(chat_id,Xuser_id)
+XXXXifX"can_change_info"XnotXinXpermissions:
+XXXXXXXXawaitXm.reply_text("YouXDon'tXHaveXEnoughXPermissions.")
+XXXXXXXXreturn
+XXXXifX"can_pin_messages"XnotXinXpermissions:
+XXXXXXXXawaitXm.reply_text("YouXDon'tXHaveXEnoughXPermissions.")
+XXXXXXXXreturn
+XXXXifX"can_restrict_members"XnotXinXpermissions:
+XXXXXXXXawaitXm.reply_text("YouXDon'tXHaveXEnoughXPermissions.")
+XXXXXXXXreturn
+XXXXifX"can_promote_members"XnotXinXpermissions:
+XXXXXXXXawaitXm.reply_text("YouXDon'tXHaveXEnoughXPermissions.")
+XXXXXXXXreturn
+XXXXpinsdbX=XPins(m.chat.id)
+XXXXifXlen(m.text.split())X==X1:
+XXXXXXXXstatusX=Xpinsdb.get_settings()["antichannelpin"]
+XXXXXXXXawaitXm.reply_text(f"AntichannelpinXcurrently:X{status}")
+XXXXXXXXreturn
 
-    if len(m.text.split()) == 1:
-        status = pinsdb.get_settings()["cleanlinked"]
-        await m.reply_text(f"Cleanlinked pins currently: {status}")
-        return
+XXXXifXlen(m.text.split())X==X2:
+XXXXXXXXifXm.command[1]XinX("yes",X"on",X"true"):
+XXXXXXXXXXXXpinsdb.antichannelpin_on()
+XXXXXXXXXXXXmsgX=X"AntichannelpinXturnedXonXforXthisXchat"
+XXXXXXXXelifXm.command[1]XinX("no",X"off",X"false"):
+XXXXXXXXXXXXpinsdb.antichannelpin_off()
+XXXXXXXXXXXXmsgX=X"AntichannelpinXturnedXoffXforXthisXchat"
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXm.reply_text("InvalidXsyntax")
+XXXXXXXXXXXXreturn
 
-    if len(m.text.split()) == 2:
-        if m.command[1] in ("yes", "on", "true"):
-            pinsdb.cleanlinked_on()
-            msg = "Turned on CleanLinked! Now all the messages from linked channel will be deleted!"
-        elif m.command[1] in ("no", "off", "false"):
-            pinsdb.cleanlinked_off()
-            msg = "Turned off CleanLinked! Messages from linked channel will not be deleted!"
-        else:
-            await m.reply("Invalid syntax")
-            return
-
-    await m.reply(msg)
-    return
+XXXXawaitXm.reply_text(msg)
+XXXXreturn
 
 
-@app.on_message(filters.command("permapin") & ~filters.private)
-async def perma_pin(_, m: Message):
-    chat_id = m.chat.id
-    user_id = m.from_user.id
-    permissions = await member_permissions(chat_id, user_id)
-    if "can_change_info" not in permissions:
-        await m.reply_text("You Don't Have Enough Permissions.")
-        return
-    if "can_pin_messages" not in permissions:
-        await m.reply_text("You Don't Have Enough Permissions.")
-        return
-    if "can_restrict_members" not in permissions:
-        await m.reply_text("You Don't Have Enough Permissions.")
-        return
-    if "can_promote_members" not in permissions:
-        await m.reply_text("You Don't Have Enough Permissions.")
-        return
-    if m.reply_to_message or len(m.text.split()) > 1:
-        if m.reply_to_message:
-            text = m.reply_to_message.text
-        elif len(m.text.split()) > 1:
-            text = m.text.split(None, 1)[1]
-        teks, button = await parse_button(text)
-        button = await build_keyboard(button)
-        button = InlineKeyboardMarkup(button) if button else None
-        z = await m.reply_text(teks, reply_markup=button)
-        await z.pin()
-    else:
-        await m.reply_text("Reply to a message or enter text to pin it.")
-    await m.delete()
-    return
+@app.on_message(filters.command("cleanlinked")X&X~filters.private)
+asyncXdefXclean_linked(_,Xm:XMessage):
+XXXXchat_idX=Xm.chat.id
+XXXXuser_idX=Xm.from_user.id
+XXXXpermissionsX=XawaitXmember_permissions(chat_id,Xuser_id)
+XXXXifX"can_change_info"XnotXinXpermissions:
+XXXXXXXXawaitXm.reply_text("YouXDon'tXHaveXEnoughXPermissions.")
+XXXXXXXXreturn
+XXXXifX"can_pin_messages"XnotXinXpermissions:
+XXXXXXXXawaitXm.reply_text("YouXDon'tXHaveXEnoughXPermissions.")
+XXXXXXXXreturn
+XXXXifX"can_restrict_members"XnotXinXpermissions:
+XXXXXXXXawaitXm.reply_text("YouXDon'tXHaveXEnoughXPermissions.")
+XXXXXXXXreturn
+XXXXifX"can_promote_members"XnotXinXpermissions:
+XXXXXXXXawaitXm.reply_text("YouXDon'tXHaveXEnoughXPermissions.")
+XXXXXXXXreturn
+XXXXpinsdbX=XPins(m.chat.id)
+
+XXXXifXlen(m.text.split())X==X1:
+XXXXXXXXstatusX=Xpinsdb.get_settings()["cleanlinked"]
+XXXXXXXXawaitXm.reply_text(f"CleanlinkedXpinsXcurrently:X{status}")
+XXXXXXXXreturn
+
+XXXXifXlen(m.text.split())X==X2:
+XXXXXXXXifXm.command[1]XinX("yes",X"on",X"true"):
+XXXXXXXXXXXXpinsdb.cleanlinked_on()
+XXXXXXXXXXXXmsgX=X"TurnedXonXCleanLinked!XNowXallXtheXmessagesXfromXlinkedXchannelXwillXbeXdeleted!"
+XXXXXXXXelifXm.command[1]XinX("no",X"off",X"false"):
+XXXXXXXXXXXXpinsdb.cleanlinked_off()
+XXXXXXXXXXXXmsgX=X"TurnedXoffXCleanLinked!XMessagesXfromXlinkedXchannelXwillXnotXbeXdeleted!"
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXm.reply("InvalidXsyntax")
+XXXXXXXXXXXXreturn
+
+XXXXawaitXm.reply(msg)
+XXXXreturn
+
+
+@app.on_message(filters.command("permapin")X&X~filters.private)
+asyncXdefXperma_pin(_,Xm:XMessage):
+XXXXchat_idX=Xm.chat.id
+XXXXuser_idX=Xm.from_user.id
+XXXXpermissionsX=XawaitXmember_permissions(chat_id,Xuser_id)
+XXXXifX"can_change_info"XnotXinXpermissions:
+XXXXXXXXawaitXm.reply_text("YouXDon'tXHaveXEnoughXPermissions.")
+XXXXXXXXreturn
+XXXXifX"can_pin_messages"XnotXinXpermissions:
+XXXXXXXXawaitXm.reply_text("YouXDon'tXHaveXEnoughXPermissions.")
+XXXXXXXXreturn
+XXXXifX"can_restrict_members"XnotXinXpermissions:
+XXXXXXXXawaitXm.reply_text("YouXDon'tXHaveXEnoughXPermissions.")
+XXXXXXXXreturn
+XXXXifX"can_promote_members"XnotXinXpermissions:
+XXXXXXXXawaitXm.reply_text("YouXDon'tXHaveXEnoughXPermissions.")
+XXXXXXXXreturn
+XXXXifXm.reply_to_messageXorXlen(m.text.split())X>X1:
+XXXXXXXXifXm.reply_to_message:
+XXXXXXXXXXXXtextX=Xm.reply_to_message.text
+XXXXXXXXelifXlen(m.text.split())X>X1:
+XXXXXXXXXXXXtextX=Xm.text.split(None,X1)[1]
+XXXXXXXXteks,XbuttonX=XawaitXparse_button(text)
+XXXXXXXXbuttonX=XawaitXbuild_keyboard(button)
+XXXXXXXXbuttonX=XInlineKeyboardMarkup(button)XifXbuttonXelseXNone
+XXXXXXXXzX=XawaitXm.reply_text(teks,Xreply_markup=button)
+XXXXXXXXawaitXz.pin()
+XXXXelse:
+XXXXXXXXawaitXm.reply_text("ReplyXtoXaXmessageXorXenterXtextXtoXpinXit.")
+XXXXawaitXm.delete()
+XXXXreturn
 
 
 @app.on_message(filters.linked_channel)
-async def antichanpin_cleanlinked(c, m: Message):
-    try:
-        msg_id = m.message_id
-        pins_db = Pins(m.chat.id)
-        curr = pins_db.get_settings()
-        if curr["antichannelpin"]:
-            await c.unpin_chat_message(chat_id=m.chat.id, message_id=msg_id)
-        if curr["cleanlinked"]:
-            await c.delete_messages(m.chat.id, msg_id)
-    except ChatAdminRequired:
-        await m.reply_text(
-            "Disabled antichannelpin as I don't have enough admin rights!",
-        )
-        pins_db.antichannelpin_off()
-    except Exception:
-        return
-    return
+asyncXdefXantichanpin_cleanlinked(c,Xm:XMessage):
+XXXXtry:
+XXXXXXXXmsg_idX=Xm.message_id
+XXXXXXXXpins_dbX=XPins(m.chat.id)
+XXXXXXXXcurrX=Xpins_db.get_settings()
+XXXXXXXXifXcurr["antichannelpin"]:
+XXXXXXXXXXXXawaitXc.unpin_chat_message(chat_id=m.chat.id,Xmessage_id=msg_id)
+XXXXXXXXifXcurr["cleanlinked"]:
+XXXXXXXXXXXXawaitXc.delete_messages(m.chat.id,Xmsg_id)
+XXXXexceptXChatAdminRequired:
+XXXXXXXXawaitXm.reply_text(
+XXXXXXXXXXXX"DisabledXantichannelpinXasXIXdon'tXhaveXenoughXadminXrights!",
+XXXXXXXX)
+XXXXXXXXpins_db.antichannelpin_off()
+XXXXexceptXException:
+XXXXXXXXreturn
+XXXXreturn

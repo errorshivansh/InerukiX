@@ -1,145 +1,145 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-import re
-
-import bs4
-import requests
-from telethon import types
-from telethon.tl import functions
-
-from Ineruki .services.events import register
-from Ineruki .services.telethon import tbot
-
-langi = "en"
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
 
-async def is_register_admin(chat, user):
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
-        return isinstance(
-            (
-                await tbot(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    if isinstance(chat, types.InputPeerUser):
-        return True
+importXre
+
+importXbs4
+importXrequests
+fromXtelethonXimportXtypes
+fromXtelethon.tlXimportXfunctions
+
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.telethonXimportXtbot
+
+langiX=X"en"
 
 
-@register(pattern="^/imdb (.*)")
-async def imdb(e):
-    if e.is_group:
-        if await is_register_admin(e.input_chat, e.message.sender_id):
-            pass
-        else:
-            return
+asyncXdefXis_register_admin(chat,Xuser):
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXtbot(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXifXisinstance(chat,Xtypes.InputPeerUser):
+XXXXXXXXreturnXTrue
 
-    try:
-        movie_name = e.pattern_match.group(1)
-        remove_space = movie_name.split(" ")
-        final_name = "+".join(remove_space)
-        page = requests.get(
-            "https://www.imdb.com/find?ref_=nv_sr_fn&q=" + final_name + "&s=all"
-        )
-        str(page.status_code)
-        soup = bs4.BeautifulSoup(page.content, "lxml")
-        odds = soup.findAll("tr", "odd")
-        mov_title = odds[0].findNext("td").findNext("td").text
-        mov_link = (
-            "http://www.imdb.com/" + odds[0].findNext("td").findNext("td").a["href"]
-        )
-        page1 = requests.get(mov_link)
-        soup = bs4.BeautifulSoup(page1.content, "lxml")
-        if soup.find("div", "poster"):
-            poster = soup.find("div", "poster").img["src"]
-        else:
-            poster = ""
-        if soup.find("div", "title_wrapper"):
-            pg = soup.find("div", "title_wrapper").findNext("div").text
-            mov_details = re.sub(r"\s+", " ", pg)
-        else:
-            mov_details = ""
-        credits = soup.findAll("div", "credit_summary_item")
-        if len(credits) == 1:
-            director = credits[0].a.text
-            writer = "Not available"
-            stars = "Not available"
-        elif len(credits) > 2:
-            director = credits[0].a.text
-            writer = credits[1].a.text
-            actors = []
-            for x in credits[2].findAll("a"):
-                actors.append(x.text)
-            actors.pop()
-            stars = actors[0] + "," + actors[1] + "," + actors[2]
-        else:
-            director = credits[0].a.text
-            writer = "Not available"
-            actors = []
-            for x in credits[1].findAll("a"):
-                actors.append(x.text)
-            actors.pop()
-            stars = actors[0] + "," + actors[1] + "," + actors[2]
-        if soup.find("div", "inline canwrap"):
-            story_line = soup.find("div", "inline canwrap").findAll("p")[0].text
-        else:
-            story_line = "Not available"
-        info = soup.findAll("div", "txt-block")
-        if info:
-            mov_country = []
-            mov_language = []
-            for node in info:
-                a = node.findAll("a")
-                for i in a:
-                    if "country_of_origin" in i["href"]:
-                        mov_country.append(i.text)
-                    elif "primary_language" in i["href"]:
-                        mov_language.append(i.text)
-        if soup.findAll("div", "ratingValue"):
-            for r in soup.findAll("div", "ratingValue"):
-                mov_rating = r.strong["title"]
-        else:
-            mov_rating = "Not available"
-        await e.reply(
-            "<a href=" + poster + ">&#8203;</a>"
-            "<b>Title : </b><code>"
-            + mov_title
-            + "</code>\n<code>"
-            + mov_details
-            + "</code>\n<b>Rating : </b><code>"
-            + mov_rating
-            + "</code>\n<b>Country : </b><code>"
-            + mov_country[0]
-            + "</code>\n<b>Language : </b><code>"
-            + mov_language[0]
-            + "</code>\n<b>Director : </b><code>"
-            + director
-            + "</code>\n<b>Writer : </b><code>"
-            + writer
-            + "</code>\n<b>Stars : </b><code>"
-            + stars
-            + "</code>\n<b>IMDB Url : </b>"
-            + mov_link
-            + "\n<b>Story Line : </b>"
-            + story_line,
-            link_preview=True,
-            parse_mode="HTML",
-        )
-    except IndexError:
-        await e.reply("Please enter a valid movie name !")
+
+@register(pattern="^/imdbX(.*)")
+asyncXdefXimdb(e):
+XXXXifXe.is_group:
+XXXXXXXXifXawaitXis_register_admin(e.input_chat,Xe.message.sender_id):
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+
+XXXXtry:
+XXXXXXXXmovie_nameX=Xe.pattern_match.group(1)
+XXXXXXXXremove_spaceX=Xmovie_name.split("X")
+XXXXXXXXfinal_nameX=X"+".join(remove_space)
+XXXXXXXXpageX=Xrequests.get(
+XXXXXXXXXXXX"https://www.imdb.com/find?ref_=nv_sr_fn&q="X+Xfinal_nameX+X"&s=all"
+XXXXXXXX)
+XXXXXXXXstr(page.status_code)
+XXXXXXXXsoupX=Xbs4.BeautifulSoup(page.content,X"lxml")
+XXXXXXXXoddsX=Xsoup.findAll("tr",X"odd")
+XXXXXXXXmov_titleX=Xodds[0].findNext("td").findNext("td").text
+XXXXXXXXmov_linkX=X(
+XXXXXXXXXXXX"http://www.imdb.com/"X+Xodds[0].findNext("td").findNext("td").a["href"]
+XXXXXXXX)
+XXXXXXXXpage1X=Xrequests.get(mov_link)
+XXXXXXXXsoupX=Xbs4.BeautifulSoup(page1.content,X"lxml")
+XXXXXXXXifXsoup.find("div",X"poster"):
+XXXXXXXXXXXXposterX=Xsoup.find("div",X"poster").img["src"]
+XXXXXXXXelse:
+XXXXXXXXXXXXposterX=X""
+XXXXXXXXifXsoup.find("div",X"title_wrapper"):
+XXXXXXXXXXXXpgX=Xsoup.find("div",X"title_wrapper").findNext("div").text
+XXXXXXXXXXXXmov_detailsX=Xre.sub(r"\s+",X"X",Xpg)
+XXXXXXXXelse:
+XXXXXXXXXXXXmov_detailsX=X""
+XXXXXXXXcreditsX=Xsoup.findAll("div",X"credit_summary_item")
+XXXXXXXXifXlen(credits)X==X1:
+XXXXXXXXXXXXdirectorX=Xcredits[0].a.text
+XXXXXXXXXXXXwriterX=X"NotXavailable"
+XXXXXXXXXXXXstarsX=X"NotXavailable"
+XXXXXXXXelifXlen(credits)X>X2:
+XXXXXXXXXXXXdirectorX=Xcredits[0].a.text
+XXXXXXXXXXXXwriterX=Xcredits[1].a.text
+XXXXXXXXXXXXactorsX=X[]
+XXXXXXXXXXXXforXxXinXcredits[2].findAll("a"):
+XXXXXXXXXXXXXXXXactors.append(x.text)
+XXXXXXXXXXXXactors.pop()
+XXXXXXXXXXXXstarsX=Xactors[0]X+X","X+Xactors[1]X+X","X+Xactors[2]
+XXXXXXXXelse:
+XXXXXXXXXXXXdirectorX=Xcredits[0].a.text
+XXXXXXXXXXXXwriterX=X"NotXavailable"
+XXXXXXXXXXXXactorsX=X[]
+XXXXXXXXXXXXforXxXinXcredits[1].findAll("a"):
+XXXXXXXXXXXXXXXXactors.append(x.text)
+XXXXXXXXXXXXactors.pop()
+XXXXXXXXXXXXstarsX=Xactors[0]X+X","X+Xactors[1]X+X","X+Xactors[2]
+XXXXXXXXifXsoup.find("div",X"inlineXcanwrap"):
+XXXXXXXXXXXXstory_lineX=Xsoup.find("div",X"inlineXcanwrap").findAll("p")[0].text
+XXXXXXXXelse:
+XXXXXXXXXXXXstory_lineX=X"NotXavailable"
+XXXXXXXXinfoX=Xsoup.findAll("div",X"txt-block")
+XXXXXXXXifXinfo:
+XXXXXXXXXXXXmov_countryX=X[]
+XXXXXXXXXXXXmov_languageX=X[]
+XXXXXXXXXXXXforXnodeXinXinfo:
+XXXXXXXXXXXXXXXXaX=Xnode.findAll("a")
+XXXXXXXXXXXXXXXXforXiXinXa:
+XXXXXXXXXXXXXXXXXXXXifX"country_of_origin"XinXi["href"]:
+XXXXXXXXXXXXXXXXXXXXXXXXmov_country.append(i.text)
+XXXXXXXXXXXXXXXXXXXXelifX"primary_language"XinXi["href"]:
+XXXXXXXXXXXXXXXXXXXXXXXXmov_language.append(i.text)
+XXXXXXXXifXsoup.findAll("div",X"ratingValue"):
+XXXXXXXXXXXXforXrXinXsoup.findAll("div",X"ratingValue"):
+XXXXXXXXXXXXXXXXmov_ratingX=Xr.strong["title"]
+XXXXXXXXelse:
+XXXXXXXXXXXXmov_ratingX=X"NotXavailable"
+XXXXXXXXawaitXe.reply(
+XXXXXXXXXXXX"<aXhref="X+XposterX+X">&#8203;</a>"
+XXXXXXXXXXXX"<b>TitleX:X</b><code>"
+XXXXXXXXXXXX+Xmov_title
+XXXXXXXXXXXX+X"</code>\n<code>"
+XXXXXXXXXXXX+Xmov_details
+XXXXXXXXXXXX+X"</code>\n<b>RatingX:X</b><code>"
+XXXXXXXXXXXX+Xmov_rating
+XXXXXXXXXXXX+X"</code>\n<b>CountryX:X</b><code>"
+XXXXXXXXXXXX+Xmov_country[0]
+XXXXXXXXXXXX+X"</code>\n<b>LanguageX:X</b><code>"
+XXXXXXXXXXXX+Xmov_language[0]
+XXXXXXXXXXXX+X"</code>\n<b>DirectorX:X</b><code>"
+XXXXXXXXXXXX+Xdirector
+XXXXXXXXXXXX+X"</code>\n<b>WriterX:X</b><code>"
+XXXXXXXXXXXX+Xwriter
+XXXXXXXXXXXX+X"</code>\n<b>StarsX:X</b><code>"
+XXXXXXXXXXXX+Xstars
+XXXXXXXXXXXX+X"</code>\n<b>IMDBXUrlX:X</b>"
+XXXXXXXXXXXX+Xmov_link
+XXXXXXXXXXXX+X"\n<b>StoryXLineX:X</b>"
+XXXXXXXXXXXX+Xstory_line,
+XXXXXXXXXXXXlink_preview=True,
+XXXXXXXXXXXXparse_mode="HTML",
+XXXXXXXX)
+XXXXexceptXIndexError:
+XXXXXXXXawaitXe.reply("PleaseXenterXaXvalidXmovieXnameX!")

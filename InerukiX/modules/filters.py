@@ -1,479 +1,479 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 errorshivansh
-# Copyright (C) 2020 Inuka Asith
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2021Xerrorshivansh
+#XCopyrightX(C)X2020XInukaXAsith
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import asyncio
-import functools
-import random
-import re
-from contextlib import suppress
-from string import printable
+importXasyncio
+importXfunctools
+importXrandom
+importXre
+fromXcontextlibXimportXsuppress
+fromXstringXimportXprintable
 
-import regex
-from aiogram.dispatcher.filters.state import State, StatesGroup
-from aiogram.types import CallbackQuery, Message
-from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
-from aiogram.utils.callback_data import CallbackData
-from aiogram.utils.exceptions import MessageCantBeDeleted, MessageToDeleteNotFound
-from async_timeout import timeout
-from bson.objectid import ObjectId
-from pymongo import UpdateOne
+importXregex
+fromXaiogram.dispatcher.filters.stateXimportXState,XStatesGroup
+fromXaiogram.typesXimportXCallbackQuery,XMessage
+fromXaiogram.types.inline_keyboardXimportXInlineKeyboardButton,XInlineKeyboardMarkup
+fromXaiogram.utils.callback_dataXimportXCallbackData
+fromXaiogram.utils.exceptionsXimportXMessageCantBeDeleted,XMessageToDeleteNotFound
+fromXasync_timeoutXimportXtimeout
+fromXbson.objectidXimportXObjectId
+fromXpymongoXimportXUpdateOne
 
-from Ineruki  import bot, loop
-from Ineruki .decorator import register
-from Ineruki .modules import LOADED_MODULES
-from Ineruki .services.mongo import db
-from Ineruki .services.redis import redis
-from Ineruki .utils.logger import log
+fromXInerukiXXimportXbot,Xloop
+fromXInerukiX.decoratorXimportXregister
+fromXInerukiX.modulesXimportXLOADED_MODULES
+fromXInerukiX.services.mongoXimportXdb
+fromXInerukiX.services.redisXimportXredis
+fromXInerukiX.utils.loggerXimportXlog
 
-from .utils.connections import chat_connection, get_connected_chat
-from .utils.language import get_string, get_strings_dec
-from .utils.message import get_args_str, need_args_dec
-from .utils.user_details import is_chat_creator, is_user_admin
+fromX.utils.connectionsXimportXchat_connection,Xget_connected_chat
+fromX.utils.languageXimportXget_string,Xget_strings_dec
+fromX.utils.messageXimportXget_args_str,Xneed_args_dec
+fromX.utils.user_detailsXimportXis_chat_creator,Xis_user_admin
 
-filter_action_cp = CallbackData("filter_action_cp", "filter_id")
-filter_remove_cp = CallbackData("filter_remove_cp", "id")
-filter_delall_yes_cb = CallbackData("filter_delall_yes_cb", "chat_id")
+filter_action_cpX=XCallbackData("filter_action_cp",X"filter_id")
+filter_remove_cpX=XCallbackData("filter_remove_cp",X"id")
+filter_delall_yes_cbX=XCallbackData("filter_delall_yes_cb",X"chat_id")
 
-FILTERS_ACTIONS = {}
-
-
-class NewFilter(StatesGroup):
-    handler = State()
-    setup = State()
+FILTERS_ACTIONSX=X{}
 
 
-async def update_handlers_cache(chat_id):
-    redis.delete(f"filters_cache_{chat_id}")
-    filters = db.filters.find({"chat_id": chat_id})
-    handlers = []
-    async for filter in filters:
-        handler = filter["handler"]
-        if handler in handlers:
-            continue
+classXNewFilter(StatesGroup):
+XXXXhandlerX=XState()
+XXXXsetupX=XState()
 
-        handlers.append(handler)
-        redis.lpush(f"filters_cache_{chat_id}", handler)
 
-    return handlers
+asyncXdefXupdate_handlers_cache(chat_id):
+XXXXredis.delete(f"filters_cache_{chat_id}")
+XXXXfiltersX=Xdb.filters.find({"chat_id":Xchat_id})
+XXXXhandlersX=X[]
+XXXXasyncXforXfilterXinXfilters:
+XXXXXXXXhandlerX=Xfilter["handler"]
+XXXXXXXXifXhandlerXinXhandlers:
+XXXXXXXXXXXXcontinue
+
+XXXXXXXXhandlers.append(handler)
+XXXXXXXXredis.lpush(f"filters_cache_{chat_id}",Xhandler)
+
+XXXXreturnXhandlers
 
 
 @register()
-async def check_msg(message):
-    log.debug("Running check msg for filters function.")
-    chat = await get_connected_chat(message, only_groups=True)
-    if "err_msg" in chat or message.chat.type == "private":
-        return
+asyncXdefXcheck_msg(message):
+XXXXlog.debug("RunningXcheckXmsgXforXfiltersXfunction.")
+XXXXchatX=XawaitXget_connected_chat(message,Xonly_groups=True)
+XXXXifX"err_msg"XinXchatXorXmessage.chat.typeX==X"private":
+XXXXXXXXreturn
 
-    chat_id = chat["chat_id"]
-    if not (filters := redis.lrange(f"filters_cache_{chat_id}", 0, -1)):
-        filters = await update_handlers_cache(chat_id)
+XXXXchat_idX=Xchat["chat_id"]
+XXXXifXnotX(filtersX:=Xredis.lrange(f"filters_cache_{chat_id}",X0,X-1)):
+XXXXXXXXfiltersX=XawaitXupdate_handlers_cache(chat_id)
 
-    if len(filters) == 0:
-        return
+XXXXifXlen(filters)X==X0:
+XXXXXXXXreturn
 
-    text = message.text
+XXXXtextX=Xmessage.text
 
-    # Workaround to disable all filters if admin want to remove filter
-    if await is_user_admin(chat_id, message.from_user.id):
-        if text[1:].startswith("addfilter") or text[1:].startswith("delfilter"):
-            return
+XXXX#XWorkaroundXtoXdisableXallXfiltersXifXadminXwantXtoXremoveXfilter
+XXXXifXawaitXis_user_admin(chat_id,Xmessage.from_user.id):
+XXXXXXXXifXtext[1:].startswith("addfilter")XorXtext[1:].startswith("delfilter"):
+XXXXXXXXXXXXreturn
 
-    for handler in filters:  # type: str
-        if handler.startswith("re:"):
-            func = functools.partial(
-                regex.search, handler.replace("re:", "", 1), text, timeout=0.1
-            )
-        else:
-            # TODO: Remove this (handler.replace(...)). kept for backward compatibility
-            func = functools.partial(
-                re.search,
-                re.escape(handler).replace("(+)", "(.*)"),
-                text,
-                flags=re.IGNORECASE,
-            )
+XXXXforXhandlerXinXfilters:XX#Xtype:Xstr
+XXXXXXXXifXhandler.startswith("re:"):
+XXXXXXXXXXXXfuncX=Xfunctools.partial(
+XXXXXXXXXXXXXXXXregex.search,Xhandler.replace("re:",X"",X1),Xtext,Xtimeout=0.1
+XXXXXXXXXXXX)
+XXXXXXXXelse:
+XXXXXXXXXXXX#XTODO:XRemoveXthisX(handler.replace(...)).XkeptXforXbackwardXcompatibility
+XXXXXXXXXXXXfuncX=Xfunctools.partial(
+XXXXXXXXXXXXXXXXre.search,
+XXXXXXXXXXXXXXXXre.escape(handler).replace("(+)",X"(.*)"),
+XXXXXXXXXXXXXXXXtext,
+XXXXXXXXXXXXXXXXflags=re.IGNORECASE,
+XXXXXXXXXXXX)
 
-        try:
-            async with timeout(0.1):
-                matched = await loop.run_in_executor(None, func)
-        except (asyncio.TimeoutError, TimeoutError):
-            continue
+XXXXXXXXtry:
+XXXXXXXXXXXXasyncXwithXtimeout(0.1):
+XXXXXXXXXXXXXXXXmatchedX=XawaitXloop.run_in_executor(None,Xfunc)
+XXXXXXXXexceptX(asyncio.TimeoutError,XTimeoutError):
+XXXXXXXXXXXXcontinue
 
-        if matched:
-            # We can have few filters with same handler, that's why we create a new loop.
-            filters = db.filters.find({"chat_id": chat_id, "handler": handler})
-            async for filter in filters:
-                action = filter["action"]
-                await FILTERS_ACTIONS[action]["handle"](message, chat, filter)
+XXXXXXXXifXmatched:
+XXXXXXXXXXXX#XWeXcanXhaveXfewXfiltersXwithXsameXhandler,Xthat'sXwhyXweXcreateXaXnewXloop.
+XXXXXXXXXXXXfiltersX=Xdb.filters.find({"chat_id":Xchat_id,X"handler":Xhandler})
+XXXXXXXXXXXXasyncXforXfilterXinXfilters:
+XXXXXXXXXXXXXXXXactionX=Xfilter["action"]
+XXXXXXXXXXXXXXXXawaitXFILTERS_ACTIONS[action]["handle"](message,Xchat,Xfilter)
 
 
-@register(cmds=["addfilter", "newfilter"], is_admin=True, user_can_change_info=True)
+@register(cmds=["addfilter",X"newfilter"],Xis_admin=True,Xuser_can_change_info=True)
 @need_args_dec()
-@chat_connection(only_groups=True, admin=True)
+@chat_connection(only_groups=True,Xadmin=True)
 @get_strings_dec("filters")
-async def add_handler(message, chat, strings):
-    # filters doesn't support anon admins
-    if message.from_user.id == 1087968824:
-        return await message.reply(strings["anon_detected"])
-    # if not await check_admin_rights(message, chat_id, message.from_user.id, ["can_change_info"]):
-    # return await message.reply("You can't change info of this group")
+asyncXdefXadd_handler(message,Xchat,Xstrings):
+XXXX#XfiltersXdoesn'tXsupportXanonXadmins
+XXXXifXmessage.from_user.idX==X1087968824:
+XXXXXXXXreturnXawaitXmessage.reply(strings["anon_detected"])
+XXXX#XifXnotXawaitXcheck_admin_rights(message,Xchat_id,Xmessage.from_user.id,X["can_change_info"]):
+XXXX#XreturnXawaitXmessage.reply("YouXcan'tXchangeXinfoXofXthisXgroup")
 
-    handler = get_args_str(message)
+XXXXhandlerX=Xget_args_str(message)
 
-    if handler.startswith("re:"):
-        pattern = handler
-        random_text_str = "".join(random.choice(printable) for i in range(50))
-        try:
-            regex.match(pattern, random_text_str, timeout=0.2)
-        except TimeoutError:
-            await message.reply(strings["regex_too_slow"])
-            return
-    else:
-        handler = handler.lower()
+XXXXifXhandler.startswith("re:"):
+XXXXXXXXpatternX=Xhandler
+XXXXXXXXrandom_text_strX=X"".join(random.choice(printable)XforXiXinXrange(50))
+XXXXXXXXtry:
+XXXXXXXXXXXXregex.match(pattern,Xrandom_text_str,Xtimeout=0.2)
+XXXXXXXXexceptXTimeoutError:
+XXXXXXXXXXXXawaitXmessage.reply(strings["regex_too_slow"])
+XXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXhandlerX=Xhandler.lower()
 
-    text = strings["adding_filter"].format(
-        handler=handler, chat_name=chat["chat_title"]
-    )
+XXXXtextX=Xstrings["adding_filter"].format(
+XXXXXXXXhandler=handler,Xchat_name=chat["chat_title"]
+XXXX)
 
-    buttons = InlineKeyboardMarkup(row_width=2)
-    for action in FILTERS_ACTIONS.items():
-        filter_id = action[0]
-        data = action[1]
+XXXXbuttonsX=XInlineKeyboardMarkup(row_width=2)
+XXXXforXactionXinXFILTERS_ACTIONS.items():
+XXXXXXXXfilter_idX=Xaction[0]
+XXXXXXXXdataX=Xaction[1]
 
-        buttons.insert(
-            InlineKeyboardButton(
-                await get_string(
-                    chat["chat_id"], data["title"]["module"], data["title"]["string"]
-                ),
-                callback_data=filter_action_cp.new(filter_id=filter_id),
-            )
-        )
-    buttons.add(InlineKeyboardButton(strings["cancel_btn"], callback_data="cancel"))
+XXXXXXXXbuttons.insert(
+XXXXXXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXXXXXawaitXget_string(
+XXXXXXXXXXXXXXXXXXXXchat["chat_id"],Xdata["title"]["module"],Xdata["title"]["string"]
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXcallback_data=filter_action_cp.new(filter_id=filter_id),
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXbuttons.add(InlineKeyboardButton(strings["cancel_btn"],Xcallback_data="cancel"))
 
-    user_id = message.from_user.id
-    chat_id = chat["chat_id"]
-    redis.set(f"add_filter:{user_id}:{chat_id}", handler)
-    if handler is not None:
-        await message.reply(text, reply_markup=buttons)
-
-
-async def save_filter(message, data, strings):
-    if await db.filters.find_one(data):
-        # prevent saving duplicate filter
-        await message.reply("Duplicate filter!")
-        return
-
-    await db.filters.insert_one(data)
-    await update_handlers_cache(data["chat_id"])
-    await message.reply(strings["saved"])
+XXXXuser_idX=Xmessage.from_user.id
+XXXXchat_idX=Xchat["chat_id"]
+XXXXredis.set(f"add_filter:{user_id}:{chat_id}",Xhandler)
+XXXXifXhandlerXisXnotXNone:
+XXXXXXXXawaitXmessage.reply(text,Xreply_markup=buttons)
 
 
-@register(filter_action_cp.filter(), f="cb", allow_kwargs=True)
-@chat_connection(only_groups=True, admin=True)
+asyncXdefXsave_filter(message,Xdata,Xstrings):
+XXXXifXawaitXdb.filters.find_one(data):
+XXXXXXXX#XpreventXsavingXduplicateXfilter
+XXXXXXXXawaitXmessage.reply("DuplicateXfilter!")
+XXXXXXXXreturn
+
+XXXXawaitXdb.filters.insert_one(data)
+XXXXawaitXupdate_handlers_cache(data["chat_id"])
+XXXXawaitXmessage.reply(strings["saved"])
+
+
+@register(filter_action_cp.filter(),Xf="cb",Xallow_kwargs=True)
+@chat_connection(only_groups=True,Xadmin=True)
 @get_strings_dec("filters")
-async def register_action(
-    event, chat, strings, callback_data=None, state=None, **kwargs
+asyncXdefXregister_action(
+XXXXevent,Xchat,Xstrings,Xcallback_data=None,Xstate=None,X**kwargs
 ):
-    if not await is_user_admin(event.message.chat.id, event.from_user.id):
-        return await event.answer("You are not admin to do this")
-    filter_id = callback_data["filter_id"]
-    action = FILTERS_ACTIONS[filter_id]
+XXXXifXnotXawaitXis_user_admin(event.message.chat.id,Xevent.from_user.id):
+XXXXXXXXreturnXawaitXevent.answer("YouXareXnotXadminXtoXdoXthis")
+XXXXfilter_idX=Xcallback_data["filter_id"]
+XXXXactionX=XFILTERS_ACTIONS[filter_id]
 
-    user_id = event.from_user.id
-    chat_id = chat["chat_id"]
+XXXXuser_idX=Xevent.from_user.id
+XXXXchat_idX=Xchat["chat_id"]
 
-    handler = redis.get(f"add_filter:{user_id}:{chat_id}")
+XXXXhandlerX=Xredis.get(f"add_filter:{user_id}:{chat_id}")
 
-    if not handler:
-        return await event.answer(
-            "Something went wrong! Please try again!", show_alert=True
-        )
+XXXXifXnotXhandler:
+XXXXXXXXreturnXawaitXevent.answer(
+XXXXXXXXXXXX"SomethingXwentXwrong!XPleaseXtryXagain!",Xshow_alert=True
+XXXXXXXX)
 
-    data = {"chat_id": chat_id, "handler": handler, "action": filter_id}
+XXXXdataX=X{"chat_id":Xchat_id,X"handler":Xhandler,X"action":Xfilter_id}
 
-    if "setup" in action:
-        await NewFilter.setup.set()
-        setup_co = len(action["setup"]) - 1 if type(action["setup"]) is list else 0
-        async with state.proxy() as proxy:
-            proxy["data"] = data
-            proxy["filter_id"] = filter_id
-            proxy["setup_co"] = setup_co
-            proxy["setup_done"] = 0
-            proxy["msg_id"] = event.message.message_id
+XXXXifX"setup"XinXaction:
+XXXXXXXXawaitXNewFilter.setup.set()
+XXXXXXXXsetup_coX=Xlen(action["setup"])X-X1XifXtype(action["setup"])XisXlistXelseX0
+XXXXXXXXasyncXwithXstate.proxy()XasXproxy:
+XXXXXXXXXXXXproxy["data"]X=Xdata
+XXXXXXXXXXXXproxy["filter_id"]X=Xfilter_id
+XXXXXXXXXXXXproxy["setup_co"]X=Xsetup_co
+XXXXXXXXXXXXproxy["setup_done"]X=X0
+XXXXXXXXXXXXproxy["msg_id"]X=Xevent.message.message_id
 
-        if setup_co > 0:
-            await action["setup"][0]["start"](event.message)
-        else:
-            await action["setup"]["start"](event.message)
-        return
+XXXXXXXXifXsetup_coX>X0:
+XXXXXXXXXXXXawaitXaction["setup"][0]["start"](event.message)
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXaction["setup"]["start"](event.message)
+XXXXXXXXreturn
 
-    await save_filter(event.message, data, strings)
+XXXXawaitXsave_filter(event.message,Xdata,Xstrings)
 
 
-@register(state=NewFilter.setup, f="any", is_admin=True, allow_kwargs=True)
-@chat_connection(only_groups=True, admin=True)
+@register(state=NewFilter.setup,Xf="any",Xis_admin=True,Xallow_kwargs=True)
+@chat_connection(only_groups=True,Xadmin=True)
 @get_strings_dec("filters")
-async def setup_end(message, chat, strings, state=None, **kwargs):
-    async with state.proxy() as proxy:
-        data = proxy["data"]
-        filter_id = proxy["filter_id"]
-        setup_co = proxy["setup_co"]
-        curr_step = proxy["setup_done"]
-        with suppress(MessageCantBeDeleted, MessageToDeleteNotFound):
-            await bot.delete_message(message.chat.id, proxy["msg_id"])
+asyncXdefXsetup_end(message,Xchat,Xstrings,Xstate=None,X**kwargs):
+XXXXasyncXwithXstate.proxy()XasXproxy:
+XXXXXXXXdataX=Xproxy["data"]
+XXXXXXXXfilter_idX=Xproxy["filter_id"]
+XXXXXXXXsetup_coX=Xproxy["setup_co"]
+XXXXXXXXcurr_stepX=Xproxy["setup_done"]
+XXXXXXXXwithXsuppress(MessageCantBeDeleted,XMessageToDeleteNotFound):
+XXXXXXXXXXXXawaitXbot.delete_message(message.chat.id,Xproxy["msg_id"])
 
-    action = FILTERS_ACTIONS[filter_id]
+XXXXactionX=XFILTERS_ACTIONS[filter_id]
 
-    func = (
-        action["setup"][curr_step]["finish"]
-        if type(action["setup"]) is list
-        else action["setup"]["finish"]
-    )
-    if not bool(a := await func(message, data)):
-        await state.finish()
-        return
+XXXXfuncX=X(
+XXXXXXXXaction["setup"][curr_step]["finish"]
+XXXXXXXXifXtype(action["setup"])XisXlist
+XXXXXXXXelseXaction["setup"]["finish"]
+XXXX)
+XXXXifXnotXbool(aX:=XawaitXfunc(message,Xdata)):
+XXXXXXXXawaitXstate.finish()
+XXXXXXXXreturn
 
-    data.update(a)
+XXXXdata.update(a)
 
-    if setup_co > 0:
-        await action["setup"][curr_step + 1]["start"](message)
-        async with state.proxy() as proxy:
-            proxy["data"] = data
-            proxy["setup_co"] -= 1
-            proxy["setup_done"] += 1
-        return
+XXXXifXsetup_coX>X0:
+XXXXXXXXawaitXaction["setup"][curr_stepX+X1]["start"](message)
+XXXXXXXXasyncXwithXstate.proxy()XasXproxy:
+XXXXXXXXXXXXproxy["data"]X=Xdata
+XXXXXXXXXXXXproxy["setup_co"]X-=X1
+XXXXXXXXXXXXproxy["setup_done"]X+=X1
+XXXXXXXXreturn
 
-    await state.finish()
-    await save_filter(message, data, strings)
+XXXXawaitXstate.finish()
+XXXXawaitXsave_filter(message,Xdata,Xstrings)
 
 
-@register(cmds=["filters", "listfilters"])
+@register(cmds=["filters",X"listfilters"])
 @chat_connection(only_groups=True)
 @get_strings_dec("filters")
-async def list_filters(message, chat, strings):
-    text = strings["list_filters"].format(chat_name=chat["chat_title"])
+asyncXdefXlist_filters(message,Xchat,Xstrings):
+XXXXtextX=Xstrings["list_filters"].format(chat_name=chat["chat_title"])
 
-    filters = db.filters.find({"chat_id": chat["chat_id"]})
-    filters_text = ""
-    async for filter in filters:
-        filters_text += f"- {filter['handler']}: {filter['action']}\n"
+XXXXfiltersX=Xdb.filters.find({"chat_id":Xchat["chat_id"]})
+XXXXfilters_textX=X""
+XXXXasyncXforXfilterXinXfilters:
+XXXXXXXXfilters_textX+=Xf"-X{filter['handler']}:X{filter['action']}\n"
 
-    if not filters_text:
-        await message.reply(
-            strings["no_filters_found"].format(chat_name=chat["chat_title"])
-        )
-        return
+XXXXifXnotXfilters_text:
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["no_filters_found"].format(chat_name=chat["chat_title"])
+XXXXXXXX)
+XXXXXXXXreturn
 
-    await message.reply(text + filters_text)
+XXXXawaitXmessage.reply(textX+Xfilters_text)
 
 
-@register(cmds="delfilter", is_admin=True, user_can_change_info=True)
+@register(cmds="delfilter",Xis_admin=True,Xuser_can_change_info=True)
 @need_args_dec()
-@chat_connection(only_groups=True, admin=True)
+@chat_connection(only_groups=True,Xadmin=True)
 @get_strings_dec("filters")
-async def del_filter(message, chat, strings):
-    handler = get_args_str(message)
-    chat_id = chat["chat_id"]
-    filters = await db.filters.find({"chat_id": chat_id, "handler": handler}).to_list(
-        9999
-    )
-    if not filters:
-        await message.reply(
-            strings["no_such_filter"].format(chat_name=chat["chat_title"])
-        )
-        return
+asyncXdefXdel_filter(message,Xchat,Xstrings):
+XXXXhandlerX=Xget_args_str(message)
+XXXXchat_idX=Xchat["chat_id"]
+XXXXfiltersX=XawaitXdb.filters.find({"chat_id":Xchat_id,X"handler":Xhandler}).to_list(
+XXXXXXXX9999
+XXXX)
+XXXXifXnotXfilters:
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["no_such_filter"].format(chat_name=chat["chat_title"])
+XXXXXXXX)
+XXXXXXXXreturn
 
-    # Remove filter in case if we found only 1 filter with same header
-    filter = filters[0]
-    if len(filters) == 1:
-        await db.filters.delete_one({"_id": filter["_id"]})
-        await update_handlers_cache(chat_id)
-        await message.reply(strings["del_filter"].format(handler=filter["handler"]))
-        return
+XXXX#XRemoveXfilterXinXcaseXifXweXfoundXonlyX1XfilterXwithXsameXheader
+XXXXfilterX=Xfilters[0]
+XXXXifXlen(filters)X==X1:
+XXXXXXXXawaitXdb.filters.delete_one({"_id":Xfilter["_id"]})
+XXXXXXXXawaitXupdate_handlers_cache(chat_id)
+XXXXXXXXawaitXmessage.reply(strings["del_filter"].format(handler=filter["handler"]))
+XXXXXXXXreturn
 
-    # Build keyboard row for select which exactly filter user want to remove
-    buttons = InlineKeyboardMarkup(row_width=1)
-    text = strings["select_filter_to_remove"].format(handler=handler)
-    for filter in filters:
-        action = FILTERS_ACTIONS[filter["action"]]
-        buttons.add(
-            InlineKeyboardButton(
-                # If module's filter support custom del btn names else just show action name
-                "" + action["del_btn_name"](message, filter)
-                if "del_btn_name" in action
-                else filter["action"],
-                callback_data=filter_remove_cp.new(id=str(filter["_id"])),
-            )
-        )
+XXXX#XBuildXkeyboardXrowXforXselectXwhichXexactlyXfilterXuserXwantXtoXremove
+XXXXbuttonsX=XInlineKeyboardMarkup(row_width=1)
+XXXXtextX=Xstrings["select_filter_to_remove"].format(handler=handler)
+XXXXforXfilterXinXfilters:
+XXXXXXXXactionX=XFILTERS_ACTIONS[filter["action"]]
+XXXXXXXXbuttons.add(
+XXXXXXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXXXXX#XIfXmodule'sXfilterXsupportXcustomXdelXbtnXnamesXelseXjustXshowXactionXname
+XXXXXXXXXXXXXXXX""X+Xaction["del_btn_name"](message,Xfilter)
+XXXXXXXXXXXXXXXXifX"del_btn_name"XinXaction
+XXXXXXXXXXXXXXXXelseXfilter["action"],
+XXXXXXXXXXXXXXXXcallback_data=filter_remove_cp.new(id=str(filter["_id"])),
+XXXXXXXXXXXX)
+XXXXXXXX)
 
-    await message.reply(text, reply_markup=buttons)
+XXXXawaitXmessage.reply(text,Xreply_markup=buttons)
 
 
-@register(filter_remove_cp.filter(), f="cb", allow_kwargs=True)
-@chat_connection(only_groups=True, admin=True)
+@register(filter_remove_cp.filter(),Xf="cb",Xallow_kwargs=True)
+@chat_connection(only_groups=True,Xadmin=True)
 @get_strings_dec("filters")
-async def del_filter_cb(event, chat, strings, callback_data=None, **kwargs):
-    if not await is_user_admin(event.message.chat.id, event.from_user.id):
-        return await event.answer("You are not admin to do this")
-    filter_id = ObjectId(callback_data["id"])
-    filter = await db.filters.find_one({"_id": filter_id})
-    await db.filters.delete_one({"_id": filter_id})
-    await update_handlers_cache(chat["chat_id"])
-    await event.message.edit_text(
-        strings["del_filter"].format(handler=filter["handler"])
-    )
-    return
+asyncXdefXdel_filter_cb(event,Xchat,Xstrings,Xcallback_data=None,X**kwargs):
+XXXXifXnotXawaitXis_user_admin(event.message.chat.id,Xevent.from_user.id):
+XXXXXXXXreturnXawaitXevent.answer("YouXareXnotXadminXtoXdoXthis")
+XXXXfilter_idX=XObjectId(callback_data["id"])
+XXXXfilterX=XawaitXdb.filters.find_one({"_id":Xfilter_id})
+XXXXawaitXdb.filters.delete_one({"_id":Xfilter_id})
+XXXXawaitXupdate_handlers_cache(chat["chat_id"])
+XXXXawaitXevent.message.edit_text(
+XXXXXXXXstrings["del_filter"].format(handler=filter["handler"])
+XXXX)
+XXXXreturn
 
 
-@register(cmds=["delfilters", "delallfilters"])
+@register(cmds=["delfilters",X"delallfilters"])
 @get_strings_dec("filters")
-async def delall_filters(message: Message, strings: dict):
-    if not await is_chat_creator(message, message.chat.id, message.from_user.id):
-        return await message.reply(strings["not_chat_creator"])
-    buttons = InlineKeyboardMarkup()
-    buttons.add(
-        *[
-            InlineKeyboardButton(
-                strings["confirm_yes"],
-                callback_data=filter_delall_yes_cb.new(chat_id=message.chat.id),
-            ),
-            InlineKeyboardButton(
-                strings["confirm_no"], callback_data="filter_delall_no_cb"
-            ),
-        ]
-    )
-    return await message.reply(strings["delall_header"], reply_markup=buttons)
+asyncXdefXdelall_filters(message:XMessage,Xstrings:Xdict):
+XXXXifXnotXawaitXis_chat_creator(message,Xmessage.chat.id,Xmessage.from_user.id):
+XXXXXXXXreturnXawaitXmessage.reply(strings["not_chat_creator"])
+XXXXbuttonsX=XInlineKeyboardMarkup()
+XXXXbuttons.add(
+XXXXXXXX*[
+XXXXXXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXXXXXstrings["confirm_yes"],
+XXXXXXXXXXXXXXXXcallback_data=filter_delall_yes_cb.new(chat_id=message.chat.id),
+XXXXXXXXXXXX),
+XXXXXXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXXXXXstrings["confirm_no"],Xcallback_data="filter_delall_no_cb"
+XXXXXXXXXXXX),
+XXXXXXXX]
+XXXX)
+XXXXreturnXawaitXmessage.reply(strings["delall_header"],Xreply_markup=buttons)
 
 
-@register(filter_delall_yes_cb.filter(), f="cb", allow_kwargs=True)
+@register(filter_delall_yes_cb.filter(),Xf="cb",Xallow_kwargs=True)
 @get_strings_dec("filters")
-async def delall_filters_yes(
-    event: CallbackQuery, strings: dict, callback_data: dict, **_
+asyncXdefXdelall_filters_yes(
+XXXXevent:XCallbackQuery,Xstrings:Xdict,Xcallback_data:Xdict,X**_
 ):
-    if not await is_chat_creator(
-        event, chat_id := int(callback_data["chat_id"]), event.from_user.id
-    ):
-        return False
-    result = await db.filters.delete_many({"chat_id": chat_id})
-    await update_handlers_cache(chat_id)
-    return await event.message.edit_text(
-        strings["delall_success"].format(count=result.deleted_count)
-    )
+XXXXifXnotXawaitXis_chat_creator(
+XXXXXXXXevent,Xchat_idX:=Xint(callback_data["chat_id"]),Xevent.from_user.id
+XXXX):
+XXXXXXXXreturnXFalse
+XXXXresultX=XawaitXdb.filters.delete_many({"chat_id":Xchat_id})
+XXXXawaitXupdate_handlers_cache(chat_id)
+XXXXreturnXawaitXevent.message.edit_text(
+XXXXXXXXstrings["delall_success"].format(count=result.deleted_count)
+XXXX)
 
 
-@register(regexp="filter_delall_no_cb", f="cb")
+@register(regexp="filter_delall_no_cb",Xf="cb")
 @get_strings_dec("filters")
-async def delall_filters_no(event: CallbackQuery, strings: dict):
-    if not await is_chat_creator(event, event.message.chat.id, event.from_user.id):
-        return False
-    await event.message.delete()
+asyncXdefXdelall_filters_no(event:XCallbackQuery,Xstrings:Xdict):
+XXXXifXnotXawaitXis_chat_creator(event,Xevent.message.chat.id,Xevent.from_user.id):
+XXXXXXXXreturnXFalse
+XXXXawaitXevent.message.delete()
 
 
-async def __before_serving__(loop):
-    log.debug("Adding filters actions")
-    for module in LOADED_MODULES:
-        if not getattr(module, "__filters__", None):
-            continue
+asyncXdefX__before_serving__(loop):
+XXXXlog.debug("AddingXfiltersXactions")
+XXXXforXmoduleXinXLOADED_MODULES:
+XXXXXXXXifXnotXgetattr(module,X"__filters__",XNone):
+XXXXXXXXXXXXcontinue
 
-        module_name = module.__name__.split(".")[-1]
-        log.debug(f"Adding filter action from {module_name} module")
-        for data in module.__filters__.items():
-            FILTERS_ACTIONS[data[0]] = data[1]
-
-
-async def __export__(chat_id):
-    data = []
-    filters = db.filters.find({"chat_id": chat_id})
-    async for filter in filters:
-        del filter["_id"], filter["chat_id"]
-        if "time" in filter:
-            filter["time"] = str(filter["time"])
-        data.append(filter)
-
-    return {"filters": data}
+XXXXXXXXmodule_nameX=Xmodule.__name__.split(".")[-1]
+XXXXXXXXlog.debug(f"AddingXfilterXactionXfromX{module_name}Xmodule")
+XXXXXXXXforXdataXinXmodule.__filters__.items():
+XXXXXXXXXXXXFILTERS_ACTIONS[data[0]]X=Xdata[1]
 
 
-async def __import__(chat_id, data):
-    new = []
-    for filter in data:
-        new.append(
-            UpdateOne(
-                {
-                    "chat_id": chat_id,
-                    "handler": filter["handler"],
-                    "action": filter["action"],
-                },
-                {"$set": filter},
-                upsert=True,
-            )
-        )
-    await db.filters.bulk_write(new)
-    await update_handlers_cache(chat_id)
+asyncXdefX__export__(chat_id):
+XXXXdataX=X[]
+XXXXfiltersX=Xdb.filters.find({"chat_id":Xchat_id})
+XXXXasyncXforXfilterXinXfilters:
+XXXXXXXXdelXfilter["_id"],Xfilter["chat_id"]
+XXXXXXXXifX"time"XinXfilter:
+XXXXXXXXXXXXfilter["time"]X=Xstr(filter["time"])
+XXXXXXXXdata.append(filter)
+
+XXXXreturnX{"filters":Xdata}
 
 
-__mod_name__ = "Filters"
-
-__help__ = """
-<b> GENERAL FILTERS </b>
-Filter module is great for everything! filter in here is used to filter words or sentences in your chat - send notes, warn, ban those!
-<i> General (Admins):</i>
-- /addfilter (word/sentence): This is used to add filters.
-- /delfilter (word/sentence): Use this command to remove a specific filter.
-- /delallfilters: As in command this is used to remove all filters of group.
-
-<i> As of now, there is 6 actions that you can do: </i>
-- <code>Send a note</code>
-- <code>Warn the user</code>
-- <code>Ban the user</code>
-- <code>Mute the user</code>
-- <code>tBan the user</code>
-- <code>tMute the user</code>
-
-<i> A filter can support multiple actions ! </i>
-
-Ah if you don't understand what this actions are for? Actions says bot what to do when the given <code>word/sentence</code> is triggered.
-You can also use regex and buttons for filters. Check /buttonshelp to know more.
-
-<i> Available for all users:</i>
-- /filters or /listfilters
-
-You want to know all filter of your chat/ chat you joined? Use this command. It will list all filters along with specified actions !
-
-<b> TE T FILTERS </b>
-Text filters are for short and text replies
-<i> Commands available </i>
-- /filter [KEYWORD] [REPLY TO MESSAGE] : Filters the replied message with given keyword.
-- /stop [KEYWORD] : Stops the given filter.
+asyncXdefX__import__(chat_id,Xdata):
+XXXXnewX=X[]
+XXXXforXfilterXinXdata:
+XXXXXXXXnew.append(
+XXXXXXXXXXXXUpdateOne(
+XXXXXXXXXXXXXXXX{
+XXXXXXXXXXXXXXXXXXXX"chat_id":Xchat_id,
+XXXXXXXXXXXXXXXXXXXX"handler":Xfilter["handler"],
+XXXXXXXXXXXXXXXXXXXX"action":Xfilter["action"],
+XXXXXXXXXXXXXXXX},
+XXXXXXXXXXXXXXXX{"$set":Xfilter},
+XXXXXXXXXXXXXXXXupsert=True,
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXawaitXdb.filters.bulk_write(new)
+XXXXawaitXupdate_handlers_cache(chat_id)
 
 
-<i> Difference between text filter and filter</i>
-* If you filtered word "hi" with /addfilter it filters all words including hi. 
-  Future explained:
-    - When a filter added to hi as "hello" when user sent a message like "It was a hit" bot replies as "Hello" as word contain hi
-    ** You can use regex to remove this if you like
-<i> Text filters won't reply like that. It only replies if word = "hi" (According to example taken) </i>
-Text filters can filter
-- <code>A single word</code>
-- <code>A sentence</code>
-- <code>A sticker</code>
+__mod_name__X=X"Filters"
 
-<b> CLASSIC FILTERS </b>
-Classic filters are just like marie's filter system. If you still like that kind of filter system. Use /cfilterhelp to know more
+__help__X=X"""
+<b>XGENERALXFILTERSX</b>
+FilterXmoduleXisXgreatXforXeverything!XfilterXinXhereXisXusedXtoXfilterXwordsXorXsentencesXinXyourXchatX-XsendXnotes,Xwarn,XbanXthose!
+<i>XGeneralX(Admins):</i>
+-X/addfilterX(word/sentence):XThisXisXusedXtoXaddXfilters.
+-X/delfilterX(word/sentence):XUseXthisXcommandXtoXremoveXaXspecificXfilter.
+-X/delallfilters:XAsXinXcommandXthisXisXusedXtoXremoveXallXfiltersXofXgroup.
 
-⚠️ READ FROM TOP
+<i>XAsXofXnow,XthereXisX6XactionsXthatXyouXcanXdo:X</i>
+-X<code>SendXaXnote</code>
+-X<code>WarnXtheXuser</code>
+-X<code>BanXtheXuser</code>
+-X<code>MuteXtheXuser</code>
+-X<code>tBanXtheXuser</code>
+-X<code>tMuteXtheXuser</code>
+
+<i>XAXfilterXcanXsupportXmultipleXactionsX!X</i>
+
+AhXifXyouXdon'tXunderstandXwhatXthisXactionsXareXfor?XActionsXsaysXbotXwhatXtoXdoXwhenXtheXgivenX<code>word/sentence</code>XisXtriggered.
+YouXcanXalsoXuseXregexXandXbuttonsXforXfilters.XCheckX/buttonshelpXtoXknowXmore.
+
+<i>XAvailableXforXallXusers:</i>
+-X/filtersXorX/listfilters
+
+YouXwantXtoXknowXallXfilterXofXyourXchat/XchatXyouXjoined?XUseXthisXcommand.XItXwillXlistXallXfiltersXalongXwithXspecifiedXactionsX!
+
+<b>XTEXTXFILTERSX</b>
+TextXfiltersXareXforXshortXandXtextXreplies
+<i>XCommandsXavailableX</i>
+-X/filterX[KEYWORD]X[REPLYXTOXMESSAGE]X:XFiltersXtheXrepliedXmessageXwithXgivenXkeyword.
+-X/stopX[KEYWORD]X:XStopsXtheXgivenXfilter.
+
+
+<i>XDifferenceXbetweenXtextXfilterXandXfilter</i>
+*XIfXyouXfilteredXwordX"hi"XwithX/addfilterXitXfiltersXallXwordsXincludingXhi.X
+XXFutureXexplained:
+XXXX-XWhenXaXfilterXaddedXtoXhiXasX"hello"XwhenXuserXsentXaXmessageXlikeX"ItXwasXaXhit"XbotXrepliesXasX"Hello"XasXwordXcontainXhi
+XXXX**XYouXcanXuseXregexXtoXremoveXthisXifXyouXlike
+<i>XTextXfiltersXwon'tXreplyXlikeXthat.XItXonlyXrepliesXifXwordX=X"hi"X(AccordingXtoXexampleXtaken)X</i>
+TextXfiltersXcanXfilter
+-X<code>AXsingleXword</code>
+-X<code>AXsentence</code>
+-X<code>AXsticker</code>
+
+<b>XCLASSICXFILTERSX</b>
+ClassicXfiltersXareXjustXlikeXmarie'sXfilterXsystem.XIfXyouXstillXlikeXthatXkindXofXfilterXsystem.XUseX/cfilterhelpXtoXknowXmore
+
+⚠️XREADXFROMXTOP
 """

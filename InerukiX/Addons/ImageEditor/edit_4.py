@@ -1,412 +1,412 @@
-# By @TroJanzHE 
-import io
-import os
-import shutil
+#XByX@TroJanzHEX
+importXio
+importXos
+importXshutil
 
-import cv2
-import numpy as np
-import requests
-from PIL import Image, ImageDraw, ImageOps
+importXcv2
+importXnumpyXasXnp
+importXrequests
+fromXPILXimportXImage,XImageDraw,XImageOps
 
-from Ineruki .config import get_str_key
+fromXInerukiX.configXimportXget_str_key
 
-RemoveBG_API = get_str_key("REM_BG_API_KEY", required=False)
-
-
-async def rotate_90(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "rotate_90.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            a = await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            src = cv2.imread(a)
-            image = cv2.rotate(src, cv2.cv2.ROTATE_90_CLOCKWISE)
-            cv2.imwrite(edit_img_loc, image)
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("rotate_90-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+RemoveBG_APIX=Xget_str_key("REM_BG_API_KEY",Xrequired=False)
 
 
-async def rotate_180(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "rotate_180.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            a = await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            src = cv2.imread(a)
-            image = cv2.rotate(src, cv2.ROTATE_180)
-            cv2.imwrite(edit_img_loc, image)
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("rotate_180-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXrotate_90(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"rotate_90.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXaX=XawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXsrcX=Xcv2.imread(a)
+XXXXXXXXXXXXimageX=Xcv2.rotate(src,Xcv2.cv2.ROTATE_90_CLOCKWISE)
+XXXXXXXXXXXXcv2.imwrite(edit_img_loc,Ximage)
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("rotate_90-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def rotate_270(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "rotate_270.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            a = await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            src = cv2.imread(a)
-            image = cv2.rotate(src, cv2.ROTATE_90_COUNTERCLOCKWISE)
-            cv2.imwrite(edit_img_loc, image)
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("rotate_270-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXrotate_180(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"rotate_180.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXaX=XawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXsrcX=Xcv2.imread(a)
+XXXXXXXXXXXXimageX=Xcv2.rotate(src,Xcv2.ROTATE_180)
+XXXXXXXXXXXXcv2.imwrite(edit_img_loc,Ximage)
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("rotate_180-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-def resize_photo(photo: str, userid: str) -> io.BytesIO:
-    image = Image.open(photo)
-    maxsize = 512
-    scale = maxsize / max(image.width, image.height)
-    new_size = (int(image.width * scale), int(image.height * scale))
-    image = image.resize(new_size, Image.LANCZOS)
-    resized_photo = io.BytesIO()
-    resized_photo.name = "./DOWNLOADS" + "/" + userid + "resized.png"
-    image.save(resized_photo, "PNG")
-    return resized_photo
+asyncXdefXrotate_270(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"rotate_270.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXaX=XawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXsrcX=Xcv2.imread(a)
+XXXXXXXXXXXXimageX=Xcv2.rotate(src,Xcv2.ROTATE_90_COUNTERCLOCKWISE)
+XXXXXXXXXXXXcv2.imwrite(edit_img_loc,Ximage)
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("rotate_270-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def round_sticker(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "rounded.webp"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            a = await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            resized = resize_photo(a, userid)
-            img = Image.open(resized).convert("RGB")
-            npImage = np.array(img)
-            h, w = img.size
-            alpha = Image.new("L", img.size, 0)
-            draw = ImageDraw.Draw(alpha)
-            draw.pieslice([0, 0, h, w], 0, 360, fill=255)
-            npAlpha = np.array(alpha)
-            npImage = np.dstack((npImage, npAlpha))
-            Image.fromarray(npImage).save(edit_img_loc)
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_sticker(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("round_sticker-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+defXresize_photo(photo:Xstr,Xuserid:Xstr)X->Xio.BytesIO:
+XXXXimageX=XImage.open(photo)
+XXXXmaxsizeX=X512
+XXXXscaleX=XmaxsizeX/Xmax(image.width,Ximage.height)
+XXXXnew_sizeX=X(int(image.widthX*Xscale),Xint(image.heightX*Xscale))
+XXXXimageX=Ximage.resize(new_size,XImage.LANCZOS)
+XXXXresized_photoX=Xio.BytesIO()
+XXXXresized_photo.nameX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"resized.png"
+XXXXimage.save(resized_photo,X"PNG")
+XXXXreturnXresized_photo
 
 
-async def inverted(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "inverted.png"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            a = await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            image = Image.open(a)
-            inverted_image = ImageOps.invert(image)
-            inverted_image.save(edit_img_loc)
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("inverted-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXround_sticker(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"rounded.webp"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXaX=XawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXresizedX=Xresize_photo(a,Xuserid)
+XXXXXXXXXXXXimgX=XImage.open(resized).convert("RGB")
+XXXXXXXXXXXXnpImageX=Xnp.array(img)
+XXXXXXXXXXXXh,XwX=Ximg.size
+XXXXXXXXXXXXalphaX=XImage.new("L",Ximg.size,X0)
+XXXXXXXXXXXXdrawX=XImageDraw.Draw(alpha)
+XXXXXXXXXXXXdraw.pieslice([0,X0,Xh,Xw],X0,X360,Xfill=255)
+XXXXXXXXXXXXnpAlphaX=Xnp.array(alpha)
+XXXXXXXXXXXXnpImageX=Xnp.dstack((npImage,XnpAlpha))
+XXXXXXXXXXXXImage.fromarray(npImage).save(edit_img_loc)
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_sticker(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("round_sticker-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def removebg_plain(client, message):
-    try:
-        if not (RemoveBG_API == ""):
-            userid = str(message.chat.id)
-            if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-                os.makedirs(f"./DOWNLOADS/{userid}")
-            download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-            edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "nobgplain.png"
-            if not message.reply_to_message.empty:
-                msg = await message.reply_to_message.reply_text(
-                    "Downloading image", quote=True
-                )
-                await client.download_media(
-                    message=message.reply_to_message, file_name=download_location
-                )
-                await msg.edit("Processing Image...")
-
-                response = requests.post(
-                    "https://api.remove.bg/v1.0/removebg",
-                    files={"image_file": open(download_location, "rb")},
-                    data={"size": "auto"},
-                    headers={" -Api-Key": RemoveBG_API},
-                )
-                if response.status_code == 200:
-                    with open(f"{edit_img_loc}", "wb") as out:
-                        out.write(response.content)
-                else:
-                    await message.reply_to_message.reply_text(
-                        "Check if your api is correct", quote=True
-                    )
-                    return
-
-                await message.reply_chat_action("upload_document")
-                await message.reply_to_message.reply_document(edit_img_loc, quote=True)
-                await msg.delete()
-            else:
-                await message.reply_text("Why did you delete that??")
-            try:
-                shutil.rmtree(f"./DOWNLOADS/{userid}")
-            except Exception:
-                pass
-        else:
-            await message.reply_to_message.reply_text(
-                "Get the api from https://www.remove.bg/b/background-removal-api and add in Config Var",
-                quote=True,
-                disable_web_page_preview=True,
-            )
-    except Exception as e:
-        print("removebg_plain-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXinverted(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"inverted.png"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXaX=XawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXimageX=XImage.open(a)
+XXXXXXXXXXXXinverted_imageX=XImageOps.invert(image)
+XXXXXXXXXXXXinverted_image.save(edit_img_loc)
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("inverted-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def removebg_white(client, message):
-    try:
-        if not (RemoveBG_API == ""):
-            userid = str(message.chat.id)
-            if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-                os.makedirs(f"./DOWNLOADS/{userid}")
-            download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-            edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "nobgwhite.png"
-            if not message.reply_to_message.empty:
-                msg = await message.reply_to_message.reply_text(
-                    "Downloading image", quote=True
-                )
-                await client.download_media(
-                    message=message.reply_to_message, file_name=download_location
-                )
-                await msg.edit("Processing Image...")
+asyncXdefXremovebg_plain(client,Xmessage):
+XXXXtry:
+XXXXXXXXifXnotX(RemoveBG_APIX==X""):
+XXXXXXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"nobgplain.png"
+XXXXXXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXawaitXclient.download_media(
+XXXXXXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
 
-                response = requests.post(
-                    "https://api.remove.bg/v1.0/removebg",
-                    files={"image_file": open(download_location, "rb")},
-                    data={"size": "auto"},
-                    headers={" -Api-Key": Config.RemoveBG_API},
-                )
-                if response.status_code == 200:
-                    with open(f"{edit_img_loc}", "wb") as out:
-                        out.write(response.content)
-                else:
-                    await message.reply_to_message.reply_text(
-                        "Check if your api is correct", quote=True
-                    )
-                    return
+XXXXXXXXXXXXXXXXresponseX=Xrequests.post(
+XXXXXXXXXXXXXXXXXXXX"https://api.remove.bg/v1.0/removebg",
+XXXXXXXXXXXXXXXXXXXXfiles={"image_file":Xopen(download_location,X"rb")},
+XXXXXXXXXXXXXXXXXXXXdata={"size":X"auto"},
+XXXXXXXXXXXXXXXXXXXXheaders={"X-Api-Key":XRemoveBG_API},
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXifXresponse.status_codeX==X200:
+XXXXXXXXXXXXXXXXXXXXwithXopen(f"{edit_img_loc}",X"wb")XasXout:
+XXXXXXXXXXXXXXXXXXXXXXXXout.write(response.content)
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXXXXXX"CheckXifXyourXapiXisXcorrect",Xquote=True
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXreturn
 
-                await message.reply_chat_action("upload_photo")
-                await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-                await msg.delete()
-            else:
-                await message.reply_text("Why did you delete that??")
-            try:
-                shutil.rmtree(f"./DOWNLOADS/{userid}")
-            except Exception:
-                pass
-        else:
-            await message.reply_to_message.reply_text(
-                "Get the api from https://www.remove.bg/b/background-removal-api and add in Config Var",
-                quote=True,
-                disable_web_page_preview=True,
-            )
-    except Exception as e:
-        print("removebg_white-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+XXXXXXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_document")
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_document(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"GetXtheXapiXfromXhttps://www.remove.bg/b/background-removal-apiXandXaddXinXConfigXVar",
+XXXXXXXXXXXXXXXXquote=True,
+XXXXXXXXXXXXXXXXdisable_web_page_preview=True,
+XXXXXXXXXXXX)
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("removebg_plain-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def removebg_sticker(client, message):
-    try:
-        if not (RemoveBG_API == ""):
-            userid = str(message.chat.id)
-            if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-                os.makedirs(f"./DOWNLOADS/{userid}")
-            download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-            edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "nobgsticker.webp"
-            if not message.reply_to_message.empty:
-                msg = await message.reply_to_message.reply_text(
-                    "Downloading image", quote=True
-                )
-                await client.download_media(
-                    message=message.reply_to_message, file_name=download_location
-                )
-                await msg.edit("Processing Image...")
+asyncXdefXremovebg_white(client,Xmessage):
+XXXXtry:
+XXXXXXXXifXnotX(RemoveBG_APIX==X""):
+XXXXXXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"nobgwhite.png"
+XXXXXXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXawaitXclient.download_media(
+XXXXXXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
 
-                response = requests.post(
-                    "https://api.remove.bg/v1.0/removebg",
-                    files={"image_file": open(download_location, "rb")},
-                    data={"size": "auto"},
-                    headers={" -Api-Key": RemoveBG_API},
-                )
-                if response.status_code == 200:
-                    with open(f"{edit_img_loc}", "wb") as out:
-                        out.write(response.content)
-                else:
-                    await message.reply_to_message.reply_text(
-                        "Check if your api is correct", quote=True
-                    )
-                    return
+XXXXXXXXXXXXXXXXresponseX=Xrequests.post(
+XXXXXXXXXXXXXXXXXXXX"https://api.remove.bg/v1.0/removebg",
+XXXXXXXXXXXXXXXXXXXXfiles={"image_file":Xopen(download_location,X"rb")},
+XXXXXXXXXXXXXXXXXXXXdata={"size":X"auto"},
+XXXXXXXXXXXXXXXXXXXXheaders={"X-Api-Key":XConfig.RemoveBG_API},
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXifXresponse.status_codeX==X200:
+XXXXXXXXXXXXXXXXXXXXwithXopen(f"{edit_img_loc}",X"wb")XasXout:
+XXXXXXXXXXXXXXXXXXXXXXXXout.write(response.content)
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXXXXXX"CheckXifXyourXapiXisXcorrect",Xquote=True
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXreturn
 
-                await message.reply_chat_action("upload_photo")
-                await message.reply_to_message.reply_sticker(edit_img_loc, quote=True)
-                await msg.delete()
-            else:
-                await message.reply_text("Why did you delete that??")
-            try:
-                shutil.rmtree(f"./DOWNLOADS/{userid}")
-            except Exception:
-                pass
-        else:
-            await message.reply_to_message.reply_text(
-                "Get the api from https://www.remove.bg/b/background-removal-api and add in Config Var",
-                quote=True,
-                disable_web_page_preview=True,
-            )
-    except Exception as e:
-        print("removebg_sticker-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+XXXXXXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"GetXtheXapiXfromXhttps://www.remove.bg/b/background-removal-apiXandXaddXinXConfigXVar",
+XXXXXXXXXXXXXXXXquote=True,
+XXXXXXXXXXXXXXXXdisable_web_page_preview=True,
+XXXXXXXXXXXX)
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("removebg_white-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
+
+
+asyncXdefXremovebg_sticker(client,Xmessage):
+XXXXtry:
+XXXXXXXXifXnotX(RemoveBG_APIX==X""):
+XXXXXXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"nobgsticker.webp"
+XXXXXXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXawaitXclient.download_media(
+XXXXXXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+
+XXXXXXXXXXXXXXXXresponseX=Xrequests.post(
+XXXXXXXXXXXXXXXXXXXX"https://api.remove.bg/v1.0/removebg",
+XXXXXXXXXXXXXXXXXXXXfiles={"image_file":Xopen(download_location,X"rb")},
+XXXXXXXXXXXXXXXXXXXXdata={"size":X"auto"},
+XXXXXXXXXXXXXXXXXXXXheaders={"X-Api-Key":XRemoveBG_API},
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXifXresponse.status_codeX==X200:
+XXXXXXXXXXXXXXXXXXXXwithXopen(f"{edit_img_loc}",X"wb")XasXout:
+XXXXXXXXXXXXXXXXXXXXXXXXout.write(response.content)
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXXXXXX"CheckXifXyourXapiXisXcorrect",Xquote=True
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXreturn
+
+XXXXXXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_sticker(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"GetXtheXapiXfromXhttps://www.remove.bg/b/background-removal-apiXandXaddXinXConfigXVar",
+XXXXXXXXXXXXXXXXquote=True,
+XXXXXXXXXXXXXXXXdisable_web_page_preview=True,
+XXXXXXXXXXXX)
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("removebg_sticker-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn

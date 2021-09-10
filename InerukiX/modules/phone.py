@@ -1,66 +1,66 @@
-import json
+importXjson
 
-import requests
-from telethon import types
+importXrequests
+fromXtelethonXimportXtypes
 
-from Ineruki .services.events import register
-from Ineruki .services.telethon import tbot as client
-
-
-async def is_register_admin(chat, user):
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
-
-        return isinstance(
-            (
-                await client(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    elif isinstance(chat, types.InputPeerChat):
-
-        ui = await client.get_peer_id(user)
-        ps = (
-            await client(functions.messages.GetFullChatRequest(chat.chat_id))
-        ).full_chat.participants.participants
-        return isinstance(
-            next((p for p in ps if p.user_id == ui), None),
-            (types.ChatParticipantAdmin, types.ChatParticipantCreator),
-        )
-    else:
-        return None
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.telethonXimportXtbotXasXclient
 
 
-@register(pattern=r"^/phone (.*)")
-async def phone(event):
-    if event.is_group:
-        if not (await is_register_admin(event.input_chat, event.message.sender_id)):
-            await event.reply("☎️ You are not admin 🚶‍♀️")
-            return
-    information = event.pattern_match.group(1)
-    number = information
-    key = "fe65b94e78fc2e3234c1c6ed1b771abd"
-    api = (
-        "http://apilayer.net/api/validate?access_key="
-        + key
-        + "&number="
-        + number
-        + "&country_code=&format=1"
-    )
-    output = requests.get(api)
-    content = output.text
-    obj = json.loads(content)
-    country_code = obj["country_code"]
-    country_name = obj["country_name"]
-    location = obj["location"]
-    carrier = obj["carrier"]
-    line_type = obj["line_type"]
-    validornot = obj["valid"]
-    aa = "Valid: " + str(validornot)
-    a = "Phone number: " + str(number)
-    b = "Country: " + str(country_code)
-    c = "Country Name: " + str(country_name)
-    d = "Location: " + str(location)
-    e = "Carrier: " + str(carrier)
-    f = "Device: " + str(line_type)
-    g = f"{aa}\n{a}\n{b}\n{c}\n{d}\n{e}\n{f}"
-    await event.reply(g)
+asyncXdefXis_register_admin(chat,Xuser):
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
+
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXclient(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXelifXisinstance(chat,Xtypes.InputPeerChat):
+
+XXXXXXXXuiX=XawaitXclient.get_peer_id(user)
+XXXXXXXXpsX=X(
+XXXXXXXXXXXXawaitXclient(functions.messages.GetFullChatRequest(chat.chat_id))
+XXXXXXXX).full_chat.participants.participants
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXXnext((pXforXpXinXpsXifXp.user_idX==Xui),XNone),
+XXXXXXXXXXXX(types.ChatParticipantAdmin,Xtypes.ChatParticipantCreator),
+XXXXXXXX)
+XXXXelse:
+XXXXXXXXreturnXNone
+
+
+@register(pattern=r"^/phoneX(.*)")
+asyncXdefXphone(event):
+XXXXifXevent.is_group:
+XXXXXXXXifXnotX(awaitXis_register_admin(event.input_chat,Xevent.message.sender_id)):
+XXXXXXXXXXXXawaitXevent.reply("☎️XYouXareXnotXadminX🚶‍♀️")
+XXXXXXXXXXXXreturn
+XXXXinformationX=Xevent.pattern_match.group(1)
+XXXXnumberX=Xinformation
+XXXXkeyX=X"fe65b94e78fc2e3234c1c6ed1b771abd"
+XXXXapiX=X(
+XXXXXXXX"http://apilayer.net/api/validate?access_key="
+XXXXXXXX+Xkey
+XXXXXXXX+X"&number="
+XXXXXXXX+Xnumber
+XXXXXXXX+X"&country_code=&format=1"
+XXXX)
+XXXXoutputX=Xrequests.get(api)
+XXXXcontentX=Xoutput.text
+XXXXobjX=Xjson.loads(content)
+XXXXcountry_codeX=Xobj["country_code"]
+XXXXcountry_nameX=Xobj["country_name"]
+XXXXlocationX=Xobj["location"]
+XXXXcarrierX=Xobj["carrier"]
+XXXXline_typeX=Xobj["line_type"]
+XXXXvalidornotX=Xobj["valid"]
+XXXXaaX=X"Valid:X"X+Xstr(validornot)
+XXXXaX=X"PhoneXnumber:X"X+Xstr(number)
+XXXXbX=X"Country:X"X+Xstr(country_code)
+XXXXcX=X"CountryXName:X"X+Xstr(country_name)
+XXXXdX=X"Location:X"X+Xstr(location)
+XXXXeX=X"Carrier:X"X+Xstr(carrier)
+XXXXfX=X"Device:X"X+Xstr(line_type)
+XXXXgX=Xf"{aa}\n{a}\n{b}\n{c}\n{d}\n{e}\n{f}"
+XXXXawaitXevent.reply(g)

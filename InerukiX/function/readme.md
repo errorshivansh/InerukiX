@@ -1,27 +1,27 @@
-# Here we define functions
+#XHereXweXdefineXfunctions
 
-## Essentials
-### Importing Pyrogram admin check
+##XEssentials
+###XImportingXPyrogramXadminXcheck
 ```python3
-from Ineruki .function.pluginhelpers import admins_only
+fromXInerukiX.function.pluginhelpersXimportXadmins_only
 
 @admins_only
 ```
 
-### Getting text from cmd
+###XGettingXtextXfromXcmd
 ```python3
-from Ineruki .function.pluginhelpers import get_text
+fromXInerukiX.function.pluginhelpersXimportXget_text
 
-async def hi(client,message):
-  args = get_text(message)
+asyncXdefXhi(client,message):
+XXargsX=Xget_text(message)
 ```
 
-### Edit or reply
+###XEditXorXreply
 ```python3
-from Ineruki .function.pluginhelpers import edit_or_reply
+fromXInerukiX.function.pluginhelpersXimportXedit_or_reply
 
-async def hi(client,message):
-  await edit_or_reply("Hi")
+asyncXdefXhi(client,message):
+XXawaitXedit_or_reply("Hi")
 ```
-## SOME FUNCTIONS ARE COPIED FROM https://github.com/TheHamkerCat/WilliamButcherBot
-## AND SOME FROM FRIDAY USERBOT
+##XSOMEXFUNCTIONSXAREXCOPIEDXFROMXhttps://github.com/TheHamkerCat/WilliamButcherBot
+##XANDXSOMEXFROMXFRIDAYXUSERBOT

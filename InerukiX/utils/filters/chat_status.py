@@ -1,44 +1,44 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-from aiogram import types
-from aiogram.dispatcher.filters import BoundFilter
+fromXaiogramXimportXtypes
+fromXaiogram.dispatcher.filtersXimportXBoundFilter
 
-from Ineruki  import dp
-
-
-class OnlyPM(BoundFilter):
-    key = "only_pm"
-
-    def __init__(self, only_pm):
-        self.only_pm = only_pm
-
-    async def check(self, message: types.Message):
-        if message.from_user.id == message.chat.id:
-            return True
+fromXInerukiXXimportXdp
 
 
-class OnlyGroups(BoundFilter):
-    key = "only_groups"
+classXOnlyPM(BoundFilter):
+XXXXkeyX=X"only_pm"
 
-    def __init__(self, only_groups):
-        self.only_groups = only_groups
+XXXXdefX__init__(self,Xonly_pm):
+XXXXXXXXself.only_pmX=Xonly_pm
 
-    async def check(self, message: types.Message):
-        if not message.from_user.id == message.chat.id:
-            return True
+XXXXasyncXdefXcheck(self,Xmessage:Xtypes.Message):
+XXXXXXXXifXmessage.from_user.idX==Xmessage.chat.id:
+XXXXXXXXXXXXreturnXTrue
+
+
+classXOnlyGroups(BoundFilter):
+XXXXkeyX=X"only_groups"
+
+XXXXdefX__init__(self,Xonly_groups):
+XXXXXXXXself.only_groupsX=Xonly_groups
+
+XXXXasyncXdefXcheck(self,Xmessage:Xtypes.Message):
+XXXXXXXXifXnotXmessage.from_user.idX==Xmessage.chat.id:
+XXXXXXXXXXXXreturnXTrue
 
 
 dp.filters_factory.bind(OnlyPM)

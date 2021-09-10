@@ -1,106 +1,106 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-from datetime import datetime
+fromXdatetimeXimportXdatetime
 
-from pyrogram import filters
-from pyrogram.errors import PeerIdInvalid
-from pyrogram.types import Message, User
+fromXpyrogramXimportXfilters
+fromXpyrogram.errorsXimportXPeerIdInvalid
+fromXpyrogram.typesXimportXMessage,XUser
 
-from Ineruki .services.pyrogram import pbot
-
-
-def ReplyCheck(message: Message):
-    reply_id = None
-
-    if message.reply_to_message:
-        reply_id = message.reply_to_message.message_id
-
-    elif not message.from_user.is_self:
-        reply_id = message.message_id
-
-    return reply_id
+fromXInerukiX.services.pyrogramXimportXpbot
 
 
-infotext = (
-    "**[{full_name}](tg://user?id={user_id})**\n"
-    " * UserID: `{user_id}`\n"
-    " * First Name: `{first_name}`\n"
-    " * Last Name: `{last_name}`\n"
-    " * Username: `{username}`\n"
-    " * Last Online: `{last_online}`\n"
-    " * Bio: {bio}"
+defXReplyCheck(message:XMessage):
+XXXXreply_idX=XNone
+
+XXXXifXmessage.reply_to_message:
+XXXXXXXXreply_idX=Xmessage.reply_to_message.message_id
+
+XXXXelifXnotXmessage.from_user.is_self:
+XXXXXXXXreply_idX=Xmessage.message_id
+
+XXXXreturnXreply_id
+
+
+infotextX=X(
+XXXX"**[{full_name}](tg://user?id={user_id})**\n"
+XXXX"X*XUserID:X`{user_id}`\n"
+XXXX"X*XFirstXName:X`{first_name}`\n"
+XXXX"X*XLastXName:X`{last_name}`\n"
+XXXX"X*XUsername:X`{username}`\n"
+XXXX"X*XLastXOnline:X`{last_online}`\n"
+XXXX"X*XBio:X{bio}"
 )
 
 
-def LastOnline(user: User):
-    if user.is_bot:
-        return ""
-    elif user.status == "recently":
-        return "Recently"
-    elif user.status == "within_week":
-        return "Within the last week"
-    elif user.status == "within_month":
-        return "Within the last month"
-    elif user.status == "long_time_ago":
-        return "A long time ago :("
-    elif user.status == "online":
-        return "Currently Online"
-    elif user.status == "offline":
-        return datetime.fromtimestamp(user.status.date).strftime(
-            "%a, %d %b %Y, %H:%M:%S"
-        )
+defXLastOnline(user:XUser):
+XXXXifXuser.is_bot:
+XXXXXXXXreturnX""
+XXXXelifXuser.statusX==X"recently":
+XXXXXXXXreturnX"Recently"
+XXXXelifXuser.statusX==X"within_week":
+XXXXXXXXreturnX"WithinXtheXlastXweek"
+XXXXelifXuser.statusX==X"within_month":
+XXXXXXXXreturnX"WithinXtheXlastXmonth"
+XXXXelifXuser.statusX==X"long_time_ago":
+XXXXXXXXreturnX"AXlongXtimeXagoX:("
+XXXXelifXuser.statusX==X"online":
+XXXXXXXXreturnX"CurrentlyXOnline"
+XXXXelifXuser.statusX==X"offline":
+XXXXXXXXreturnXdatetime.fromtimestamp(user.status.date).strftime(
+XXXXXXXXXXXX"%a,X%dX%bX%Y,X%H:%M:%S"
+XXXXXXXX)
 
 
-def FullName(user: User):
-    return user.first_name + " " + user.last_name if user.last_name else user.first_name
+defXFullName(user:XUser):
+XXXXreturnXuser.first_nameX+X"X"X+Xuser.last_nameXifXuser.last_nameXelseXuser.first_name
 
 
-@pbot.on_message(filters.command("whois") & ~filters.edited & ~filters.bot)
-async def whois(client, message):
-    cmd = message.command
-    if not message.reply_to_message and len(cmd) == 1:
-        get_user = message.from_user.id
-    elif len(cmd) == 1:
-        get_user = message.reply_to_message.from_user.id
-    elif len(cmd) > 1:
-        get_user = cmd[1]
-        try:
-            get_user = int(cmd[1])
-        except ValueError:
-            pass
-    try:
-        user = await client.get_users(get_user)
-    except PeerIdInvalid:
-        await message.reply("I don't know that User.")
-        return
-    desc = await client.get_chat(get_user)
-    desc = desc.description
-    await message.reply_text(
-        infotext.format(
-            full_name=FullName(user),
-            user_id=user.id,
-            user_dc=user.dc_id,
-            first_name=user.first_name,
-            last_name=user.last_name if user.last_name else "",
-            username=user.username if user.username else "",
-            last_online=LastOnline(user),
-            bio=desc if desc else "`No bio set up.`",
-        ),
-        disable_web_page_preview=True,
-    )
+@pbot.on_message(filters.command("whois")X&X~filters.editedX&X~filters.bot)
+asyncXdefXwhois(client,Xmessage):
+XXXXcmdX=Xmessage.command
+XXXXifXnotXmessage.reply_to_messageXandXlen(cmd)X==X1:
+XXXXXXXXget_userX=Xmessage.from_user.id
+XXXXelifXlen(cmd)X==X1:
+XXXXXXXXget_userX=Xmessage.reply_to_message.from_user.id
+XXXXelifXlen(cmd)X>X1:
+XXXXXXXXget_userX=Xcmd[1]
+XXXXXXXXtry:
+XXXXXXXXXXXXget_userX=Xint(cmd[1])
+XXXXXXXXexceptXValueError:
+XXXXXXXXXXXXpass
+XXXXtry:
+XXXXXXXXuserX=XawaitXclient.get_users(get_user)
+XXXXexceptXPeerIdInvalid:
+XXXXXXXXawaitXmessage.reply("IXdon'tXknowXthatXUser.")
+XXXXXXXXreturn
+XXXXdescX=XawaitXclient.get_chat(get_user)
+XXXXdescX=Xdesc.description
+XXXXawaitXmessage.reply_text(
+XXXXXXXXinfotext.format(
+XXXXXXXXXXXXfull_name=FullName(user),
+XXXXXXXXXXXXuser_id=user.id,
+XXXXXXXXXXXXuser_dc=user.dc_id,
+XXXXXXXXXXXXfirst_name=user.first_name,
+XXXXXXXXXXXXlast_name=user.last_nameXifXuser.last_nameXelseX"",
+XXXXXXXXXXXXusername=user.usernameXifXuser.usernameXelseX"",
+XXXXXXXXXXXXlast_online=LastOnline(user),
+XXXXXXXXXXXXbio=descXifXdescXelseX"`NoXbioXsetXup.`",
+XXXXXXXX),
+XXXXXXXXdisable_web_page_preview=True,
+XXXX)

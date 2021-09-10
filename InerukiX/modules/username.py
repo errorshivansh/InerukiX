@@ -1,113 +1,113 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-from telethon.errors.rpcerrorlist import YouBlockedUserError
-from telethon.tl import functions, types
+fromXtelethon.errors.rpcerrorlistXimportXYouBlockedUserError
+fromXtelethon.tlXimportXfunctions,Xtypes
 
-from Ineruki .services.events import register as Ineruki
-from Ineruki .services.telethon import tbot
-from Ineruki .services.telethonuserbot import ubot
-
-
-async def is_register_admin(chat, user):
-
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
-
-        return isinstance(
-            (
-                await tbot(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    if isinstance(chat, types.InputPeerChat):
-
-        ui = await tbot.get_peer_id(user)
-        ps = (
-            await tbot(functions.messages.GetFullChatRequest(chat.chat_id))
-        ).full_chat.participants.participants
-        return isinstance(
-            next((p for p in ps if p.user_id == ui), None),
-            (types.ChatParticipantAdmin, types.ChatParticipantCreator),
-        )
-    return None
+fromXInerukiX.services.eventsXimportXregisterXasXIneruki
+fromXInerukiX.services.telethonXimportXtbot
+fromXInerukiX.services.telethonuserbotXimportXubot
 
 
-async def silently_send_message(conv, text):
-    await conv.send_message(text)
-    response = await conv.get_response()
-    await conv.mark_read(message=response)
-    return response
+asyncXdefXis_register_admin(chat,Xuser):
+
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
+
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXtbot(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXifXisinstance(chat,Xtypes.InputPeerChat):
+
+XXXXXXXXuiX=XawaitXtbot.get_peer_id(user)
+XXXXXXXXpsX=X(
+XXXXXXXXXXXXawaitXtbot(functions.messages.GetFullChatRequest(chat.chat_id))
+XXXXXXXX).full_chat.participants.participants
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXXnext((pXforXpXinXpsXifXp.user_idX==Xui),XNone),
+XXXXXXXXXXXX(types.ChatParticipantAdmin,Xtypes.ChatParticipantCreator),
+XXXXXXXX)
+XXXXreturnXNone
 
 
-@Ineruki(pattern="^/namehistory ?(.*)")
-async def _(event):
+asyncXdefXsilently_send_message(conv,Xtext):
+XXXXawaitXconv.send_message(text)
+XXXXresponseX=XawaitXconv.get_response()
+XXXXawaitXconv.mark_read(message=response)
+XXXXreturnXresponse
 
-    if event.fwd_from:
 
-        return
+@Ineruki(pattern="^/namehistoryX?(.*)")
+asyncXdefX_(event):
 
-    if event.is_group:
-        if await is_register_admin(event.input_chat, event.message.sender_id):
-            pass
-        else:
-            return
-    if not event.reply_to_msg_id:
+XXXXifXevent.fwd_from:
 
-        await event.reply("```Reply to any user message.```")
+XXXXXXXXreturn
 
-        return
+XXXXifXevent.is_group:
+XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+XXXXifXnotXevent.reply_to_msg_id:
 
-    reply_message = await event.get_reply_message()
+XXXXXXXXawaitXevent.reply("```ReplyXtoXanyXuserXmessage.```")
 
-    if not reply_message.text:
+XXXXXXXXreturn
 
-        await event.reply("```reply to text message```")
+XXXXreply_messageX=XawaitXevent.get_reply_message()
 
-        return
+XXXXifXnotXreply_message.text:
 
-    chat = "@DetectiveInfoBot"
-    uid = reply_message.sender_id
-    reply_message.sender
+XXXXXXXXawaitXevent.reply("```replyXtoXtextXmessage```")
 
-    if reply_message.sender.bot:
+XXXXXXXXreturn
 
-        await event.edit("```Reply to actual users message.```")
+XXXXchatX=X"@DetectiveInfoBot"
+XXXXuidX=Xreply_message.sender_id
+XXXXreply_message.sender
 
-        return
+XXXXifXreply_message.sender.bot:
 
-    lol = await event.reply("```Processing```")
+XXXXXXXXawaitXevent.edit("```ReplyXtoXactualXusersXmessage.```")
 
-    async with ubot.conversation(chat) as conv:
+XXXXXXXXreturn
 
-        try:
+XXXXlolX=XawaitXevent.reply("```Processing```")
 
-            # response = conv.wait_event(
-            #   events.NewMessage(incoming=True, from_users=1706537835)
-            # )
+XXXXasyncXwithXubot.conversation(chat)XasXconv:
 
-            await silently_send_message(conv, f"/detect_id {uid}")
+XXXXXXXXtry:
 
-            # response = await response
-            responses = await silently_send_message(conv, f"/detect_id {uid}")
-        except YouBlockedUserError:
+XXXXXXXXXXXX#XresponseX=Xconv.wait_event(
+XXXXXXXXXXXX#XXXevents.NewMessage(incoming=True,Xfrom_users=1706537835)
+XXXXXXXXXXXX#X)
 
-            await event.reply("```Please unblock @DetectiveInfoBot and try again```")
+XXXXXXXXXXXXawaitXsilently_send_message(conv,Xf"/detect_idX{uid}")
 
-            return
-        await lol.edit(f"{responses.text}")
-        # await lol.edit(f"{response.message.message}")
+XXXXXXXXXXXX#XresponseX=XawaitXresponse
+XXXXXXXXXXXXresponsesX=XawaitXsilently_send_message(conv,Xf"/detect_idX{uid}")
+XXXXXXXXexceptXYouBlockedUserError:
+
+XXXXXXXXXXXXawaitXevent.reply("```PleaseXunblockX@DetectiveInfoBotXandXtryXagain```")
+
+XXXXXXXXXXXXreturn
+XXXXXXXXawaitXlol.edit(f"{responses.text}")
+XXXXXXXX#XawaitXlol.edit(f"{response.message.message}")

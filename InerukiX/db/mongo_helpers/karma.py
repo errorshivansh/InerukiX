@@ -1,24 +1,24 @@
-from Ineruki .services.mongo2 import db
+fromXInerukiX.services.mongo2XimportXdb
 
-karmadb = db.karma2
-
-
-async def is_karma_on(chat_id: int) -> bool:
-    chat = await karmadb.find_one({"chat_id": chat_id})
-    if not chat:
-        return False
-    return True
+karmadbX=Xdb.karma2
 
 
-async def karma_on(chat_id: int):
-    is_karma = await is_karma_on(chat_id)
-    if is_karma:
-        return
-    return await karmadb.insert_one({"chat_id": chat_id})
+asyncXdefXis_karma_on(chat_id:Xint)X->Xbool:
+XXXXchatX=XawaitXkarmadb.find_one({"chat_id":Xchat_id})
+XXXXifXnotXchat:
+XXXXXXXXreturnXFalse
+XXXXreturnXTrue
 
 
-async def karma_off(chat_id: int):
-    is_karma = await is_karma_on(chat_id)
-    if not is_karma:
-        return
-    return await karmadb.delete_one({"chat_id": chat_id})
+asyncXdefXkarma_on(chat_id:Xint):
+XXXXis_karmaX=XawaitXis_karma_on(chat_id)
+XXXXifXis_karma:
+XXXXXXXXreturn
+XXXXreturnXawaitXkarmadb.insert_one({"chat_id":Xchat_id})
+
+
+asyncXdefXkarma_off(chat_id:Xint):
+XXXXis_karmaX=XawaitXis_karma_on(chat_id)
+XXXXifXnotXis_karma:
+XXXXXXXXreturn
+XXXXreturnXawaitXkarmadb.delete_one({"chat_id":Xchat_id})

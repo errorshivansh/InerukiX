@@ -1,116 +1,116 @@
-import inspect
-import re
-from pathlib import Path
+importXinspect
+importXre
+fromXpathlibXimportXPath
 
-from telethon import events
+fromXtelethonXimportXevents
 
-from Ineruki .services.mongo import mongodb as db
-from Ineruki .services.telethon import tbot
+fromXInerukiX.services.mongoXimportXmongodbXasXdb
+fromXInerukiX.services.telethonXimportXtbot
 
-gbanned = db.gban
-CMD_LIST = {}
-
-
-def register(**args):
-    pattern = args.get("pattern")
-    r_pattern = r"^[/]"
-
-    if pattern is not None and not pattern.startswith("(?i)"):
-        args["pattern"] = "(?i)" + pattern
-
-    args["pattern"] = pattern.replace("^/", r_pattern, 1)
-    stack = inspect.stack()
-    previous_stack_frame = stack[1]
-    file_test = Path(previous_stack_frame.filename)
-    file_test = file_test.stem.replace(".py", "")
-    reg = re.compile("(.*)")
-
-    if pattern is not None:
-        try:
-            cmd = re.search(reg, pattern)
-            try:
-                cmd = cmd.group(1).replace("$", "").replace("\\", "").replace("^", "")
-            except BaseException:
-                pass
-
-            try:
-                CMD_LIST[file_test].append(cmd)
-            except BaseException:
-                CMD_LIST.update({file_test: [cmd]})
-        except BaseException:
-            pass
-
-    def decorator(func):
-        async def wrapper(check):
-            if check.edit_date:
-                return
-            if check.fwd_from:
-                return
-            if check.is_group or check.is_private:
-                pass
-            else:
-                # print("i don't work in channels")
-                return
-            users = gbanned.find({})
-            for c in users:
-                if check.sender_id == c["user"]:
-                    return
-            try:
-                await func(check)
-                try:
-                    LOAD_PLUG[file_test].append(func)
-                except Exception:
-                    LOAD_PLUG.update({file_test: [func]})
-            except BaseException:
-                return
-            else:
-                pass
-
-        tbot.add_event_handler(wrapper, events.NewMessage(**args))
-        return wrapper
-
-    return decorator
+gbannedX=Xdb.gban
+CMD_LISTX=X{}
 
 
-def chataction(**args):
-    """Registers chat actions."""
+defXregister(**args):
+XXXXpatternX=Xargs.get("pattern")
+XXXXr_patternX=Xr"^[/]"
 
-    def decorator(func):
-        tbot.add_event_handler(func, events.ChatAction(**args))
-        return func
+XXXXifXpatternXisXnotXNoneXandXnotXpattern.startswith("(?i)"):
+XXXXXXXXargs["pattern"]X=X"(?i)"X+Xpattern
 
-    return decorator
+XXXXargs["pattern"]X=Xpattern.replace("^/",Xr_pattern,X1)
+XXXXstackX=Xinspect.stack()
+XXXXprevious_stack_frameX=Xstack[1]
+XXXXfile_testX=XPath(previous_stack_frame.filename)
+XXXXfile_testX=Xfile_test.stem.replace(".py",X"")
+XXXXregX=Xre.compile("(.*)")
+
+XXXXifXpatternXisXnotXNone:
+XXXXXXXXtry:
+XXXXXXXXXXXXcmdX=Xre.search(reg,Xpattern)
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXcmdX=Xcmd.group(1).replace("$",X"").replace("\\",X"").replace("^",X"")
+XXXXXXXXXXXXexceptXBaseException:
+XXXXXXXXXXXXXXXXpass
+
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXCMD_LIST[file_test].append(cmd)
+XXXXXXXXXXXXexceptXBaseException:
+XXXXXXXXXXXXXXXXCMD_LIST.update({file_test:X[cmd]})
+XXXXXXXXexceptXBaseException:
+XXXXXXXXXXXXpass
+
+XXXXdefXdecorator(func):
+XXXXXXXXasyncXdefXwrapper(check):
+XXXXXXXXXXXXifXcheck.edit_date:
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXifXcheck.fwd_from:
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXifXcheck.is_groupXorXcheck.is_private:
+XXXXXXXXXXXXXXXXpass
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXX#Xprint("iXdon'tXworkXinXchannels")
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXusersX=Xgbanned.find({})
+XXXXXXXXXXXXforXcXinXusers:
+XXXXXXXXXXXXXXXXifXcheck.sender_idX==Xc["user"]:
+XXXXXXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXfunc(check)
+XXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXLOAD_PLUG[file_test].append(func)
+XXXXXXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXXXXXLOAD_PLUG.update({file_test:X[func]})
+XXXXXXXXXXXXexceptXBaseException:
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXpass
+
+XXXXXXXXtbot.add_event_handler(wrapper,Xevents.NewMessage(**args))
+XXXXXXXXreturnXwrapper
+
+XXXXreturnXdecorator
 
 
-def userupdate(**args):
-    """Registers user updates."""
+defXchataction(**args):
+XXXX"""RegistersXchatXactions."""
 
-    def decorator(func):
-        tbot.add_event_handler(func, events.UserUpdate(**args))
-        return func
+XXXXdefXdecorator(func):
+XXXXXXXXtbot.add_event_handler(func,Xevents.ChatAction(**args))
+XXXXXXXXreturnXfunc
 
-    return decorator
-
-
-def inlinequery(**args):
-    """Registers inline query."""
-    pattern = args.get("pattern", None)
-
-    if pattern is not None and not pattern.startswith("(?i)"):
-        args["pattern"] = "(?i)" + pattern
-
-    def decorator(func):
-        tbot.add_event_handler(func, events.InlineQuery(**args))
-        return func
-
-    return decorator
+XXXXreturnXdecorator
 
 
-def callbackquery(**args):
-    """Registers inline query."""
+defXuserupdate(**args):
+XXXX"""RegistersXuserXupdates."""
 
-    def decorator(func):
-        tbot.add_event_handler(func, events.CallbackQuery(**args))
-        return func
+XXXXdefXdecorator(func):
+XXXXXXXXtbot.add_event_handler(func,Xevents.UserUpdate(**args))
+XXXXXXXXreturnXfunc
 
-    return decorator
+XXXXreturnXdecorator
+
+
+defXinlinequery(**args):
+XXXX"""RegistersXinlineXquery."""
+XXXXpatternX=Xargs.get("pattern",XNone)
+
+XXXXifXpatternXisXnotXNoneXandXnotXpattern.startswith("(?i)"):
+XXXXXXXXargs["pattern"]X=X"(?i)"X+Xpattern
+
+XXXXdefXdecorator(func):
+XXXXXXXXtbot.add_event_handler(func,Xevents.InlineQuery(**args))
+XXXXXXXXreturnXfunc
+
+XXXXreturnXdecorator
+
+
+defXcallbackquery(**args):
+XXXX"""RegistersXinlineXquery."""
+
+XXXXdefXdecorator(func):
+XXXXXXXXtbot.add_event_handler(func,Xevents.CallbackQuery(**args))
+XXXXXXXXreturnXfunc
+
+XXXXreturnXdecorator

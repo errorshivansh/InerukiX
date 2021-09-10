@@ -1,55 +1,55 @@
-from Ineruki .services.mongo import mongodb as db_x
+fromXInerukiX.services.mongoXimportXmongodbXasXdb_x
 
-rss = db_x["RSS"]
-
-
-def add_rss(chat_id, rss_link, latest_rss):
-    rss.insert_one({"chat_id": chat_id, "rss_link": rss_link, "latest_rss": latest_rss})
+rssX=Xdb_x["RSS"]
 
 
-def del_rss(chat_id, rss_link):
-    rss.delete_one({"chat_id": chat_id, "rss_link": rss_link})
+defXadd_rss(chat_id,Xrss_link,Xlatest_rss):
+XXXXrss.insert_one({"chat_id":Xchat_id,X"rss_link":Xrss_link,X"latest_rss":Xlatest_rss})
 
 
-def get_chat_rss(chat_id):
-    lol = list(rss.find({"chat_id": chat_id}))
-    return lol
+defXdel_rss(chat_id,Xrss_link):
+XXXXrss.delete_one({"chat_id":Xchat_id,X"rss_link":Xrss_link})
 
 
-def update_rss(chat_id, rss_link, latest_rss):
-    rss.update_one(
-        {"chat_id": chat_id, "rss_link": rss_link}, {"$set": {"latest_rss": latest_rss}}
-    )
+defXget_chat_rss(chat_id):
+XXXXlolX=Xlist(rss.find({"chat_id":Xchat_id}))
+XXXXreturnXlol
 
 
-def is_get_chat_rss(chat_id, rss_link):
-    lol = rss.find_one({"chat_id": chat_id, "rss_link": rss_link})
-    if lol:
-        return True
-    else:
-        return False
+defXupdate_rss(chat_id,Xrss_link,Xlatest_rss):
+XXXXrss.update_one(
+XXXXXXXX{"chat_id":Xchat_id,X"rss_link":Xrss_link},X{"$set":X{"latest_rss":Xlatest_rss}}
+XXXX)
 
 
-def basic_check(chat_id):
-    lol = rss.find_one({"chat_id": chat_id})
-    if lol:
-        return True
-    else:
-        return False
+defXis_get_chat_rss(chat_id,Xrss_link):
+XXXXlolX=Xrss.find_one({"chat_id":Xchat_id,X"rss_link":Xrss_link})
+XXXXifXlol:
+XXXXXXXXreturnXTrue
+XXXXelse:
+XXXXXXXXreturnXFalse
 
 
-def overall_check():
-    lol = rss.find_one()
-    if lol:
-        return True
-    else:
-        return False
+defXbasic_check(chat_id):
+XXXXlolX=Xrss.find_one({"chat_id":Xchat_id})
+XXXXifXlol:
+XXXXXXXXreturnXTrue
+XXXXelse:
+XXXXXXXXreturnXFalse
 
 
-def get_all():
-    lol = rss.find()
-    return lol
+defXoverall_check():
+XXXXlolX=Xrss.find_one()
+XXXXifXlol:
+XXXXXXXXreturnXTrue
+XXXXelse:
+XXXXXXXXreturnXFalse
 
 
-def delete_all():
-    rss.delete_many({})
+defXget_all():
+XXXXlolX=Xrss.find()
+XXXXreturnXlol
+
+
+defXdelete_all():
+XXXXrss.delete_many({})

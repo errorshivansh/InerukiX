@@ -1,162 +1,162 @@
-# This file is part of Ineruki Bot (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiXBotX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-def shorten(description, info="anilist.co"):
-    ms_g = ""
-    if len(description) > 700:
-        description = description[0:500] + "..."
-        ms_g += (
-            f"\n<b>Description</b>: <i>{description}</i> <a href='{info}'>Read More</a>"
-        )
-    else:
-        ms_g += f"\n<b>Description</b>: <i>{description}</i>"
-    return (
-        ms_g.replace("<br>", "")
-        .replace("</br>", "")
-        .replace("<i>", "")
-        .replace("</i>", "")
-    )
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
 
-def t(milliseconds: int) -> str:
-    """Inputs time in milliseconds, to get beautified time,
-    as string"""
-    seconds, milliseconds = divmod(int(milliseconds), 1000)
-    minutes, seconds = divmod(seconds, 60)
-    hours, minutes = divmod(minutes, 60)
-    days, hours = divmod(hours, 24)
-    tmp = (
-        ((str(days) + " Days, ") if days else "")
-        + ((str(hours) + " Hours, ") if hours else "")
-        + ((str(minutes) + " Minutes, ") if minutes else "")
-        + ((str(seconds) + " Seconds, ") if seconds else "")
-        + ((str(milliseconds) + " ms, ") if milliseconds else "")
-    )
-    return tmp[:-2]
+defXshorten(description,Xinfo="anilist.co"):
+XXXXms_gX=X""
+XXXXifXlen(description)X>X700:
+XXXXXXXXdescriptionX=Xdescription[0:500]X+X"..."
+XXXXXXXXms_gX+=X(
+XXXXXXXXXXXXf"\n<b>Description</b>:X<i>{description}</i>X<aXhref='{info}'>ReadXMore</a>"
+XXXXXXXX)
+XXXXelse:
+XXXXXXXXms_gX+=Xf"\n<b>Description</b>:X<i>{description}</i>"
+XXXXreturnX(
+XXXXXXXXms_g.replace("<br>",X"")
+XXXXXXXX.replace("</br>",X"")
+XXXXXXXX.replace("<i>",X"")
+XXXXXXXX.replace("</i>",X"")
+XXXX)
 
 
-airing_query = """
-    query ($id: Int,$search: String) {
-      Media (id: $id, type: ANIME,search: $search) {
-        id
-        episodes
-        title {
-          romaji
-          english
-          native
-        }
-        siteUrl
-        nextAiringEpisode {
-           airingAt
-           timeUntilAiring
-           episode
-        }
-      }
-    }
-    """
+defXt(milliseconds:Xint)X->Xstr:
+XXXX"""InputsXtimeXinXmilliseconds,XtoXgetXbeautifiedXtime,
+XXXXasXstring"""
+XXXXseconds,XmillisecondsX=Xdivmod(int(milliseconds),X1000)
+XXXXminutes,XsecondsX=Xdivmod(seconds,X60)
+XXXXhours,XminutesX=Xdivmod(minutes,X60)
+XXXXdays,XhoursX=Xdivmod(hours,X24)
+XXXXtmpX=X(
+XXXXXXXX((str(days)X+X"XDays,X")XifXdaysXelseX"")
+XXXXXXXX+X((str(hours)X+X"XHours,X")XifXhoursXelseX"")
+XXXXXXXX+X((str(minutes)X+X"XMinutes,X")XifXminutesXelseX"")
+XXXXXXXX+X((str(seconds)X+X"XSeconds,X")XifXsecondsXelseX"")
+XXXXXXXX+X((str(milliseconds)X+X"Xms,X")XifXmillisecondsXelseX"")
+XXXX)
+XXXXreturnXtmp[:-2]
 
-fav_query = """
-query ($id: Int) {
-      Media (id: $id, type: ANIME) {
-        id
-        title {
-          romaji
-          english
-          native
-        }
-     }
+
+airing_queryX=X"""
+XXXXqueryX($id:XInt,$search:XString)X{
+XXXXXXMediaX(id:X$id,Xtype:XANIME,search:X$search)X{
+XXXXXXXXid
+XXXXXXXXepisodes
+XXXXXXXXtitleX{
+XXXXXXXXXXromaji
+XXXXXXXXXXenglish
+XXXXXXXXXXnative
+XXXXXXXX}
+XXXXXXXXsiteUrl
+XXXXXXXXnextAiringEpisodeX{
+XXXXXXXXXXXairingAt
+XXXXXXXXXXXtimeUntilAiring
+XXXXXXXXXXXepisode
+XXXXXXXX}
+XXXXXX}
+XXXX}
+XXXX"""
+
+fav_queryX=X"""
+queryX($id:XInt)X{
+XXXXXXMediaX(id:X$id,Xtype:XANIME)X{
+XXXXXXXXid
+XXXXXXXXtitleX{
+XXXXXXXXXXromaji
+XXXXXXXXXXenglish
+XXXXXXXXXXnative
+XXXXXXXX}
+XXXXX}
 }
 """
 
-anime_query = """
-   query ($id: Int,$search: String) {
-      Media (id: $id, type: ANIME,search: $search) {
-        id
-        idMal
-        title {
-          romaji
-          english
-          native
-        }
-        description (asHtml: false)
-        startDate{
-            year
-          }
-          episodes
-          season
-          type
-          format
-          status
-          duration
-          siteUrl
-          studios{
-              nodes{
-                   name
-              }
-          }
-          trailer{
-               id
-               site 
-               thumbnail
-          }
-          averageScore
-          genres
-          bannerImage
-      }
-    }
+anime_queryX=X"""
+XXXqueryX($id:XInt,$search:XString)X{
+XXXXXXMediaX(id:X$id,Xtype:XANIME,search:X$search)X{
+XXXXXXXXid
+XXXXXXXXidMal
+XXXXXXXXtitleX{
+XXXXXXXXXXromaji
+XXXXXXXXXXenglish
+XXXXXXXXXXnative
+XXXXXXXX}
+XXXXXXXXdescriptionX(asHtml:Xfalse)
+XXXXXXXXstartDate{
+XXXXXXXXXXXXyear
+XXXXXXXXXX}
+XXXXXXXXXXepisodes
+XXXXXXXXXXseason
+XXXXXXXXXXtype
+XXXXXXXXXXformat
+XXXXXXXXXXstatus
+XXXXXXXXXXduration
+XXXXXXXXXXsiteUrl
+XXXXXXXXXXstudios{
+XXXXXXXXXXXXXXnodes{
+XXXXXXXXXXXXXXXXXXXname
+XXXXXXXXXXXXXX}
+XXXXXXXXXX}
+XXXXXXXXXXtrailer{
+XXXXXXXXXXXXXXXid
+XXXXXXXXXXXXXXXsiteX
+XXXXXXXXXXXXXXXthumbnail
+XXXXXXXXXX}
+XXXXXXXXXXaverageScore
+XXXXXXXXXXgenres
+XXXXXXXXXXbannerImage
+XXXXXX}
+XXXX}
 """
-character_query = """
-    query ($query: String) {
-        Character (search: $query) {
-               id
-               name {
-                     first
-                     last
-                     full
-               }
-               siteUrl
-               favourites
-               image {
-                        large
-               }
-               description
-        }
-    }
+character_queryX=X"""
+XXXXqueryX($query:XString)X{
+XXXXXXXXCharacterX(search:X$query)X{
+XXXXXXXXXXXXXXXid
+XXXXXXXXXXXXXXXnameX{
+XXXXXXXXXXXXXXXXXXXXXfirst
+XXXXXXXXXXXXXXXXXXXXXlast
+XXXXXXXXXXXXXXXXXXXXXfull
+XXXXXXXXXXXXXXX}
+XXXXXXXXXXXXXXXsiteUrl
+XXXXXXXXXXXXXXXfavourites
+XXXXXXXXXXXXXXXimageX{
+XXXXXXXXXXXXXXXXXXXXXXXXlarge
+XXXXXXXXXXXXXXX}
+XXXXXXXXXXXXXXXdescription
+XXXXXXXX}
+XXXX}
 """
 
-manga_query = """
-query ($id: Int,$search: String) {
-      Media (id: $id, type: MANGA,search: $search) {
-        id
-        title {
-          romaji
-          english
-          native
-        }
-        description (asHtml: false)
-        startDate{
-            year
-          }
-          type
-          format
-          status
-          siteUrl
-          averageScore
-          genres
-          bannerImage
-      }
-    }
+manga_queryX=X"""
+queryX($id:XInt,$search:XString)X{
+XXXXXXMediaX(id:X$id,Xtype:XMANGA,search:X$search)X{
+XXXXXXXXid
+XXXXXXXXtitleX{
+XXXXXXXXXXromaji
+XXXXXXXXXXenglish
+XXXXXXXXXXnative
+XXXXXXXX}
+XXXXXXXXdescriptionX(asHtml:Xfalse)
+XXXXXXXXstartDate{
+XXXXXXXXXXXXyear
+XXXXXXXXXX}
+XXXXXXXXXXtype
+XXXXXXXXXXformat
+XXXXXXXXXXstatus
+XXXXXXXXXXsiteUrl
+XXXXXXXXXXaverageScore
+XXXXXXXXXXgenres
+XXXXXXXXXXbannerImage
+XXXXXX}
+XXXX}
 """

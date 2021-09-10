@@ -1,357 +1,357 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 errorshivansh
-# Copyright (C) 2020 Inuka Asith
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2021Xerrorshivansh
+#XCopyrightX(C)X2020XInukaXAsith
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
 
-import asyncio
-import csv
-import html
-import io
-import os
-import re
-import time
-import uuid
-from contextlib import suppress
-from datetime import datetime, timedelta
-from typing import Optional
+importXasyncio
+importXcsv
+importXhtml
+importXio
+importXos
+importXre
+importXtime
+importXuuid
+fromXcontextlibXimportXsuppress
+fromXdatetimeXimportXdatetime,Xtimedelta
+fromXtypingXimportXOptional
 
-import babel
-import rapidjson
-from aiogram import types
-from aiogram.dispatcher.filters.state import State, StatesGroup
-from aiogram.types import InputFile, Message
-from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
-from aiogram.utils.callback_data import CallbackData
-from aiogram.utils.exceptions import (
-    ChatNotFound,
-    NeedAdministratorRightsInTheChannel,
-    Unauthorized,
+importXbabel
+importXrapidjson
+fromXaiogramXimportXtypes
+fromXaiogram.dispatcher.filters.stateXimportXState,XStatesGroup
+fromXaiogram.typesXimportXInputFile,XMessage
+fromXaiogram.types.inline_keyboardXimportXInlineKeyboardButton,XInlineKeyboardMarkup
+fromXaiogram.utils.callback_dataXimportXCallbackData
+fromXaiogram.utils.exceptionsXimportX(
+XXXXChatNotFound,
+XXXXNeedAdministratorRightsInTheChannel,
+XXXXUnauthorized,
 )
-from babel.dates import format_timedelta
-from pymongo import DeleteMany, InsertOne
+fromXbabel.datesXimportXformat_timedelta
+fromXpymongoXimportXDeleteMany,XInsertOne
 
-from Ineruki  import BOT_ID, OPERATORS, OWNER_ID, bot, decorator
-from Ineruki .services.mongo import db
-from Ineruki .services.redis import redis
-from Ineruki .services.telethon import tbot
+fromXInerukiXXimportXBOT_ID,XOPERATORS,XOWNER_ID,Xbot,Xdecorator
+fromXInerukiX.services.mongoXimportXdb
+fromXInerukiX.services.redisXimportXredis
+fromXInerukiX.services.telethonXimportXtbot
 
-from ..utils.cached import cached
-from .utils.connections import chat_connection, get_connected_chat
-from .utils.language import get_string, get_strings, get_strings_dec
-from .utils.message import get_cmd, need_args_dec
-from .utils.restrictions import ban_user, unban_user
-from .utils.user_details import (
-    check_admin_rights,
-    get_chat_dec,
-    get_user_and_text,
-    get_user_link,
-    is_chat_creator,
-    is_user_admin,
+fromX..utils.cachedXimportXcached
+fromX.utils.connectionsXimportXchat_connection,Xget_connected_chat
+fromX.utils.languageXimportXget_string,Xget_strings,Xget_strings_dec
+fromX.utils.messageXimportXget_cmd,Xneed_args_dec
+fromX.utils.restrictionsXimportXban_user,Xunban_user
+fromX.utils.user_detailsXimportX(
+XXXXcheck_admin_rights,
+XXXXget_chat_dec,
+XXXXget_user_and_text,
+XXXXget_user_link,
+XXXXis_chat_creator,
+XXXXis_user_admin,
 )
 
 
-class ImportFbansFileWait(StatesGroup):
-    waiting = State()
+classXImportFbansFileWait(StatesGroup):
+XXXXwaitingX=XState()
 
 
-delfed_cb = CallbackData("delfed_cb", "fed_id", "creator_id")
+delfed_cbX=XCallbackData("delfed_cb",X"fed_id",X"creator_id")
 
 
-# functions
+#Xfunctions
 
 
-async def get_fed_f(message):
-    chat = await get_connected_chat(message, admin=True)
-    if "err_msg" not in chat:
-        if chat["status"] == "private":
-            # return fed which user is created
-            fed = await get_fed_by_creator(chat["chat_id"])
-        else:
-            fed = await db.feds.find_one({"chats": {"$in": [chat["chat_id"]]}})
-        if not fed:
-            return False
-        return fed
+asyncXdefXget_fed_f(message):
+XXXXchatX=XawaitXget_connected_chat(message,Xadmin=True)
+XXXXifX"err_msg"XnotXinXchat:
+XXXXXXXXifXchat["status"]X==X"private":
+XXXXXXXXXXXX#XreturnXfedXwhichXuserXisXcreated
+XXXXXXXXXXXXfedX=XawaitXget_fed_by_creator(chat["chat_id"])
+XXXXXXXXelse:
+XXXXXXXXXXXXfedX=XawaitXdb.feds.find_one({"chats":X{"$in":X[chat["chat_id"]]}})
+XXXXXXXXifXnotXfed:
+XXXXXXXXXXXXreturnXFalse
+XXXXXXXXreturnXfed
 
 
-async def fed_post_log(fed, text):
-    if "log_chat_id" not in fed:
-        return
-    chat_id = fed["log_chat_id"]
-    with suppress(Unauthorized, NeedAdministratorRightsInTheChannel, ChatNotFound):
-        await bot.send_message(chat_id, text)
+asyncXdefXfed_post_log(fed,Xtext):
+XXXXifX"log_chat_id"XnotXinXfed:
+XXXXXXXXreturn
+XXXXchat_idX=Xfed["log_chat_id"]
+XXXXwithXsuppress(Unauthorized,XNeedAdministratorRightsInTheChannel,XChatNotFound):
+XXXXXXXXawaitXbot.send_message(chat_id,Xtext)
 
 
-# decorators
+#Xdecorators
 
 
-def get_current_chat_fed(func):
-    async def wrapped_1(*args, **kwargs):
-        message = args[0]
-        real_chat_id = message.chat.id
-        if not (fed := await get_fed_f(message)):
-            await message.reply(
-                await get_string(real_chat_id, "feds", "chat_not_in_fed")
-            )
-            return
+defXget_current_chat_fed(func):
+XXXXasyncXdefXwrapped_1(*args,X**kwargs):
+XXXXXXXXmessageX=Xargs[0]
+XXXXXXXXreal_chat_idX=Xmessage.chat.id
+XXXXXXXXifXnotX(fedX:=XawaitXget_fed_f(message)):
+XXXXXXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXXXXXawaitXget_string(real_chat_id,X"feds",X"chat_not_in_fed")
+XXXXXXXXXXXX)
+XXXXXXXXXXXXreturn
 
-        return await func(*args, fed, **kwargs)
+XXXXXXXXreturnXawaitXfunc(*args,Xfed,X**kwargs)
 
-    return wrapped_1
-
-
-def get_fed_user_text(skip_no_fed=False, self=False):
-    def wrapped(func):
-        async def wrapped_1(*args, **kwargs):
-            fed = None
-            message = args[0]
-            real_chat_id = message.chat.id
-            user, text = await get_user_and_text(message)
-            strings = await get_strings(real_chat_id, "feds")
-
-            # Check non exits user
-            data = message.get_args().split(" ")
-            if (
-                not user
-                and len(data) > 0
-                and data[0].isdigit()
-                and int(data[0]) <= 2147483647
-            ):
-                user = {"user_id": int(data[0])}
-                text = " ".join(data[1:]) if len(data) > 1 else None
-            elif not user:
-                if self is True:
-                    user = await db.user_list.find_one(
-                        {"user_id": message.from_user.id}
-                    )
-                else:
-                    await message.reply(strings["cant_get_user"])
-                    # Passing 'None' user will throw err
-                    return
-
-            # Check fed_id in args
-            if text:
-                text_args = text.split(" ", 1)
-                if len(text_args) >= 1:
-                    if text_args[0].count("-") == 4:
-                        text = text_args[1] if len(text_args) > 1 else ""
-                        if not (fed := await get_fed_by_id(text_args[0])):
-                            await message.reply(strings["fed_id_invalid"])
-                            return
-                    else:
-                        text = " ".join(text_args)
-
-            if not fed:
-                if not (fed := await get_fed_f(message)):
-                    if not skip_no_fed:
-                        await message.reply(strings["chat_not_in_fed"])
-                        return
-                    else:
-                        fed = None
-
-            return await func(*args, fed, user, text, **kwargs)
-
-        return wrapped_1
-
-    return wrapped
+XXXXreturnXwrapped_1
 
 
-def get_fed_dec(func):
-    async def wrapped_1(*args, **kwargs):
-        fed = None
-        message = args[0]
-        real_chat_id = message.chat.id
+defXget_fed_user_text(skip_no_fed=False,Xself=False):
+XXXXdefXwrapped(func):
+XXXXXXXXasyncXdefXwrapped_1(*args,X**kwargs):
+XXXXXXXXXXXXfedX=XNone
+XXXXXXXXXXXXmessageX=Xargs[0]
+XXXXXXXXXXXXreal_chat_idX=Xmessage.chat.id
+XXXXXXXXXXXXuser,XtextX=XawaitXget_user_and_text(message)
+XXXXXXXXXXXXstringsX=XawaitXget_strings(real_chat_id,X"feds")
 
-        if message.text:
-            text_args = message.text.split(" ", 2)
-            if not len(text_args) < 2 and text_args[1].count("-") == 4:
-                if not (fed := await get_fed_by_id(text_args[1])):
-                    await message.reply(
-                        await get_string(real_chat_id, "feds", "fed_id_invalid")
-                    )
-                    return
+XXXXXXXXXXXX#XCheckXnonXexitsXuser
+XXXXXXXXXXXXdataX=Xmessage.get_args().split("X")
+XXXXXXXXXXXXifX(
+XXXXXXXXXXXXXXXXnotXuser
+XXXXXXXXXXXXXXXXandXlen(data)X>X0
+XXXXXXXXXXXXXXXXandXdata[0].isdigit()
+XXXXXXXXXXXXXXXXandXint(data[0])X<=X2147483647
+XXXXXXXXXXXX):
+XXXXXXXXXXXXXXXXuserX=X{"user_id":Xint(data[0])}
+XXXXXXXXXXXXXXXXtextX=X"X".join(data[1:])XifXlen(data)X>X1XelseXNone
+XXXXXXXXXXXXelifXnotXuser:
+XXXXXXXXXXXXXXXXifXselfXisXTrue:
+XXXXXXXXXXXXXXXXXXXXuserX=XawaitXdb.user_list.find_one(
+XXXXXXXXXXXXXXXXXXXXXXXX{"user_id":Xmessage.from_user.id}
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXawaitXmessage.reply(strings["cant_get_user"])
+XXXXXXXXXXXXXXXXXXXX#XPassingX'None'XuserXwillXthrowXerr
+XXXXXXXXXXXXXXXXXXXXreturn
 
-        # Check whether fed is still None; This will allow above fed variable to be passed
-        # TODO(Better handling?)
-        if fed is None:
-            if not (fed := await get_fed_f(message)):
-                await message.reply(
-                    await get_string(real_chat_id, "feds", "chat_not_in_fed")
-                )
-                return
+XXXXXXXXXXXX#XCheckXfed_idXinXargs
+XXXXXXXXXXXXifXtext:
+XXXXXXXXXXXXXXXXtext_argsX=Xtext.split("X",X1)
+XXXXXXXXXXXXXXXXifXlen(text_args)X>=X1:
+XXXXXXXXXXXXXXXXXXXXifXtext_args[0].count("-")X==X4:
+XXXXXXXXXXXXXXXXXXXXXXXXtextX=Xtext_args[1]XifXlen(text_args)X>X1XelseX""
+XXXXXXXXXXXXXXXXXXXXXXXXifXnotX(fedX:=XawaitXget_fed_by_id(text_args[0])):
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXawaitXmessage.reply(strings["fed_id_invalid"])
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXXXXXtextX=X"X".join(text_args)
 
-        return await func(*args, fed, **kwargs)
+XXXXXXXXXXXXifXnotXfed:
+XXXXXXXXXXXXXXXXifXnotX(fedX:=XawaitXget_fed_f(message)):
+XXXXXXXXXXXXXXXXXXXXifXnotXskip_no_fed:
+XXXXXXXXXXXXXXXXXXXXXXXXawaitXmessage.reply(strings["chat_not_in_fed"])
+XXXXXXXXXXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXXXXXfedX=XNone
 
-    return wrapped_1
+XXXXXXXXXXXXreturnXawaitXfunc(*args,Xfed,Xuser,Xtext,X**kwargs)
 
+XXXXXXXXreturnXwrapped_1
 
-def is_fed_owner(func):
-    async def wrapped_1(*args, **kwargs):
-        message = args[0]
-        fed = args[1]
-        user_id = message.from_user.id
-
-        # check on anon
-        if user_id in [1087968824, 777000]:
-            return
-
-        if not user_id == fed["creator"] and user_id != OWNER_ID:
-            text = (await get_string(message.chat.id, "feds", "need_fed_admin")).format(
-                name=html.escape(fed["fed_name"], False)
-            )
-            await message.reply(text)
-            return
-
-        return await func(*args, **kwargs)
-
-    return wrapped_1
-
-
-def is_fed_admin(func):
-    async def wrapped_1(*args, **kwargs):
-        message = args[0]
-        fed = args[1]
-        user_id = message.from_user.id
-
-        # check on anon
-        if user_id in [1087968824, 777000]:
-            return
-
-        if not user_id == fed["creator"] and user_id != OWNER_ID:
-            if "admins" not in fed or user_id not in fed["admins"]:
-                text = (
-                    await get_string(message.chat.id, "feds", "need_fed_admin")
-                ).format(name=html.escape(fed["fed_name"], False))
-                return await message.reply(text)
-
-        return await func(*args, **kwargs)
-
-    return wrapped_1
+XXXXreturnXwrapped
 
 
-# cmds
+defXget_fed_dec(func):
+XXXXasyncXdefXwrapped_1(*args,X**kwargs):
+XXXXXXXXfedX=XNone
+XXXXXXXXmessageX=Xargs[0]
+XXXXXXXXreal_chat_idX=Xmessage.chat.id
+
+XXXXXXXXifXmessage.text:
+XXXXXXXXXXXXtext_argsX=Xmessage.text.split("X",X2)
+XXXXXXXXXXXXifXnotXlen(text_args)X<X2XandXtext_args[1].count("-")X==X4:
+XXXXXXXXXXXXXXXXifXnotX(fedX:=XawaitXget_fed_by_id(text_args[1])):
+XXXXXXXXXXXXXXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXXXXXXXXXXXXXawaitXget_string(real_chat_id,X"feds",X"fed_id_invalid")
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXreturn
+
+XXXXXXXX#XCheckXwhetherXfedXisXstillXNone;XThisXwillXallowXaboveXfedXvariableXtoXbeXpassed
+XXXXXXXX#XTODO(BetterXhandling?)
+XXXXXXXXifXfedXisXNone:
+XXXXXXXXXXXXifXnotX(fedX:=XawaitXget_fed_f(message)):
+XXXXXXXXXXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXXXXXXXXXawaitXget_string(real_chat_id,X"feds",X"chat_not_in_fed")
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXreturn
+
+XXXXXXXXreturnXawaitXfunc(*args,Xfed,X**kwargs)
+
+XXXXreturnXwrapped_1
 
 
-@decorator.register(cmds=["newfed", "fnew"])
+defXis_fed_owner(func):
+XXXXasyncXdefXwrapped_1(*args,X**kwargs):
+XXXXXXXXmessageX=Xargs[0]
+XXXXXXXXfedX=Xargs[1]
+XXXXXXXXuser_idX=Xmessage.from_user.id
+
+XXXXXXXX#XcheckXonXanon
+XXXXXXXXifXuser_idXinX[1087968824,X777000]:
+XXXXXXXXXXXXreturn
+
+XXXXXXXXifXnotXuser_idX==Xfed["creator"]XandXuser_idX!=XOWNER_ID:
+XXXXXXXXXXXXtextX=X(awaitXget_string(message.chat.id,X"feds",X"need_fed_admin")).format(
+XXXXXXXXXXXXXXXXname=html.escape(fed["fed_name"],XFalse)
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmessage.reply(text)
+XXXXXXXXXXXXreturn
+
+XXXXXXXXreturnXawaitXfunc(*args,X**kwargs)
+
+XXXXreturnXwrapped_1
+
+
+defXis_fed_admin(func):
+XXXXasyncXdefXwrapped_1(*args,X**kwargs):
+XXXXXXXXmessageX=Xargs[0]
+XXXXXXXXfedX=Xargs[1]
+XXXXXXXXuser_idX=Xmessage.from_user.id
+
+XXXXXXXX#XcheckXonXanon
+XXXXXXXXifXuser_idXinX[1087968824,X777000]:
+XXXXXXXXXXXXreturn
+
+XXXXXXXXifXnotXuser_idX==Xfed["creator"]XandXuser_idX!=XOWNER_ID:
+XXXXXXXXXXXXifX"admins"XnotXinXfedXorXuser_idXnotXinXfed["admins"]:
+XXXXXXXXXXXXXXXXtextX=X(
+XXXXXXXXXXXXXXXXXXXXawaitXget_string(message.chat.id,X"feds",X"need_fed_admin")
+XXXXXXXXXXXXXXXX).format(name=html.escape(fed["fed_name"],XFalse))
+XXXXXXXXXXXXXXXXreturnXawaitXmessage.reply(text)
+
+XXXXXXXXreturnXawaitXfunc(*args,X**kwargs)
+
+XXXXreturnXwrapped_1
+
+
+#Xcmds
+
+
+@decorator.register(cmds=["newfed",X"fnew"])
 @need_args_dec()
 @get_strings_dec("feds")
-async def new_fed(message, strings):
-    fed_name = html.escape(message.get_args())
-    user_id = message.from_user.id
-    # dont support creation of newfed as anon admin
-    if user_id == 1087968824:
-        return await message.reply(strings["disallow_anon"])
+asyncXdefXnew_fed(message,Xstrings):
+XXXXfed_nameX=Xhtml.escape(message.get_args())
+XXXXuser_idX=Xmessage.from_user.id
+XXXX#XdontXsupportXcreationXofXnewfedXasXanonXadmin
+XXXXifXuser_idX==X1087968824:
+XXXXXXXXreturnXawaitXmessage.reply(strings["disallow_anon"])
 
-    if not fed_name:
-        await message.reply(strings["no_args"])
+XXXXifXnotXfed_name:
+XXXXXXXXawaitXmessage.reply(strings["no_args"])
 
-    if len(fed_name) > 60:
-        await message.reply(strings["fed_name_long"])
-        return
+XXXXifXlen(fed_name)X>X60:
+XXXXXXXXawaitXmessage.reply(strings["fed_name_long"])
+XXXXXXXXreturn
 
-    if await get_fed_by_creator(user_id) and not user_id == OWNER_ID:
-        await message.reply(strings["can_only_1_fed"])
-        return
+XXXXifXawaitXget_fed_by_creator(user_id)XandXnotXuser_idX==XOWNER_ID:
+XXXXXXXXawaitXmessage.reply(strings["can_only_1_fed"])
+XXXXXXXXreturn
 
-    if await db.feds.find_one({"fed_name": fed_name}):
-        await message.reply(strings["name_not_avaible"].format(name=fed_name))
-        return
+XXXXifXawaitXdb.feds.find_one({"fed_name":Xfed_name}):
+XXXXXXXXawaitXmessage.reply(strings["name_not_avaible"].format(name=fed_name))
+XXXXXXXXreturn
 
-    data = {"fed_name": fed_name, "fed_id": str(uuid.uuid4()), "creator": user_id}
-    await db.feds.insert_one(data)
-    await get_fed_by_id.reset_cache(data["fed_id"])
-    await get_fed_by_creator.reset_cache(data["creator"])
-    await message.reply(
-        strings["created_fed"].format(
-            name=fed_name, id=data["fed_id"], creator=await get_user_link(user_id)
-        )
-    )
+XXXXdataX=X{"fed_name":Xfed_name,X"fed_id":Xstr(uuid.uuid4()),X"creator":Xuser_id}
+XXXXawaitXdb.feds.insert_one(data)
+XXXXawaitXget_fed_by_id.reset_cache(data["fed_id"])
+XXXXawaitXget_fed_by_creator.reset_cache(data["creator"])
+XXXXawaitXmessage.reply(
+XXXXXXXXstrings["created_fed"].format(
+XXXXXXXXXXXXname=fed_name,Xid=data["fed_id"],Xcreator=awaitXget_user_link(user_id)
+XXXXXXXX)
+XXXX)
 
 
-@decorator.register(cmds=["joinfed", "fjoin"])
+@decorator.register(cmds=["joinfed",X"fjoin"])
 @need_args_dec()
-@chat_connection(admin=True, only_groups=True)
+@chat_connection(admin=True,Xonly_groups=True)
 @get_strings_dec("feds")
-async def join_fed(message, chat, strings):
-    fed_id = message.get_args().split(" ")[0]
-    user_id = message.from_user.id
-    chat_id = chat["chat_id"]
+asyncXdefXjoin_fed(message,Xchat,Xstrings):
+XXXXfed_idX=Xmessage.get_args().split("X")[0]
+XXXXuser_idX=Xmessage.from_user.id
+XXXXchat_idX=Xchat["chat_id"]
 
-    if not await is_chat_creator(message, chat_id, user_id):
-        await message.reply(strings["only_creators"])
-        return
+XXXXifXnotXawaitXis_chat_creator(message,Xchat_id,Xuser_id):
+XXXXXXXXawaitXmessage.reply(strings["only_creators"])
+XXXXXXXXreturn
 
-    # Assume Fed ID invalid
-    if not (fed := await get_fed_by_id(fed_id)):
-        await message.reply(strings["fed_id_invalid"])
-        return
+XXXX#XAssumeXFedXIDXinvalid
+XXXXifXnotX(fedX:=XawaitXget_fed_by_id(fed_id)):
+XXXXXXXXawaitXmessage.reply(strings["fed_id_invalid"])
+XXXXXXXXreturn
 
-    # Assume chat already joined this/other fed
-    if "chats" in fed and chat_id in fed["chats"]:
-        await message.reply(strings["joined_fed_already"])
-        return
+XXXX#XAssumeXchatXalreadyXjoinedXthis/otherXfed
+XXXXifX"chats"XinXfedXandXchat_idXinXfed["chats"]:
+XXXXXXXXawaitXmessage.reply(strings["joined_fed_already"])
+XXXXXXXXreturn
 
-    await db.feds.update_one(
-        {"_id": fed["_id"]}, {"$addToSet": {"chats": {"$each": [chat_id]}}}
-    )
-    await get_fed_by_id.reset_cache(fed["fed_id"])
-    await message.reply(
-        strings["join_fed_success"].format(
-            chat=chat["chat_title"], fed=html.escape(fed["fed_name"], False)
-        )
-    )
-    await fed_post_log(
-        fed,
-        strings["join_chat_fed_log"].format(
-            fed_name=fed["fed_name"],
-            fed_id=fed["fed_id"],
-            chat_name=chat["chat_title"],
-            chat_id=chat_id,
-        ),
-    )
+XXXXawaitXdb.feds.update_one(
+XXXXXXXX{"_id":Xfed["_id"]},X{"$addToSet":X{"chats":X{"$each":X[chat_id]}}}
+XXXX)
+XXXXawaitXget_fed_by_id.reset_cache(fed["fed_id"])
+XXXXawaitXmessage.reply(
+XXXXXXXXstrings["join_fed_success"].format(
+XXXXXXXXXXXXchat=chat["chat_title"],Xfed=html.escape(fed["fed_name"],XFalse)
+XXXXXXXX)
+XXXX)
+XXXXawaitXfed_post_log(
+XXXXXXXXfed,
+XXXXXXXXstrings["join_chat_fed_log"].format(
+XXXXXXXXXXXXfed_name=fed["fed_name"],
+XXXXXXXXXXXXfed_id=fed["fed_id"],
+XXXXXXXXXXXXchat_name=chat["chat_title"],
+XXXXXXXXXXXXchat_id=chat_id,
+XXXXXXXX),
+XXXX)
 
 
-@decorator.register(cmds=["leavefed", "fleave"])
-@chat_connection(admin=True, only_groups=True)
+@decorator.register(cmds=["leavefed",X"fleave"])
+@chat_connection(admin=True,Xonly_groups=True)
 @get_current_chat_fed
 @get_strings_dec("feds")
-async def leave_fed_comm(message, chat, fed, strings):
-    user_id = message.from_user.id
-    if not await is_chat_creator(message, chat["chat_id"], user_id):
-        await message.reply(strings["only_creators"])
-        return
+asyncXdefXleave_fed_comm(message,Xchat,Xfed,Xstrings):
+XXXXuser_idX=Xmessage.from_user.id
+XXXXifXnotXawaitXis_chat_creator(message,Xchat["chat_id"],Xuser_id):
+XXXXXXXXawaitXmessage.reply(strings["only_creators"])
+XXXXXXXXreturn
 
-    await db.feds.update_one({"_id": fed["_id"]}, {"$pull": {"chats": chat["chat_id"]}})
-    await get_fed_by_id.reset_cache(fed["fed_id"])
-    await message.reply(
-        strings["leave_fed_success"].format(
-            chat=chat["chat_title"], fed=html.escape(fed["fed_name"], False)
-        )
-    )
+XXXXawaitXdb.feds.update_one({"_id":Xfed["_id"]},X{"$pull":X{"chats":Xchat["chat_id"]}})
+XXXXawaitXget_fed_by_id.reset_cache(fed["fed_id"])
+XXXXawaitXmessage.reply(
+XXXXXXXXstrings["leave_fed_success"].format(
+XXXXXXXXXXXXchat=chat["chat_title"],Xfed=html.escape(fed["fed_name"],XFalse)
+XXXXXXXX)
+XXXX)
 
-    await fed_post_log(
-        fed,
-        strings["leave_chat_fed_log"].format(
-            fed_name=html.escape(fed["fed_name"], False),
-            fed_id=fed["fed_id"],
-            chat_name=chat["chat_title"],
-            chat_id=chat["chat_id"],
-        ),
-    )
+XXXXawaitXfed_post_log(
+XXXXXXXXfed,
+XXXXXXXXstrings["leave_chat_fed_log"].format(
+XXXXXXXXXXXXfed_name=html.escape(fed["fed_name"],XFalse),
+XXXXXXXXXXXXfed_id=fed["fed_id"],
+XXXXXXXXXXXXchat_name=chat["chat_title"],
+XXXXXXXXXXXXchat_id=chat["chat_id"],
+XXXXXXXX),
+XXXX)
 
 
 @decorator.register(cmds="fsub")
@@ -359,34 +359,34 @@ async def leave_fed_comm(message, chat, fed, strings):
 @get_current_chat_fed
 @is_fed_owner
 @get_strings_dec("feds")
-async def fed_sub(message, fed, strings):
-    fed_id = message.get_args().split(" ")[0]
+asyncXdefXfed_sub(message,Xfed,Xstrings):
+XXXXfed_idX=Xmessage.get_args().split("X")[0]
 
-    # Assume Fed ID is valid
-    if not (fed2 := await get_fed_by_id(fed_id)):
-        await message.reply(strings["fed_id_invalid"])
-        return
+XXXX#XAssumeXFedXIDXisXvalid
+XXXXifXnotX(fed2X:=XawaitXget_fed_by_id(fed_id)):
+XXXXXXXXawaitXmessage.reply(strings["fed_id_invalid"])
+XXXXXXXXreturn
 
-    # Assume chat already joined this/other fed
-    if "subscribed" in fed and fed_id in fed["subscribed"]:
-        await message.reply(
-            strings["already_subsed"].format(
-                name=html.escape(fed["fed_name"], False),
-                name2=html.escape(fed2["fed_name"], False),
-            )
-        )
-        return
+XXXX#XAssumeXchatXalreadyXjoinedXthis/otherXfed
+XXXXifX"subscribed"XinXfedXandXfed_idXinXfed["subscribed"]:
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["already_subsed"].format(
+XXXXXXXXXXXXXXXXname=html.escape(fed["fed_name"],XFalse),
+XXXXXXXXXXXXXXXXname2=html.escape(fed2["fed_name"],XFalse),
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturn
 
-    await db.feds.update_one(
-        {"_id": fed["_id"]}, {"$addToSet": {"subscribed": {"$each": [fed_id]}}}
-    )
-    await get_fed_by_id.reset_cache(fed["fed_id"])
-    await message.reply(
-        strings["subsed_success"].format(
-            name=html.escape(fed["fed_name"], False),
-            name2=html.escape(fed2["fed_name"], False),
-        )
-    )
+XXXXawaitXdb.feds.update_one(
+XXXXXXXX{"_id":Xfed["_id"]},X{"$addToSet":X{"subscribed":X{"$each":X[fed_id]}}}
+XXXX)
+XXXXawaitXget_fed_by_id.reset_cache(fed["fed_id"])
+XXXXawaitXmessage.reply(
+XXXXXXXXstrings["subsed_success"].format(
+XXXXXXXXXXXXname=html.escape(fed["fed_name"],XFalse),
+XXXXXXXXXXXXname2=html.escape(fed2["fed_name"],XFalse),
+XXXXXXXX)
+XXXX)
 
 
 @decorator.register(cmds="funsub")
@@ -394,585 +394,585 @@ async def fed_sub(message, fed, strings):
 @get_current_chat_fed
 @is_fed_owner
 @get_strings_dec("feds")
-async def fed_unsub(message, fed, strings):
-    fed_id = message.get_args().split(" ")[0]
+asyncXdefXfed_unsub(message,Xfed,Xstrings):
+XXXXfed_idX=Xmessage.get_args().split("X")[0]
 
-    if not (fed2 := await get_fed_by_id(fed_id)):
-        await message.reply(strings["fed_id_invalid"])
-        return
+XXXXifXnotX(fed2X:=XawaitXget_fed_by_id(fed_id)):
+XXXXXXXXawaitXmessage.reply(strings["fed_id_invalid"])
+XXXXXXXXreturn
 
-    if "subscribed" in fed and fed_id not in fed["subscribed"]:
-        message.reply(
-            strings["not_subsed"].format(
-                name=html.escape(fed["fed_name"], False), name2=fed2["fed_name"]
-            )
-        )
-        return
+XXXXifX"subscribed"XinXfedXandXfed_idXnotXinXfed["subscribed"]:
+XXXXXXXXmessage.reply(
+XXXXXXXXXXXXstrings["not_subsed"].format(
+XXXXXXXXXXXXXXXXname=html.escape(fed["fed_name"],XFalse),Xname2=fed2["fed_name"]
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturn
 
-    await db.feds.update_one(
-        {"_id": fed["_id"]}, {"$pull": {"subscribed": str(fed_id)}}
-    )
-    await get_fed_by_id.reset_cache(fed["fed_id"])
-    await message.reply(
-        strings["unsubsed_success"].format(
-            name=html.escape(fed["fed_name"], False),
-            name2=html.escape(fed2["fed_name"], False),
-        )
-    )
+XXXXawaitXdb.feds.update_one(
+XXXXXXXX{"_id":Xfed["_id"]},X{"$pull":X{"subscribed":Xstr(fed_id)}}
+XXXX)
+XXXXawaitXget_fed_by_id.reset_cache(fed["fed_id"])
+XXXXawaitXmessage.reply(
+XXXXXXXXstrings["unsubsed_success"].format(
+XXXXXXXXXXXXname=html.escape(fed["fed_name"],XFalse),
+XXXXXXXXXXXXname2=html.escape(fed2["fed_name"],XFalse),
+XXXXXXXX)
+XXXX)
 
 
 @decorator.register(cmds="fpromote")
 @get_fed_user_text()
 @is_fed_owner
 @get_strings_dec("feds")
-async def promote_to_fed(message, fed, user, text, strings):
-    restricted_ids = [1087968824, 777000]
-    if user["user_id"] in restricted_ids:
-        return await message.reply(strings["restricted_user:promote"])
-    await db.feds.update_one(
-        {"_id": fed["_id"]}, {"$addToSet": {"admins": {"$each": [user["user_id"]]}}}
-    )
-    await get_fed_by_id.reset_cache(fed["fed_id"])
-    await message.reply(
-        strings["admin_added_to_fed"].format(
-            user=await get_user_link(user["user_id"]),
-            name=html.escape(fed["fed_name"], False),
-        )
-    )
+asyncXdefXpromote_to_fed(message,Xfed,Xuser,Xtext,Xstrings):
+XXXXrestricted_idsX=X[1087968824,X777000]
+XXXXifXuser["user_id"]XinXrestricted_ids:
+XXXXXXXXreturnXawaitXmessage.reply(strings["restricted_user:promote"])
+XXXXawaitXdb.feds.update_one(
+XXXXXXXX{"_id":Xfed["_id"]},X{"$addToSet":X{"admins":X{"$each":X[user["user_id"]]}}}
+XXXX)
+XXXXawaitXget_fed_by_id.reset_cache(fed["fed_id"])
+XXXXawaitXmessage.reply(
+XXXXXXXXstrings["admin_added_to_fed"].format(
+XXXXXXXXXXXXuser=awaitXget_user_link(user["user_id"]),
+XXXXXXXXXXXXname=html.escape(fed["fed_name"],XFalse),
+XXXXXXXX)
+XXXX)
 
-    await fed_post_log(
-        fed,
-        strings["promote_user_fed_log"].format(
-            fed_name=html.escape(fed["fed_name"], False),
-            fed_id=fed["fed_id"],
-            user=await get_user_link(user["user_id"]),
-            user_id=user["user_id"],
-        ),
-    )
+XXXXawaitXfed_post_log(
+XXXXXXXXfed,
+XXXXXXXXstrings["promote_user_fed_log"].format(
+XXXXXXXXXXXXfed_name=html.escape(fed["fed_name"],XFalse),
+XXXXXXXXXXXXfed_id=fed["fed_id"],
+XXXXXXXXXXXXuser=awaitXget_user_link(user["user_id"]),
+XXXXXXXXXXXXuser_id=user["user_id"],
+XXXXXXXX),
+XXXX)
 
 
 @decorator.register(cmds="fdemote")
 @get_fed_user_text()
 @is_fed_owner
 @get_strings_dec("feds")
-async def demote_from_fed(message, fed, user, text, strings):
-    await db.feds.update_one(
-        {"_id": fed["_id"]}, {"$pull": {"admins": user["user_id"]}}
-    )
-    await get_fed_by_id.reset_cache(fed["fed_id"])
+asyncXdefXdemote_from_fed(message,Xfed,Xuser,Xtext,Xstrings):
+XXXXawaitXdb.feds.update_one(
+XXXXXXXX{"_id":Xfed["_id"]},X{"$pull":X{"admins":Xuser["user_id"]}}
+XXXX)
+XXXXawaitXget_fed_by_id.reset_cache(fed["fed_id"])
 
-    await message.reply(
-        strings["admin_demoted_from_fed"].format(
-            user=await get_user_link(user["user_id"]),
-            name=html.escape(fed["fed_name"], False),
-        )
-    )
+XXXXawaitXmessage.reply(
+XXXXXXXXstrings["admin_demoted_from_fed"].format(
+XXXXXXXXXXXXuser=awaitXget_user_link(user["user_id"]),
+XXXXXXXXXXXXname=html.escape(fed["fed_name"],XFalse),
+XXXXXXXX)
+XXXX)
 
-    await fed_post_log(
-        fed,
-        strings["demote_user_fed_log"].format(
-            fed_name=html.escape(fed["fed_name"], False),
-            fed_id=fed["fed_id"],
-            user=await get_user_link(user["user_id"]),
-            user_id=user["user_id"],
-        ),
-    )
+XXXXawaitXfed_post_log(
+XXXXXXXXfed,
+XXXXXXXXstrings["demote_user_fed_log"].format(
+XXXXXXXXXXXXfed_name=html.escape(fed["fed_name"],XFalse),
+XXXXXXXXXXXXfed_id=fed["fed_id"],
+XXXXXXXXXXXXuser=awaitXget_user_link(user["user_id"]),
+XXXXXXXXXXXXuser_id=user["user_id"],
+XXXXXXXX),
+XXXX)
 
 
-@decorator.register(cmds=["fsetlog", "setfedlog"], only_groups=True)
+@decorator.register(cmds=["fsetlog",X"setfedlog"],Xonly_groups=True)
 @get_fed_dec
-@get_chat_dec(allow_self=True, fed=True)
+@get_chat_dec(allow_self=True,Xfed=True)
 @is_fed_owner
 @get_strings_dec("feds")
-async def set_fed_log_chat(message, fed, chat, strings):
-    chat_id = chat["chat_id"] if "chat_id" in chat else chat["id"]
-    if chat["type"] == "channel":
-        if (
-            await check_admin_rights(message, chat_id, BOT_ID, ["can_post_messages"])
-            is not True
-        ):
-            return await message.reply(strings["no_right_to_post"])
+asyncXdefXset_fed_log_chat(message,Xfed,Xchat,Xstrings):
+XXXXchat_idX=Xchat["chat_id"]XifX"chat_id"XinXchatXelseXchat["id"]
+XXXXifXchat["type"]X==X"channel":
+XXXXXXXXifX(
+XXXXXXXXXXXXawaitXcheck_admin_rights(message,Xchat_id,XBOT_ID,X["can_post_messages"])
+XXXXXXXXXXXXisXnotXTrue
+XXXXXXXX):
+XXXXXXXXXXXXreturnXawaitXmessage.reply(strings["no_right_to_post"])
 
-    if "log_chat_id" in fed and fed["log_chat_id"]:
-        await message.reply(
-            strings["already_have_chatlog"].format(
-                name=html.escape(fed["fed_name"], False)
-            )
-        )
-        return
+XXXXifX"log_chat_id"XinXfedXandXfed["log_chat_id"]:
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["already_have_chatlog"].format(
+XXXXXXXXXXXXXXXXname=html.escape(fed["fed_name"],XFalse)
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturn
 
-    await db.feds.update_one({"_id": fed["_id"]}, {"$set": {"log_chat_id": chat_id}})
-    await get_fed_by_id.reset_cache(fed["fed_id"])
+XXXXawaitXdb.feds.update_one({"_id":Xfed["_id"]},X{"$set":X{"log_chat_id":Xchat_id}})
+XXXXawaitXget_fed_by_id.reset_cache(fed["fed_id"])
 
-    text = strings["set_chat_log"].format(name=html.escape(fed["fed_name"], False))
-    await message.reply(text)
+XXXXtextX=Xstrings["set_chat_log"].format(name=html.escape(fed["fed_name"],XFalse))
+XXXXawaitXmessage.reply(text)
 
-    # Current fed variable is not updated
-    await fed_post_log(
-        await get_fed_by_id(fed["fed_id"]),
-        strings["set_log_fed_log"].format(
-            fed_name=html.escape(fed["fed_name"], False), fed_id=fed["fed_id"]
-        ),
-    )
+XXXX#XCurrentXfedXvariableXisXnotXupdated
+XXXXawaitXfed_post_log(
+XXXXXXXXawaitXget_fed_by_id(fed["fed_id"]),
+XXXXXXXXstrings["set_log_fed_log"].format(
+XXXXXXXXXXXXfed_name=html.escape(fed["fed_name"],XFalse),Xfed_id=fed["fed_id"]
+XXXXXXXX),
+XXXX)
 
 
-@decorator.register(cmds=["funsetlog", "unsetfedlog"], only_groups=True)
+@decorator.register(cmds=["funsetlog",X"unsetfedlog"],Xonly_groups=True)
 @get_fed_dec
 @is_fed_owner
 @get_strings_dec("feds")
-async def unset_fed_log_chat(message, fed, strings):
-    if "log_chat_id" not in fed or not fed["log_chat_id"]:
-        await message.reply(
-            strings["already_have_chatlog"].format(
-                name=html.escape(fed["fed_name"], False)
-            )
-        )
-        return
+asyncXdefXunset_fed_log_chat(message,Xfed,Xstrings):
+XXXXifX"log_chat_id"XnotXinXfedXorXnotXfed["log_chat_id"]:
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["already_have_chatlog"].format(
+XXXXXXXXXXXXXXXXname=html.escape(fed["fed_name"],XFalse)
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturn
 
-    await db.feds.update_one({"_id": fed["_id"]}, {"$unset": {"log_chat_id": 1}})
-    await get_fed_by_id.reset_cache(fed["fed_id"])
+XXXXawaitXdb.feds.update_one({"_id":Xfed["_id"]},X{"$unset":X{"log_chat_id":X1}})
+XXXXawaitXget_fed_by_id.reset_cache(fed["fed_id"])
 
-    text = strings["logging_removed"].format(name=html.escape(fed["fed_name"], False))
-    await message.reply(text)
+XXXXtextX=Xstrings["logging_removed"].format(name=html.escape(fed["fed_name"],XFalse))
+XXXXawaitXmessage.reply(text)
 
-    await fed_post_log(
-        fed,
-        strings["unset_log_fed_log"].format(
-            fed_name=html.escape(fed["fed_name"], False), fed_id=fed["fed_id"]
-        ),
-    )
+XXXXawaitXfed_post_log(
+XXXXXXXXfed,
+XXXXXXXXstrings["unset_log_fed_log"].format(
+XXXXXXXXXXXXfed_name=html.escape(fed["fed_name"],XFalse),Xfed_id=fed["fed_id"]
+XXXXXXXX),
+XXXX)
 
 
-@decorator.register(cmds=["fchatlist", "fchats"])
+@decorator.register(cmds=["fchatlist",X"fchats"])
 @get_fed_dec
 @is_fed_admin
 @get_strings_dec("feds")
-async def fed_chat_list(message, fed, strings):
-    text = strings["chats_in_fed"].format(name=html.escape(fed["fed_name"], False))
-    if "chats" not in fed:
-        return await message.reply(
-            strings["no_chats"].format(name=html.escape(fed["fed_name"], False))
-        )
+asyncXdefXfed_chat_list(message,Xfed,Xstrings):
+XXXXtextX=Xstrings["chats_in_fed"].format(name=html.escape(fed["fed_name"],XFalse))
+XXXXifX"chats"XnotXinXfed:
+XXXXXXXXreturnXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["no_chats"].format(name=html.escape(fed["fed_name"],XFalse))
+XXXXXXXX)
 
-    for chat_id in fed["chats"]:
-        chat = await db.chat_list.find_one({"chat_id": chat_id})
-        text += "* {} (<code>{}</code>)\n".format(chat["chat_title"], chat_id)
-    if len(text) > 4096:
-        await message.answer_document(
-            InputFile(io.StringIO(text), filename="chatlist.txt"),
-            strings["too_large"],
-            reply=message.message_id,
-        )
-        return
-    await message.reply(text)
+XXXXforXchat_idXinXfed["chats"]:
+XXXXXXXXchatX=XawaitXdb.chat_list.find_one({"chat_id":Xchat_id})
+XXXXXXXXtextX+=X"*X{}X(<code>{}</code>)\n".format(chat["chat_title"],Xchat_id)
+XXXXifXlen(text)X>X4096:
+XXXXXXXXawaitXmessage.answer_document(
+XXXXXXXXXXXXInputFile(io.StringIO(text),Xfilename="chatlist.txt"),
+XXXXXXXXXXXXstrings["too_large"],
+XXXXXXXXXXXXreply=message.message_id,
+XXXXXXXX)
+XXXXXXXXreturn
+XXXXawaitXmessage.reply(text)
 
 
-@decorator.register(cmds=["fadminlist", "fadmins"])
+@decorator.register(cmds=["fadminlist",X"fadmins"])
 @get_fed_dec
 @is_fed_admin
 @get_strings_dec("feds")
-async def fed_admins_list(message, fed, strings):
-    text = strings["fadmins_header"].format(
-        fed_name=html.escape(fed["fed_name"], False)
-    )
-    text += "* {} (<code>{}</code>)\n".format(
-        await get_user_link(fed["creator"]), fed["creator"]
-    )
-    if "admins" in fed:
-        for user_id in fed["admins"]:
-            text += "* {} (<code>{}</code>)\n".format(
-                await get_user_link(user_id), user_id
-            )
-    await message.reply(text, disable_notification=True)
+asyncXdefXfed_admins_list(message,Xfed,Xstrings):
+XXXXtextX=Xstrings["fadmins_header"].format(
+XXXXXXXXfed_name=html.escape(fed["fed_name"],XFalse)
+XXXX)
+XXXXtextX+=X"*X{}X(<code>{}</code>)\n".format(
+XXXXXXXXawaitXget_user_link(fed["creator"]),Xfed["creator"]
+XXXX)
+XXXXifX"admins"XinXfed:
+XXXXXXXXforXuser_idXinXfed["admins"]:
+XXXXXXXXXXXXtextX+=X"*X{}X(<code>{}</code>)\n".format(
+XXXXXXXXXXXXXXXXawaitXget_user_link(user_id),Xuser_id
+XXXXXXXXXXXX)
+XXXXawaitXmessage.reply(text,Xdisable_notification=True)
 
 
-@decorator.register(cmds=["finfo", "fedinfo"])
+@decorator.register(cmds=["finfo",X"fedinfo"])
 @get_fed_dec
 @get_strings_dec("feds")
-async def fed_info(message, fed, strings):
-    text = strings["finfo_text"]
-    banned_num = await db.fed_bans.count_documents({"fed_id": fed["fed_id"]})
-    text = text.format(
-        name=html.escape(fed["fed_name"], False),
-        fed_id=fed["fed_id"],
-        creator=await get_user_link(fed["creator"]),
-        chats=len(fed["chats"] if "chats" in fed else []),
-        fbanned=banned_num,
-    )
+asyncXdefXfed_info(message,Xfed,Xstrings):
+XXXXtextX=Xstrings["finfo_text"]
+XXXXbanned_numX=XawaitXdb.fed_bans.count_documents({"fed_id":Xfed["fed_id"]})
+XXXXtextX=Xtext.format(
+XXXXXXXXname=html.escape(fed["fed_name"],XFalse),
+XXXXXXXXfed_id=fed["fed_id"],
+XXXXXXXXcreator=awaitXget_user_link(fed["creator"]),
+XXXXXXXXchats=len(fed["chats"]XifX"chats"XinXfedXelseX[]),
+XXXXXXXXfbanned=banned_num,
+XXXX)
 
-    if "subscribed" in fed and len(fed["subscribed"]) > 0:
-        text += strings["finfo_subs_title"]
-        for sfed in fed["subscribed"]:
-            sfed = await get_fed_by_id(sfed)
-            text += f"* {sfed['fed_name']} (<code>{sfed['fed_id']}</code>)\n"
+XXXXifX"subscribed"XinXfedXandXlen(fed["subscribed"])X>X0:
+XXXXXXXXtextX+=Xstrings["finfo_subs_title"]
+XXXXXXXXforXsfedXinXfed["subscribed"]:
+XXXXXXXXXXXXsfedX=XawaitXget_fed_by_id(sfed)
+XXXXXXXXXXXXtextX+=Xf"*X{sfed['fed_name']}X(<code>{sfed['fed_id']}</code>)\n"
 
-    await message.reply(text, disable_notification=True)
-
-
-async def get_all_subs_feds_r(fed_id, new):
-    new.append(fed_id)
-
-    fed = await get_fed_by_id(fed_id)
-    async for item in db.feds.find({"subscribed": {"$in": [fed["fed_id"]]}}):
-        if item["fed_id"] in new:
-            continue
-        new = await get_all_subs_feds_r(item["fed_id"], new)
-
-    return new
+XXXXawaitXmessage.reply(text,Xdisable_notification=True)
 
 
-@decorator.register(cmds=["fban", "sfban"])
+asyncXdefXget_all_subs_feds_r(fed_id,Xnew):
+XXXXnew.append(fed_id)
+
+XXXXfedX=XawaitXget_fed_by_id(fed_id)
+XXXXasyncXforXitemXinXdb.feds.find({"subscribed":X{"$in":X[fed["fed_id"]]}}):
+XXXXXXXXifXitem["fed_id"]XinXnew:
+XXXXXXXXXXXXcontinue
+XXXXXXXXnewX=XawaitXget_all_subs_feds_r(item["fed_id"],Xnew)
+
+XXXXreturnXnew
+
+
+@decorator.register(cmds=["fban",X"sfban"])
 @get_fed_user_text()
 @is_fed_admin
 @get_strings_dec("feds")
-async def fed_ban_user(message, fed, user, reason, strings):
-    user_id = user["user_id"]
+asyncXdefXfed_ban_user(message,Xfed,Xuser,Xreason,Xstrings):
+XXXXuser_idX=Xuser["user_id"]
 
-    # Checks
-    if user_id in OPERATORS:
-        await message.reply(strings["user_wl"])
-        return
+XXXX#XChecks
+XXXXifXuser_idXinXOPERATORS:
+XXXXXXXXawaitXmessage.reply(strings["user_wl"])
+XXXXXXXXreturn
 
-    elif user_id == message.from_user.id:
-        await message.reply(strings["fban_self"])
-        return
+XXXXelifXuser_idX==Xmessage.from_user.id:
+XXXXXXXXawaitXmessage.reply(strings["fban_self"])
+XXXXXXXXreturn
 
-    elif user_id == BOT_ID:
-        await message.reply(strings["fban_self"])
-        return
+XXXXelifXuser_idX==XBOT_ID:
+XXXXXXXXawaitXmessage.reply(strings["fban_self"])
+XXXXXXXXreturn
 
-    elif user_id == fed["creator"]:
-        await message.reply(strings["fban_creator"])
-        return
+XXXXelifXuser_idX==Xfed["creator"]:
+XXXXXXXXawaitXmessage.reply(strings["fban_creator"])
+XXXXXXXXreturn
 
-    elif "admins" in fed and user_id in fed["admins"]:
-        await message.reply(strings["fban_fed_admin"])
-        return
+XXXXelifX"admins"XinXfedXandXuser_idXinXfed["admins"]:
+XXXXXXXXawaitXmessage.reply(strings["fban_fed_admin"])
+XXXXXXXXreturn
 
-    elif data := await db.fed_bans.find_one(
-        {"fed_id": fed["fed_id"], "user_id": user_id}
-    ):
-        if "reason" not in data or data["reason"] != reason:
-            operation = "$set" if reason else "$unset"
-            await db.fed_bans.update_one(
-                {"_id": data["_id"]}, {operation: {"reason": reason}}
-            )
-            return await message.reply(strings["update_fban"].format(reason=reason))
-        await message.reply(
-            strings["already_fbanned"].format(user=await get_user_link(user_id))
-        )
-        return
+XXXXelifXdataX:=XawaitXdb.fed_bans.find_one(
+XXXXXXXX{"fed_id":Xfed["fed_id"],X"user_id":Xuser_id}
+XXXX):
+XXXXXXXXifX"reason"XnotXinXdataXorXdata["reason"]X!=Xreason:
+XXXXXXXXXXXXoperationX=X"$set"XifXreasonXelseX"$unset"
+XXXXXXXXXXXXawaitXdb.fed_bans.update_one(
+XXXXXXXXXXXXXXXX{"_id":Xdata["_id"]},X{operation:X{"reason":Xreason}}
+XXXXXXXXXXXX)
+XXXXXXXXXXXXreturnXawaitXmessage.reply(strings["update_fban"].format(reason=reason))
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["already_fbanned"].format(user=awaitXget_user_link(user_id))
+XXXXXXXX)
+XXXXXXXXreturn
 
-    text = strings["fbanned_header"]
-    text += strings["fban_info"].format(
-        fed=html.escape(fed["fed_name"], False),
-        fadmin=await get_user_link(message.from_user.id),
-        user=await get_user_link(user_id),
-        user_id=user["user_id"],
-    )
-    if reason:
-        text += strings["fbanned_reason"].format(reason=reason)
+XXXXtextX=Xstrings["fbanned_header"]
+XXXXtextX+=Xstrings["fban_info"].format(
+XXXXXXXXfed=html.escape(fed["fed_name"],XFalse),
+XXXXXXXXfadmin=awaitXget_user_link(message.from_user.id),
+XXXXXXXXuser=awaitXget_user_link(user_id),
+XXXXXXXXuser_id=user["user_id"],
+XXXX)
+XXXXifXreason:
+XXXXXXXXtextX+=Xstrings["fbanned_reason"].format(reason=reason)
 
-    # fban processing msg
-    num = len(fed["chats"]) if "chats" in fed else 0
-    msg = await message.reply(text + strings["fbanned_process"].format(num=num))
+XXXX#XfbanXprocessingXmsg
+XXXXnumX=Xlen(fed["chats"])XifX"chats"XinXfedXelseX0
+XXXXmsgX=XawaitXmessage.reply(textX+Xstrings["fbanned_process"].format(num=num))
 
-    user = await db.user_list.find_one({"user_id": user_id})
+XXXXuserX=XawaitXdb.user_list.find_one({"user_id":Xuser_id})
 
-    banned_chats = []
+XXXXbanned_chatsX=X[]
 
-    if "chats" in fed:
-        for chat_id in fed["chats"]:
-            # We not found the user or user wasn't detected
-            if not user or "chats" not in user:
-                continue
+XXXXifX"chats"XinXfed:
+XXXXXXXXforXchat_idXinXfed["chats"]:
+XXXXXXXXXXXX#XWeXnotXfoundXtheXuserXorXuserXwasn'tXdetected
+XXXXXXXXXXXXifXnotXuserXorX"chats"XnotXinXuser:
+XXXXXXXXXXXXXXXXcontinue
 
-            if chat_id in user["chats"]:
-                await asyncio.sleep(0)  # Do not slow down other updates
-                if await ban_user(chat_id, user_id):
-                    banned_chats.append(chat_id)
+XXXXXXXXXXXXifXchat_idXinXuser["chats"]:
+XXXXXXXXXXXXXXXXawaitXasyncio.sleep(0)XX#XDoXnotXslowXdownXotherXupdates
+XXXXXXXXXXXXXXXXifXawaitXban_user(chat_id,Xuser_id):
+XXXXXXXXXXXXXXXXXXXXbanned_chats.append(chat_id)
 
-    new = {
-        "fed_id": fed["fed_id"],
-        "user_id": user_id,
-        "banned_chats": banned_chats,
-        "time": datetime.now(),
-        "by": message.from_user.id,
-    }
+XXXXnewX=X{
+XXXXXXXX"fed_id":Xfed["fed_id"],
+XXXXXXXX"user_id":Xuser_id,
+XXXXXXXX"banned_chats":Xbanned_chats,
+XXXXXXXX"time":Xdatetime.now(),
+XXXXXXXX"by":Xmessage.from_user.id,
+XXXX}
 
-    if reason:
-        new["reason"] = reason
+XXXXifXreason:
+XXXXXXXXnew["reason"]X=Xreason
 
-    await db.fed_bans.insert_one(new)
+XXXXawaitXdb.fed_bans.insert_one(new)
 
-    channel_text = strings["fban_log_fed_log"].format(
-        fed_name=html.escape(fed["fed_name"], False),
-        fed_id=fed["fed_id"],
-        user=await get_user_link(user_id),
-        user_id=user_id,
-        by=await get_user_link(message.from_user.id),
-        chat_count=len(banned_chats),
-        all_chats=num,
-    )
+XXXXchannel_textX=Xstrings["fban_log_fed_log"].format(
+XXXXXXXXfed_name=html.escape(fed["fed_name"],XFalse),
+XXXXXXXXfed_id=fed["fed_id"],
+XXXXXXXXuser=awaitXget_user_link(user_id),
+XXXXXXXXuser_id=user_id,
+XXXXXXXXby=awaitXget_user_link(message.from_user.id),
+XXXXXXXXchat_count=len(banned_chats),
+XXXXXXXXall_chats=num,
+XXXX)
 
-    if reason:
-        channel_text += strings["fban_reason_fed_log"].format(reason=reason)
+XXXXifXreason:
+XXXXXXXXchannel_textX+=Xstrings["fban_reason_fed_log"].format(reason=reason)
 
-    # Check if silent
-    silent = False
-    if get_cmd(message) == "sfban":
-        silent = True
-        key = "leave_silent:" + str(message.chat.id)
-        redis.set(key, user_id)
-        redis.expire(key, 30)
-        text += strings["fbanned_silence"]
+XXXX#XCheckXifXsilent
+XXXXsilentX=XFalse
+XXXXifXget_cmd(message)X==X"sfban":
+XXXXXXXXsilentX=XTrue
+XXXXXXXXkeyX=X"leave_silent:"X+Xstr(message.chat.id)
+XXXXXXXXredis.set(key,Xuser_id)
+XXXXXXXXredis.expire(key,X30)
+XXXXXXXXtextX+=Xstrings["fbanned_silence"]
 
-    # SubsFeds process
-    if len(sfeds_list := await get_all_subs_feds_r(fed["fed_id"], [])) > 1:
-        sfeds_list.remove(fed["fed_id"])
-        this_fed_banned_count = len(banned_chats)
+XXXX#XSubsFedsXprocess
+XXXXifXlen(sfeds_listX:=XawaitXget_all_subs_feds_r(fed["fed_id"],X[]))X>X1:
+XXXXXXXXsfeds_list.remove(fed["fed_id"])
+XXXXXXXXthis_fed_banned_countX=Xlen(banned_chats)
 
-        await msg.edit_text(
-            text + strings["fbanned_subs_process"].format(feds=len(sfeds_list))
-        )
+XXXXXXXXawaitXmsg.edit_text(
+XXXXXXXXXXXXtextX+Xstrings["fbanned_subs_process"].format(feds=len(sfeds_list))
+XXXXXXXX)
 
-        all_banned_chats_count = 0
-        for s_fed_id in sfeds_list:
-            if (
-                await db.fed_bans.find_one({"fed_id": s_fed_id, "user_id": user_id})
-                is not None
-            ):
-                # user is already banned in subscribed federation, skip
-                continue
-            s_fed = await get_fed_by_id(s_fed_id)
-            banned_chats = []
-            new = {
-                "fed_id": s_fed_id,
-                "user_id": user_id,
-                "banned_chats": banned_chats,
-                "time": datetime.now(),
-                "origin_fed": fed["fed_id"],
-                "by": message.from_user.id,
-            }
-            for chat_id in s_fed["chats"]:
-                if not user:
-                    continue
+XXXXXXXXall_banned_chats_countX=X0
+XXXXXXXXforXs_fed_idXinXsfeds_list:
+XXXXXXXXXXXXifX(
+XXXXXXXXXXXXXXXXawaitXdb.fed_bans.find_one({"fed_id":Xs_fed_id,X"user_id":Xuser_id})
+XXXXXXXXXXXXXXXXisXnotXNone
+XXXXXXXXXXXX):
+XXXXXXXXXXXXXXXX#XuserXisXalreadyXbannedXinXsubscribedXfederation,Xskip
+XXXXXXXXXXXXXXXXcontinue
+XXXXXXXXXXXXs_fedX=XawaitXget_fed_by_id(s_fed_id)
+XXXXXXXXXXXXbanned_chatsX=X[]
+XXXXXXXXXXXXnewX=X{
+XXXXXXXXXXXXXXXX"fed_id":Xs_fed_id,
+XXXXXXXXXXXXXXXX"user_id":Xuser_id,
+XXXXXXXXXXXXXXXX"banned_chats":Xbanned_chats,
+XXXXXXXXXXXXXXXX"time":Xdatetime.now(),
+XXXXXXXXXXXXXXXX"origin_fed":Xfed["fed_id"],
+XXXXXXXXXXXXXXXX"by":Xmessage.from_user.id,
+XXXXXXXXXXXX}
+XXXXXXXXXXXXforXchat_idXinXs_fed["chats"]:
+XXXXXXXXXXXXXXXXifXnotXuser:
+XXXXXXXXXXXXXXXXXXXXcontinue
 
-                elif chat_id == user["user_id"]:
-                    continue
+XXXXXXXXXXXXXXXXelifXchat_idX==Xuser["user_id"]:
+XXXXXXXXXXXXXXXXXXXXcontinue
 
-                elif "chats" not in user:
-                    continue
+XXXXXXXXXXXXXXXXelifX"chats"XnotXinXuser:
+XXXXXXXXXXXXXXXXXXXXcontinue
 
-                elif chat_id not in user["chats"]:
-                    continue
+XXXXXXXXXXXXXXXXelifXchat_idXnotXinXuser["chats"]:
+XXXXXXXXXXXXXXXXXXXXcontinue
 
-                # Do not slow down other updates
-                await asyncio.sleep(0.2)
+XXXXXXXXXXXXXXXX#XDoXnotXslowXdownXotherXupdates
+XXXXXXXXXXXXXXXXawaitXasyncio.sleep(0.2)
 
-                if await ban_user(chat_id, user_id):
-                    banned_chats.append(chat_id)
-                    all_banned_chats_count += 1
+XXXXXXXXXXXXXXXXifXawaitXban_user(chat_id,Xuser_id):
+XXXXXXXXXXXXXXXXXXXXbanned_chats.append(chat_id)
+XXXXXXXXXXXXXXXXXXXXall_banned_chats_countX+=X1
 
-                    if reason:
-                        new["reason"] = reason
+XXXXXXXXXXXXXXXXXXXXifXreason:
+XXXXXXXXXXXXXXXXXXXXXXXXnew["reason"]X=Xreason
 
-            await db.fed_bans.insert_one(new)
+XXXXXXXXXXXXawaitXdb.fed_bans.insert_one(new)
 
-        await msg.edit_text(
-            text
-            + strings["fbanned_subs_done"].format(
-                chats=this_fed_banned_count,
-                subs_chats=all_banned_chats_count,
-                feds=len(sfeds_list),
-            )
-        )
+XXXXXXXXawaitXmsg.edit_text(
+XXXXXXXXXXXXtext
+XXXXXXXXXXXX+Xstrings["fbanned_subs_done"].format(
+XXXXXXXXXXXXXXXXchats=this_fed_banned_count,
+XXXXXXXXXXXXXXXXsubs_chats=all_banned_chats_count,
+XXXXXXXXXXXXXXXXfeds=len(sfeds_list),
+XXXXXXXXXXXX)
+XXXXXXXX)
 
-        channel_text += strings["fban_subs_fed_log"].format(
-            subs_chats=all_banned_chats_count, feds=len(sfeds_list)
-        )
+XXXXXXXXchannel_textX+=Xstrings["fban_subs_fed_log"].format(
+XXXXXXXXXXXXsubs_chats=all_banned_chats_count,Xfeds=len(sfeds_list)
+XXXXXXXX)
 
-    else:
-        await msg.edit_text(
-            text + strings["fbanned_done"].format(num=len(banned_chats))
-        )
+XXXXelse:
+XXXXXXXXawaitXmsg.edit_text(
+XXXXXXXXXXXXtextX+Xstrings["fbanned_done"].format(num=len(banned_chats))
+XXXXXXXX)
 
-    await fed_post_log(fed, channel_text)
+XXXXawaitXfed_post_log(fed,Xchannel_text)
 
-    if silent:
-        to_del = [msg.message_id, message.message_id]
-        if (
-            "reply_to_message" in message
-            and message.reply_to_message.from_user.id == user_id
-        ):
-            to_del.append(message.reply_to_message.message_id)
-        await asyncio.sleep(5)
-        await tbot.delete_messages(message.chat.id, to_del)
+XXXXifXsilent:
+XXXXXXXXto_delX=X[msg.message_id,Xmessage.message_id]
+XXXXXXXXifX(
+XXXXXXXXXXXX"reply_to_message"XinXmessage
+XXXXXXXXXXXXandXmessage.reply_to_message.from_user.idX==Xuser_id
+XXXXXXXX):
+XXXXXXXXXXXXto_del.append(message.reply_to_message.message_id)
+XXXXXXXXawaitXasyncio.sleep(5)
+XXXXXXXXawaitXtbot.delete_messages(message.chat.id,Xto_del)
 
 
-@decorator.register(cmds=["unfban", "funban"])
+@decorator.register(cmds=["unfban",X"funban"])
 @get_fed_user_text()
 @is_fed_admin
 @get_strings_dec("feds")
-async def unfed_ban_user(message, fed, user, text, strings):
-    user_id = user["user_id"]
+asyncXdefXunfed_ban_user(message,Xfed,Xuser,Xtext,Xstrings):
+XXXXuser_idX=Xuser["user_id"]
 
-    if user == BOT_ID:
-        await message.reply(strings["unfban_self"])
-        return
+XXXXifXuserX==XBOT_ID:
+XXXXXXXXawaitXmessage.reply(strings["unfban_self"])
+XXXXXXXXreturn
 
-    elif not (
-        banned := await db.fed_bans.find_one(
-            {"fed_id": fed["fed_id"], "user_id": user_id}
-        )
-    ):
-        await message.reply(
-            strings["user_not_fbanned"].format(user=await get_user_link(user_id))
-        )
-        return
+XXXXelifXnotX(
+XXXXXXXXbannedX:=XawaitXdb.fed_bans.find_one(
+XXXXXXXXXXXX{"fed_id":Xfed["fed_id"],X"user_id":Xuser_id}
+XXXXXXXX)
+XXXX):
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["user_not_fbanned"].format(user=awaitXget_user_link(user_id))
+XXXXXXXX)
+XXXXXXXXreturn
 
-    text = strings["un_fbanned_header"]
-    text += strings["fban_info"].format(
-        fed=html.escape(fed["fed_name"], False),
-        fadmin=await get_user_link(message.from_user.id),
-        user=await get_user_link(user["user_id"]),
-        user_id=user["user_id"],
-    )
+XXXXtextX=Xstrings["un_fbanned_header"]
+XXXXtextX+=Xstrings["fban_info"].format(
+XXXXXXXXfed=html.escape(fed["fed_name"],XFalse),
+XXXXXXXXfadmin=awaitXget_user_link(message.from_user.id),
+XXXXXXXXuser=awaitXget_user_link(user["user_id"]),
+XXXXXXXXuser_id=user["user_id"],
+XXXX)
 
-    banned_chats = []
-    if "banned_chats" in banned:
-        banned_chats = banned["banned_chats"]
+XXXXbanned_chatsX=X[]
+XXXXifX"banned_chats"XinXbanned:
+XXXXXXXXbanned_chatsX=Xbanned["banned_chats"]
 
-    # unfban processing msg
-    msg = await message.reply(
-        text + strings["un_fbanned_process"].format(num=len(banned_chats))
-    )
+XXXX#XunfbanXprocessingXmsg
+XXXXmsgX=XawaitXmessage.reply(
+XXXXXXXXtextX+Xstrings["un_fbanned_process"].format(num=len(banned_chats))
+XXXX)
 
-    counter = 0
-    for chat_id in banned_chats:
-        await asyncio.sleep(0)  # Do not slow down other updates
-        if await unban_user(chat_id, user_id):
-            counter += 1
+XXXXcounterX=X0
+XXXXforXchat_idXinXbanned_chats:
+XXXXXXXXawaitXasyncio.sleep(0)XX#XDoXnotXslowXdownXotherXupdates
+XXXXXXXXifXawaitXunban_user(chat_id,Xuser_id):
+XXXXXXXXXXXXcounterX+=X1
 
-    await db.fed_bans.delete_one({"fed_id": fed["fed_id"], "user_id": user_id})
+XXXXawaitXdb.fed_bans.delete_one({"fed_id":Xfed["fed_id"],X"user_id":Xuser_id})
 
-    channel_text = strings["un_fban_log_fed_log"].format(
-        fed_name=html.escape(fed["fed_name"], False),
-        fed_id=fed["fed_id"],
-        user=await get_user_link(user["user_id"]),
-        user_id=user["user_id"],
-        by=await get_user_link(message.from_user.id),
-        chat_count=len(banned_chats),
-        all_chats=len(fed["chats"]) if "chats" in fed else 0,
-    )
+XXXXchannel_textX=Xstrings["un_fban_log_fed_log"].format(
+XXXXXXXXfed_name=html.escape(fed["fed_name"],XFalse),
+XXXXXXXXfed_id=fed["fed_id"],
+XXXXXXXXuser=awaitXget_user_link(user["user_id"]),
+XXXXXXXXuser_id=user["user_id"],
+XXXXXXXXby=awaitXget_user_link(message.from_user.id),
+XXXXXXXXchat_count=len(banned_chats),
+XXXXXXXXall_chats=len(fed["chats"])XifX"chats"XinXfedXelseX0,
+XXXX)
 
-    # Subs feds
-    if len(sfeds_list := await get_all_subs_feds_r(fed["fed_id"], [])) > 1:
-        sfeds_list.remove(fed["fed_id"])
-        this_fed_unbanned_count = counter
+XXXX#XSubsXfeds
+XXXXifXlen(sfeds_listX:=XawaitXget_all_subs_feds_r(fed["fed_id"],X[]))X>X1:
+XXXXXXXXsfeds_list.remove(fed["fed_id"])
+XXXXXXXXthis_fed_unbanned_countX=Xcounter
 
-        await msg.edit_text(
-            text + strings["un_fbanned_subs_process"].format(feds=len(sfeds_list))
-        )
+XXXXXXXXawaitXmsg.edit_text(
+XXXXXXXXXXXXtextX+Xstrings["un_fbanned_subs_process"].format(feds=len(sfeds_list))
+XXXXXXXX)
 
-        all_unbanned_chats_count = 0
-        for sfed_id in sfeds_list:
-            # revision 19/10/2020: unfbans only those who got banned by `this` fed
-            ban = await db.fed_bans.find_one(
-                {"fed_id": sfed_id, "origin_fed": fed["fed_id"], "user_id": user_id}
-            )
-            if ban is None:
-                # probably old fban
-                ban = await db.fed_bans.find_one(
-                    {"fed_id": sfed_id, "user_id": user_id}
-                )
-                # if ban['time'] > `replace here with datetime of release of v2.2`:
-                #    continue
-            banned_chats = []
-            if ban is not None and "banned_chats" in ban:
-                banned_chats = ban["banned_chats"]
+XXXXXXXXall_unbanned_chats_countX=X0
+XXXXXXXXforXsfed_idXinXsfeds_list:
+XXXXXXXXXXXX#XrevisionX19/10/2020:XunfbansXonlyXthoseXwhoXgotXbannedXbyX`this`Xfed
+XXXXXXXXXXXXbanX=XawaitXdb.fed_bans.find_one(
+XXXXXXXXXXXXXXXX{"fed_id":Xsfed_id,X"origin_fed":Xfed["fed_id"],X"user_id":Xuser_id}
+XXXXXXXXXXXX)
+XXXXXXXXXXXXifXbanXisXNone:
+XXXXXXXXXXXXXXXX#XprobablyXoldXfban
+XXXXXXXXXXXXXXXXbanX=XawaitXdb.fed_bans.find_one(
+XXXXXXXXXXXXXXXXXXXX{"fed_id":Xsfed_id,X"user_id":Xuser_id}
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXX#XifXban['time']X>X`replaceXhereXwithXdatetimeXofXreleaseXofXv2.2`:
+XXXXXXXXXXXXXXXX#XXXXcontinue
+XXXXXXXXXXXXbanned_chatsX=X[]
+XXXXXXXXXXXXifXbanXisXnotXNoneXandX"banned_chats"XinXban:
+XXXXXXXXXXXXXXXXbanned_chatsX=Xban["banned_chats"]
 
-            for chat_id in banned_chats:
-                await asyncio.sleep(0.2)  # Do not slow down other updates
-                if await unban_user(chat_id, user_id):
-                    all_unbanned_chats_count += 1
+XXXXXXXXXXXXforXchat_idXinXbanned_chats:
+XXXXXXXXXXXXXXXXawaitXasyncio.sleep(0.2)XX#XDoXnotXslowXdownXotherXupdates
+XXXXXXXXXXXXXXXXifXawaitXunban_user(chat_id,Xuser_id):
+XXXXXXXXXXXXXXXXXXXXall_unbanned_chats_countX+=X1
 
-                    await db.fed_bans.delete_one(
-                        {"fed_id": sfed_id, "user_id": user_id}
-                    )
+XXXXXXXXXXXXXXXXXXXXawaitXdb.fed_bans.delete_one(
+XXXXXXXXXXXXXXXXXXXXXXXX{"fed_id":Xsfed_id,X"user_id":Xuser_id}
+XXXXXXXXXXXXXXXXXXXX)
 
-        await msg.edit_text(
-            text
-            + strings["un_fbanned_subs_done"].format(
-                chats=this_fed_unbanned_count,
-                subs_chats=all_unbanned_chats_count,
-                feds=len(sfeds_list),
-            )
-        )
+XXXXXXXXawaitXmsg.edit_text(
+XXXXXXXXXXXXtext
+XXXXXXXXXXXX+Xstrings["un_fbanned_subs_done"].format(
+XXXXXXXXXXXXXXXXchats=this_fed_unbanned_count,
+XXXXXXXXXXXXXXXXsubs_chats=all_unbanned_chats_count,
+XXXXXXXXXXXXXXXXfeds=len(sfeds_list),
+XXXXXXXXXXXX)
+XXXXXXXX)
 
-        channel_text += strings["fban_subs_fed_log"].format(
-            subs_chats=all_unbanned_chats_count, feds=len(sfeds_list)
-        )
-    else:
-        await msg.edit_text(text + strings["un_fbanned_done"].format(num=counter))
+XXXXXXXXchannel_textX+=Xstrings["fban_subs_fed_log"].format(
+XXXXXXXXXXXXsubs_chats=all_unbanned_chats_count,Xfeds=len(sfeds_list)
+XXXXXXXX)
+XXXXelse:
+XXXXXXXXawaitXmsg.edit_text(textX+Xstrings["un_fbanned_done"].format(num=counter))
 
-    await fed_post_log(fed, channel_text)
+XXXXawaitXfed_post_log(fed,Xchannel_text)
 
 
-@decorator.register(cmds=["delfed", "fdel"])
+@decorator.register(cmds=["delfed",X"fdel"])
 @get_fed_dec
 @is_fed_owner
 @get_strings_dec("feds")
-async def del_fed_cmd(message, fed, strings):
-    fed_name = html.escape(fed["fed_name"], False)
-    fed_id = fed["fed_id"]
-    fed_owner = fed["creator"]
+asyncXdefXdel_fed_cmd(message,Xfed,Xstrings):
+XXXXfed_nameX=Xhtml.escape(fed["fed_name"],XFalse)
+XXXXfed_idX=Xfed["fed_id"]
+XXXXfed_ownerX=Xfed["creator"]
 
-    buttons = InlineKeyboardMarkup()
-    buttons.add(
-        InlineKeyboardButton(
-            text=strings["delfed_btn_yes"],
-            callback_data=delfed_cb.new(fed_id=fed_id, creator_id=fed_owner),
-        )
-    )
-    buttons.add(
-        InlineKeyboardButton(
-            text=strings["delfed_btn_no"], callback_data=f"cancel_{fed_owner}"
-        )
-    )
+XXXXbuttonsX=XInlineKeyboardMarkup()
+XXXXbuttons.add(
+XXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXtext=strings["delfed_btn_yes"],
+XXXXXXXXXXXXcallback_data=delfed_cb.new(fed_id=fed_id,Xcreator_id=fed_owner),
+XXXXXXXX)
+XXXX)
+XXXXbuttons.add(
+XXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXtext=strings["delfed_btn_no"],Xcallback_data=f"cancel_{fed_owner}"
+XXXXXXXX)
+XXXX)
 
-    await message.reply(strings["delfed"] % fed_name, reply_markup=buttons)
+XXXXawaitXmessage.reply(strings["delfed"]X%Xfed_name,Xreply_markup=buttons)
 
 
-@decorator.register(delfed_cb.filter(), f="cb", allow_kwargs=True)
+@decorator.register(delfed_cb.filter(),Xf="cb",Xallow_kwargs=True)
 @get_strings_dec("feds")
-async def del_fed_func(event, strings, callback_data=None, **kwargs):
-    fed_id = callback_data["fed_id"]
-    fed_owner = callback_data["creator_id"]
+asyncXdefXdel_fed_func(event,Xstrings,Xcallback_data=None,X**kwargs):
+XXXXfed_idX=Xcallback_data["fed_id"]
+XXXXfed_ownerX=Xcallback_data["creator_id"]
 
-    if event.from_user.id != int(fed_owner):
-        return
+XXXXifXevent.from_user.idX!=Xint(fed_owner):
+XXXXXXXXreturn
 
-    await db.feds.delete_one({"fed_id": fed_id})
-    await get_fed_by_id.reset_cache(fed_id)
-    await get_fed_by_creator.reset_cache(int(fed_owner))
-    async for subscribed_fed in db.feds.find({"subscribed": fed_id}):
-        await db.feds.update_one(
-            {"_id": subscribed_fed["_id"]}, {"$pull": {"subscribed": fed_id}}
-        )
-        await get_fed_by_id.reset_cache(subscribed_fed["fed_id"])
+XXXXawaitXdb.feds.delete_one({"fed_id":Xfed_id})
+XXXXawaitXget_fed_by_id.reset_cache(fed_id)
+XXXXawaitXget_fed_by_creator.reset_cache(int(fed_owner))
+XXXXasyncXforXsubscribed_fedXinXdb.feds.find({"subscribed":Xfed_id}):
+XXXXXXXXawaitXdb.feds.update_one(
+XXXXXXXXXXXX{"_id":Xsubscribed_fed["_id"]},X{"$pull":X{"subscribed":Xfed_id}}
+XXXXXXXX)
+XXXXXXXXawaitXget_fed_by_id.reset_cache(subscribed_fed["fed_id"])
 
-    # delete all fbans of it
-    await db.fed_bans.delete_many({"fed_id": fed_id})
+XXXX#XdeleteXallXfbansXofXit
+XXXXawaitXdb.fed_bans.delete_many({"fed_id":Xfed_id})
 
-    await event.message.edit_text(strings["delfed_success"])
+XXXXawaitXevent.message.edit_text(strings["delfed_success"])
 
 
-@decorator.register(regexp="cancel_(.*)", f="cb")
-async def cancel(event):
-    if event.from_user.id != int((re.search(r"cancel_(.*)", event.data)).group(1)):
-        return
-    await event.message.delete()
+@decorator.register(regexp="cancel_(.*)",Xf="cb")
+asyncXdefXcancel(event):
+XXXXifXevent.from_user.idX!=Xint((re.search(r"cancel_(.*)",Xevent.data)).group(1)):
+XXXXXXXXreturn
+XXXXawaitXevent.message.delete()
 
 
 @decorator.register(cmds="frename")
@@ -980,425 +980,425 @@ async def cancel(event):
 @get_fed_dec
 @is_fed_owner
 @get_strings_dec("feds")
-async def fed_rename(message, fed, strings):
-    # Check whether first arg is fed ID | TODO: Remove this
-    args = message.get_args().split(" ", 2)
-    if len(args) > 1 and args[0].count("-") == 4:
-        new_name = " ".join(args[1:])
-    else:
-        new_name = " ".join(args[0:])
+asyncXdefXfed_rename(message,Xfed,Xstrings):
+XXXX#XCheckXwhetherXfirstXargXisXfedXIDX|XTODO:XRemoveXthis
+XXXXargsX=Xmessage.get_args().split("X",X2)
+XXXXifXlen(args)X>X1XandXargs[0].count("-")X==X4:
+XXXXXXXXnew_nameX=X"X".join(args[1:])
+XXXXelse:
+XXXXXXXXnew_nameX=X"X".join(args[0:])
 
-    if new_name == fed["fed_name"]:
-        await message.reply(strings["frename_same_name"])
-        return
+XXXXifXnew_nameX==Xfed["fed_name"]:
+XXXXXXXXawaitXmessage.reply(strings["frename_same_name"])
+XXXXXXXXreturn
 
-    await db.feds.update_one({"_id": fed["_id"]}, {"$set": {"fed_name": new_name}})
-    await get_fed_by_id.reset_cache(fed["fed_id"])
-    await message.reply(
-        strings["frename_success"].format(
-            old_name=html.escape(fed["fed_name"], False),
-            new_name=html.escape(new_name, False),
-        )
-    )
+XXXXawaitXdb.feds.update_one({"_id":Xfed["_id"]},X{"$set":X{"fed_name":Xnew_name}})
+XXXXawaitXget_fed_by_id.reset_cache(fed["fed_id"])
+XXXXawaitXmessage.reply(
+XXXXXXXXstrings["frename_success"].format(
+XXXXXXXXXXXXold_name=html.escape(fed["fed_name"],XFalse),
+XXXXXXXXXXXXnew_name=html.escape(new_name,XFalse),
+XXXXXXXX)
+XXXX)
 
 
-@decorator.register(cmds=["fbanlist", "exportfbans", "fexport"])
+@decorator.register(cmds=["fbanlist",X"exportfbans",X"fexport"])
 @get_fed_dec
 @is_fed_admin
 @get_strings_dec("feds")
-async def fban_export(message, fed, strings):
-    fed_id = fed["fed_id"]
-    key = "fbanlist_lock:" + str(fed_id)
-    if redis.get(key) and message.from_user.id not in OPERATORS:
-        ttl = format_timedelta(
-            timedelta(seconds=redis.ttl(key)), strings["language_info"]["babel"]
-        )
-        await message.reply(strings["fbanlist_locked"] % ttl)
-        return
+asyncXdefXfban_export(message,Xfed,Xstrings):
+XXXXfed_idX=Xfed["fed_id"]
+XXXXkeyX=X"fbanlist_lock:"X+Xstr(fed_id)
+XXXXifXredis.get(key)XandXmessage.from_user.idXnotXinXOPERATORS:
+XXXXXXXXttlX=Xformat_timedelta(
+XXXXXXXXXXXXtimedelta(seconds=redis.ttl(key)),Xstrings["language_info"]["babel"]
+XXXXXXXX)
+XXXXXXXXawaitXmessage.reply(strings["fbanlist_locked"]X%Xttl)
+XXXXXXXXreturn
 
-    redis.set(key, 1)
-    redis.expire(key, 600)
+XXXXredis.set(key,X1)
+XXXXredis.expire(key,X600)
 
-    msg = await message.reply(strings["creating_fbanlist"])
-    fields = ["user_id", "reason", "by", "time", "banned_chats"]
-    with io.StringIO() as f:
-        writer = csv.DictWriter(f, fields)
-        writer.writeheader()
-        async for banned_data in db.fed_bans.find({"fed_id": fed_id}):
-            await asyncio.sleep(0)
+XXXXmsgX=XawaitXmessage.reply(strings["creating_fbanlist"])
+XXXXfieldsX=X["user_id",X"reason",X"by",X"time",X"banned_chats"]
+XXXXwithXio.StringIO()XasXf:
+XXXXXXXXwriterX=Xcsv.DictWriter(f,Xfields)
+XXXXXXXXwriter.writeheader()
+XXXXXXXXasyncXforXbanned_dataXinXdb.fed_bans.find({"fed_id":Xfed_id}):
+XXXXXXXXXXXXawaitXasyncio.sleep(0)
 
-            data = {"user_id": banned_data["user_id"]}
+XXXXXXXXXXXXdataX=X{"user_id":Xbanned_data["user_id"]}
 
-            if "reason" in banned_data:
-                data["reason"] = banned_data["reason"]
+XXXXXXXXXXXXifX"reason"XinXbanned_data:
+XXXXXXXXXXXXXXXXdata["reason"]X=Xbanned_data["reason"]
 
-            if "time" in banned_data:
-                data["time"] = int(time.mktime(banned_data["time"].timetuple()))
+XXXXXXXXXXXXifX"time"XinXbanned_data:
+XXXXXXXXXXXXXXXXdata["time"]X=Xint(time.mktime(banned_data["time"].timetuple()))
 
-            if "by" in banned_data:
-                data["by"] = banned_data["by"]
+XXXXXXXXXXXXifX"by"XinXbanned_data:
+XXXXXXXXXXXXXXXXdata["by"]X=Xbanned_data["by"]
 
-            if "banned_chats" in banned_data:
-                data["banned_chats"] = banned_data["banned_chats"]
+XXXXXXXXXXXXifX"banned_chats"XinXbanned_data:
+XXXXXXXXXXXXXXXXdata["banned_chats"]X=Xbanned_data["banned_chats"]
 
-            writer.writerow(data)
+XXXXXXXXXXXXwriter.writerow(data)
 
-        text = strings["fbanlist_done"] % html.escape(fed["fed_name"], False)
-        f.seek(0)
-        await message.answer_document(InputFile(f, filename="fban_export.csv"), text)
-    await msg.delete()
+XXXXXXXXtextX=Xstrings["fbanlist_done"]X%Xhtml.escape(fed["fed_name"],XFalse)
+XXXXXXXXf.seek(0)
+XXXXXXXXawaitXmessage.answer_document(InputFile(f,Xfilename="fban_export.csv"),Xtext)
+XXXXawaitXmsg.delete()
 
 
-@decorator.register(cmds=["importfbans", "fimport"])
+@decorator.register(cmds=["importfbans",X"fimport"])
 @get_fed_dec
 @is_fed_admin
 @get_strings_dec("feds")
-async def importfbans_cmd(message, fed, strings):
-    fed_id = fed["fed_id"]
-    key = "importfbans_lock:" + str(fed_id)
-    if redis.get(key) and message.from_user.id not in OPERATORS:
-        ttl = format_timedelta(
-            timedelta(seconds=redis.ttl(key)), strings["language_info"]["babel"]
-        )
-        await message.reply(strings["importfbans_locked"] % ttl)
-        return
+asyncXdefXimportfbans_cmd(message,Xfed,Xstrings):
+XXXXfed_idX=Xfed["fed_id"]
+XXXXkeyX=X"importfbans_lock:"X+Xstr(fed_id)
+XXXXifXredis.get(key)XandXmessage.from_user.idXnotXinXOPERATORS:
+XXXXXXXXttlX=Xformat_timedelta(
+XXXXXXXXXXXXtimedelta(seconds=redis.ttl(key)),Xstrings["language_info"]["babel"]
+XXXXXXXX)
+XXXXXXXXawaitXmessage.reply(strings["importfbans_locked"]X%Xttl)
+XXXXXXXXreturn
 
-    redis.set(key, 1)
-    redis.expire(key, 600)
+XXXXredis.set(key,X1)
+XXXXredis.expire(key,X600)
 
-    if "document" in message:
-        document = message.document
-    else:
-        if "reply_to_message" not in message:
-            await ImportFbansFileWait.waiting.set()
-            await message.reply(strings["send_import_file"])
-            return
+XXXXifX"document"XinXmessage:
+XXXXXXXXdocumentX=Xmessage.document
+XXXXelse:
+XXXXXXXXifX"reply_to_message"XnotXinXmessage:
+XXXXXXXXXXXXawaitXImportFbansFileWait.waiting.set()
+XXXXXXXXXXXXawaitXmessage.reply(strings["send_import_file"])
+XXXXXXXXXXXXreturn
 
-        elif "document" not in message.reply_to_message:
-            await message.reply(strings["rpl_to_file"])
-            return
-        document = message.reply_to_message.document
+XXXXXXXXelifX"document"XnotXinXmessage.reply_to_message:
+XXXXXXXXXXXXawaitXmessage.reply(strings["rpl_to_file"])
+XXXXXXXXXXXXreturn
+XXXXXXXXdocumentX=Xmessage.reply_to_message.document
 
-    await importfbans_func(message, fed, document=document)
+XXXXawaitXimportfbans_func(message,Xfed,Xdocument=document)
 
 
 @get_strings_dec("feds")
-async def importfbans_func(message, fed, strings, document=None):
-    global user_id
-    file_type = os.path.splitext(document["file_name"])[1][1:]
+asyncXdefXimportfbans_func(message,Xfed,Xstrings,Xdocument=None):
+XXXXglobalXuser_id
+XXXXfile_typeX=Xos.path.splitext(document["file_name"])[1][1:]
 
-    if file_type == "json":
-        if document["file_size"] > 1000000:
-            await message.reply(strings["big_file_json"].format(num="1"))
-            return
-    elif file_type == "csv":
-        if document["file_size"] > 52428800:
-            await message.reply(strings["big_file_csv"].format(num="50"))
-            return
-    else:
-        await message.reply(strings["wrong_file_ext"])
-        return
+XXXXifXfile_typeX==X"json":
+XXXXXXXXifXdocument["file_size"]X>X1000000:
+XXXXXXXXXXXXawaitXmessage.reply(strings["big_file_json"].format(num="1"))
+XXXXXXXXXXXXreturn
+XXXXelifXfile_typeX==X"csv":
+XXXXXXXXifXdocument["file_size"]X>X52428800:
+XXXXXXXXXXXXawaitXmessage.reply(strings["big_file_csv"].format(num="50"))
+XXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXawaitXmessage.reply(strings["wrong_file_ext"])
+XXXXXXXXreturn
 
-    f = await bot.download_file_by_id(document.file_id, io.BytesIO())
-    msg = await message.reply(strings["importing_process"])
+XXXXfX=XawaitXbot.download_file_by_id(document.file_id,Xio.BytesIO())
+XXXXmsgX=XawaitXmessage.reply(strings["importing_process"])
 
-    data = None
-    if file_type == "json":
-        try:
-            data = rapidjson.load(f).items()
-        except ValueError:
-            return await message.reply(strings["invalid_file"])
-    elif file_type == "csv":
-        data = csv.DictReader(io.TextIOWrapper(f))
+XXXXdataX=XNone
+XXXXifXfile_typeX==X"json":
+XXXXXXXXtry:
+XXXXXXXXXXXXdataX=Xrapidjson.load(f).items()
+XXXXXXXXexceptXValueError:
+XXXXXXXXXXXXreturnXawaitXmessage.reply(strings["invalid_file"])
+XXXXelifXfile_typeX==X"csv":
+XXXXXXXXdataX=Xcsv.DictReader(io.TextIOWrapper(f))
 
-    real_counter = 0
+XXXXreal_counterX=X0
 
-    queue_del = []
-    queue_insert = []
-    current_time = datetime.now()
-    for row in data:
-        if file_type == "json":
-            user_id = row[0]
-            data = row[1]
-        elif file_type == "csv":
-            if "user_id" in row:
-                user_id = int(row["user_id"])
-            elif "id" in row:
-                user_id = int(row["id"])
-            else:
-                continue
-        else:
-            raise NotImplementedError
+XXXXqueue_delX=X[]
+XXXXqueue_insertX=X[]
+XXXXcurrent_timeX=Xdatetime.now()
+XXXXforXrowXinXdata:
+XXXXXXXXifXfile_typeX==X"json":
+XXXXXXXXXXXXuser_idX=Xrow[0]
+XXXXXXXXXXXXdataX=Xrow[1]
+XXXXXXXXelifXfile_typeX==X"csv":
+XXXXXXXXXXXXifX"user_id"XinXrow:
+XXXXXXXXXXXXXXXXuser_idX=Xint(row["user_id"])
+XXXXXXXXXXXXelifX"id"XinXrow:
+XXXXXXXXXXXXXXXXuser_idX=Xint(row["id"])
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXcontinue
+XXXXXXXXelse:
+XXXXXXXXXXXXraiseXNotImplementedError
 
-        new = {"fed_id": fed["fed_id"], "user_id": user_id}
+XXXXXXXXnewX=X{"fed_id":Xfed["fed_id"],X"user_id":Xuser_id}
 
-        if "reason" in row:
-            new["reason"] = row["reason"]
+XXXXXXXXifX"reason"XinXrow:
+XXXXXXXXXXXXnew["reason"]X=Xrow["reason"]
 
-        if "by" in row:
-            new["by"] = int(row["by"])
-        else:
-            new["by"] = message.from_user.id
+XXXXXXXXifX"by"XinXrow:
+XXXXXXXXXXXXnew["by"]X=Xint(row["by"])
+XXXXXXXXelse:
+XXXXXXXXXXXXnew["by"]X=Xmessage.from_user.id
 
-        if "time" in row:
-            new["time"] = datetime.fromtimestamp(int(row["time"]))
-        else:
-            new["time"] = current_time
+XXXXXXXXifX"time"XinXrow:
+XXXXXXXXXXXXnew["time"]X=Xdatetime.fromtimestamp(int(row["time"]))
+XXXXXXXXelse:
+XXXXXXXXXXXXnew["time"]X=Xcurrent_time
 
-        if "banned_chats" in row and type(row["banned_chats"]) is list:
-            new["banned_chats"] = row["banned_chats"]
+XXXXXXXXifX"banned_chats"XinXrowXandXtype(row["banned_chats"])XisXlist:
+XXXXXXXXXXXXnew["banned_chats"]X=Xrow["banned_chats"]
 
-        queue_del.append(DeleteMany({"fed_id": fed["fed_id"], "user_id": user_id}))
-        queue_insert.append(InsertOne(new))
+XXXXXXXXqueue_del.append(DeleteMany({"fed_id":Xfed["fed_id"],X"user_id":Xuser_id}))
+XXXXXXXXqueue_insert.append(InsertOne(new))
 
-        if len(queue_insert) == 1000:
-            real_counter += len(queue_insert)
+XXXXXXXXifXlen(queue_insert)X==X1000:
+XXXXXXXXXXXXreal_counterX+=Xlen(queue_insert)
 
-            # Make delete operation ordered before inserting.
-            if queue_del:
-                await db.fed_bans.bulk_write(queue_del, ordered=False)
-            await db.fed_bans.bulk_write(queue_insert, ordered=False)
+XXXXXXXXXXXX#XMakeXdeleteXoperationXorderedXbeforeXinserting.
+XXXXXXXXXXXXifXqueue_del:
+XXXXXXXXXXXXXXXXawaitXdb.fed_bans.bulk_write(queue_del,Xordered=False)
+XXXXXXXXXXXXawaitXdb.fed_bans.bulk_write(queue_insert,Xordered=False)
 
-            queue_del = []
-            queue_insert = []
+XXXXXXXXXXXXqueue_delX=X[]
+XXXXXXXXXXXXqueue_insertX=X[]
 
-    # Process last bans
-    real_counter += len(queue_insert)
-    if queue_del:
-        await db.fed_bans.bulk_write(queue_del, ordered=False)
-    if queue_insert:
-        await db.fed_bans.bulk_write(queue_insert, ordered=False)
+XXXX#XProcessXlastXbans
+XXXXreal_counterX+=Xlen(queue_insert)
+XXXXifXqueue_del:
+XXXXXXXXawaitXdb.fed_bans.bulk_write(queue_del,Xordered=False)
+XXXXifXqueue_insert:
+XXXXXXXXawaitXdb.fed_bans.bulk_write(queue_insert,Xordered=False)
 
-    await msg.edit_text(strings["import_done"].format(num=real_counter))
+XXXXawaitXmsg.edit_text(strings["import_done"].format(num=real_counter))
 
 
 @decorator.register(
-    state=ImportFbansFileWait.waiting,
-    content_types=types.ContentTypes.DOCUMENT,
-    allow_kwargs=True,
+XXXXstate=ImportFbansFileWait.waiting,
+XXXXcontent_types=types.ContentTypes.DOCUMENT,
+XXXXallow_kwargs=True,
 )
 @get_fed_dec
 @is_fed_admin
-async def import_state(message, fed, state=None, **kwargs):
-    await importfbans_func(message, fed, document=message.document)
-    await state.finish()
+asyncXdefXimport_state(message,Xfed,Xstate=None,X**kwargs):
+XXXXawaitXimportfbans_func(message,Xfed,Xdocument=message.document)
+XXXXawaitXstate.finish()
 
 
 @decorator.register(only_groups=True)
 @chat_connection(only_groups=True)
 @get_strings_dec("feds")
-async def check_fbanned(message: Message, chat, strings):
-    if message.sender_chat:
-        # should be channel/anon
-        return
+asyncXdefXcheck_fbanned(message:XMessage,Xchat,Xstrings):
+XXXXifXmessage.sender_chat:
+XXXXXXXX#XshouldXbeXchannel/anon
+XXXXXXXXreturn
 
-    user_id = message.from_user.id
-    chat_id = chat["chat_id"]
+XXXXuser_idX=Xmessage.from_user.id
+XXXXchat_idX=Xchat["chat_id"]
 
-    if not (fed := await get_fed_f(message)):
-        return
+XXXXifXnotX(fedX:=XawaitXget_fed_f(message)):
+XXXXXXXXreturn
 
-    elif await is_user_admin(chat_id, user_id):
-        return
+XXXXelifXawaitXis_user_admin(chat_id,Xuser_id):
+XXXXXXXXreturn
 
-    feds_list = [fed["fed_id"]]
+XXXXfeds_listX=X[fed["fed_id"]]
 
-    if "subscribed" in fed:
-        feds_list.extend(fed["subscribed"])
+XXXXifX"subscribed"XinXfed:
+XXXXXXXXfeds_list.extend(fed["subscribed"])
 
-    if ban := await db.fed_bans.find_one(
-        {"fed_id": {"$in": feds_list}, "user_id": user_id}
-    ):
+XXXXifXbanX:=XawaitXdb.fed_bans.find_one(
+XXXXXXXX{"fed_id":X{"$in":Xfeds_list},X"user_id":Xuser_id}
+XXXX):
 
-        # check whether banned fed_id is chat's fed id else
-        # user is banned in sub fed
-        if fed["fed_id"] == ban["fed_id"] and "origin_fed" not in ban:
-            text = strings["automatic_ban"].format(
-                user=await get_user_link(user_id),
-                fed_name=html.escape(fed["fed_name"], False),
-            )
-        else:
-            s_fed = await get_fed_by_id(
-                ban["fed_id"] if "origin_fed" not in ban else ban["origin_fed"]
-            )
-            if s_fed is None:
-                return
+XXXXXXXX#XcheckXwhetherXbannedXfed_idXisXchat'sXfedXidXelse
+XXXXXXXX#XuserXisXbannedXinXsubXfed
+XXXXXXXXifXfed["fed_id"]X==Xban["fed_id"]XandX"origin_fed"XnotXinXban:
+XXXXXXXXXXXXtextX=Xstrings["automatic_ban"].format(
+XXXXXXXXXXXXXXXXuser=awaitXget_user_link(user_id),
+XXXXXXXXXXXXXXXXfed_name=html.escape(fed["fed_name"],XFalse),
+XXXXXXXXXXXX)
+XXXXXXXXelse:
+XXXXXXXXXXXXs_fedX=XawaitXget_fed_by_id(
+XXXXXXXXXXXXXXXXban["fed_id"]XifX"origin_fed"XnotXinXbanXelseXban["origin_fed"]
+XXXXXXXXXXXX)
+XXXXXXXXXXXXifXs_fedXisXNone:
+XXXXXXXXXXXXXXXXreturn
 
-            text = strings["automatic_ban_sfed"].format(
-                user=await get_user_link(user_id), fed_name=s_fed["fed_name"]
-            )
+XXXXXXXXXXXXtextX=Xstrings["automatic_ban_sfed"].format(
+XXXXXXXXXXXXXXXXuser=awaitXget_user_link(user_id),Xfed_name=s_fed["fed_name"]
+XXXXXXXXXXXX)
 
-        if "reason" in ban:
-            text += strings["automatic_ban_reason"].format(text=ban["reason"])
+XXXXXXXXifX"reason"XinXban:
+XXXXXXXXXXXXtextX+=Xstrings["automatic_ban_reason"].format(text=ban["reason"])
 
-        if not await ban_user(chat_id, user_id):
-            return
+XXXXXXXXifXnotXawaitXban_user(chat_id,Xuser_id):
+XXXXXXXXXXXXreturn
 
-        await message.reply(text)
+XXXXXXXXawaitXmessage.reply(text)
 
-        await db.fed_bans.update_one(
-            {"_id": ban["_id"]}, {"$addToSet": {"banned_chats": chat_id}}
-        )
+XXXXXXXXawaitXdb.fed_bans.update_one(
+XXXXXXXXXXXX{"_id":Xban["_id"]},X{"$addToSet":X{"banned_chats":Xchat_id}}
+XXXXXXXX)
 
 
-@decorator.register(cmds=["fcheck", "fbanstat"])
-@get_fed_user_text(skip_no_fed=True, self=True)
+@decorator.register(cmds=["fcheck",X"fbanstat"])
+@get_fed_user_text(skip_no_fed=True,Xself=True)
 @get_strings_dec("feds")
-async def fedban_check(message, fed, user, _, strings):
-    fbanned_fed = False  # A variable to find if user is banned in current fed of chat
-    fban_data = None
+asyncXdefXfedban_check(message,Xfed,Xuser,X_,Xstrings):
+XXXXfbanned_fedX=XFalseXX#XAXvariableXtoXfindXifXuserXisXbannedXinXcurrentXfedXofXchat
+XXXXfban_dataX=XNone
 
-    total_count = await db.fed_bans.count_documents({"user_id": user["user_id"]})
-    if fed:
-        fed_list = [fed["fed_id"]]
-        # check fbanned in subscribed
-        if "subscribed" in fed:
-            fed_list.extend(fed["subscribed"])
+XXXXtotal_countX=XawaitXdb.fed_bans.count_documents({"user_id":Xuser["user_id"]})
+XXXXifXfed:
+XXXXXXXXfed_listX=X[fed["fed_id"]]
+XXXXXXXX#XcheckXfbannedXinXsubscribed
+XXXXXXXXifX"subscribed"XinXfed:
+XXXXXXXXXXXXfed_list.extend(fed["subscribed"])
 
-        if fban_data := await db.fed_bans.find_one(
-            {"user_id": user["user_id"], "fed_id": {"$in": fed_list}}
-        ):
-            fbanned_fed = True
+XXXXXXXXifXfban_dataX:=XawaitXdb.fed_bans.find_one(
+XXXXXXXXXXXX{"user_id":Xuser["user_id"],X"fed_id":X{"$in":Xfed_list}}
+XXXXXXXX):
+XXXXXXXXXXXXfbanned_fedX=XTrue
 
-            # re-assign fed if user is banned in sub-fed
-            if fban_data["fed_id"] != fed["fed_id"] or "origin_fed" in fban_data:
-                fed = await get_fed_by_id(
-                    fban_data[
-                        "fed_id" if "origin_fed" not in fban_data else "origin_fed"
-                    ]
-                )
+XXXXXXXXXXXX#Xre-assignXfedXifXuserXisXbannedXinXsub-fed
+XXXXXXXXXXXXifXfban_data["fed_id"]X!=Xfed["fed_id"]XorX"origin_fed"XinXfban_data:
+XXXXXXXXXXXXXXXXfedX=XawaitXget_fed_by_id(
+XXXXXXXXXXXXXXXXXXXXfban_data[
+XXXXXXXXXXXXXXXXXXXXXXXX"fed_id"XifX"origin_fed"XnotXinXfban_dataXelseX"origin_fed"
+XXXXXXXXXXXXXXXXXXXX]
+XXXXXXXXXXXXXXXX)
 
-    # create text
-    text = strings["fcheck_header"]
-    if message.chat.type == "private" and message.from_user.id == user["user_id"]:
-        if bool(fed):
-            if bool(fban_data):
-                if "reason" not in fban_data:
-                    text += strings["fban_info:fcheck"].format(
-                        fed=html.escape(fed["fed_name"], False),
-                        date=babel.dates.format_date(
-                            fban_data["time"],
-                            "long",
-                            locale=strings["language_info"]["babel"],
-                        ),
-                    )
-                else:
-                    text += strings["fban_info:fcheck:reason"].format(
-                        fed=html.escape(fed["fed_name"], False),
-                        date=babel.dates.format_date(
-                            fban_data["time"],
-                            "long",
-                            locale=strings["language_info"]["babel"],
-                        ),
-                        reason=fban_data["reason"],
-                    )
-            else:
-                return await message.reply(strings["didnt_fbanned"])
-        else:
-            text += strings["fbanned_count_pm"].format(count=total_count)
-            if total_count > 0:
-                count = 0
-                async for fban in db.fed_bans.find({"user_id": user["user_id"]}):
-                    count += 1
-                    _fed = await get_fed_by_id(fban["fed_id"])
-                    if _fed:
-                        fed_name = _fed["fed_name"]
-                        text += f'{count}: <code>{fban["fed_id"]}</code>: {fed_name}\n'
-    else:
-        if total_count > 0:
-            text += strings["fbanned_data"].format(
-                user=await get_user_link(user["user_id"]), count=total_count
-            )
-        else:
-            text += strings["fbanned_nowhere"].format(
-                user=await get_user_link(user["user_id"])
-            )
+XXXX#XcreateXtext
+XXXXtextX=Xstrings["fcheck_header"]
+XXXXifXmessage.chat.typeX==X"private"XandXmessage.from_user.idX==Xuser["user_id"]:
+XXXXXXXXifXbool(fed):
+XXXXXXXXXXXXifXbool(fban_data):
+XXXXXXXXXXXXXXXXifX"reason"XnotXinXfban_data:
+XXXXXXXXXXXXXXXXXXXXtextX+=Xstrings["fban_info:fcheck"].format(
+XXXXXXXXXXXXXXXXXXXXXXXXfed=html.escape(fed["fed_name"],XFalse),
+XXXXXXXXXXXXXXXXXXXXXXXXdate=babel.dates.format_date(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXfban_data["time"],
+XXXXXXXXXXXXXXXXXXXXXXXXXXXX"long",
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXlocale=strings["language_info"]["babel"],
+XXXXXXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXtextX+=Xstrings["fban_info:fcheck:reason"].format(
+XXXXXXXXXXXXXXXXXXXXXXXXfed=html.escape(fed["fed_name"],XFalse),
+XXXXXXXXXXXXXXXXXXXXXXXXdate=babel.dates.format_date(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXfban_data["time"],
+XXXXXXXXXXXXXXXXXXXXXXXXXXXX"long",
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXlocale=strings["language_info"]["babel"],
+XXXXXXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXXXXXXXXXreason=fban_data["reason"],
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXreturnXawaitXmessage.reply(strings["didnt_fbanned"])
+XXXXXXXXelse:
+XXXXXXXXXXXXtextX+=Xstrings["fbanned_count_pm"].format(count=total_count)
+XXXXXXXXXXXXifXtotal_countX>X0:
+XXXXXXXXXXXXXXXXcountX=X0
+XXXXXXXXXXXXXXXXasyncXforXfbanXinXdb.fed_bans.find({"user_id":Xuser["user_id"]}):
+XXXXXXXXXXXXXXXXXXXXcountX+=X1
+XXXXXXXXXXXXXXXXXXXX_fedX=XawaitXget_fed_by_id(fban["fed_id"])
+XXXXXXXXXXXXXXXXXXXXifX_fed:
+XXXXXXXXXXXXXXXXXXXXXXXXfed_nameX=X_fed["fed_name"]
+XXXXXXXXXXXXXXXXXXXXXXXXtextX+=Xf'{count}:X<code>{fban["fed_id"]}</code>:X{fed_name}\n'
+XXXXelse:
+XXXXXXXXifXtotal_countX>X0:
+XXXXXXXXXXXXtextX+=Xstrings["fbanned_data"].format(
+XXXXXXXXXXXXXXXXuser=awaitXget_user_link(user["user_id"]),Xcount=total_count
+XXXXXXXXXXXX)
+XXXXXXXXelse:
+XXXXXXXXXXXXtextX+=Xstrings["fbanned_nowhere"].format(
+XXXXXXXXXXXXXXXXuser=awaitXget_user_link(user["user_id"])
+XXXXXXXXXXXX)
 
-        if fbanned_fed is True:
-            if "reason" in fban_data:
-                text += strings["fbanned_in_fed:reason"].format(
-                    fed=html.escape(fed["fed_name"], False), reason=fban_data["reason"]
-                )
-            else:
-                text += strings["fbanned_in_fed"].format(
-                    fed=html.escape(fed["fed_name"], False)
-                )
-        elif fed is not None:
-            text += strings["not_fbanned_in_fed"].format(
-                fed_name=html.escape(fed["fed_name"], quote=False)
-            )
+XXXXXXXXifXfbanned_fedXisXTrue:
+XXXXXXXXXXXXifX"reason"XinXfban_data:
+XXXXXXXXXXXXXXXXtextX+=Xstrings["fbanned_in_fed:reason"].format(
+XXXXXXXXXXXXXXXXXXXXfed=html.escape(fed["fed_name"],XFalse),Xreason=fban_data["reason"]
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXtextX+=Xstrings["fbanned_in_fed"].format(
+XXXXXXXXXXXXXXXXXXXXfed=html.escape(fed["fed_name"],XFalse)
+XXXXXXXXXXXXXXXX)
+XXXXXXXXelifXfedXisXnotXNone:
+XXXXXXXXXXXXtextX+=Xstrings["not_fbanned_in_fed"].format(
+XXXXXXXXXXXXXXXXfed_name=html.escape(fed["fed_name"],Xquote=False)
+XXXXXXXXXXXX)
 
-        if total_count > 0:
-            if message.from_user.id == user["user_id"]:
-                text += strings["contact_in_pm"]
-    if len(text) > 4096:
-        return await message.answer_document(
-            InputFile(io.StringIO(text), filename="fban_info.txt"),
-            strings["too_long_fbaninfo"],
-            reply=message.message_id,
-        )
-    await message.reply(text)
-
-
-@cached()
-async def get_fed_by_id(fed_id: str) -> Optional[dict]:
-    return await db.feds.find_one({"fed_id": fed_id})
+XXXXXXXXifXtotal_countX>X0:
+XXXXXXXXXXXXifXmessage.from_user.idX==Xuser["user_id"]:
+XXXXXXXXXXXXXXXXtextX+=Xstrings["contact_in_pm"]
+XXXXifXlen(text)X>X4096:
+XXXXXXXXreturnXawaitXmessage.answer_document(
+XXXXXXXXXXXXInputFile(io.StringIO(text),Xfilename="fban_info.txt"),
+XXXXXXXXXXXXstrings["too_long_fbaninfo"],
+XXXXXXXXXXXXreply=message.message_id,
+XXXXXXXX)
+XXXXawaitXmessage.reply(text)
 
 
 @cached()
-async def get_fed_by_creator(creator: int) -> Optional[dict]:
-    return await db.feds.find_one({"creator": creator})
+asyncXdefXget_fed_by_id(fed_id:Xstr)X->XOptional[dict]:
+XXXXreturnXawaitXdb.feds.find_one({"fed_id":Xfed_id})
 
 
-async def __export__(chat_id):
-    if chat_fed := await db.feds.find_one({"chats": [chat_id]}):
-        return {"feds": {"fed_id": chat_fed["fed_id"]}}
+@cached()
+asyncXdefXget_fed_by_creator(creator:Xint)X->XOptional[dict]:
+XXXXreturnXawaitXdb.feds.find_one({"creator":Xcreator})
 
 
-async def __import__(chat_id, data):
-    if fed_id := data["fed_id"]:
-        if current_fed := await db.feds.find_one({"chats": [int(chat_id)]}):
-            await db.feds.update_one(
-                {"_id": current_fed["_id"]}, {"$pull": {"chats": chat_id}}
-            )
-            await get_fed_by_id.reset_cache(current_fed["fed_id"])
-        await db.feds.update_one({"fed_id": fed_id}, {"$addToSet": {"chats": chat_id}})
-        await get_fed_by_id.reset_cache(fed_id)
+asyncXdefX__export__(chat_id):
+XXXXifXchat_fedX:=XawaitXdb.feds.find_one({"chats":X[chat_id]}):
+XXXXXXXXreturnX{"feds":X{"fed_id":Xchat_fed["fed_id"]}}
 
 
-__mod_name__ = "Federations"
+asyncXdefX__import__(chat_id,Xdata):
+XXXXifXfed_idX:=Xdata["fed_id"]:
+XXXXXXXXifXcurrent_fedX:=XawaitXdb.feds.find_one({"chats":X[int(chat_id)]}):
+XXXXXXXXXXXXawaitXdb.feds.update_one(
+XXXXXXXXXXXXXXXX{"_id":Xcurrent_fed["_id"]},X{"$pull":X{"chats":Xchat_id}}
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXget_fed_by_id.reset_cache(current_fed["fed_id"])
+XXXXXXXXawaitXdb.feds.update_one({"fed_id":Xfed_id},X{"$addToSet":X{"chats":Xchat_id}})
+XXXXXXXXawaitXget_fed_by_id.reset_cache(fed_id)
 
-__help__ = """
-Well basically there is 2 reasons to use Federations:
-1. You have many chats and want to ban users in all of them with 1 command
-2. You want to subscribe to any of the antispam Federations to have your chat(s) protected.
-In both cases Ineruki will help you.
-<b>Arguments types help:</b>
-<code>()</code>: required argument
-<code>(user)</code>: required but you can reply on any user's message instead
-<code>(file)</code>: required file, if file isn't provided you will be entered in file state, this means Ineruki will wait file message from you. Type /cancel to leave from it.
-<code>(? )</code>: additional argument
-<b>Only Federation owner:</b>
-- /fnew (name) or /newfed (name): Creates a new Federation
-- /frename (?Fed ID) (new name): Renames your federation
-- /fdel (?Fed ID) or /delfed (?Fed ID): Removes your Federation
-- /fpromote (user) (?Fed ID): Promotes a user to the your Federation
-- /fdemote (user) (?Fed ID): Demotes a user from the your Federation
-- /fsub (Fed ID): Subscibes your Federation over provided
-- /funsub (Fed ID): unsubscibes your Federation from provided
-- /fsetlog (? Fed ID) (? chat/channel id) or /setfedlog (? Fed ID) (? chat/channel id): Set's a log chat/channel for your Federation
-- /funsetlog (?Fed ID) or /unsetfedlog (?Fed ID): Unsets a Federation log chat\channel
-- /fexport (?Fed ID): Exports Federation bans
-- /fimport (?Fed ID) (file): Imports Federation bans
-<b>Only Chat owner:</b>
-- /fjoin (Fed ID) or /joinfed (Fed ID): Joins current chat to provided Federation
-- /fleave or /leavefed: Leaves current chat from the fed
-<b>Avaible for Federation admins and owners:</b>
-- /fchatlist (?Fed ID) or /fchats (?Fed ID): Shows a list of chats in the your Federation list
-- /fban (user) (?Fed ID) (?reason): Bans user in the Fed and Feds which subscribed on this Fed
-- /sfban (user) (?Fed ID) (?reason): As above, but silently - means the messages about fbanning and replied message (if was provided) will be removed
-- /unfban (user) (?Fed ID) (?reason): Unbans a user from a Federation
-<b>Avaible for all users:</b>
-- /fcheck (?user): Check user's federation ban info
-- /finfo (?Fed ID): Info about Federation
+
+__mod_name__X=X"Federations"
+
+__help__X=X"""
+WellXbasicallyXthereXisX2XreasonsXtoXuseXFederations:
+1.XYouXhaveXmanyXchatsXandXwantXtoXbanXusersXinXallXofXthemXwithX1Xcommand
+2.XYouXwantXtoXsubscribeXtoXanyXofXtheXantispamXFederationsXtoXhaveXyourXchat(s)Xprotected.
+InXbothXcasesXInerukiXwillXhelpXyou.
+<b>ArgumentsXtypesXhelp:</b>
+<code>()</code>:XrequiredXargument
+<code>(user)</code>:XrequiredXbutXyouXcanXreplyXonXanyXuser'sXmessageXinstead
+<code>(file)</code>:XrequiredXfile,XifXfileXisn'tXprovidedXyouXwillXbeXenteredXinXfileXstate,XthisXmeansXInerukiXwillXwaitXfileXmessageXfromXyou.XTypeX/cancelXtoXleaveXfromXit.
+<code>(?X)</code>:XadditionalXargument
+<b>OnlyXFederationXowner:</b>
+-X/fnewX(name)XorX/newfedX(name):XCreatesXaXnewXFederation
+-X/frenameX(?FedXID)X(newXname):XRenamesXyourXfederation
+-X/fdelX(?FedXID)XorX/delfedX(?FedXID):XRemovesXyourXFederation
+-X/fpromoteX(user)X(?FedXID):XPromotesXaXuserXtoXtheXyourXFederation
+-X/fdemoteX(user)X(?FedXID):XDemotesXaXuserXfromXtheXyourXFederation
+-X/fsubX(FedXID):XSubscibesXyourXFederationXoverXprovided
+-X/funsubX(FedXID):XunsubscibesXyourXFederationXfromXprovided
+-X/fsetlogX(?XFedXID)X(?Xchat/channelXid)XorX/setfedlogX(?XFedXID)X(?Xchat/channelXid):XSet'sXaXlogXchat/channelXforXyourXFederation
+-X/funsetlogX(?FedXID)XorX/unsetfedlogX(?FedXID):XUnsetsXaXFederationXlogXchat\channel
+-X/fexportX(?FedXID):XExportsXFederationXbans
+-X/fimportX(?FedXID)X(file):XImportsXFederationXbans
+<b>OnlyXChatXowner:</b>
+-X/fjoinX(FedXID)XorX/joinfedX(FedXID):XJoinsXcurrentXchatXtoXprovidedXFederation
+-X/fleaveXorX/leavefed:XLeavesXcurrentXchatXfromXtheXfed
+<b>AvaibleXforXFederationXadminsXandXowners:</b>
+-X/fchatlistX(?FedXID)XorX/fchatsX(?FedXID):XShowsXaXlistXofXchatsXinXtheXyourXFederationXlist
+-X/fbanX(user)X(?FedXID)X(?reason):XBansXuserXinXtheXFedXandXFedsXwhichXsubscribedXonXthisXFed
+-X/sfbanX(user)X(?FedXID)X(?reason):XAsXabove,XbutXsilentlyX-XmeansXtheXmessagesXaboutXfbanningXandXrepliedXmessageX(ifXwasXprovided)XwillXbeXremoved
+-X/unfbanX(user)X(?FedXID)X(?reason):XUnbansXaXuserXfromXaXFederation
+<b>AvaibleXforXallXusers:</b>
+-X/fcheckX(?user):XCheckXuser'sXfederationXbanXinfo
+-X/finfoX(?FedXID):XInfoXaboutXFederation
 """

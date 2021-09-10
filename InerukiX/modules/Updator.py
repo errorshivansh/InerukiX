@@ -1,189 +1,189 @@
-import asyncio
-import sys
-from os import environ, execle, path, remove
+importXasyncio
+importXsys
+fromXosXimportXenviron,Xexecle,Xpath,Xremove
 
-import heroku3
-from git import Repo
-from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
+importXheroku3
+fromXgitXimportXRepo
+fromXgit.excXimportXGitCommandError,XInvalidGitRepositoryError,XNoSuchPathError
 
-from Ineruki  import OWNER_ID
-from Ineruki .config import get_str_key
-from Ineruki .services.events import register
-from Ineruki .services.telethon import tbot as update
+fromXInerukiXXimportXOWNER_ID
+fromXInerukiX.configXimportXget_str_key
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.telethonXimportXtbotXasXupdate
 
-HEROKU_APP_NAME = get_str_key("HEROKU_APP_NAME", None)
-HEROKU_API_KEY = get_str_key("HEROKU_API_KEY", None)
-UPSTREAM_REPO_URL = get_str_key("UPSTREAM_REPO_URL", None)
-if not UPSTREAM_REPO_URL:
-    UPSTREAM_REPO_URL = "https://github.com/errorshivansh/Ineruki "
+HEROKU_APP_NAMEX=Xget_str_key("HEROKU_APP_NAME",XNone)
+HEROKU_API_KEYX=Xget_str_key("HEROKU_API_KEY",XNone)
+UPSTREAM_REPO_URLX=Xget_str_key("UPSTREAM_REPO_URL",XNone)
+ifXnotXUPSTREAM_REPO_URL:
+XXXXUPSTREAM_REPO_URLX=X"https://github.com/errorshivansh/InerukiX"
 
-requirements_path = path.join(
-    path.dirname(path.dirname(path.dirname(__file__))), "requirements.txt"
+requirements_pathX=Xpath.join(
+XXXXpath.dirname(path.dirname(path.dirname(__file__))),X"requirements.txt"
 )
 
 
-async def gen_chlog(repo, diff):
-    ch_log = ""
-    d_form = "%d/%m/%y"
-    for c in repo.iter_commits(diff):
-        ch_log += (
-            f"•[{c.committed_datetime.strftime(d_form)}]: {c.summary} by <{c.author}>\n"
-        )
-    return ch_log
+asyncXdefXgen_chlog(repo,Xdiff):
+XXXXch_logX=X""
+XXXXd_formX=X"%d/%m/%y"
+XXXXforXcXinXrepo.iter_commits(diff):
+XXXXXXXXch_logX+=X(
+XXXXXXXXXXXXf"•[{c.committed_datetime.strftime(d_form)}]:X{c.summary}XbyX<{c.author}>\n"
+XXXXXXXX)
+XXXXreturnXch_log
 
 
-async def updateme_requirements():
-    reqs = str(requirements_path)
-    try:
-        process = await asyncio.create_subprocess_shell(
-            " ".join([sys.executable, "-m", "pip", "install", "-r", reqs]),
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-        )
-        await process.communicate()
-        return process.returncode
-    except Exception as e:
-        return repr(e)
+asyncXdefXupdateme_requirements():
+XXXXreqsX=Xstr(requirements_path)
+XXXXtry:
+XXXXXXXXprocessX=XawaitXasyncio.create_subprocess_shell(
+XXXXXXXXXXXX"X".join([sys.executable,X"-m",X"pip",X"install",X"-r",Xreqs]),
+XXXXXXXXXXXXstdout=asyncio.subprocess.PIPE,
+XXXXXXXXXXXXstderr=asyncio.subprocess.PIPE,
+XXXXXXXX)
+XXXXXXXXawaitXprocess.communicate()
+XXXXXXXXreturnXprocess.returncode
+XXXXexceptXExceptionXasXe:
+XXXXXXXXreturnXrepr(e)
 
 
-@register(pattern="^/update(?: |$)(.*)")
-async def upstream(ups):
-    global UPSTREAM_REPO_URL
-    check = ups.message.sender_id
-    OK = int(OWNER_ID)
-    if int(check) != OK:
-        return
-    lol = await ups.reply("`Checking for updates, please wait....`")
-    conf = ups.pattern_match.group(1)
-    off_repo = UPSTREAM_REPO_URL
-    force_update = False
+@register(pattern="^/update(?:X|$)(.*)")
+asyncXdefXupstream(ups):
+XXXXglobalXUPSTREAM_REPO_URL
+XXXXcheckX=Xups.message.sender_id
+XXXXOKX=Xint(OWNER_ID)
+XXXXifXint(check)X!=XOK:
+XXXXXXXXreturn
+XXXXlolX=XawaitXups.reply("`CheckingXforXupdates,XpleaseXwait....`")
+XXXXconfX=Xups.pattern_match.group(1)
+XXXXoff_repoX=XUPSTREAM_REPO_URL
+XXXXforce_updateX=XFalse
 
-    try:
-        txt = "`Oops.. Updater cannot continue "
-        txt += "please add heroku apikey, name`\n\n**LOGTRACE:**\n"
-        repo = Repo()
-    except NoSuchPathError as error:
-        await lol.edit(f"{txt}\n`directory {error} is not found`")
-        repo.__del__()
-        return
-    except GitCommandError as error:
-        await lol.edit(f"{txt}\n`Early failure! {error}`")
-        repo.__del__()
-        return
-    except InvalidGitRepositoryError as error:
-        if conf != "now":
-            await lol.edit(
-                f"**Unfortunately, the directory {error} does not seem to be a git repository.\
-            \nBut we can fix that by force updating the bot using** `/update now`"
-            )
-            return
-        repo = Repo.init()
-        origin = repo.create_remote("upstream", off_repo)
-        origin.fetch()
-        force_update = True
-        repo.create_head("main", origin.refs.main)
-        repo.heads.main.set_tracking_branch(origin.refs.main)
-        repo.heads.main.checkout(True)
+XXXXtry:
+XXXXXXXXtxtX=X"`Oops..XUpdaterXcannotXcontinueX"
+XXXXXXXXtxtX+=X"pleaseXaddXherokuXapikey,Xname`\n\n**LOGTRACE:**\n"
+XXXXXXXXrepoX=XRepo()
+XXXXexceptXNoSuchPathErrorXasXerror:
+XXXXXXXXawaitXlol.edit(f"{txt}\n`directoryX{error}XisXnotXfound`")
+XXXXXXXXrepo.__del__()
+XXXXXXXXreturn
+XXXXexceptXGitCommandErrorXasXerror:
+XXXXXXXXawaitXlol.edit(f"{txt}\n`EarlyXfailure!X{error}`")
+XXXXXXXXrepo.__del__()
+XXXXXXXXreturn
+XXXXexceptXInvalidGitRepositoryErrorXasXerror:
+XXXXXXXXifXconfX!=X"now":
+XXXXXXXXXXXXawaitXlol.edit(
+XXXXXXXXXXXXXXXXf"**Unfortunately,XtheXdirectoryX{error}XdoesXnotXseemXtoXbeXaXgitXrepository.\
+XXXXXXXXXXXX\nButXweXcanXfixXthatXbyXforceXupdatingXtheXbotXusing**X`/updateXnow`"
+XXXXXXXXXXXX)
+XXXXXXXXXXXXreturn
+XXXXXXXXrepoX=XRepo.init()
+XXXXXXXXoriginX=Xrepo.create_remote("upstream",Xoff_repo)
+XXXXXXXXorigin.fetch()
+XXXXXXXXforce_updateX=XTrue
+XXXXXXXXrepo.create_head("main",Xorigin.refs.main)
+XXXXXXXXrepo.heads.main.set_tracking_branch(origin.refs.main)
+XXXXXXXXrepo.heads.main.checkout(True)
 
-    ac_br = repo.active_branch.name
-    if ac_br != "main":
-        await lol.edit(
-            f"**[UPDATER]:**` Looks like you are using your own custom branch ({ac_br}). "
-            "in that case, Updater is unable to identify "
-            "which branch is to be merged. "
-            "please checkout to any official branch`"
-        )
-        repo.__del__()
-        return
+XXXXac_brX=Xrepo.active_branch.name
+XXXXifXac_brX!=X"main":
+XXXXXXXXawaitXlol.edit(
+XXXXXXXXXXXXf"**[UPDATER]:**`XLooksXlikeXyouXareXusingXyourXownXcustomXbranchX({ac_br}).X"
+XXXXXXXXXXXX"inXthatXcase,XUpdaterXisXunableXtoXidentifyX"
+XXXXXXXXXXXX"whichXbranchXisXtoXbeXmerged.X"
+XXXXXXXXXXXX"pleaseXcheckoutXtoXanyXofficialXbranch`"
+XXXXXXXX)
+XXXXXXXXrepo.__del__()
+XXXXXXXXreturn
 
-    try:
-        repo.create_remote("upstream", off_repo)
-    except BaseException:
-        pass
+XXXXtry:
+XXXXXXXXrepo.create_remote("upstream",Xoff_repo)
+XXXXexceptXBaseException:
+XXXXXXXXpass
 
-    ups_rem = repo.remote("upstream")
-    ups_rem.fetch(ac_br)
+XXXXups_remX=Xrepo.remote("upstream")
+XXXXups_rem.fetch(ac_br)
 
-    changelog = await gen_chlog(repo, f"HEAD..upstream/{ac_br}")
+XXXXchangelogX=XawaitXgen_chlog(repo,Xf"HEAD..upstream/{ac_br}")
 
-    if not changelog and not force_update:
-        await lol.edit("\nYour Ineruki   >>  **up-to-date**  \n")
-        repo.__del__()
-        return
+XXXXifXnotXchangelogXandXnotXforce_update:
+XXXXXXXXawaitXlol.edit("\nYourXInerukiXXX>>XX**up-to-date**XX\n")
+XXXXXXXXrepo.__del__()
+XXXXXXXXreturn
 
-    if conf != "now" and not force_update:
-        changelog_str = (
-            f"**New UPDATE available for {ac_br}\n\nCHANGELOG:**\n`{changelog}`"
-        )
-        if len(changelog_str) > 4096:
-            await lol.edit("`Changelog is too big, view the file to see it.`")
-            file = open("output.txt", "w+")
-            file.write(changelog_str)
-            file.close()
-            await update.send_file(
-                ups.chat_id,
-                "output.txt",
-                reply_to=ups.id,
-            )
-            remove("output.txt")
-        else:
-            await lol.edit(changelog_str)
-        await ups.respond("**do** `/update now` **to update**")
-        return
+XXXXifXconfX!=X"now"XandXnotXforce_update:
+XXXXXXXXchangelog_strX=X(
+XXXXXXXXXXXXf"**NewXUPDATEXavailableXforX{ac_br}\n\nCHANGELOG:**\n`{changelog}`"
+XXXXXXXX)
+XXXXXXXXifXlen(changelog_str)X>X4096:
+XXXXXXXXXXXXawaitXlol.edit("`ChangelogXisXtooXbig,XviewXtheXfileXtoXseeXit.`")
+XXXXXXXXXXXXfileX=Xopen("output.txt",X"w+")
+XXXXXXXXXXXXfile.write(changelog_str)
+XXXXXXXXXXXXfile.close()
+XXXXXXXXXXXXawaitXupdate.send_file(
+XXXXXXXXXXXXXXXXups.chat_id,
+XXXXXXXXXXXXXXXX"output.txt",
+XXXXXXXXXXXXXXXXreply_to=ups.id,
+XXXXXXXXXXXX)
+XXXXXXXXXXXXremove("output.txt")
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXlol.edit(changelog_str)
+XXXXXXXXawaitXups.respond("**do**X`/updateXnow`X**toXupdate**")
+XXXXXXXXreturn
 
-    if force_update:
-        await lol.edit("`Force-Syncing to latest main bot code, please wait...`")
-    else:
-        await lol.edit("`Still Running ....`")
-    if conf == "deploy":
-        if HEROKU_API_KEY is not None:
-            heroku = heroku3.from_key(HEROKU_API_KEY)
-            heroku_app = None
-            heroku_applications = heroku.apps()
-            if not HEROKU_APP_NAME:
-                await lol.edit(
-                    "`Please set up the HEROKU_APP_NAME variable to be able to update your bot.`"
-                )
-                repo.__del__()
-                return
-            for app in heroku_applications:
-                if app.name == HEROKU_APP_NAME:
-                    heroku_app = app
-                    break
-            if heroku_app is None:
-                await lol.edit(
-                    f"{txt}\n`Invalid Heroku credentials for updating bot dyno.`"
-                )
-                repo.__del__()
-                return
-            await lol.edit(
-                "`[Updater]\
-                            Your bot is being deployed, please wait for it to complete.\nIt may take upto 5 minutes `"
-            )
-            ups_rem.fetch(ac_br)
-            repo.git.reset("--hard", "FETCH_HEAD")
-            heroku_git_url = heroku_app.git_url.replace(
-                "https://", "https://api:" + HEROKU_API_KEY + "@"
-            )
-            if "heroku" in repo.remotes:
-                remote = repo.remote("heroku")
-                remote.set_url(heroku_git_url)
-            else:
-                remote = repo.create_remote("heroku", heroku_git_url)
-            try:
-                remote.push(refspec="HEAD:refs/heads/main", force=True)
-            except GitCommandError as error:
-                await lol.edit(f"{txt}\n`Here is the error log:\n{error}`")
-                repo.__del__()
-                return
-            await lol.edit("Successfully Updated!\n" "Restarting.......")
-    else:
-        try:
-            ups_rem.pull(ac_br)
-        except GitCommandError:
-            repo.git.reset("--hard", "FETCH_HEAD")
-        await updateme_requirements()
-        await lol.edit("`Successfully Updated!\n" "restarting......`")
-        args = [sys.executable, "-m", "Ineruki "]
-        execle(sys.executable, *args, environ)
-        return
+XXXXifXforce_update:
+XXXXXXXXawaitXlol.edit("`Force-SyncingXtoXlatestXmainXbotXcode,XpleaseXwait...`")
+XXXXelse:
+XXXXXXXXawaitXlol.edit("`StillXRunningX....`")
+XXXXifXconfX==X"deploy":
+XXXXXXXXifXHEROKU_API_KEYXisXnotXNone:
+XXXXXXXXXXXXherokuX=Xheroku3.from_key(HEROKU_API_KEY)
+XXXXXXXXXXXXheroku_appX=XNone
+XXXXXXXXXXXXheroku_applicationsX=Xheroku.apps()
+XXXXXXXXXXXXifXnotXHEROKU_APP_NAME:
+XXXXXXXXXXXXXXXXawaitXlol.edit(
+XXXXXXXXXXXXXXXXXXXX"`PleaseXsetXupXtheXHEROKU_APP_NAMEXvariableXtoXbeXableXtoXupdateXyourXbot.`"
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXrepo.__del__()
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXforXappXinXheroku_applications:
+XXXXXXXXXXXXXXXXifXapp.nameX==XHEROKU_APP_NAME:
+XXXXXXXXXXXXXXXXXXXXheroku_appX=Xapp
+XXXXXXXXXXXXXXXXXXXXbreak
+XXXXXXXXXXXXifXheroku_appXisXNone:
+XXXXXXXXXXXXXXXXawaitXlol.edit(
+XXXXXXXXXXXXXXXXXXXXf"{txt}\n`InvalidXHerokuXcredentialsXforXupdatingXbotXdyno.`"
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXrepo.__del__()
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXawaitXlol.edit(
+XXXXXXXXXXXXXXXX"`[Updater]\
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXYourXbotXisXbeingXdeployed,XpleaseXwaitXforXitXtoXcomplete.\nItXmayXtakeXuptoX5XminutesX`"
+XXXXXXXXXXXX)
+XXXXXXXXXXXXups_rem.fetch(ac_br)
+XXXXXXXXXXXXrepo.git.reset("--hard",X"FETCH_HEAD")
+XXXXXXXXXXXXheroku_git_urlX=Xheroku_app.git_url.replace(
+XXXXXXXXXXXXXXXX"https://",X"https://api:"X+XHEROKU_API_KEYX+X"@"
+XXXXXXXXXXXX)
+XXXXXXXXXXXXifX"heroku"XinXrepo.remotes:
+XXXXXXXXXXXXXXXXremoteX=Xrepo.remote("heroku")
+XXXXXXXXXXXXXXXXremote.set_url(heroku_git_url)
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXremoteX=Xrepo.create_remote("heroku",Xheroku_git_url)
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXremote.push(refspec="HEAD:refs/heads/main",Xforce=True)
+XXXXXXXXXXXXexceptXGitCommandErrorXasXerror:
+XXXXXXXXXXXXXXXXawaitXlol.edit(f"{txt}\n`HereXisXtheXerrorXlog:\n{error}`")
+XXXXXXXXXXXXXXXXrepo.__del__()
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXawaitXlol.edit("SuccessfullyXUpdated!\n"X"Restarting.......")
+XXXXelse:
+XXXXXXXXtry:
+XXXXXXXXXXXXups_rem.pull(ac_br)
+XXXXXXXXexceptXGitCommandError:
+XXXXXXXXXXXXrepo.git.reset("--hard",X"FETCH_HEAD")
+XXXXXXXXawaitXupdateme_requirements()
+XXXXXXXXawaitXlol.edit("`SuccessfullyXUpdated!\n"X"restarting......`")
+XXXXXXXXargsX=X[sys.executable,X"-m",X"InerukiX"]
+XXXXXXXXexecle(sys.executable,X*args,Xenviron)
+XXXXXXXXreturn

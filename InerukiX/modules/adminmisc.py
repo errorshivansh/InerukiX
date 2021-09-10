@@ -1,699 +1,699 @@
-# Copyright (C) 2021 Alain  &errorshivansh
+#XCopyrightX(C)X2021XAlainXX&errorshivansh
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import os
-from time import sleep
+importXos
+fromXtimeXimportXsleep
 
-from telethon import *
-from telethon import events
-from telethon.errors import *
-from telethon.errors import FloodWaitError
-from telethon.tl import *
-from telethon.tl import functions, types
-from telethon.tl.functions.channels import EditAdminRequest, EditBannedRequest
-from telethon.tl.types import *
-from telethon.tl.types import (
-    ChatAdminRights,
-    ChatBannedRights,
-    MessageEntityMentionName,
+fromXtelethonXimportX*
+fromXtelethonXimportXevents
+fromXtelethon.errorsXimportX*
+fromXtelethon.errorsXimportXFloodWaitError
+fromXtelethon.tlXimportX*
+fromXtelethon.tlXimportXfunctions,Xtypes
+fromXtelethon.tl.functions.channelsXimportXEditAdminRequest,XEditBannedRequest
+fromXtelethon.tl.typesXimportX*
+fromXtelethon.tl.typesXimportX(
+XXXXChatAdminRights,
+XXXXChatBannedRights,
+XXXXMessageEntityMentionName,
 )
 
-from Ineruki  import OWNER_ID
-from Ineruki .services.telethon import tbot as bot
+fromXInerukiXXimportXOWNER_ID
+fromXInerukiX.services.telethonXimportXtbotXasXbot
 
-# =================== CONSTANT ===================
-PP_TOO_SMOL = "**The image is too small**"
-PP_ERROR = "**Failure while processing image**"
-NO_ADMIN = "**I am not an admin**"
-NO_PERM = "**I don't have sufficient permissions!**"
+#X===================XCONSTANTX===================
+PP_TOO_SMOLX=X"**TheXimageXisXtooXsmall**"
+PP_ERRORX=X"**FailureXwhileXprocessingXimage**"
+NO_ADMINX=X"**IXamXnotXanXadmin**"
+NO_PERMX=X"**IXdon'tXhaveXsufficientXpermissions!**"
 
-CHAT_PP_CHANGED = "**Chat Picture Changed**"
-CHAT_PP_ERROR = (
-    "**Some issue with updating the pic,**"
-    "**maybe you aren't an admin,**"
-    "**or don't have the desired rights.**"
+CHAT_PP_CHANGEDX=X"**ChatXPictureXChanged**"
+CHAT_PP_ERRORX=X(
+XXXX"**SomeXissueXwithXupdatingXtheXpic,**"
+XXXX"**maybeXyouXaren'tXanXadmin,**"
+XXXX"**orXdon'tXhaveXtheXdesiredXrights.**"
 )
-INVALID_MEDIA = "Invalid Extension"
-BANNED_RIGHTS = ChatBannedRights(
-    until_date=None,
-    view_messages=True,
-    send_messages=True,
-    send_media=True,
-    send_stickers=True,
-    send_gifs=True,
-    send_games=True,
-    send_inline=True,
-    embed_links=True,
+INVALID_MEDIAX=X"InvalidXExtension"
+BANNED_RIGHTSX=XChatBannedRights(
+XXXXuntil_date=None,
+XXXXview_messages=True,
+XXXXsend_messages=True,
+XXXXsend_media=True,
+XXXXsend_stickers=True,
+XXXXsend_gifs=True,
+XXXXsend_games=True,
+XXXXsend_inline=True,
+XXXXembed_links=True,
 )
-UNBAN_RIGHTS = ChatBannedRights(
-    until_date=None,
-    send_messages=None,
-    send_media=None,
-    send_stickers=None,
-    send_gifs=None,
-    send_games=None,
-    send_inline=None,
-    embed_links=None,
+UNBAN_RIGHTSX=XChatBannedRights(
+XXXXuntil_date=None,
+XXXXsend_messages=None,
+XXXXsend_media=None,
+XXXXsend_stickers=None,
+XXXXsend_gifs=None,
+XXXXsend_games=None,
+XXXXsend_inline=None,
+XXXXembed_links=None,
 )
-KICK_RIGHTS = ChatBannedRights(until_date=None, view_messages=True)
-MUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=True)
-UNMUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=False)
+KICK_RIGHTSX=XChatBannedRights(until_date=None,Xview_messages=True)
+MUTE_RIGHTSX=XChatBannedRights(until_date=None,Xsend_messages=True)
+UNMUTE_RIGHTSX=XChatBannedRights(until_date=None,Xsend_messages=False)
 
 
-async def is_register_admin(chat, user):
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
-        return isinstance(
-            (
-                await bot(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    if isinstance(chat, types.InputPeerUser):
-        return True
+asyncXdefXis_register_admin(chat,Xuser):
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXbot(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXifXisinstance(chat,Xtypes.InputPeerUser):
+XXXXXXXXreturnXTrue
 
 
-async def can_promote_users(message):
-    result = await bot(
-        functions.channels.GetParticipantRequest(
-            channel=message.chat_id,
-            user_id=message.sender_id,
-        )
-    )
-    p = result.participant
-    return isinstance(p, types.ChannelParticipantCreator) or (
-        isinstance(p, types.ChannelParticipantAdmin) and p.admin_rights.ban_users
-    )
+asyncXdefXcan_promote_users(message):
+XXXXresultX=XawaitXbot(
+XXXXXXXXfunctions.channels.GetParticipantRequest(
+XXXXXXXXXXXXchannel=message.chat_id,
+XXXXXXXXXXXXuser_id=message.sender_id,
+XXXXXXXX)
+XXXX)
+XXXXpX=Xresult.participant
+XXXXreturnXisinstance(p,Xtypes.ChannelParticipantCreator)XorX(
+XXXXXXXXisinstance(p,Xtypes.ChannelParticipantAdmin)XandXp.admin_rights.ban_users
+XXXX)
 
 
-async def can_ban_users(message):
-    result = await bot(
-        functions.channels.GetParticipantRequest(
-            channel=message.chat_id,
-            user_id=message.sender_id,
-        )
-    )
-    p = result.participant
-    return isinstance(p, types.ChannelParticipantCreator) or (
-        isinstance(p, types.ChannelParticipantAdmin) and p.admin_rights.ban_users
-    )
+asyncXdefXcan_ban_users(message):
+XXXXresultX=XawaitXbot(
+XXXXXXXXfunctions.channels.GetParticipantRequest(
+XXXXXXXXXXXXchannel=message.chat_id,
+XXXXXXXXXXXXuser_id=message.sender_id,
+XXXXXXXX)
+XXXX)
+XXXXpX=Xresult.participant
+XXXXreturnXisinstance(p,Xtypes.ChannelParticipantCreator)XorX(
+XXXXXXXXisinstance(p,Xtypes.ChannelParticipantAdmin)XandXp.admin_rights.ban_users
+XXXX)
 
 
-async def can_change_info(message):
-    result = await bot(
-        functions.channels.GetParticipantRequest(
-            channel=message.chat_id,
-            user_id=message.sender_id,
-        )
-    )
-    p = result.participant
-    return isinstance(p, types.ChannelParticipantCreator) or (
-        isinstance(p, types.ChannelParticipantAdmin) and p.admin_rights.change_info
-    )
+asyncXdefXcan_change_info(message):
+XXXXresultX=XawaitXbot(
+XXXXXXXXfunctions.channels.GetParticipantRequest(
+XXXXXXXXXXXXchannel=message.chat_id,
+XXXXXXXXXXXXuser_id=message.sender_id,
+XXXXXXXX)
+XXXX)
+XXXXpX=Xresult.participant
+XXXXreturnXisinstance(p,Xtypes.ChannelParticipantCreator)XorX(
+XXXXXXXXisinstance(p,Xtypes.ChannelParticipantAdmin)XandXp.admin_rights.change_info
+XXXX)
 
 
-async def can_del(message):
-    result = await bot(
-        functions.channels.GetParticipantRequest(
-            channel=message.chat_id,
-            user_id=message.sender_id,
-        )
-    )
-    p = result.participant
-    return isinstance(p, types.ChannelParticipantCreator) or (
-        isinstance(p, types.ChannelParticipantAdmin) and p.admin_rights.delete_messages
-    )
+asyncXdefXcan_del(message):
+XXXXresultX=XawaitXbot(
+XXXXXXXXfunctions.channels.GetParticipantRequest(
+XXXXXXXXXXXXchannel=message.chat_id,
+XXXXXXXXXXXXuser_id=message.sender_id,
+XXXXXXXX)
+XXXX)
+XXXXpX=Xresult.participant
+XXXXreturnXisinstance(p,Xtypes.ChannelParticipantCreator)XorX(
+XXXXXXXXisinstance(p,Xtypes.ChannelParticipantAdmin)XandXp.admin_rights.delete_messages
+XXXX)
 
 
-async def can_pin_msg(message):
-    result = await bot(
-        functions.channels.GetParticipantRequest(
-            channel=message.chat_id,
-            user_id=message.sender_id,
-        )
-    )
-    p = result.participant
-    return isinstance(p, types.ChannelParticipantCreator) or (
-        isinstance(p, types.ChannelParticipantAdmin) and p.admin_rights.pin_messages
-    )
+asyncXdefXcan_pin_msg(message):
+XXXXresultX=XawaitXbot(
+XXXXXXXXfunctions.channels.GetParticipantRequest(
+XXXXXXXXXXXXchannel=message.chat_id,
+XXXXXXXXXXXXuser_id=message.sender_id,
+XXXXXXXX)
+XXXX)
+XXXXpX=Xresult.participant
+XXXXreturnXisinstance(p,Xtypes.ChannelParticipantCreator)XorX(
+XXXXXXXXisinstance(p,Xtypes.ChannelParticipantAdmin)XandXp.admin_rights.pin_messages
+XXXX)
 
 
-async def get_user_sender_id(user, event):
-    if isinstance(user, str):
-        user = int(user)
+asyncXdefXget_user_sender_id(user,Xevent):
+XXXXifXisinstance(user,Xstr):
+XXXXXXXXuserX=Xint(user)
 
-    try:
-        user_obj = await bot.get_entity(user)
-    except (TypeError, ValueError) as err:
-        await event.edit(str(err))
-        return None
+XXXXtry:
+XXXXXXXXuser_objX=XawaitXbot.get_entity(user)
+XXXXexceptX(TypeError,XValueError)XasXerr:
+XXXXXXXXawaitXevent.edit(str(err))
+XXXXXXXXreturnXNone
 
-    return user_obj
-
-
-async def get_user_from_event(event):
-    """Get the user from argument or replied message."""
-    if event.reply_to_msg_id:
-        previous_message = await event.get_reply_message()
-        user_obj = await bot.get_entity(previous_message.sender_id)
-    else:
-        user = event.pattern_match.group(1)
-
-        if user.isnumeric():
-            user = int(user)
-
-        if not user:
-            await event.reply(
-                "**I don't know who you're talking about, you're going to need to specify a user...!**"
-            )
-            return
-
-        if event.message.entities is not None:
-            probable_user_mention_entity = event.message.entities[0]
-
-            if isinstance(probable_user_mention_entity, MessageEntityMentionName):
-                user_id = probable_user_mention_entity.user_id
-                user_obj = await bot.get_entity(user_id)
-                return user_obj
-        try:
-            user_obj = await bot.get_entity(user)
-        except (TypeError, ValueError) as err:
-            await event.reply(str(err))
-            return None
-
-    return user_obj
+XXXXreturnXuser_obj
 
 
-def find_instance(items, class_or_tuple):
-    for item in items:
-        if isinstance(item, class_or_tuple):
-            return item
-    return None
+asyncXdefXget_user_from_event(event):
+XXXX"""GetXtheXuserXfromXargumentXorXrepliedXmessage."""
+XXXXifXevent.reply_to_msg_id:
+XXXXXXXXprevious_messageX=XawaitXevent.get_reply_message()
+XXXXXXXXuser_objX=XawaitXbot.get_entity(previous_message.sender_id)
+XXXXelse:
+XXXXXXXXuserX=Xevent.pattern_match.group(1)
+
+XXXXXXXXifXuser.isnumeric():
+XXXXXXXXXXXXuserX=Xint(user)
+
+XXXXXXXXifXnotXuser:
+XXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXX"**IXdon'tXknowXwhoXyou'reXtalkingXabout,Xyou'reXgoingXtoXneedXtoXspecifyXaXuser...!**"
+XXXXXXXXXXXX)
+XXXXXXXXXXXXreturn
+
+XXXXXXXXifXevent.message.entitiesXisXnotXNone:
+XXXXXXXXXXXXprobable_user_mention_entityX=Xevent.message.entities[0]
+
+XXXXXXXXXXXXifXisinstance(probable_user_mention_entity,XMessageEntityMentionName):
+XXXXXXXXXXXXXXXXuser_idX=Xprobable_user_mention_entity.user_id
+XXXXXXXXXXXXXXXXuser_objX=XawaitXbot.get_entity(user_id)
+XXXXXXXXXXXXXXXXreturnXuser_obj
+XXXXXXXXtry:
+XXXXXXXXXXXXuser_objX=XawaitXbot.get_entity(user)
+XXXXXXXXexceptX(TypeError,XValueError)XasXerr:
+XXXXXXXXXXXXawaitXevent.reply(str(err))
+XXXXXXXXXXXXreturnXNone
+
+XXXXreturnXuser_obj
 
 
-@bot.on(events.NewMessage(pattern="/lowpromote ?(.*)"))
-async def lowpromote(promt):
-    if promt.is_group:
-        if promt.sender_id == OWNER_ID:
-            pass
-        else:
-            if not await can_promote_users(message=promt):
-                return
-    else:
-        return
-
-    user = await get_user_from_event(promt)
-    if promt.is_group:
-        if await is_register_admin(promt.input_chat, user.id):
-            await promt.reply("**Well! i cant promote user who is already an admin**")
-            return
-    else:
-        return
-
-    new_rights = ChatAdminRights(
-        add_admins=False,
-        invite_users=True,
-        change_info=False,
-        ban_users=False,
-        delete_messages=True,
-        pin_messages=False,
-    )
-
-    if user:
-        pass
-    else:
-        return
-    quew = promt.pattern_match.group(1)
-    if quew:
-        title = quew
-    else:
-        title = "Moderator"
-    # Try to promote if current user is admin or creator
-    try:
-        await bot(EditAdminRequest(promt.chat_id, user.id, new_rights, title))
-        await promt.reply("**Successfully promoted!**")
-
-    # If Telethon spit BadRequestError, assume
-    # we don't have Promote permission
-    except Exception:
-        await promt.reply("Failed to promote.")
-        return
+defXfind_instance(items,Xclass_or_tuple):
+XXXXforXitemXinXitems:
+XXXXXXXXifXisinstance(item,Xclass_or_tuple):
+XXXXXXXXXXXXreturnXitem
+XXXXreturnXNone
 
 
-@bot.on(events.NewMessage(pattern="/midpromote ?(.*)"))
-async def midpromote(promt):
-    if promt.is_group:
-        if promt.sender_id == OWNER_ID:
-            pass
-        else:
-            if not await can_promote_users(message=promt):
-                return
-    else:
-        return
+@bot.on(events.NewMessage(pattern="/lowpromoteX?(.*)"))
+asyncXdefXlowpromote(promt):
+XXXXifXpromt.is_group:
+XXXXXXXXifXpromt.sender_idX==XOWNER_ID:
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXifXnotXawaitXcan_promote_users(message=promt):
+XXXXXXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXreturn
 
-    user = await get_user_from_event(promt)
-    if promt.is_group:
-        if await is_register_admin(promt.input_chat, user.id):
-            await promt.reply("**Well! i cant promote user who is already an admin**")
-            return
-    else:
-        return
+XXXXuserX=XawaitXget_user_from_event(promt)
+XXXXifXpromt.is_group:
+XXXXXXXXifXawaitXis_register_admin(promt.input_chat,Xuser.id):
+XXXXXXXXXXXXawaitXpromt.reply("**Well!XiXcantXpromoteXuserXwhoXisXalreadyXanXadmin**")
+XXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXreturn
 
-    new_rights = ChatAdminRights(
-        add_admins=False,
-        invite_users=True,
-        change_info=True,
-        ban_users=False,
-        delete_messages=True,
-        pin_messages=True,
-    )
+XXXXnew_rightsX=XChatAdminRights(
+XXXXXXXXadd_admins=False,
+XXXXXXXXinvite_users=True,
+XXXXXXXXchange_info=False,
+XXXXXXXXban_users=False,
+XXXXXXXXdelete_messages=True,
+XXXXXXXXpin_messages=False,
+XXXX)
 
-    if user:
-        pass
-    else:
-        return
-    quew = promt.pattern_match.group(1)
-    if quew:
-        title = quew
-    else:
-        title = "Admin"
-    # Try to promote if current user is admin or creator
-    try:
-        await bot(EditAdminRequest(promt.chat_id, user.id, new_rights, title))
-        await promt.reply("**Successfully promoted!**")
+XXXXifXuser:
+XXXXXXXXpass
+XXXXelse:
+XXXXXXXXreturn
+XXXXquewX=Xpromt.pattern_match.group(1)
+XXXXifXquew:
+XXXXXXXXtitleX=Xquew
+XXXXelse:
+XXXXXXXXtitleX=X"Moderator"
+XXXX#XTryXtoXpromoteXifXcurrentXuserXisXadminXorXcreator
+XXXXtry:
+XXXXXXXXawaitXbot(EditAdminRequest(promt.chat_id,Xuser.id,Xnew_rights,Xtitle))
+XXXXXXXXawaitXpromt.reply("**SuccessfullyXpromoted!**")
 
-    # If Telethon spit BadRequestError, assume
-    # we don't have Promote permission
-    except Exception:
-        await promt.reply("Failed to promote.")
-        return
-
-
-@bot.on(events.NewMessage(pattern="/highpromote ?(.*)"))
-async def highpromote(promt):
-    if promt.is_group:
-        if promt.sender_id == OWNER_ID:
-            pass
-        else:
-            if not await can_promote_users(message=promt):
-                return
-    else:
-        return
-
-    user = await get_user_from_event(promt)
-    if promt.is_group:
-        if await is_register_admin(promt.input_chat, user.id):
-            await promt.reply("**Well! i cant promote user who is already an admin**")
-            return
-    else:
-        return
-
-    new_rights = ChatAdminRights(
-        add_admins=True,
-        invite_users=True,
-        change_info=True,
-        ban_users=True,
-        delete_messages=True,
-        pin_messages=True,
-    )
-
-    if user:
-        pass
-    else:
-        return
-    quew = promt.pattern_match.group(1)
-    if quew:
-        title = quew
-    else:
-        title = "Admin"
-    # Try to promote if current user is admin or creator
-    try:
-        await bot(EditAdminRequest(promt.chat_id, user.id, new_rights, title))
-        await promt.reply("**Successfully promoted!**")
-
-    # If Telethon spit BadRequestError, assume
-    # we don't have Promote permission
-    except Exception:
-        await promt.reply("Failed to promote.")
-        return
+XXXX#XIfXTelethonXspitXBadRequestError,Xassume
+XXXX#XweXdon'tXhaveXPromoteXpermission
+XXXXexceptXException:
+XXXXXXXXawaitXpromt.reply("FailedXtoXpromote.")
+XXXXXXXXreturn
 
 
-@bot.on(events.NewMessage(pattern="/lowdemote(?: |$)(.*)"))
-async def lowdemote(dmod):
-    if dmod.is_group:
-        if not await can_promote_users(message=dmod):
-            return
-    else:
-        return
+@bot.on(events.NewMessage(pattern="/midpromoteX?(.*)"))
+asyncXdefXmidpromote(promt):
+XXXXifXpromt.is_group:
+XXXXXXXXifXpromt.sender_idX==XOWNER_ID:
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXifXnotXawaitXcan_promote_users(message=promt):
+XXXXXXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXreturn
 
-    user = await get_user_from_event(dmod)
-    if dmod.is_group:
-        if not await is_register_admin(dmod.input_chat, user.id):
-            await dmod.reply("**Hehe, i cant demote non-admin**")
-            return
-    else:
-        return
+XXXXuserX=XawaitXget_user_from_event(promt)
+XXXXifXpromt.is_group:
+XXXXXXXXifXawaitXis_register_admin(promt.input_chat,Xuser.id):
+XXXXXXXXXXXXawaitXpromt.reply("**Well!XiXcantXpromoteXuserXwhoXisXalreadyXanXadmin**")
+XXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXreturn
 
-    if user:
-        pass
-    else:
-        return
+XXXXnew_rightsX=XChatAdminRights(
+XXXXXXXXadd_admins=False,
+XXXXXXXXinvite_users=True,
+XXXXXXXXchange_info=True,
+XXXXXXXXban_users=False,
+XXXXXXXXdelete_messages=True,
+XXXXXXXXpin_messages=True,
+XXXX)
 
-    # New rights after demotion
-    newrights = ChatAdminRights(
-        add_admins=False,
-        invite_users=True,
-        change_info=False,
-        ban_users=False,
-        delete_messages=True,
-        pin_messages=False,
-    )
-    # Edit Admin Permission
-    try:
-        await bot(EditAdminRequest(dmod.chat_id, user.id, newrights, "Admin"))
-        await dmod.reply("**Demoted Successfully!**")
+XXXXifXuser:
+XXXXXXXXpass
+XXXXelse:
+XXXXXXXXreturn
+XXXXquewX=Xpromt.pattern_match.group(1)
+XXXXifXquew:
+XXXXXXXXtitleX=Xquew
+XXXXelse:
+XXXXXXXXtitleX=X"Admin"
+XXXX#XTryXtoXpromoteXifXcurrentXuserXisXadminXorXcreator
+XXXXtry:
+XXXXXXXXawaitXbot(EditAdminRequest(promt.chat_id,Xuser.id,Xnew_rights,Xtitle))
+XXXXXXXXawaitXpromt.reply("**SuccessfullyXpromoted!**")
 
-    # If we catch BadRequestError from Telethon
-    # Assume we don't have permission to demote
-    except Exception:
-        await dmod.reply("**Failed to demote.**")
-        return
+XXXX#XIfXTelethonXspitXBadRequestError,Xassume
+XXXX#XweXdon'tXhaveXPromoteXpermission
+XXXXexceptXException:
+XXXXXXXXawaitXpromt.reply("FailedXtoXpromote.")
+XXXXXXXXreturn
 
 
-@bot.on(events.NewMessage(pattern="/middemote(?: |$)(.*)"))
-async def middemote(dmod):
-    if dmod.is_group:
-        if not await can_promote_users(message=dmod):
-            return
-    else:
-        return
+@bot.on(events.NewMessage(pattern="/highpromoteX?(.*)"))
+asyncXdefXhighpromote(promt):
+XXXXifXpromt.is_group:
+XXXXXXXXifXpromt.sender_idX==XOWNER_ID:
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXifXnotXawaitXcan_promote_users(message=promt):
+XXXXXXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXreturn
 
-    user = await get_user_from_event(dmod)
-    if dmod.is_group:
-        if not await is_register_admin(dmod.input_chat, user.id):
-            await dmod.reply("**Hehe, i cant demote non-admin**")
-            return
-    else:
-        return
+XXXXuserX=XawaitXget_user_from_event(promt)
+XXXXifXpromt.is_group:
+XXXXXXXXifXawaitXis_register_admin(promt.input_chat,Xuser.id):
+XXXXXXXXXXXXawaitXpromt.reply("**Well!XiXcantXpromoteXuserXwhoXisXalreadyXanXadmin**")
+XXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXreturn
 
-    if user:
-        pass
-    else:
-        return
+XXXXnew_rightsX=XChatAdminRights(
+XXXXXXXXadd_admins=True,
+XXXXXXXXinvite_users=True,
+XXXXXXXXchange_info=True,
+XXXXXXXXban_users=True,
+XXXXXXXXdelete_messages=True,
+XXXXXXXXpin_messages=True,
+XXXX)
 
-    # New rights after demotion
-    newrights = ChatAdminRights(
-        add_admins=False,
-        invite_users=True,
-        change_info=True,
-        ban_users=False,
-        delete_messages=True,
-        pin_messages=True,
-    )
-    # Edit Admin Permission
-    try:
-        await bot(EditAdminRequest(dmod.chat_id, user.id, newrights, "Admin"))
-        await dmod.reply("**Demoted Successfully!**")
+XXXXifXuser:
+XXXXXXXXpass
+XXXXelse:
+XXXXXXXXreturn
+XXXXquewX=Xpromt.pattern_match.group(1)
+XXXXifXquew:
+XXXXXXXXtitleX=Xquew
+XXXXelse:
+XXXXXXXXtitleX=X"Admin"
+XXXX#XTryXtoXpromoteXifXcurrentXuserXisXadminXorXcreator
+XXXXtry:
+XXXXXXXXawaitXbot(EditAdminRequest(promt.chat_id,Xuser.id,Xnew_rights,Xtitle))
+XXXXXXXXawaitXpromt.reply("**SuccessfullyXpromoted!**")
 
-    # If we catch BadRequestError from Telethon
-    # Assume we don't have permission to demote
-    except Exception:
-        await dmod.reply("**Failed to demote.**")
-        return
+XXXX#XIfXTelethonXspitXBadRequestError,Xassume
+XXXX#XweXdon'tXhaveXPromoteXpermission
+XXXXexceptXException:
+XXXXXXXXawaitXpromt.reply("FailedXtoXpromote.")
+XXXXXXXXreturn
+
+
+@bot.on(events.NewMessage(pattern="/lowdemote(?:X|$)(.*)"))
+asyncXdefXlowdemote(dmod):
+XXXXifXdmod.is_group:
+XXXXXXXXifXnotXawaitXcan_promote_users(message=dmod):
+XXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXreturn
+
+XXXXuserX=XawaitXget_user_from_event(dmod)
+XXXXifXdmod.is_group:
+XXXXXXXXifXnotXawaitXis_register_admin(dmod.input_chat,Xuser.id):
+XXXXXXXXXXXXawaitXdmod.reply("**Hehe,XiXcantXdemoteXnon-admin**")
+XXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXreturn
+
+XXXXifXuser:
+XXXXXXXXpass
+XXXXelse:
+XXXXXXXXreturn
+
+XXXX#XNewXrightsXafterXdemotion
+XXXXnewrightsX=XChatAdminRights(
+XXXXXXXXadd_admins=False,
+XXXXXXXXinvite_users=True,
+XXXXXXXXchange_info=False,
+XXXXXXXXban_users=False,
+XXXXXXXXdelete_messages=True,
+XXXXXXXXpin_messages=False,
+XXXX)
+XXXX#XEditXAdminXPermission
+XXXXtry:
+XXXXXXXXawaitXbot(EditAdminRequest(dmod.chat_id,Xuser.id,Xnewrights,X"Admin"))
+XXXXXXXXawaitXdmod.reply("**DemotedXSuccessfully!**")
+
+XXXX#XIfXweXcatchXBadRequestErrorXfromXTelethon
+XXXX#XAssumeXweXdon'tXhaveXpermissionXtoXdemote
+XXXXexceptXException:
+XXXXXXXXawaitXdmod.reply("**FailedXtoXdemote.**")
+XXXXXXXXreturn
+
+
+@bot.on(events.NewMessage(pattern="/middemote(?:X|$)(.*)"))
+asyncXdefXmiddemote(dmod):
+XXXXifXdmod.is_group:
+XXXXXXXXifXnotXawaitXcan_promote_users(message=dmod):
+XXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXreturn
+
+XXXXuserX=XawaitXget_user_from_event(dmod)
+XXXXifXdmod.is_group:
+XXXXXXXXifXnotXawaitXis_register_admin(dmod.input_chat,Xuser.id):
+XXXXXXXXXXXXawaitXdmod.reply("**Hehe,XiXcantXdemoteXnon-admin**")
+XXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXreturn
+
+XXXXifXuser:
+XXXXXXXXpass
+XXXXelse:
+XXXXXXXXreturn
+
+XXXX#XNewXrightsXafterXdemotion
+XXXXnewrightsX=XChatAdminRights(
+XXXXXXXXadd_admins=False,
+XXXXXXXXinvite_users=True,
+XXXXXXXXchange_info=True,
+XXXXXXXXban_users=False,
+XXXXXXXXdelete_messages=True,
+XXXXXXXXpin_messages=True,
+XXXX)
+XXXX#XEditXAdminXPermission
+XXXXtry:
+XXXXXXXXawaitXbot(EditAdminRequest(dmod.chat_id,Xuser.id,Xnewrights,X"Admin"))
+XXXXXXXXawaitXdmod.reply("**DemotedXSuccessfully!**")
+
+XXXX#XIfXweXcatchXBadRequestErrorXfromXTelethon
+XXXX#XAssumeXweXdon'tXhaveXpermissionXtoXdemote
+XXXXexceptXException:
+XXXXXXXXawaitXdmod.reply("**FailedXtoXdemote.**")
+XXXXXXXXreturn
 
 
 @bot.on(events.NewMessage(pattern="/users$"))
-async def get_users(show):
-    if not show.is_group:
-        return
-    if show.is_group:
-        if not await is_register_admin(show.input_chat, show.sender_id):
-            return
-    info = await bot.get_entity(show.chat_id)
-    title = info.title if info.title else "this chat"
-    mentions = "Users in {}: \n".format(title)
-    async for user in bot.iter_participants(show.chat_id):
-        if not user.deleted:
-            mentions += f"\n[{user.first_name}](tg://user?id={user.id}) {user.id}"
-        else:
-            mentions += f"\nDeleted Account {user.id}"
-    file = open("userslist.txt", "w+")
-    file.write(mentions)
-    file.close()
-    await bot.send_file(
-        show.chat_id,
-        "userslist.txt",
-        caption="Users in {}".format(title),
-        reply_to=show.id,
-    )
-    os.remove("userslist.txt")
+asyncXdefXget_users(show):
+XXXXifXnotXshow.is_group:
+XXXXXXXXreturn
+XXXXifXshow.is_group:
+XXXXXXXXifXnotXawaitXis_register_admin(show.input_chat,Xshow.sender_id):
+XXXXXXXXXXXXreturn
+XXXXinfoX=XawaitXbot.get_entity(show.chat_id)
+XXXXtitleX=Xinfo.titleXifXinfo.titleXelseX"thisXchat"
+XXXXmentionsX=X"UsersXinX{}:X\n".format(title)
+XXXXasyncXforXuserXinXbot.iter_participants(show.chat_id):
+XXXXXXXXifXnotXuser.deleted:
+XXXXXXXXXXXXmentionsX+=Xf"\n[{user.first_name}](tg://user?id={user.id})X{user.id}"
+XXXXXXXXelse:
+XXXXXXXXXXXXmentionsX+=Xf"\nDeletedXAccountX{user.id}"
+XXXXfileX=Xopen("userslist.txt",X"w+")
+XXXXfile.write(mentions)
+XXXXfile.close()
+XXXXawaitXbot.send_file(
+XXXXXXXXshow.chat_id,
+XXXXXXXX"userslist.txt",
+XXXXXXXXcaption="UsersXinX{}".format(title),
+XXXXXXXXreply_to=show.id,
+XXXX)
+XXXXos.remove("userslist.txt")
 
 
 @bot.on(events.NewMessage(pattern="/kickthefools$"))
-async def _(event):
-    if event.fwd_from:
-        return
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
 
-    if event.is_group:
-        if not await can_ban_users(message=event):
-            return
-    else:
-        return
+XXXXifXevent.is_group:
+XXXXXXXXifXnotXawaitXcan_ban_users(message=event):
+XXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXreturn
 
-    # Here laying the sanity check
-    chat = await event.get_chat()
-    admin = chat.admin_rights.ban_users
-    creator = chat.creator
+XXXX#XHereXlayingXtheXsanityXcheck
+XXXXchatX=XawaitXevent.get_chat()
+XXXXadminX=Xchat.admin_rights.ban_users
+XXXXcreatorX=Xchat.creator
 
-    # Well
-    if not admin and not creator:
-        await event.reply("`I don't have enough permissions!`")
-        return
+XXXX#XWell
+XXXXifXnotXadminXandXnotXcreator:
+XXXXXXXXawaitXevent.reply("`IXdon'tXhaveXenoughXpermissions!`")
+XXXXXXXXreturn
 
-    c = 0
-    KICK_RIGHTS = ChatBannedRights(until_date=None, view_messages=True)
-    done = await event.reply("Working ...")
-    async for i in bot.iter_participants(event.chat_id):
+XXXXcX=X0
+XXXXKICK_RIGHTSX=XChatBannedRights(until_date=None,Xview_messages=True)
+XXXXdoneX=XawaitXevent.reply("WorkingX...")
+XXXXasyncXforXiXinXbot.iter_participants(event.chat_id):
 
-        if isinstance(i.status, UserStatusLastMonth):
-            status = await tbot(EditBannedRequest(event.chat_id, i, KICK_RIGHTS))
-            if not status:
-                return
-            c = c + 1
+XXXXXXXXifXisinstance(i.status,XUserStatusLastMonth):
+XXXXXXXXXXXXstatusX=XawaitXtbot(EditBannedRequest(event.chat_id,Xi,XKICK_RIGHTS))
+XXXXXXXXXXXXifXnotXstatus:
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXcX=XcX+X1
 
-        if isinstance(i.status, UserStatusLastWeek):
-            status = await tbot(EditBannedRequest(event.chat_id, i, KICK_RIGHTS))
-            if not status:
-                return
-            c = c + 1
+XXXXXXXXifXisinstance(i.status,XUserStatusLastWeek):
+XXXXXXXXXXXXstatusX=XawaitXtbot(EditBannedRequest(event.chat_id,Xi,XKICK_RIGHTS))
+XXXXXXXXXXXXifXnotXstatus:
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXcX=XcX+X1
 
-    if c == 0:
-        await done.edit("Got no one to kick 😔")
-        return
+XXXXifXcX==X0:
+XXXXXXXXawaitXdone.edit("GotXnoXoneXtoXkickX😔")
+XXXXXXXXreturn
 
-    required_string = "Successfully Kicked **{}** users"
-    await event.reply(required_string.format(c))
+XXXXrequired_stringX=X"SuccessfullyXKickedX**{}**Xusers"
+XXXXawaitXevent.reply(required_string.format(c))
 
 
 @bot.on(events.NewMessage(pattern="/unbanall$"))
-async def _(event):
-    if not event.is_group:
-        return
+asyncXdefX_(event):
+XXXXifXnotXevent.is_group:
+XXXXXXXXreturn
 
-    if event.is_group:
-        if not await can_ban_users(message=event):
-            return
+XXXXifXevent.is_group:
+XXXXXXXXifXnotXawaitXcan_ban_users(message=event):
+XXXXXXXXXXXXreturn
 
-    # Here laying the sanity check
-    chat = await event.get_chat()
-    admin = chat.admin_rights.ban_users
-    creator = chat.creator
+XXXX#XHereXlayingXtheXsanityXcheck
+XXXXchatX=XawaitXevent.get_chat()
+XXXXadminX=Xchat.admin_rights.ban_users
+XXXXcreatorX=Xchat.creator
 
-    # Well
-    if not admin and not creator:
-        await event.reply("`I don't have enough permissions!`")
-        return
+XXXX#XWell
+XXXXifXnotXadminXandXnotXcreator:
+XXXXXXXXawaitXevent.reply("`IXdon'tXhaveXenoughXpermissions!`")
+XXXXXXXXreturn
 
-    done = await event.reply("Searching Participant Lists.")
-    p = 0
-    async for i in bot.iter_participants(
-        event.chat_id, filter=ChannelParticipantsKicked, aggressive=True
-    ):
-        rights = ChatBannedRights(until_date=0, view_messages=False)
-        try:
-            await bot(functions.channels.EditBannedRequest(event.chat_id, i, rights))
-        except FloodWaitError as ex:
-            logger.warn("sleeping for {} seconds".format(ex.seconds))
-            sleep(ex.seconds)
-        except Exception as ex:
-            await event.reply(str(ex))
-        else:
-            p += 1
+XXXXdoneX=XawaitXevent.reply("SearchingXParticipantXLists.")
+XXXXpX=X0
+XXXXasyncXforXiXinXbot.iter_participants(
+XXXXXXXXevent.chat_id,Xfilter=ChannelParticipantsKicked,Xaggressive=True
+XXXX):
+XXXXXXXXrightsX=XChatBannedRights(until_date=0,Xview_messages=False)
+XXXXXXXXtry:
+XXXXXXXXXXXXawaitXbot(functions.channels.EditBannedRequest(event.chat_id,Xi,Xrights))
+XXXXXXXXexceptXFloodWaitErrorXasXex:
+XXXXXXXXXXXXlogger.warn("sleepingXforX{}Xseconds".format(ex.seconds))
+XXXXXXXXXXXXsleep(ex.seconds)
+XXXXXXXXexceptXExceptionXasXex:
+XXXXXXXXXXXXawaitXevent.reply(str(ex))
+XXXXXXXXelse:
+XXXXXXXXXXXXpX+=X1
 
-    if p == 0:
-        await done.edit("No one is banned in this chat")
-        return
-    required_string = "Successfully unbanned **{}** users"
-    await event.reply(required_string.format(p))
+XXXXifXpX==X0:
+XXXXXXXXawaitXdone.edit("NoXoneXisXbannedXinXthisXchat")
+XXXXXXXXreturn
+XXXXrequired_stringX=X"SuccessfullyXunbannedX**{}**Xusers"
+XXXXawaitXevent.reply(required_string.format(p))
 
 
 @bot.on(events.NewMessage(pattern="/unmuteall$"))
-async def _(event):
-    if not event.is_group:
-        return
-    if event.is_group:
-        if not await can_ban_users(message=event):
-            return
+asyncXdefX_(event):
+XXXXifXnotXevent.is_group:
+XXXXXXXXreturn
+XXXXifXevent.is_group:
+XXXXXXXXifXnotXawaitXcan_ban_users(message=event):
+XXXXXXXXXXXXreturn
 
-    # Here laying the sanity check
-    chat = await event.get_chat()
-    admin = chat.admin_rights.ban_users
-    creator = chat.creator
+XXXX#XHereXlayingXtheXsanityXcheck
+XXXXchatX=XawaitXevent.get_chat()
+XXXXadminX=Xchat.admin_rights.ban_users
+XXXXcreatorX=Xchat.creator
 
-    # Well
-    if not admin and not creator:
-        await event.reply("`I don't have enough permissions!`")
-        return
+XXXX#XWell
+XXXXifXnotXadminXandXnotXcreator:
+XXXXXXXXawaitXevent.reply("`IXdon'tXhaveXenoughXpermissions!`")
+XXXXXXXXreturn
 
-    done = await event.reply("Working ...")
-    p = 0
-    async for i in bot.iter_participants(
-        event.chat_id, filter=ChannelParticipantsBanned, aggressive=True
-    ):
-        rights = ChatBannedRights(
-            until_date=0,
-            send_messages=False,
-        )
-        try:
-            await bot(functions.channels.EditBannedRequest(event.chat_id, i, rights))
-        except FloodWaitError as ex:
-            logger.warn("sleeping for {} seconds".format(ex.seconds))
-            sleep(ex.seconds)
-        except Exception as ex:
-            await event.reply(str(ex))
-        else:
-            p += 1
+XXXXdoneX=XawaitXevent.reply("WorkingX...")
+XXXXpX=X0
+XXXXasyncXforXiXinXbot.iter_participants(
+XXXXXXXXevent.chat_id,Xfilter=ChannelParticipantsBanned,Xaggressive=True
+XXXX):
+XXXXXXXXrightsX=XChatBannedRights(
+XXXXXXXXXXXXuntil_date=0,
+XXXXXXXXXXXXsend_messages=False,
+XXXXXXXX)
+XXXXXXXXtry:
+XXXXXXXXXXXXawaitXbot(functions.channels.EditBannedRequest(event.chat_id,Xi,Xrights))
+XXXXXXXXexceptXFloodWaitErrorXasXex:
+XXXXXXXXXXXXlogger.warn("sleepingXforX{}Xseconds".format(ex.seconds))
+XXXXXXXXXXXXsleep(ex.seconds)
+XXXXXXXXexceptXExceptionXasXex:
+XXXXXXXXXXXXawaitXevent.reply(str(ex))
+XXXXXXXXelse:
+XXXXXXXXXXXXpX+=X1
 
-    if p == 0:
-        await done.edit("No one is muted in this chat")
-        return
-    required_string = "Successfully unmuted **{}** users"
-    await event.reply(required_string.format(p))
+XXXXifXpX==X0:
+XXXXXXXXawaitXdone.edit("NoXoneXisXmutedXinXthisXchat")
+XXXXXXXXreturn
+XXXXrequired_stringX=X"SuccessfullyXunmutedX**{}**Xusers"
+XXXXawaitXevent.reply(required_string.format(p))
 
 
 @bot.on(events.NewMessage(pattern="/banme$"))
-async def banme(bon):
-    if not bon.is_group:
-        return
+asyncXdefXbanme(bon):
+XXXXifXnotXbon.is_group:
+XXXXXXXXreturn
 
-    try:
-        await bot(EditBannedRequest(bon.chat_id, sender, BANNED_RIGHTS))
-        await bon.reply("Ok Banned !")
+XXXXtry:
+XXXXXXXXawaitXbot(EditBannedRequest(bon.chat_id,Xsender,XBANNED_RIGHTS))
+XXXXXXXXawaitXbon.reply("OkXBannedX!")
 
-    except Exception:
-        await bon.reply("I don't think so!")
-        return
+XXXXexceptXException:
+XXXXXXXXawaitXbon.reply("IXdon'tXthinkXso!")
+XXXXXXXXreturn
 
 
 @bot.on(events.NewMessage(pattern="/kickme$"))
-async def kickme(bon):
-    if not bon.is_group:
-        return
-    try:
-        await bot.kick_participant(bon.chat_id, bon.sender_id)
-        await bon.reply("Sure!")
-    except Exception:
-        await bon.reply("Failed to kick !")
-        return
+asyncXdefXkickme(bon):
+XXXXifXnotXbon.is_group:
+XXXXXXXXreturn
+XXXXtry:
+XXXXXXXXawaitXbot.kick_participant(bon.chat_id,Xbon.sender_id)
+XXXXXXXXawaitXbon.reply("Sure!")
+XXXXexceptXException:
+XXXXXXXXawaitXbon.reply("FailedXtoXkickX!")
+XXXXXXXXreturn
 
 
-@bot.on(events.NewMessage(pattern=r"/setdescription ([\s\S]*)"))
-async def set_group_des(gpic):
-    input_str = gpic.pattern_match.group(1)
-    # print(input_str)
-    if gpic.is_group:
-        if not await can_change_info(message=gpic):
-            return
-    else:
-        return
+@bot.on(events.NewMessage(pattern=r"/setdescriptionX([\s\S]*)"))
+asyncXdefXset_group_des(gpic):
+XXXXinput_strX=Xgpic.pattern_match.group(1)
+XXXX#Xprint(input_str)
+XXXXifXgpic.is_group:
+XXXXXXXXifXnotXawaitXcan_change_info(message=gpic):
+XXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXreturn
 
-    try:
-        await bot(
-            functions.messages.EditChatAboutRequest(peer=gpic.chat_id, about=input_str)
-        )
-        await gpic.reply("Successfully set new group description.")
-    except BaseException:
-        await gpic.reply("Failed to set group description.")
+XXXXtry:
+XXXXXXXXawaitXbot(
+XXXXXXXXXXXXfunctions.messages.EditChatAboutRequest(peer=gpic.chat_id,Xabout=input_str)
+XXXXXXXX)
+XXXXXXXXawaitXgpic.reply("SuccessfullyXsetXnewXgroupXdescription.")
+XXXXexceptXBaseException:
+XXXXXXXXawaitXgpic.reply("FailedXtoXsetXgroupXdescription.")
 
 
 @bot.on(events.NewMessage(pattern="/setsticker$"))
-async def set_group_sticker(gpic):
-    if gpic.is_group:
-        if not await can_change_info(message=gpic):
-            return
-    else:
-        return
+asyncXdefXset_group_sticker(gpic):
+XXXXifXgpic.is_group:
+XXXXXXXXifXnotXawaitXcan_change_info(message=gpic):
+XXXXXXXXXXXXreturn
+XXXXelse:
+XXXXXXXXreturn
 
-    rep_msg = await gpic.get_reply_message()
-    if not rep_msg.document:
-        await gpic.reply("Reply to any sticker plox.")
-        return
-    stickerset_attr_s = rep_msg.document.attributes
-    stickerset_attr = find_instance(stickerset_attr_s, DocumentAttributeSticker)
-    if not stickerset_attr.stickerset:
-        await gpic.reply("Sticker does not belong to a pack.")
-        return
-    try:
-        id = stickerset_attr.stickerset.id
-        access_hash = stickerset_attr.stickerset.access_hash
-        print(id)
-        print(access_hash)
-        await bot(
-            functions.channels.SetStickersRequest(
-                channel=gpic.chat_id,
-                stickerset=types.InputStickerSetID(id=id, access_hash=access_hash),
-            )
-        )
-        await gpic.reply("Group sticker pack successfully set !")
-    except Exception as e:
-        print(e)
-        await gpic.reply("Failed to set group sticker pack.")
+XXXXrep_msgX=XawaitXgpic.get_reply_message()
+XXXXifXnotXrep_msg.document:
+XXXXXXXXawaitXgpic.reply("ReplyXtoXanyXstickerXplox.")
+XXXXXXXXreturn
+XXXXstickerset_attr_sX=Xrep_msg.document.attributes
+XXXXstickerset_attrX=Xfind_instance(stickerset_attr_s,XDocumentAttributeSticker)
+XXXXifXnotXstickerset_attr.stickerset:
+XXXXXXXXawaitXgpic.reply("StickerXdoesXnotXbelongXtoXaXpack.")
+XXXXXXXXreturn
+XXXXtry:
+XXXXXXXXidX=Xstickerset_attr.stickerset.id
+XXXXXXXXaccess_hashX=Xstickerset_attr.stickerset.access_hash
+XXXXXXXXprint(id)
+XXXXXXXXprint(access_hash)
+XXXXXXXXawaitXbot(
+XXXXXXXXXXXXfunctions.channels.SetStickersRequest(
+XXXXXXXXXXXXXXXXchannel=gpic.chat_id,
+XXXXXXXXXXXXXXXXstickerset=types.InputStickerSetID(id=id,Xaccess_hash=access_hash),
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXawaitXgpic.reply("GroupXstickerXpackXsuccessfullyXsetX!")
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint(e)
+XXXXXXXXawaitXgpic.reply("FailedXtoXsetXgroupXstickerXpack.")
 
 
-async def extract_time(message, time_val):
-    if any(time_val.endswith(unit) for unit in ("m", "h", "d")):
-        unit = time_val[-1]
-        time_num = time_val[:-1]  # type: str
-        if not time_num.isdigit():
-            await message.reply("Invalid time amount specified.")
-            return ""
+asyncXdefXextract_time(message,Xtime_val):
+XXXXifXany(time_val.endswith(unit)XforXunitXinX("m",X"h",X"d")):
+XXXXXXXXunitX=Xtime_val[-1]
+XXXXXXXXtime_numX=Xtime_val[:-1]XX#Xtype:Xstr
+XXXXXXXXifXnotXtime_num.isdigit():
+XXXXXXXXXXXXawaitXmessage.reply("InvalidXtimeXamountXspecified.")
+XXXXXXXXXXXXreturnX""
 
-        if unit == "m":
-            bantime = int(time.time() + int(time_num) * 60)
-        elif unit == "h":
-            bantime = int(time.time() + int(time_num) * 60 * 60)
-        elif unit == "d":
-            bantime = int(time.time() + int(time_num) * 24 * 60 * 60)
-        else:
-            return
-        return bantime
-    else:
-        await message.reply(
-            "Invalid time type specified. Expected m,h, or d, got: {}".format(
-                time_val[-1]
-            )
-        )
-        return
+XXXXXXXXifXunitX==X"m":
+XXXXXXXXXXXXbantimeX=Xint(time.time()X+Xint(time_num)X*X60)
+XXXXXXXXelifXunitX==X"h":
+XXXXXXXXXXXXbantimeX=Xint(time.time()X+Xint(time_num)X*X60X*X60)
+XXXXXXXXelifXunitX==X"d":
+XXXXXXXXXXXXbantimeX=Xint(time.time()X+Xint(time_num)X*X24X*X60X*X60)
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+XXXXXXXXreturnXbantime
+XXXXelse:
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXX"InvalidXtimeXtypeXspecified.XExpectedXm,h,XorXd,Xgot:X{}".format(
+XXXXXXXXXXXXXXXXtime_val[-1]
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturn

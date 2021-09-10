@@ -1,178 +1,178 @@
-# Copyright (C) 2020-2021 by DevsExpo@Github, < https://github.com/DevsExpo >.
+#XCopyrightX(C)X2020-2021XbyXDevsExpo@Github,X<Xhttps://github.com/DevsExpoX>.
 #
-# This file is part of < https://github.com/DevsExpo/FridayUserBot > project,
-# and is released under the "GNU v3.0 License Agreement".
-# Please see < https://github.com/DevsExpo/blob/master/LICENSE >
+#XThisXfileXisXpartXofX<Xhttps://github.com/DevsExpo/FridayUserBotX>Xproject,
+#XandXisXreleasedXunderXtheX"GNUXv3.0XLicenseXAgreement".
+#XPleaseXseeX<Xhttps://github.com/DevsExpo/blob/master/LICENSEX>
 #
-# All rights reserved.
+#XAllXrightsXreserved.
 
-import asyncio
+importXasyncio
 
-import feedparser
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from pyrogram import filters
+importXfeedparser
+fromXapscheduler.schedulers.asyncioXimportXAsyncIOScheduler
+fromXpyrogramXimportXfilters
 
-from Ineruki .db.mongo_helpers.rss_db import (
-    add_rss,
-    basic_check,
-    del_rss,
-    delete_all,
-    get_all,
-    get_chat_rss,
-    is_get_chat_rss,
-    overall_check,
-    update_rss,
+fromXInerukiX.db.mongo_helpers.rss_dbXimportX(
+XXXXadd_rss,
+XXXXbasic_check,
+XXXXdel_rss,
+XXXXdelete_all,
+XXXXget_all,
+XXXXget_chat_rss,
+XXXXis_get_chat_rss,
+XXXXoverall_check,
+XXXXupdate_rss,
 )
-from Ineruki .function.pluginhelpers import admins_only, edit_or_reply, get_text
-from Ineruki .services.pyrogram import pbot
+fromXInerukiX.function.pluginhelpersXimportXadmins_only,Xedit_or_reply,Xget_text
+fromXInerukiX.services.pyrogramXimportXpbot
 
 
-@pbot.on_message(filters.command("addrss") & ~filters.edited & ~filters.bot)
+@pbot.on_message(filters.command("addrss")X&X~filters.editedX&X~filters.bot)
 @admins_only
-async def addrss(client, message):
-    pablo = await edit_or_reply(message, "`Processing....`")
-    lenk = get_text(message)
-    if not lenk:
-        await pablo.edit("Invalid Command Syntax, Please Check Help Menu To Know More!")
-        return
-    try:
-        rss_d = feedparser.parse(lenk)
-        rss_d.entries[0].title
-    except:
-        await pablo.edit(
-            "ERROR: The link does not seem to be a RSS feed or is not supported"
-        )
-        return
-    lol = is_get_chat_rss(message.chat.id, lenk)
-    if lol:
-        await pablo.edit("This Link Already Added")
-        return
-    content = ""
-    content += f"**{rss_d.entries[0].title}**"
-    content += f"\n\n{rss_d.entries[0].link}"
-    try:
-        content += f"\n{rss_d.entries[0].description}"
-    except:
-        pass
-    await client.send_message(message.chat.id, content)
-    add_rss(message.chat.id, lenk, rss_d.entries[0].link)
-    await pablo.edit("Successfully Added Link To RSS Watch")
+asyncXdefXaddrss(client,Xmessage):
+XXXXpabloX=XawaitXedit_or_reply(message,X"`Processing....`")
+XXXXlenkX=Xget_text(message)
+XXXXifXnotXlenk:
+XXXXXXXXawaitXpablo.edit("InvalidXCommandXSyntax,XPleaseXCheckXHelpXMenuXToXKnowXMore!")
+XXXXXXXXreturn
+XXXXtry:
+XXXXXXXXrss_dX=Xfeedparser.parse(lenk)
+XXXXXXXXrss_d.entries[0].title
+XXXXexcept:
+XXXXXXXXawaitXpablo.edit(
+XXXXXXXXXXXX"ERROR:XTheXlinkXdoesXnotXseemXtoXbeXaXRSSXfeedXorXisXnotXsupported"
+XXXXXXXX)
+XXXXXXXXreturn
+XXXXlolX=Xis_get_chat_rss(message.chat.id,Xlenk)
+XXXXifXlol:
+XXXXXXXXawaitXpablo.edit("ThisXLinkXAlreadyXAdded")
+XXXXXXXXreturn
+XXXXcontentX=X""
+XXXXcontentX+=Xf"**{rss_d.entries[0].title}**"
+XXXXcontentX+=Xf"\n\n{rss_d.entries[0].link}"
+XXXXtry:
+XXXXXXXXcontentX+=Xf"\n{rss_d.entries[0].description}"
+XXXXexcept:
+XXXXXXXXpass
+XXXXawaitXclient.send_message(message.chat.id,Xcontent)
+XXXXadd_rss(message.chat.id,Xlenk,Xrss_d.entries[0].link)
+XXXXawaitXpablo.edit("SuccessfullyXAddedXLinkXToXRSSXWatch")
 
 
 @pbot.on_message(
-    filters.command("testrss") & ~filters.edited & ~filters.bot & ~filters.private
+XXXXfilters.command("testrss")X&X~filters.editedX&X~filters.botX&X~filters.private
 )
 @admins_only
-async def testrss(client, message):
-    pablo = await edit_or_reply(message, "`Processing....`")
-    damn = basic_check(message.chat.id)
-    if not damn:
-        URL = "https://www.reddit.com/r/funny/new/.rss"
-        rss_d = feedparser.parse(URL)
-        Content = rss_d.entries[0]["title"] + "\n\n" + rss_d.entries[0]["link"]
-        await client.send_message(message.chat.id, Content)
-        await pablo.edit("This Chat Has No RSS So Sent Reddit RSS")
-    else:
-        all = get_chat_rss(message.chat.id)
-        for x in all:
-            link = x.get("rss_link")
-            rss_d = feedparser.parse(link)
-            content = ""
-            content += f"**{rss_d.entries[0].title}**"
-            content += f"\n\nLink : {rss_d.entries[0].link}"
-            try:
-                content += f"\n{rss_d.entries[0].description}"
-            except:
-                pass
-            await client.send_message(message.chat.id, content)
-        await pablo.delete()
+asyncXdefXtestrss(client,Xmessage):
+XXXXpabloX=XawaitXedit_or_reply(message,X"`Processing....`")
+XXXXdamnX=Xbasic_check(message.chat.id)
+XXXXifXnotXdamn:
+XXXXXXXXURLX=X"https://www.reddit.com/r/funny/new/.rss"
+XXXXXXXXrss_dX=Xfeedparser.parse(URL)
+XXXXXXXXContentX=Xrss_d.entries[0]["title"]X+X"\n\n"X+Xrss_d.entries[0]["link"]
+XXXXXXXXawaitXclient.send_message(message.chat.id,XContent)
+XXXXXXXXawaitXpablo.edit("ThisXChatXHasXNoXRSSXSoXSentXRedditXRSS")
+XXXXelse:
+XXXXXXXXallX=Xget_chat_rss(message.chat.id)
+XXXXXXXXforXxXinXall:
+XXXXXXXXXXXXlinkX=Xx.get("rss_link")
+XXXXXXXXXXXXrss_dX=Xfeedparser.parse(link)
+XXXXXXXXXXXXcontentX=X""
+XXXXXXXXXXXXcontentX+=Xf"**{rss_d.entries[0].title}**"
+XXXXXXXXXXXXcontentX+=Xf"\n\nLinkX:X{rss_d.entries[0].link}"
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXcontentX+=Xf"\n{rss_d.entries[0].description}"
+XXXXXXXXXXXXexcept:
+XXXXXXXXXXXXXXXXpass
+XXXXXXXXXXXXawaitXclient.send_message(message.chat.id,Xcontent)
+XXXXXXXXawaitXpablo.delete()
 
 
 @pbot.on_message(
-    filters.command("listrss") & ~filters.edited & ~filters.bot & ~filters.private
+XXXXfilters.command("listrss")X&X~filters.editedX&X~filters.botX&X~filters.private
 )
 @admins_only
-async def listrss(client, message):
-    pablo = await edit_or_reply(message, "`Processing....`")
-    damn = basic_check(message.chat.id)
-    if not damn:
-        await pablo.edit("This Chat Has No RSS!")
-        return
-    links = ""
-    all = get_chat_rss(message.chat.id)
-    for x in all:
-        l = x.get("rss_link")
-        links += f"{l}\n"
-    content = f"Rss Found In The Chat Are : \n\n{links}"
-    await client.send_message(message.chat.id, content)
-    await pablo.delete()
+asyncXdefXlistrss(client,Xmessage):
+XXXXpabloX=XawaitXedit_or_reply(message,X"`Processing....`")
+XXXXdamnX=Xbasic_check(message.chat.id)
+XXXXifXnotXdamn:
+XXXXXXXXawaitXpablo.edit("ThisXChatXHasXNoXRSS!")
+XXXXXXXXreturn
+XXXXlinksX=X""
+XXXXallX=Xget_chat_rss(message.chat.id)
+XXXXforXxXinXall:
+XXXXXXXXlX=Xx.get("rss_link")
+XXXXXXXXlinksX+=Xf"{l}\n"
+XXXXcontentX=Xf"RssXFoundXInXTheXChatXAreX:X\n\n{links}"
+XXXXawaitXclient.send_message(message.chat.id,Xcontent)
+XXXXawaitXpablo.delete()
 
 
 @pbot.on_message(
-    filters.command("delrss") & ~filters.edited & ~filters.bot & ~filters.private
+XXXXfilters.command("delrss")X&X~filters.editedX&X~filters.botX&X~filters.private
 )
 @admins_only
-async def delrss(client, message):
-    pablo = await edit_or_reply(message, "`Processing....`")
-    lenk = get_text(message)
-    if not lenk:
-        await pablo.edit("Invalid Command Syntax, Please Check Help Menu To Know More!")
-        return
-    lol = is_get_chat_rss(message.chat.id, lenk)
-    if not lol:
-        await pablo.edit("This Link Was Never Added")
-        return
-    del_rss(message.chat.id, lenk)
-    await pablo.edit(f"Successfully Removed `{lenk}` From Chat RSS")
+asyncXdefXdelrss(client,Xmessage):
+XXXXpabloX=XawaitXedit_or_reply(message,X"`Processing....`")
+XXXXlenkX=Xget_text(message)
+XXXXifXnotXlenk:
+XXXXXXXXawaitXpablo.edit("InvalidXCommandXSyntax,XPleaseXCheckXHelpXMenuXToXKnowXMore!")
+XXXXXXXXreturn
+XXXXlolX=Xis_get_chat_rss(message.chat.id,Xlenk)
+XXXXifXnotXlol:
+XXXXXXXXawaitXpablo.edit("ThisXLinkXWasXNeverXAdded")
+XXXXXXXXreturn
+XXXXdel_rss(message.chat.id,Xlenk)
+XXXXawaitXpablo.edit(f"SuccessfullyXRemovedX`{lenk}`XFromXChatXRSS")
 
 
 @pbot.on_message(
-    filters.command("delallrss") & ~filters.edited & ~filters.bot & ~filters.private
+XXXXfilters.command("delallrss")X&X~filters.editedX&X~filters.botX&X~filters.private
 )
 @admins_only
-async def delrss(client, message):
-    pablo = await edit_or_reply(message, "`Processing....`")
-    if not basic_check(message.chat.id):
-        await pablo.edit("This Chat Has No RSS To Delete")
-        return
-    await delete_all()
-    await pablo.edit("Successfully Deleted All RSS From The Chat")
+asyncXdefXdelrss(client,Xmessage):
+XXXXpabloX=XawaitXedit_or_reply(message,X"`Processing....`")
+XXXXifXnotXbasic_check(message.chat.id):
+XXXXXXXXawaitXpablo.edit("ThisXChatXHasXNoXRSSXToXDelete")
+XXXXXXXXreturn
+XXXXawaitXdelete_all()
+XXXXawaitXpablo.edit("SuccessfullyXDeletedXAllXRSSXFromXTheXChat")
 
 
-async def check_rss():
-    if not overall_check():
-        return
-    all = get_all()
-    for one in all:
-        link = one.get("rss_link")
-        old = one.get("latest_rss")
-        rss_d = feedparser.parse(link)
-        if rss_d.entries[0].link != old:
-            message = one.get("chat_id")
-            content = ""
-            content += f"**{rss_d.entries[0].title}**"
-            content += f"\n\nLink : {rss_d.entries[0].link}"
-            try:
-                content += f"\n{rss_d.entries[0].description}"
-            except:
-                pass
-            update_rss(message, link, rss_d.entries[0].link)
-            try:
-                await pbot.send_message(message, content)
-                await asyncio.sleep(2)
-            except:
-                return
+asyncXdefXcheck_rss():
+XXXXifXnotXoverall_check():
+XXXXXXXXreturn
+XXXXallX=Xget_all()
+XXXXforXoneXinXall:
+XXXXXXXXlinkX=Xone.get("rss_link")
+XXXXXXXXoldX=Xone.get("latest_rss")
+XXXXXXXXrss_dX=Xfeedparser.parse(link)
+XXXXXXXXifXrss_d.entries[0].linkX!=Xold:
+XXXXXXXXXXXXmessageX=Xone.get("chat_id")
+XXXXXXXXXXXXcontentX=X""
+XXXXXXXXXXXXcontentX+=Xf"**{rss_d.entries[0].title}**"
+XXXXXXXXXXXXcontentX+=Xf"\n\nLinkX:X{rss_d.entries[0].link}"
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXcontentX+=Xf"\n{rss_d.entries[0].description}"
+XXXXXXXXXXXXexcept:
+XXXXXXXXXXXXXXXXpass
+XXXXXXXXXXXXupdate_rss(message,Xlink,Xrss_d.entries[0].link)
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXpbot.send_message(message,Xcontent)
+XXXXXXXXXXXXXXXXawaitXasyncio.sleep(2)
+XXXXXXXXXXXXexcept:
+XXXXXXXXXXXXXXXXreturn
 
 
-scheduler = AsyncIOScheduler()
-scheduler.add_job(check_rss, "interval", minutes=10)
+schedulerX=XAsyncIOScheduler()
+scheduler.add_job(check_rss,X"interval",Xminutes=10)
 scheduler.start()
 
-__mod_name__ = "RSS Feed"
-__help__ = """
-- /addrss : Add Rss to the chat
-- /testrss : Test RSS Of The Chat
-- /listrss : List all RSS Of The Chat
-- /delrss : Delete RSS From The Chat
-- /delallrss : Deletes All RSS From The Chat
+__mod_name__X=X"RSSXFeed"
+__help__X=X"""
+-X/addrssX:XAddXRssXtoXtheXchat
+-X/testrssX:XTestXRSSXOfXTheXChat
+-X/listrssX:XListXallXRSSXOfXTheXChat
+-X/delrssX:XDeleteXRSSXFromXTheXChat
+-X/delallrssX:XDeletesXAllXRSSXFromXTheXChat
 """

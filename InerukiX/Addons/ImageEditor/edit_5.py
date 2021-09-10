@@ -1,424 +1,424 @@
-# By @TroJanzHE 
-import asyncio
-import os
-import shutil
+#XByX@TroJanzHEX
+importXasyncio
+importXos
+importXshutil
 
 
-async def normalglitch_1(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "normalglitch_1.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            cd = ["glitch_this", "-c", "-o", edit_img_loc, download_location, "1"]
-            process = await asyncio.create_subprocess_exec(
-                *cd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-            )
-            await process.communicate()
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("normalglitch_1-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXnormalglitch_1(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"normalglitch_1.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXcdX=X["glitch_this",X"-c",X"-o",Xedit_img_loc,Xdownload_location,X"1"]
+XXXXXXXXXXXXprocessX=XawaitXasyncio.create_subprocess_exec(
+XXXXXXXXXXXXXXXX*cd,Xstdout=asyncio.subprocess.PIPE,Xstderr=asyncio.subprocess.PIPE
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXprocess.communicate()
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("normalglitch_1-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def normalglitch_2(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "normalglitch_2.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            cd = ["glitch_this", "-c", "-o", edit_img_loc, download_location, "2"]
-            process = await asyncio.create_subprocess_exec(
-                *cd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-            )
-            await process.communicate()
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("normalglitch_2-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXnormalglitch_2(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"normalglitch_2.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXcdX=X["glitch_this",X"-c",X"-o",Xedit_img_loc,Xdownload_location,X"2"]
+XXXXXXXXXXXXprocessX=XawaitXasyncio.create_subprocess_exec(
+XXXXXXXXXXXXXXXX*cd,Xstdout=asyncio.subprocess.PIPE,Xstderr=asyncio.subprocess.PIPE
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXprocess.communicate()
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("normalglitch_2-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def normalglitch_3(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "normalglitch_3.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            cd = ["glitch_this", "-c", "-o", edit_img_loc, download_location, "3"]
-            process = await asyncio.create_subprocess_exec(
-                *cd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-            )
-            await process.communicate()
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("normalglitch_3-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXnormalglitch_3(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"normalglitch_3.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXcdX=X["glitch_this",X"-c",X"-o",Xedit_img_loc,Xdownload_location,X"3"]
+XXXXXXXXXXXXprocessX=XawaitXasyncio.create_subprocess_exec(
+XXXXXXXXXXXXXXXX*cd,Xstdout=asyncio.subprocess.PIPE,Xstderr=asyncio.subprocess.PIPE
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXprocess.communicate()
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("normalglitch_3-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def normalglitch_4(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "normalglitch_4.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            cd = ["glitch_this", "-c", "-o", edit_img_loc, download_location, "4"]
-            process = await asyncio.create_subprocess_exec(
-                *cd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-            )
-            await process.communicate()
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("normalglitch_4-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXnormalglitch_4(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"normalglitch_4.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXcdX=X["glitch_this",X"-c",X"-o",Xedit_img_loc,Xdownload_location,X"4"]
+XXXXXXXXXXXXprocessX=XawaitXasyncio.create_subprocess_exec(
+XXXXXXXXXXXXXXXX*cd,Xstdout=asyncio.subprocess.PIPE,Xstderr=asyncio.subprocess.PIPE
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXprocess.communicate()
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("normalglitch_4-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def normalglitch_5(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "normalglitch_5.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            cd = ["glitch_this", "-c", "-o", edit_img_loc, download_location, "5"]
-            process = await asyncio.create_subprocess_exec(
-                *cd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-            )
-            await process.communicate()
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("normalglitch_5-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXnormalglitch_5(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"normalglitch_5.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXcdX=X["glitch_this",X"-c",X"-o",Xedit_img_loc,Xdownload_location,X"5"]
+XXXXXXXXXXXXprocessX=XawaitXasyncio.create_subprocess_exec(
+XXXXXXXXXXXXXXXX*cd,Xstdout=asyncio.subprocess.PIPE,Xstderr=asyncio.subprocess.PIPE
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXprocess.communicate()
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("normalglitch_5-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def scanlineglitch_1(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "scanlineglitch_1.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            cd = ["glitch_this", "-c", "-s", "-o", edit_img_loc, download_location, "1"]
-            process = await asyncio.create_subprocess_exec(
-                *cd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-            )
-            await process.communicate()
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("scanlineglitch_1-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXscanlineglitch_1(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"scanlineglitch_1.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXcdX=X["glitch_this",X"-c",X"-s",X"-o",Xedit_img_loc,Xdownload_location,X"1"]
+XXXXXXXXXXXXprocessX=XawaitXasyncio.create_subprocess_exec(
+XXXXXXXXXXXXXXXX*cd,Xstdout=asyncio.subprocess.PIPE,Xstderr=asyncio.subprocess.PIPE
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXprocess.communicate()
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("scanlineglitch_1-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def scanlineglitch_2(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "scanlineglitch_2.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            cd = ["glitch_this", "-c", "-s", "-o", edit_img_loc, download_location, "2"]
-            process = await asyncio.create_subprocess_exec(
-                *cd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-            )
-            await process.communicate()
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("scanlineglitch_2-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXscanlineglitch_2(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"scanlineglitch_2.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXcdX=X["glitch_this",X"-c",X"-s",X"-o",Xedit_img_loc,Xdownload_location,X"2"]
+XXXXXXXXXXXXprocessX=XawaitXasyncio.create_subprocess_exec(
+XXXXXXXXXXXXXXXX*cd,Xstdout=asyncio.subprocess.PIPE,Xstderr=asyncio.subprocess.PIPE
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXprocess.communicate()
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("scanlineglitch_2-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def scanlineglitch_3(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "scanlineglitch_3.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            cd = ["glitch_this", "-c", "-s", "-o", edit_img_loc, download_location, "3"]
-            process = await asyncio.create_subprocess_exec(
-                *cd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-            )
-            await process.communicate()
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("scanlineglitch_3-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXscanlineglitch_3(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"scanlineglitch_3.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXcdX=X["glitch_this",X"-c",X"-s",X"-o",Xedit_img_loc,Xdownload_location,X"3"]
+XXXXXXXXXXXXprocessX=XawaitXasyncio.create_subprocess_exec(
+XXXXXXXXXXXXXXXX*cd,Xstdout=asyncio.subprocess.PIPE,Xstderr=asyncio.subprocess.PIPE
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXprocess.communicate()
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("scanlineglitch_3-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def scanlineglitch_4(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "scanlineglitch_4.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            cd = ["glitch_this", "-c", "-s", "-o", edit_img_loc, download_location, "4"]
-            process = await asyncio.create_subprocess_exec(
-                *cd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-            )
-            await process.communicate()
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("scanlineglitch_4-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXscanlineglitch_4(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"scanlineglitch_4.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXcdX=X["glitch_this",X"-c",X"-s",X"-o",Xedit_img_loc,Xdownload_location,X"4"]
+XXXXXXXXXXXXprocessX=XawaitXasyncio.create_subprocess_exec(
+XXXXXXXXXXXXXXXX*cd,Xstdout=asyncio.subprocess.PIPE,Xstderr=asyncio.subprocess.PIPE
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXprocess.communicate()
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("scanlineglitch_4-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn
 
 
-async def scanlineglitch_5(client, message):
-    try:
-        userid = str(message.chat.id)
-        if not os.path.isdir(f"./DOWNLOADS/{userid}"):
-            os.makedirs(f"./DOWNLOADS/{userid}")
-        download_location = "./DOWNLOADS" + "/" + userid + "/" + userid + ".jpg"
-        edit_img_loc = "./DOWNLOADS" + "/" + userid + "/" + "scanlineglitch_5.jpg"
-        if not message.reply_to_message.empty:
-            msg = await message.reply_to_message.reply_text(
-                "Downloading image", quote=True
-            )
-            await client.download_media(
-                message=message.reply_to_message, file_name=download_location
-            )
-            await msg.edit("Processing Image...")
-            cd = ["glitch_this", "-c", "-s", "-o", edit_img_loc, download_location, "5"]
-            process = await asyncio.create_subprocess_exec(
-                *cd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-            )
-            await process.communicate()
-            await message.reply_chat_action("upload_photo")
-            await message.reply_to_message.reply_photo(edit_img_loc, quote=True)
-            await msg.delete()
-        else:
-            await message.reply_text("Why did you delete that??")
-        try:
-            shutil.rmtree(f"./DOWNLOADS/{userid}")
-        except Exception:
-            pass
-    except Exception as e:
-        print("scanlineglitch_5-error - " + str(e))
-        if "USER_IS_BLOCKED" in str(e):
-            return
-        else:
-            try:
-                await message.reply_to_message.reply_text(
-                    "Something went wrong!", quote=True
-                )
-            except Exception:
-                return
+asyncXdefXscanlineglitch_5(client,Xmessage):
+XXXXtry:
+XXXXXXXXuseridX=Xstr(message.chat.id)
+XXXXXXXXifXnotXos.path.isdir(f"./DOWNLOADS/{userid}"):
+XXXXXXXXXXXXos.makedirs(f"./DOWNLOADS/{userid}")
+XXXXXXXXdownload_locationX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+XuseridX+X".jpg"
+XXXXXXXXedit_img_locX=X"./DOWNLOADS"X+X"/"X+XuseridX+X"/"X+X"scanlineglitch_5.jpg"
+XXXXXXXXifXnotXmessage.reply_to_message.empty:
+XXXXXXXXXXXXmsgX=XawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXX"DownloadingXimage",Xquote=True
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXclient.download_media(
+XXXXXXXXXXXXXXXXmessage=message.reply_to_message,Xfile_name=download_location
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXmsg.edit("ProcessingXImage...")
+XXXXXXXXXXXXcdX=X["glitch_this",X"-c",X"-s",X"-o",Xedit_img_loc,Xdownload_location,X"5"]
+XXXXXXXXXXXXprocessX=XawaitXasyncio.create_subprocess_exec(
+XXXXXXXXXXXXXXXX*cd,Xstdout=asyncio.subprocess.PIPE,Xstderr=asyncio.subprocess.PIPE
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXprocess.communicate()
+XXXXXXXXXXXXawaitXmessage.reply_chat_action("upload_photo")
+XXXXXXXXXXXXawaitXmessage.reply_to_message.reply_photo(edit_img_loc,Xquote=True)
+XXXXXXXXXXXXawaitXmsg.delete()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXmessage.reply_text("WhyXdidXyouXdeleteXthat??")
+XXXXXXXXtry:
+XXXXXXXXXXXXshutil.rmtree(f"./DOWNLOADS/{userid}")
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXpass
+XXXXexceptXExceptionXasXe:
+XXXXXXXXprint("scanlineglitch_5-errorX-X"X+Xstr(e))
+XXXXXXXXifX"USER_IS_BLOCKED"XinXstr(e):
+XXXXXXXXXXXXreturn
+XXXXXXXXelse:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXawaitXmessage.reply_to_message.reply_text(
+XXXXXXXXXXXXXXXXXXXX"SomethingXwentXwrong!",Xquote=True
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXreturn

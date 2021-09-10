@@ -1,171 +1,171 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
 
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from telethon import events, functions
-from telethon.tl.types import ChatBannedRights
+fromXapscheduler.schedulers.asyncioXimportXAsyncIOScheduler
+fromXtelethonXimportXevents,Xfunctions
+fromXtelethon.tl.typesXimportXChatBannedRights
 
-from Ineruki  import BOT_ID
-from Ineruki .function.telethonbasics import is_admin
-from Ineruki .services.sql.night_mode_sql import (
-    add_nightmode,
-    get_all_chat_id,
-    is_nightmode_indb,
-    rmnightmode,
+fromXInerukiXXimportXBOT_ID
+fromXInerukiX.function.telethonbasicsXimportXis_admin
+fromXInerukiX.services.sql.night_mode_sqlXimportX(
+XXXXadd_nightmode,
+XXXXget_all_chat_id,
+XXXXis_nightmode_indb,
+XXXXrmnightmode,
 )
-from Ineruki .services.telethon import tbot
+fromXInerukiX.services.telethonXimportXtbot
 
-CLEAN_GROUPS = False
-hehes = ChatBannedRights(
-    until_date=None,
-    send_messages=True,
-    send_media=True,
-    send_stickers=True,
-    send_gifs=True,
-    send_games=True,
-    send_inline=True,
-    send_polls=True,
-    invite_users=True,
-    pin_messages=True,
-    change_info=True,
+CLEAN_GROUPSX=XFalse
+hehesX=XChatBannedRights(
+XXXXuntil_date=None,
+XXXXsend_messages=True,
+XXXXsend_media=True,
+XXXXsend_stickers=True,
+XXXXsend_gifs=True,
+XXXXsend_games=True,
+XXXXsend_inline=True,
+XXXXsend_polls=True,
+XXXXinvite_users=True,
+XXXXpin_messages=True,
+XXXXchange_info=True,
 )
-openhehe = ChatBannedRights(
-    until_date=None,
-    send_messages=False,
-    send_media=False,
-    send_stickers=False,
-    send_gifs=False,
-    send_games=False,
-    send_inline=False,
-    send_polls=False,
-    invite_users=True,
-    pin_messages=True,
-    change_info=True,
+openheheX=XChatBannedRights(
+XXXXuntil_date=None,
+XXXXsend_messages=False,
+XXXXsend_media=False,
+XXXXsend_stickers=False,
+XXXXsend_gifs=False,
+XXXXsend_games=False,
+XXXXsend_inline=False,
+XXXXsend_polls=False,
+XXXXinvite_users=True,
+XXXXpin_messages=True,
+XXXXchange_info=True,
 )
 
 
-@tbot.on(events.NewMessage(pattern="/nightmode (.*)"))
-async def close_ws(event):
+@tbot.on(events.NewMessage(pattern="/nightmodeX(.*)"))
+asyncXdefXclose_ws(event):
 
-    if not event.is_group:
-        await event.reply("You Can Only Nsfw Watch in Groups.")
-        return
-    input_str = event.pattern_match.group(1)
-    if not await is_admin(event, BOT_ID):
-        await event.reply("`I Should Be Admin To Do This!`")
-        return
-    if await is_admin(event, event.message.sender_id):
-        if (
-            input_str == "on"
-            or input_str == "On"
-            or input_str == "ON"
-            or input_str == "enable"
-        ):
-            if is_nightmode_indb(str(event.chat_id)):
-                await event.reply("This Chat is Has Already Enabled Night Mode.")
-                return
-            add_nightmode(str(event.chat_id))
-            await event.reply(
-                f"**Added Chat {event.chat.title} With Id {event.chat_id} To Database. This Group Will Be Closed On 12Am(IST) And Will Opened On 06Am(IST)**"
-            )
-        elif (
-            input_str == "off"
-            or input_str == "Off"
-            or input_str == "OFF"
-            or input_str == "disable"
-        ):
+XXXXifXnotXevent.is_group:
+XXXXXXXXawaitXevent.reply("YouXCanXOnlyXNsfwXWatchXinXGroups.")
+XXXXXXXXreturn
+XXXXinput_strX=Xevent.pattern_match.group(1)
+XXXXifXnotXawaitXis_admin(event,XBOT_ID):
+XXXXXXXXawaitXevent.reply("`IXShouldXBeXAdminXToXDoXThis!`")
+XXXXXXXXreturn
+XXXXifXawaitXis_admin(event,Xevent.message.sender_id):
+XXXXXXXXifX(
+XXXXXXXXXXXXinput_strX==X"on"
+XXXXXXXXXXXXorXinput_strX==X"On"
+XXXXXXXXXXXXorXinput_strX==X"ON"
+XXXXXXXXXXXXorXinput_strX==X"enable"
+XXXXXXXX):
+XXXXXXXXXXXXifXis_nightmode_indb(str(event.chat_id)):
+XXXXXXXXXXXXXXXXawaitXevent.reply("ThisXChatXisXHasXAlreadyXEnabledXNightXMode.")
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXadd_nightmode(str(event.chat_id))
+XXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXXf"**AddedXChatX{event.chat.title}XWithXIdX{event.chat_id}XToXDatabase.XThisXGroupXWillXBeXClosedXOnX12Am(IST)XAndXWillXOpenedXOnX06Am(IST)**"
+XXXXXXXXXXXX)
+XXXXXXXXelifX(
+XXXXXXXXXXXXinput_strX==X"off"
+XXXXXXXXXXXXorXinput_strX==X"Off"
+XXXXXXXXXXXXorXinput_strX==X"OFF"
+XXXXXXXXXXXXorXinput_strX==X"disable"
+XXXXXXXX):
 
-            if not is_nightmode_indb(str(event.chat_id)):
-                await event.reply("This Chat is Has Not Enabled Night Mode.")
-                return
-            rmnightmode(str(event.chat_id))
-            await event.reply(
-                f"**Removed Chat {event.chat.title} With Id {event.chat_id} From Database. This Group Will Be No Longer Closed On 12Am(IST) And Will Opened On 06Am(IST)**"
-            )
-        else:
-            await event.reply("I undestand `/nightmode on` and `/nightmode off` only")
-    else:
-        await event.reply("`You Should Be Admin To Do This!`")
-        return
-
-
-async def job_close():
-    ws_chats = get_all_chat_id()
-    if len(ws_chats) == 0:
-        return
-    for warner in ws_chats:
-        try:
-            await tbot.send_message(
-                int(warner.chat_id),
-                "`12:00 Am, Group Is Closing Till 6 Am. Night Mode Started !` \n**Powered By @Ineruki bot**",
-            )
-            await tbot(
-                functions.messages.EditChatDefaultBannedRightsRequest(
-                    peer=int(warner.chat_id), banned_rights=hehes
-                )
-            )
-            if CLEAN_GROUPS:
-                async for user in tbot.iter_participants(int(warner.chat_id)):
-                    if user.deleted:
-                        await tbot.edit_permissions(
-                            int(warner.chat_id), user.id, view_messages=False
-                        )
-        except Exception as e:
-            print(f"Unable To Close Group {warner} - {e}")
+XXXXXXXXXXXXifXnotXis_nightmode_indb(str(event.chat_id)):
+XXXXXXXXXXXXXXXXawaitXevent.reply("ThisXChatXisXHasXNotXEnabledXNightXMode.")
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXXXXXrmnightmode(str(event.chat_id))
+XXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXXf"**RemovedXChatX{event.chat.title}XWithXIdX{event.chat_id}XFromXDatabase.XThisXGroupXWillXBeXNoXLongerXClosedXOnX12Am(IST)XAndXWillXOpenedXOnX06Am(IST)**"
+XXXXXXXXXXXX)
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXevent.reply("IXundestandX`/nightmodeXon`XandX`/nightmodeXoff`Xonly")
+XXXXelse:
+XXXXXXXXawaitXevent.reply("`YouXShouldXBeXAdminXToXDoXThis!`")
+XXXXXXXXreturn
 
 
-scheduler = AsyncIOScheduler(timezone="Asia/Kolkata")
-scheduler.add_job(job_close, trigger="cron", hour=23, minute=55)
+asyncXdefXjob_close():
+XXXXws_chatsX=Xget_all_chat_id()
+XXXXifXlen(ws_chats)X==X0:
+XXXXXXXXreturn
+XXXXforXwarnerXinXws_chats:
+XXXXXXXXtry:
+XXXXXXXXXXXXawaitXtbot.send_message(
+XXXXXXXXXXXXXXXXint(warner.chat_id),
+XXXXXXXXXXXXXXXX"`12:00XAm,XGroupXIsXClosingXTillX6XAm.XNightXModeXStartedX!`X\n**PoweredXByX@InerukiXbot**",
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXtbot(
+XXXXXXXXXXXXXXXXfunctions.messages.EditChatDefaultBannedRightsRequest(
+XXXXXXXXXXXXXXXXXXXXpeer=int(warner.chat_id),Xbanned_rights=hehes
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXXXXXifXCLEAN_GROUPS:
+XXXXXXXXXXXXXXXXasyncXforXuserXinXtbot.iter_participants(int(warner.chat_id)):
+XXXXXXXXXXXXXXXXXXXXifXuser.deleted:
+XXXXXXXXXXXXXXXXXXXXXXXXawaitXtbot.edit_permissions(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXint(warner.chat_id),Xuser.id,Xview_messages=False
+XXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXexceptXExceptionXasXe:
+XXXXXXXXXXXXprint(f"UnableXToXCloseXGroupX{warner}X-X{e}")
+
+
+schedulerX=XAsyncIOScheduler(timezone="Asia/Kolkata")
+scheduler.add_job(job_close,Xtrigger="cron",Xhour=23,Xminute=55)
 scheduler.start()
 
 
-async def job_open():
-    ws_chats = get_all_chat_id()
-    if len(ws_chats) == 0:
-        return
-    for warner in ws_chats:
-        try:
-            await tbot.send_message(
-                int(warner.chat_id),
-                "`06:00 Am, Group Is Opening.`\n**Powered By @Ineruki Bot**",
-            )
-            await tbot(
-                functions.messages.EditChatDefaultBannedRightsRequest(
-                    peer=int(warner.chat_id), banned_rights=openhehe
-                )
-            )
-        except Exception as e:
-            print(f"Unable To Open Group {warner.chat_id} - {e}")
+asyncXdefXjob_open():
+XXXXws_chatsX=Xget_all_chat_id()
+XXXXifXlen(ws_chats)X==X0:
+XXXXXXXXreturn
+XXXXforXwarnerXinXws_chats:
+XXXXXXXXtry:
+XXXXXXXXXXXXawaitXtbot.send_message(
+XXXXXXXXXXXXXXXXint(warner.chat_id),
+XXXXXXXXXXXXXXXX"`06:00XAm,XGroupXIsXOpening.`\n**PoweredXByX@InerukiXBot**",
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXtbot(
+XXXXXXXXXXXXXXXXfunctions.messages.EditChatDefaultBannedRightsRequest(
+XXXXXXXXXXXXXXXXXXXXpeer=int(warner.chat_id),Xbanned_rights=openhehe
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXexceptXExceptionXasXe:
+XXXXXXXXXXXXprint(f"UnableXToXOpenXGroupX{warner.chat_id}X-X{e}")
 
 
-# Run everyday at 06
-scheduler = AsyncIOScheduler(timezone="Asia/Kolkata")
-scheduler.add_job(job_open, trigger="cron", hour=6, minute=10)
+#XRunXeverydayXatX06
+schedulerX=XAsyncIOScheduler(timezone="Asia/Kolkata")
+scheduler.add_job(job_open,Xtrigger="cron",Xhour=6,Xminute=10)
 scheduler.start()
 
-__mod_name__ = "Night Mode"
+__mod_name__X=X"NightXMode"
 
-__help__ = """
-<b> The Night mode </b>
-Close your group at 12.00 a.m. and open back at 6.00 a.m.(IST)
-<i> Only available for asian countries (India Standard time)</i>
+__help__X=X"""
+<b>XTheXNightXmodeX</b>
+CloseXyourXgroupXatX12.00Xa.m.XandXopenXbackXatX6.00Xa.m.(IST)
+<i>XOnlyXavailableXforXasianXcountriesX(IndiaXStandardXtime)</i>
 
-- /nightmode [ON/OFF]: Enable/Disable Night Mode.
+-X/nightmodeX[ON/OFF]:XEnable/DisableXNightXMode.
 
 """

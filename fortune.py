@@ -1,111 +1,111 @@
-import codecs
-import random
-import re
-import sys
-from optparse import OptionParser
+importXcodecs
+importXrandom
+importXre
+importXsys
+fromXoptparseXimportXOptionParser
 
-# ---------------------------------------------------------------------------
-# Exports
-# ---------------------------------------------------------------------------
+#X---------------------------------------------------------------------------
+#XExports
+#X---------------------------------------------------------------------------
 
-__all__ = ["main", "get_random_fortune"]
+__all__X=X["main",X"get_random_fortune"]
 
-# Info about the module
-__version__ = "1.1.0"
-__author__ = "Brian M. Clapper"
-__email__ = "bmc@clapper.org"
-__url__ = "http://software.clapper.org/fortune/"
-__copyright__ = "2008-2019 Brian M. Clapper"
-__license__ = "BSD-style license"
+#XInfoXaboutXtheXmodule
+__version__X=X"1.1.0"
+__author__X=X"BrianXM.XClapper"
+__email__X=X"bmc@clapper.org"
+__url__X=X"http://software.clapper.org/fortune/"
+__copyright__X=X"2008-2019XBrianXM.XClapper"
+__license__X=X"BSD-styleXlicense"
 
-# ---------------------------------------------------------------------------
-# Functions
-# ---------------------------------------------------------------------------
-
-
-def _random_int(start, end):
-    try:
-        # Use SystemRandom, if it's available, since it's likely to have
-        # more entropy.
-        r = random.SystemRandom()
-    except BaseException:
-        r = random
-
-    return r.randint(start, end)
+#X---------------------------------------------------------------------------
+#XFunctions
+#X---------------------------------------------------------------------------
 
 
-def _read_fortunes(fortune_file):
-    with codecs.open(fortune_file, mode="r", encoding="utf-8") as f:
-        contents = f.read()
+defX_random_int(start,Xend):
+XXXXtry:
+XXXXXXXX#XUseXSystemRandom,XifXit'sXavailable,XsinceXit'sXlikelyXtoXhave
+XXXXXXXX#XmoreXentropy.
+XXXXXXXXrX=Xrandom.SystemRandom()
+XXXXexceptXBaseException:
+XXXXXXXXrX=Xrandom
 
-    lines = [line.rstrip() for line in contents.split("\n")]
-
-    delim = re.compile(r"^%$")
-
-    fortunes = []
-    cur = []
-
-    def save_if_nonempty(buf):
-        fortune = "\n".join(buf)
-        if fortune.strip():
-            fortunes.append(fortune)
-
-    for line in lines:
-        if delim.match(line):
-            save_if_nonempty(cur)
-            cur = []
-            continue
-
-        cur.append(line)
-
-    if cur:
-        save_if_nonempty(cur)
-
-    return fortunes
+XXXXreturnXr.randint(start,Xend)
 
 
-def get_random_fortune(fortune_file):
-    fortunes = list(_read_fortunes(fortune_file))
-    randomRecord = _random_int(0, len(fortunes) - 1)
-    return fortunes[randomRecord]
+defX_read_fortunes(fortune_file):
+XXXXwithXcodecs.open(fortune_file,Xmode="r",Xencoding="utf-8")XasXf:
+XXXXXXXXcontentsX=Xf.read()
+
+XXXXlinesX=X[line.rstrip()XforXlineXinXcontents.split("\n")]
+
+XXXXdelimX=Xre.compile(r"^%$")
+
+XXXXfortunesX=X[]
+XXXXcurX=X[]
+
+XXXXdefXsave_if_nonempty(buf):
+XXXXXXXXfortuneX=X"\n".join(buf)
+XXXXXXXXifXfortune.strip():
+XXXXXXXXXXXXfortunes.append(fortune)
+
+XXXXforXlineXinXlines:
+XXXXXXXXifXdelim.match(line):
+XXXXXXXXXXXXsave_if_nonempty(cur)
+XXXXXXXXXXXXcurX=X[]
+XXXXXXXXXXXXcontinue
+
+XXXXXXXXcur.append(line)
+
+XXXXifXcur:
+XXXXXXXXsave_if_nonempty(cur)
+
+XXXXreturnXfortunes
 
 
-def main():
-    usage = "Usage: %prog [OPTIONS] [fortune_file]"
-    arg_parser = OptionParser(usage=usage)
-    arg_parser.add_option(
-        "-V",
-        "--version",
-        action="store_true",
-        dest="show_version",
-        help="Show version and exit.",
-    )
-    arg_parser.epilog = (
-        "If fortune_file is omitted, fortune looks at the "
-        "FORTUNE_FILE environment variable for the path."
-    )
-
-    options, args = arg_parser.parse_args(sys.argv)
-    if len(args) == 2:
-        fortune_file = args[1]
-
-    else:
-        try:
-            fortune_file = "notes.txt"
-        except KeyError:
-            print("Missing fortune file.", file=sys.stderr)
-            print(usage, file=sys.stderr)
-            sys.exit(1)
-
-    try:
-        if options.show_version:
-            print("fortune, version {}".format(__version__))
-        else:
-            print(get_random_fortune(fortune_file))
-    except ValueError as msg:
-        print(msg, file=sys.stderr)
-        sys.exit(1)
+defXget_random_fortune(fortune_file):
+XXXXfortunesX=Xlist(_read_fortunes(fortune_file))
+XXXXrandomRecordX=X_random_int(0,Xlen(fortunes)X-X1)
+XXXXreturnXfortunes[randomRecord]
 
 
-if __name__ == "__main__":
-    main()
+defXmain():
+XXXXusageX=X"Usage:X%progX[OPTIONS]X[fortune_file]"
+XXXXarg_parserX=XOptionParser(usage=usage)
+XXXXarg_parser.add_option(
+XXXXXXXX"-V",
+XXXXXXXX"--version",
+XXXXXXXXaction="store_true",
+XXXXXXXXdest="show_version",
+XXXXXXXXhelp="ShowXversionXandXexit.",
+XXXX)
+XXXXarg_parser.epilogX=X(
+XXXXXXXX"IfXfortune_fileXisXomitted,XfortuneXlooksXatXtheX"
+XXXXXXXX"FORTUNE_FILEXenvironmentXvariableXforXtheXpath."
+XXXX)
+
+XXXXoptions,XargsX=Xarg_parser.parse_args(sys.argv)
+XXXXifXlen(args)X==X2:
+XXXXXXXXfortune_fileX=Xargs[1]
+
+XXXXelse:
+XXXXXXXXtry:
+XXXXXXXXXXXXfortune_fileX=X"notes.txt"
+XXXXXXXXexceptXKeyError:
+XXXXXXXXXXXXprint("MissingXfortuneXfile.",Xfile=sys.stderr)
+XXXXXXXXXXXXprint(usage,Xfile=sys.stderr)
+XXXXXXXXXXXXsys.exit(1)
+
+XXXXtry:
+XXXXXXXXifXoptions.show_version:
+XXXXXXXXXXXXprint("fortune,XversionX{}".format(__version__))
+XXXXXXXXelse:
+XXXXXXXXXXXXprint(get_random_fortune(fortune_file))
+XXXXexceptXValueErrorXasXmsg:
+XXXXXXXXprint(msg,Xfile=sys.stderr)
+XXXXXXXXsys.exit(1)
+
+
+ifX__name__X==X"__main__":
+XXXXmain()

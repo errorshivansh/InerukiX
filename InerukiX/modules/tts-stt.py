@@ -1,171 +1,171 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-import os
-from datetime import datetime
-
-import requests
-from gtts import gTTS, gTTSError
-from telethon.tl import functions, types
-
-from Ineruki .config import get_str_key
-from Ineruki .services.events import register
-from Ineruki .services.telethon import tbot
-
-IBM_WATSON_CRED_PASSWORD = get_str_key("IBM_WATSON_CRED_PASSWORD", required=False)
-IBM_WATSON_CRED_URL = get_str_key("IBM_WATSON_CRED_URL", required=False)
-TEMP_DOWNLOAD_DIRECTORY = "./"
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
 
-async def is_register_admin(chat, user):
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
-        return isinstance(
-            (
-                await tbot(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    if isinstance(chat, types.InputPeerUser):
-        return True
+importXos
+fromXdatetimeXimportXdatetime
+
+importXrequests
+fromXgttsXimportXgTTS,XgTTSError
+fromXtelethon.tlXimportXfunctions,Xtypes
+
+fromXInerukiX.configXimportXget_str_key
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.telethonXimportXtbot
+
+IBM_WATSON_CRED_PASSWORDX=Xget_str_key("IBM_WATSON_CRED_PASSWORD",Xrequired=False)
+IBM_WATSON_CRED_URLX=Xget_str_key("IBM_WATSON_CRED_URL",Xrequired=False)
+TEMP_DOWNLOAD_DIRECTORYX=X"./"
 
 
-@register(pattern="^/tts (.*)")
-async def _(event):
-    if event.fwd_from:
-        return
-    if event.is_group:
-        if await is_register_admin(event.input_chat, event.message.sender_id):
-            pass
-        else:
-            return
-    input_str = event.pattern_match.group(1)
-    reply_to_id = event.message.id
-    if event.reply_to_msg_id:
-        previous_message = await event.get_reply_message()
-        text = previous_message.message
-        lan = input_str
-    elif "|" in input_str:
-        lan, text = input_str.split("|")
-    else:
-        await event.reply(
-            "Invalid Syntax\nFormat `/tts lang | text`\nFor eg: `/tts en | hello`"
-        )
-        return
-    text = text.strip()
-    lan = lan.strip()
-    try:
-        tts = gTTS(text, tld="com", lang=lan)
-        tts.save("k.mp3")
-    except AssertionError:
-        await event.reply(
-            "The text is empty.\n"
-            "Nothing left to speak after pre-precessing, "
-            "tokenizing and cleaning."
-        )
-        return
-    except ValueError:
-        await event.reply("Language is not supported.")
-        return
-    except RuntimeError:
-        await event.reply("Error loading the languages dictionary.")
-        return
-    except gTTSError:
-        await event.reply("Error in Google Text-to-Speech API request !")
-        return
-    with open("k.mp3", "r"):
-        await tbot.send_file(
-            event.chat_id, "k.mp3", voice_note=True, reply_to=reply_to_id
-        )
-        os.remove("k.mp3")
+asyncXdefXis_register_admin(chat,Xuser):
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXtbot(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXifXisinstance(chat,Xtypes.InputPeerUser):
+XXXXXXXXreturnXTrue
 
 
-# ------ THANKS TO LONAMI ------#
+@register(pattern="^/ttsX(.*)")
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXifXevent.is_group:
+XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+XXXXinput_strX=Xevent.pattern_match.group(1)
+XXXXreply_to_idX=Xevent.message.id
+XXXXifXevent.reply_to_msg_id:
+XXXXXXXXprevious_messageX=XawaitXevent.get_reply_message()
+XXXXXXXXtextX=Xprevious_message.message
+XXXXXXXXlanX=Xinput_str
+XXXXelifX"|"XinXinput_str:
+XXXXXXXXlan,XtextX=Xinput_str.split("|")
+XXXXelse:
+XXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXX"InvalidXSyntax\nFormatX`/ttsXlangX|Xtext`\nForXeg:X`/ttsXenX|Xhello`"
+XXXXXXXX)
+XXXXXXXXreturn
+XXXXtextX=Xtext.strip()
+XXXXlanX=Xlan.strip()
+XXXXtry:
+XXXXXXXXttsX=XgTTS(text,Xtld="com",Xlang=lan)
+XXXXXXXXtts.save("k.mp3")
+XXXXexceptXAssertionError:
+XXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXX"TheXtextXisXempty.\n"
+XXXXXXXXXXXX"NothingXleftXtoXspeakXafterXpre-precessing,X"
+XXXXXXXXXXXX"tokenizingXandXcleaning."
+XXXXXXXX)
+XXXXXXXXreturn
+XXXXexceptXValueError:
+XXXXXXXXawaitXevent.reply("LanguageXisXnotXsupported.")
+XXXXXXXXreturn
+XXXXexceptXRuntimeError:
+XXXXXXXXawaitXevent.reply("ErrorXloadingXtheXlanguagesXdictionary.")
+XXXXXXXXreturn
+XXXXexceptXgTTSError:
+XXXXXXXXawaitXevent.reply("ErrorXinXGoogleXText-to-SpeechXAPIXrequestX!")
+XXXXXXXXreturn
+XXXXwithXopen("k.mp3",X"r"):
+XXXXXXXXawaitXtbot.send_file(
+XXXXXXXXXXXXevent.chat_id,X"k.mp3",Xvoice_note=True,Xreply_to=reply_to_id
+XXXXXXXX)
+XXXXXXXXos.remove("k.mp3")
+
+
+#X------XTHANKSXTOXLONAMIX------#
 
 
 @register(pattern="^/stt$")
-async def _(event):
-    if event.fwd_from:
-        return
-    if event.is_group:
-        if await is_register_admin(event.input_chat, event.message.sender_id):
-            pass
-        else:
-            return
-    start = datetime.now()
-    if not os.path.isdir(TEMP_DOWNLOAD_DIRECTORY):
-        os.makedirs(TEMP_DOWNLOAD_DIRECTORY)
+asyncXdefX_(event):
+XXXXifXevent.fwd_from:
+XXXXXXXXreturn
+XXXXifXevent.is_group:
+XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+XXXXstartX=Xdatetime.now()
+XXXXifXnotXos.path.isdir(TEMP_DOWNLOAD_DIRECTORY):
+XXXXXXXXos.makedirs(TEMP_DOWNLOAD_DIRECTORY)
 
-    if event.reply_to_msg_id:
-        previous_message = await event.get_reply_message()
-        required_file_name = await event.client.download_media(
-            previous_message, TEMP_DOWNLOAD_DIRECTORY
-        )
-        if IBM_WATSON_CRED_URL is None or IBM_WATSON_CRED_PASSWORD is None:
-            await event.reply(
-                "You need to set the required ENV variables for this module. \nModule stopping"
-            )
-        else:
-            # await event.reply("Starting analysis")
-            headers = {
-                "Content-Type": previous_message.media.document.mime_type,
-            }
-            data = open(required_file_name, "rb").read()
-            response = requests.post(
-                IBM_WATSON_CRED_URL + "/v1/recognize",
-                headers=headers,
-                data=data,
-                auth=("apikey", IBM_WATSON_CRED_PASSWORD),
-            )
-            r = response.json()
-            if "results" in r:
-                # process the json to appropriate string format
-                results = r["results"]
-                transcript_response = ""
-                transcript_confidence = ""
-                for alternative in results:
-                    alternatives = alternative["alternatives"][0]
-                    transcript_response += " " + str(alternatives["transcript"])
-                    transcript_confidence += (
-                        " " + str(alternatives["confidence"]) + " + "
-                    )
-                end = datetime.now()
-                ms = (end - start).seconds
-                if transcript_response != "":
-                    string_to_show = "TRANSCRIPT: `{}`\nTime Taken: {} seconds\nConfidence: `{}`".format(
-                        transcript_response, ms, transcript_confidence
-                    )
-                else:
-                    string_to_show = "TRANSCRIPT: `Nil`\nTime Taken: {} seconds\n\n**No Results Found**".format(
-                        ms
-                    )
-                await event.reply(string_to_show)
-            else:
-                await event.reply(r["error"])
-            # now, remove the temporary file
-            os.remove(required_file_name)
-    else:
-        await event.reply("Reply to a voice message, to get the text out of it.")
+XXXXifXevent.reply_to_msg_id:
+XXXXXXXXprevious_messageX=XawaitXevent.get_reply_message()
+XXXXXXXXrequired_file_nameX=XawaitXevent.client.download_media(
+XXXXXXXXXXXXprevious_message,XTEMP_DOWNLOAD_DIRECTORY
+XXXXXXXX)
+XXXXXXXXifXIBM_WATSON_CRED_URLXisXNoneXorXIBM_WATSON_CRED_PASSWORDXisXNone:
+XXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXX"YouXneedXtoXsetXtheXrequiredXENVXvariablesXforXthisXmodule.X\nModuleXstopping"
+XXXXXXXXXXXX)
+XXXXXXXXelse:
+XXXXXXXXXXXX#XawaitXevent.reply("StartingXanalysis")
+XXXXXXXXXXXXheadersX=X{
+XXXXXXXXXXXXXXXX"Content-Type":Xprevious_message.media.document.mime_type,
+XXXXXXXXXXXX}
+XXXXXXXXXXXXdataX=Xopen(required_file_name,X"rb").read()
+XXXXXXXXXXXXresponseX=Xrequests.post(
+XXXXXXXXXXXXXXXXIBM_WATSON_CRED_URLX+X"/v1/recognize",
+XXXXXXXXXXXXXXXXheaders=headers,
+XXXXXXXXXXXXXXXXdata=data,
+XXXXXXXXXXXXXXXXauth=("apikey",XIBM_WATSON_CRED_PASSWORD),
+XXXXXXXXXXXX)
+XXXXXXXXXXXXrX=Xresponse.json()
+XXXXXXXXXXXXifX"results"XinXr:
+XXXXXXXXXXXXXXXX#XprocessXtheXjsonXtoXappropriateXstringXformat
+XXXXXXXXXXXXXXXXresultsX=Xr["results"]
+XXXXXXXXXXXXXXXXtranscript_responseX=X""
+XXXXXXXXXXXXXXXXtranscript_confidenceX=X""
+XXXXXXXXXXXXXXXXforXalternativeXinXresults:
+XXXXXXXXXXXXXXXXXXXXalternativesX=Xalternative["alternatives"][0]
+XXXXXXXXXXXXXXXXXXXXtranscript_responseX+=X"X"X+Xstr(alternatives["transcript"])
+XXXXXXXXXXXXXXXXXXXXtranscript_confidenceX+=X(
+XXXXXXXXXXXXXXXXXXXXXXXX"X"X+Xstr(alternatives["confidence"])X+X"X+X"
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXendX=Xdatetime.now()
+XXXXXXXXXXXXXXXXmsX=X(endX-Xstart).seconds
+XXXXXXXXXXXXXXXXifXtranscript_responseX!=X"":
+XXXXXXXXXXXXXXXXXXXXstring_to_showX=X"TRANSCRIPT:X`{}`\nTimeXTaken:X{}Xseconds\nConfidence:X`{}`".format(
+XXXXXXXXXXXXXXXXXXXXXXXXtranscript_response,Xms,Xtranscript_confidence
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXstring_to_showX=X"TRANSCRIPT:X`Nil`\nTimeXTaken:X{}Xseconds\n\n**NoXResultsXFound**".format(
+XXXXXXXXXXXXXXXXXXXXXXXXms
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXawaitXevent.reply(string_to_show)
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXawaitXevent.reply(r["error"])
+XXXXXXXXXXXX#Xnow,XremoveXtheXtemporaryXfile
+XXXXXXXXXXXXos.remove(required_file_name)
+XXXXelse:
+XXXXXXXXawaitXevent.reply("ReplyXtoXaXvoiceXmessage,XtoXgetXtheXtextXoutXofXit.")
 
 
-_mod_name_ = "Text to Speech"
+_mod_name_X=X"TextXtoXSpeech"
 
-_help_ = """
- - /tts: Reply to any message to get text to speech output
- - /stt: Type in reply to a voice message(english only) to extract text from it.
+_help_X=X"""
+X-X/tts:XReplyXtoXanyXmessageXtoXgetXtextXtoXspeechXoutput
+X-X/stt:XTypeXinXreplyXtoXaXvoiceXmessage(englishXonly)XtoXextractXtextXfromXit.
 """

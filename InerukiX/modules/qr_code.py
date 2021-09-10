@@ -1,132 +1,132 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import os
-from asyncio import sleep
-from datetime import datetime
+importXos
+fromXasyncioXimportXsleep
+fromXdatetimeXimportXdatetime
 
-from requests import get, post
-from telethon.tl import functions, types
+fromXrequestsXimportXget,Xpost
+fromXtelethon.tlXimportXfunctions,Xtypes
 
-from Ineruki .services.events import register
-from Ineruki .services.telethon import tbot as client
-
-
-def progress(current, total):
-    """Calculate and return the download progress with given arguments."""
-    print(
-        "Downloaded {} of {}\nCompleted {}".format(
-            current, total, (current / total) * 100
-        )
-    )
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.telethonXimportXtbotXasXclient
 
 
-async def is_register_admin(chat, user):
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
+defXprogress(current,Xtotal):
+XXXX"""CalculateXandXreturnXtheXdownloadXprogressXwithXgivenXarguments."""
+XXXXprint(
+XXXXXXXX"DownloadedX{}XofX{}\nCompletedX{}".format(
+XXXXXXXXXXXXcurrent,Xtotal,X(currentX/Xtotal)X*X100
+XXXXXXXX)
+XXXX)
 
-        return isinstance(
-            (
-                await client(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    elif isinstance(chat, types.InputPeerChat):
 
-        ui = await client.get_peer_id(user)
-        ps = (
-            await client(functions.messages.GetFullChatRequest(chat.chat_id))
-        ).full_chat.participants.participants
-        return isinstance(
-            next((p for p in ps if p.user_id == ui), None),
-            (types.ChatParticipantAdmin, types.ChatParticipantCreator),
-        )
-    else:
-        return None
+asyncXdefXis_register_admin(chat,Xuser):
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
+
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXclient(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXelifXisinstance(chat,Xtypes.InputPeerChat):
+
+XXXXXXXXuiX=XawaitXclient.get_peer_id(user)
+XXXXXXXXpsX=X(
+XXXXXXXXXXXXawaitXclient(functions.messages.GetFullChatRequest(chat.chat_id))
+XXXXXXXX).full_chat.participants.participants
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXXnext((pXforXpXinXpsXifXp.user_idX==Xui),XNone),
+XXXXXXXXXXXX(types.ChatParticipantAdmin,Xtypes.ChatParticipantCreator),
+XXXXXXXX)
+XXXXelse:
+XXXXXXXXreturnXNone
 
 
 @register(pattern=r"^/getqr$")
-async def parseqr(qr_e):
-    """For .getqr command, get QR Code content from the replied photo."""
-    if qr_e.fwd_from:
-        return
-    start = datetime.now()
-    downloaded_file_name = await qr_e.client.download_media(
-        await qr_e.get_reply_message(), progress_callback=progress
-    )
-    url = "https://api.qrserver.com/v1/read-qr-code/?outputformat=json"
-    file = open(downloaded_file_name, "rb")
-    files = {"file": file}
-    resp = post(url, files=files).json()
-    qr_contents = resp[0]["symbol"][0]["data"]
-    file.close()
-    os.remove(downloaded_file_name)
-    end = datetime.now()
-    duration = (end - start).seconds
-    await qr_e.reply(
-        "Obtained QRCode contents in {} seconds.\n{}".format(duration, qr_contents)
-    )
+asyncXdefXparseqr(qr_e):
+XXXX"""ForX.getqrXcommand,XgetXQRXCodeXcontentXfromXtheXrepliedXphoto."""
+XXXXifXqr_e.fwd_from:
+XXXXXXXXreturn
+XXXXstartX=Xdatetime.now()
+XXXXdownloaded_file_nameX=XawaitXqr_e.client.download_media(
+XXXXXXXXawaitXqr_e.get_reply_message(),Xprogress_callback=progress
+XXXX)
+XXXXurlX=X"https://api.qrserver.com/v1/read-qr-code/?outputformat=json"
+XXXXfileX=Xopen(downloaded_file_name,X"rb")
+XXXXfilesX=X{"file":Xfile}
+XXXXrespX=Xpost(url,Xfiles=files).json()
+XXXXqr_contentsX=Xresp[0]["symbol"][0]["data"]
+XXXXfile.close()
+XXXXos.remove(downloaded_file_name)
+XXXXendX=Xdatetime.now()
+XXXXdurationX=X(endX-Xstart).seconds
+XXXXawaitXqr_e.reply(
+XXXXXXXX"ObtainedXQRCodeXcontentsXinX{}Xseconds.\n{}".format(duration,Xqr_contents)
+XXXX)
 
 
-@register(pattern=r"^/makeqr(?: |$)([\s\S]*)")
-async def make_qr(qrcode):
-    """For .makeqr command, make a QR Code containing the given content."""
-    if qrcode.fwd_from:
-        return
-    start = datetime.now()
-    input_str = qrcode.pattern_match.group(1)
-    message = "SYNTA : `.makeqr <long text to include>`"
-    reply_msg_id = None
-    if input_str:
-        message = input_str
-    elif qrcode.reply_to_msg_id:
-        previous_message = await qrcode.get_reply_message()
-        reply_msg_id = previous_message.id
-        if previous_message.media:
-            downloaded_file_name = await qrcode.client.download_media(
-                previous_message, progress_callback=progress
-            )
-            m_list = None
-            with open(downloaded_file_name, "rb") as file:
-                m_list = file.readlines()
-            message = ""
-            for media in m_list:
-                message += media.decode("UTF-8") + "\r\n"
-            os.remove(downloaded_file_name)
-        else:
-            message = previous_message.message
+@register(pattern=r"^/makeqr(?:X|$)([\s\S]*)")
+asyncXdefXmake_qr(qrcode):
+XXXX"""ForX.makeqrXcommand,XmakeXaXQRXCodeXcontainingXtheXgivenXcontent."""
+XXXXifXqrcode.fwd_from:
+XXXXXXXXreturn
+XXXXstartX=Xdatetime.now()
+XXXXinput_strX=Xqrcode.pattern_match.group(1)
+XXXXmessageX=X"SYNTAX:X`.makeqrX<longXtextXtoXinclude>`"
+XXXXreply_msg_idX=XNone
+XXXXifXinput_str:
+XXXXXXXXmessageX=Xinput_str
+XXXXelifXqrcode.reply_to_msg_id:
+XXXXXXXXprevious_messageX=XawaitXqrcode.get_reply_message()
+XXXXXXXXreply_msg_idX=Xprevious_message.id
+XXXXXXXXifXprevious_message.media:
+XXXXXXXXXXXXdownloaded_file_nameX=XawaitXqrcode.client.download_media(
+XXXXXXXXXXXXXXXXprevious_message,Xprogress_callback=progress
+XXXXXXXXXXXX)
+XXXXXXXXXXXXm_listX=XNone
+XXXXXXXXXXXXwithXopen(downloaded_file_name,X"rb")XasXfile:
+XXXXXXXXXXXXXXXXm_listX=Xfile.readlines()
+XXXXXXXXXXXXmessageX=X""
+XXXXXXXXXXXXforXmediaXinXm_list:
+XXXXXXXXXXXXXXXXmessageX+=Xmedia.decode("UTF-8")X+X"\r\n"
+XXXXXXXXXXXXos.remove(downloaded_file_name)
+XXXXXXXXelse:
+XXXXXXXXXXXXmessageX=Xprevious_message.message
 
-    url = "https://api.qrserver.com/v1/create-qr-code/?data={}&\
+XXXXurlX=X"https://api.qrserver.com/v1/create-qr-code/?data={}&\
 size=200x200&charset-source=UTF-8&charset-target=UTF-8\
 &ecc=L&color=0-0-0&bgcolor=255-255-255\
 &margin=1&qzone=0&format=jpg"
 
-    resp = get(url.format(message), stream=True)
-    required_file_name = "temp_qr.webp"
-    with open(required_file_name, "w+b") as file:
-        for chunk in resp.iter_content(chunk_size=128):
-            file.write(chunk)
-    await qrcode.client.send_file(
-        qrcode.chat_id,
-        required_file_name,
-        reply_to=reply_msg_id,
-        progress_callback=progress,
-    )
-    os.remove(required_file_name)
-    duration = (datetime.now() - start).seconds
-    await qrcode.reply("Created QRCode in {} seconds".format(duration))
-    await sleep(5)
+XXXXrespX=Xget(url.format(message),Xstream=True)
+XXXXrequired_file_nameX=X"temp_qr.webp"
+XXXXwithXopen(required_file_name,X"w+b")XasXfile:
+XXXXXXXXforXchunkXinXresp.iter_content(chunk_size=128):
+XXXXXXXXXXXXfile.write(chunk)
+XXXXawaitXqrcode.client.send_file(
+XXXXXXXXqrcode.chat_id,
+XXXXXXXXrequired_file_name,
+XXXXXXXXreply_to=reply_msg_id,
+XXXXXXXXprogress_callback=progress,
+XXXX)
+XXXXos.remove(required_file_name)
+XXXXdurationX=X(datetime.now()X-Xstart).seconds
+XXXXawaitXqrcode.reply("CreatedXQRCodeXinX{}Xseconds".format(duration))
+XXXXawaitXsleep(5)

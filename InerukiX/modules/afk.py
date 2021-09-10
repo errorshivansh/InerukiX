@@ -1,92 +1,92 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 HitaloSama.
-# Copyright (C) 2019 Aiogram.
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2021XHitaloSama.
+#XCopyrightX(C)X2019XAiogram.
 #
-# This file is part of Hitsuki (Telegram Bot)
+#XThisXfileXisXpartXofXHitsukiX(TelegramXBot)
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import html
-import re
+importXhtml
+importXre
 
-from Ineruki .decorator import register
-from Ineruki .services.mongo import db
+fromXInerukiX.decoratorXimportXregister
+fromXInerukiX.services.mongoXimportXdb
 
-from .utils.disable import disableable_dec
-from .utils.language import get_strings_dec
-from .utils.message import get_args_str
-from .utils.user_details import get_user, get_user_by_id, get_user_link
+fromX.utils.disableXimportXdisableable_dec
+fromX.utils.languageXimportXget_strings_dec
+fromX.utils.messageXimportXget_args_str
+fromX.utils.user_detailsXimportXget_user,Xget_user_by_id,Xget_user_link
 
 
 @register(cmds="afk")
 @disableable_dec("afk")
 @get_strings_dec("afk")
-async def afk(message, strings):
-    try:
-        arg = get_args_str(message)
-    except:
-        return
-    # dont support AFK as anon admin
-    if message.from_user.id == 1087968824:
-        await message.reply(strings["afk_anon"])
-        return
+asyncXdefXafk(message,Xstrings):
+XXXXtry:
+XXXXXXXXargX=Xget_args_str(message)
+XXXXexcept:
+XXXXXXXXreturn
+XXXX#XdontXsupportXAFKXasXanonXadmin
+XXXXifXmessage.from_user.idX==X1087968824:
+XXXXXXXXawaitXmessage.reply(strings["afk_anon"])
+XXXXXXXXreturn
 
-    if not arg:
-        reason = "No reason"
-    else:
-        reason = arg
+XXXXifXnotXarg:
+XXXXXXXXreasonX=X"NoXreason"
+XXXXelse:
+XXXXXXXXreasonX=Xarg
 
-    user = await get_user_by_id(message.from_user.id)
-    user_afk = await db.afk.find_one({"user": user["user_id"]})
-    if user_afk:
-        return
+XXXXuserX=XawaitXget_user_by_id(message.from_user.id)
+XXXXuser_afkX=XawaitXdb.afk.find_one({"user":Xuser["user_id"]})
+XXXXifXuser_afk:
+XXXXXXXXreturn
 
-    await db.afk.insert_one({"user": user["user_id"], "reason": reason})
-    text = strings["is_afk"].format(
-        user=(await get_user_link(user["user_id"])), reason=html.escape(reason)
-    )
-    await message.reply(text)
+XXXXawaitXdb.afk.insert_one({"user":Xuser["user_id"],X"reason":Xreason})
+XXXXtextX=Xstrings["is_afk"].format(
+XXXXXXXXuser=(awaitXget_user_link(user["user_id"])),Xreason=html.escape(reason)
+XXXX)
+XXXXawaitXmessage.reply(text)
 
 
-@register(f="text", allow_edited=False)
+@register(f="text",Xallow_edited=False)
 @get_strings_dec("afk")
-async def check_afk(message, strings):
-    if bool(message.reply_to_message):
-        if message.reply_to_message.from_user.id in (1087968824, 777000):
-            return
-    if message.from_user.id in (1087968824, 777000):
-        return
-    user_afk = await db.afk.find_one({"user": message.from_user.id})
-    if user_afk:
-        afk_cmd = re.findall("^[!/]afk(.*)", message.text)
-        if not afk_cmd:
-            await message.reply(
-                strings["unafk"].format(
-                    user=(await get_user_link(message.from_user.id))
-                )
-            )
-            await db.afk.delete_one({"_id": user_afk["_id"]})
+asyncXdefXcheck_afk(message,Xstrings):
+XXXXifXbool(message.reply_to_message):
+XXXXXXXXifXmessage.reply_to_message.from_user.idXinX(1087968824,X777000):
+XXXXXXXXXXXXreturn
+XXXXifXmessage.from_user.idXinX(1087968824,X777000):
+XXXXXXXXreturn
+XXXXuser_afkX=XawaitXdb.afk.find_one({"user":Xmessage.from_user.id})
+XXXXifXuser_afk:
+XXXXXXXXafk_cmdX=Xre.findall("^[!/]afk(.*)",Xmessage.text)
+XXXXXXXXifXnotXafk_cmd:
+XXXXXXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXXXXXstrings["unafk"].format(
+XXXXXXXXXXXXXXXXXXXXuser=(awaitXget_user_link(message.from_user.id))
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXXXXXawaitXdb.afk.delete_one({"_id":Xuser_afk["_id"]})
 
-    user = await get_user(message)
-    if not user:
-        return
+XXXXuserX=XawaitXget_user(message)
+XXXXifXnotXuser:
+XXXXXXXXreturn
 
-    user_afk = await db.afk.find_one({"user": user["user_id"]})
-    if user_afk:
-        await message.reply(
-            strings["is_afk"].format(
-                user=(await get_user_link(user["user_id"])),
-                reason=html.escape(user_afk["reason"]),
-            )
-        )
+XXXXuser_afkX=XawaitXdb.afk.find_one({"user":Xuser["user_id"]})
+XXXXifXuser_afk:
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXstrings["is_afk"].format(
+XXXXXXXXXXXXXXXXuser=(awaitXget_user_link(user["user_id"])),
+XXXXXXXXXXXXXXXXreason=html.escape(user_afk["reason"]),
+XXXXXXXXXXXX)
+XXXXXXXX)

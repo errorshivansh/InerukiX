@@ -1,58 +1,58 @@
-__mod_name__ = "🛠 Extras"
-__help__ = """
-The module that contains extra tools that help you to do many cool stuff.
+__mod_name__X=X"🛠XExtras"
+__help__X=X"""
+TheXmoduleXthatXcontainsXextraXtoolsXthatXhelpXyouXtoXdoXmanyXcoolXstuff.
 
-<b> Available Commands </b>
+<b>XAvailableXCommandsX</b>
 
-<b> AFK </b>
-- /afk reason : mark yourself as AFK(Away From Keyboard)
-  
-<b> URL LOCK </b> 
- Block links sent by users in your group 
-- /urllock [on/off]: Enable/Disable URL Lock
+<b>XAFKX</b>
+-X/afkXreasonX:XmarkXyourselfXasXAFK(AwayXFromXKeyboard)
+XX
+<b>XURLXLOCKX</b>X
+XBlockXlinksXsentXbyXusersXinXyourXgroupX
+-X/urllockX[on/off]:XEnable/DisableXURLXLock
 
-<b> DATE TIME </b>
-- /datetime [timezone]: Get the present date and time information
-You can check out this [link](https://timezonedb.com/time-zones) for the available timezones
+<b>XDATEXTIMEX</b>
+-X/datetimeX[timezone]:XGetXtheXpresentXdateXandXtimeXinformation
+YouXcanXcheckXoutXthisX[link](https://timezonedb.com/time-zones)XforXtheXavailableXtimezones
 
-<b> PASTE </b>
-- /paste [reply]
-Usage: Create a paste or a shortened url using nekobin (https://nekobin.com)
+<b>XPASTEX</b>
+-X/pasteX[reply]
+Usage:XCreateXaXpasteXorXaXshortenedXurlXusingXnekobinX(https://nekobin.com)
 
-<b> TELEGRAPH </b>
-- /telegraph media : To Make Link of Any Image Or MP4 video. 
-- /telegraph text : To make Link of Any Text Written. 
+<b>XTELEGRAPHX</b>
+-X/telegraphXmediaX:XToXMakeXLinkXofXAnyXImageXOrXMP4Xvideo.X
+-X/telegraphXtextX:XToXmakeXLinkXofXAnyXTextXWritten.X
 
-<b> TORRENT </b>
-- /torrent [QUERY]: Search for torrent links
+<b>XTORRENTX</b>
+-X/torrentX[QUERY]:XSearchXforXtorrentXlinks
 
-<b> TE T TO SPEECH </b>
-- /tts: Reply to any message to get text to speech output
-- /stt: Type in reply to a voice message(english only) to extract text from it.
+<b>XTEXTXTOXSPEECHX</b>
+-X/tts:XReplyXtoXanyXmessageXtoXgetXtextXtoXspeechXoutput
+-X/stt:XTypeXinXreplyXtoXaXvoiceXmessage(englishXonly)XtoXextractXtextXfromXit.
 
-<b> VIRUS SCAN </b>
-- /scanit: Scan a file for virus (MA  SIZE = 3MB)
- 
+<b>XVIRUSXSCANX</b>
+-X/scanit:XScanXaXfileXforXvirusX(MAXXSIZEX=X3MB)
+X
 <b>COUNTRY</b>
-- /country [country name]*:* Gathering info about given country
+-X/countryX[countryXname]*:*XGatheringXinfoXaboutXgivenXcountry
 
-<b>COVID</b>              
-- /covid - To Get Global Stats of Covid.
-- /covid [COUNTRY] - To Get Stats of A Single Country.
-  
-<b>MATCH INFO</b>     
-- /cs - Gathers match information (globally)
+<b>COVID</b>XXXXXXXXXXXXXX
+-X/covidX-XToXGetXGlobalXStatsXofXCovid.
+-X/covidX[COUNTRY]X-XToXGetXStatsXofXAXSingleXCountry.
+XX
+<b>MATCHXINFO</b>XXXXX
+-X/csX-XGathersXmatchXinformationX(globally)
 
-<b>QR CODE</b>     
-- /getqr - Get text in qr.
-- /makeqr - Make a qr code.
-  
-<b> KARMA </b>
-[UPVOTE] - Use upvote keywords like "+", "+1", "thanks" etc to upvote a message.
-[DOWNVOTE] - Use downvote keywords like "-", "-1", etc to downvote a message.
+<b>QRXCODE</b>XXXXX
+-X/getqrX-XGetXtextXinXqr.
+-X/makeqrX-XMakeXaXqrXcode.
+XX
+<b>XKARMAX</b>
+[UPVOTE]X-XUseXupvoteXkeywordsXlikeX"+",X"+1",X"thanks"XetcXtoXupvoteXaXmessage.
+[DOWNVOTE]X-XUseXdownvoteXkeywordsXlikeX"-",X"-1",XetcXtoXdownvoteXaXmessage.
 
-- /karma [ON/OFF]: Enable/Disable karma in group. 
-- /karma [Reply to a message]: Check user's karma
-- /karma: Chek karma list of top 10 users
-        
+-X/karmaX[ON/OFF]:XEnable/DisableXkarmaXinXgroup.X
+-X/karmaX[ReplyXtoXaXmessage]:XCheckXuser'sXkarma
+-X/karma:XChekXkarmaXlistXofXtopX10Xusers
+XXXXXXXX
 """

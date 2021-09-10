@@ -1,452 +1,452 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 errorshivansh
-# Copyright (C) 2020 Inuka Asith
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2021Xerrorshivansh
+#XCopyrightX(C)X2020XInukaXAsith
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import time
+importXtime
 
-import httpx
-import rapidjson as json
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from bs4 import BeautifulSoup
+importXhttpx
+importXrapidjsonXasXjson
+fromXaiogram.typesXimportXInlineKeyboardButton,XInlineKeyboardMarkup
+fromXbs4XimportXBeautifulSoup
 
-from Ineruki  import decorator
-from Ineruki .decorator import register
+fromXInerukiXXimportXdecorator
+fromXInerukiX.decoratorXimportXregister
 
-from .utils.android import GetDevice
-from .utils.disable import disableable_dec
-from .utils.message import get_arg, get_cmd
+fromX.utils.androidXimportXGetDevice
+fromX.utils.disableXimportXdisableable_dec
+fromX.utils.messageXimportXget_arg,Xget_cmd
 
-MIUI_FIRM = "https://raw.githubusercontent.com/ iaomiFirmwareUpdater/miui-updates-tracker/master/data/latest.yml"
-REALME_FIRM = "https://raw.githubusercontent.com/RealmeUpdater/realme-updates-tracker/master/data/latest.yml"
+MIUI_FIRMX=X"https://raw.githubusercontent.com/XiaomiFirmwareUpdater/miui-updates-tracker/master/data/latest.yml"
+REALME_FIRMX=X"https://raw.githubusercontent.com/RealmeUpdater/realme-updates-tracker/master/data/latest.yml"
 
 
 @register(cmds="whatis")
 @disableable_dec("whatis")
-async def whatis(message):
-    device = get_arg(message)
-    if not device:
-        m = "Please write your codename into it, i.e <code>/whatis raphael</code>"
-        await message.reply(m)
-        return
+asyncXdefXwhatis(message):
+XXXXdeviceX=Xget_arg(message)
+XXXXifXnotXdevice:
+XXXXXXXXmX=X"PleaseXwriteXyourXcodenameXintoXit,Xi.eX<code>/whatisXraphael</code>"
+XXXXXXXXawaitXmessage.reply(m)
+XXXXXXXXreturn
 
-    data = await GetDevice(device).get()
-    if data:
-        name = data["name"]
-        device = data["device"]
-        brand = data["brand"]
-        data["model"]
-    else:
-        m = "coudn't find your device, check device & try!"
-        await message.reply(m)
-        return
+XXXXdataX=XawaitXGetDevice(device).get()
+XXXXifXdata:
+XXXXXXXXnameX=Xdata["name"]
+XXXXXXXXdeviceX=Xdata["device"]
+XXXXXXXXbrandX=Xdata["brand"]
+XXXXXXXXdata["model"]
+XXXXelse:
+XXXXXXXXmX=X"coudn'tXfindXyourXdevice,XcheckXdeviceX&Xtry!"
+XXXXXXXXawaitXmessage.reply(m)
+XXXXXXXXreturn
 
-    m = f"<b>{device}</b> is <code>{brand} {name}</code>\n"
-    await message.reply(m)
+XXXXmX=Xf"<b>{device}</b>XisX<code>{brand}X{name}</code>\n"
+XXXXawaitXmessage.reply(m)
 
 
-@decorator.register(cmds=["models", "variants"])
+@decorator.register(cmds=["models",X"variants"])
 @disableable_dec("models")
-async def variants(message):
-    device = get_arg(message)
-    if not device:
-        m = "Please write your codename into it, i.e <code>/specs herolte</code>"
-        await message.reply(m)
-        return
+asyncXdefXvariants(message):
+XXXXdeviceX=Xget_arg(message)
+XXXXifXnotXdevice:
+XXXXXXXXmX=X"PleaseXwriteXyourXcodenameXintoXit,Xi.eX<code>/specsXherolte</code>"
+XXXXXXXXawaitXmessage.reply(m)
+XXXXXXXXreturn
 
-    data = await GetDevice(device).get()
-    if data:
-        name = data["name"]
-        device = data["device"]
-    else:
-        m = "coudn't find your device, chack device & try!"
-        await message.reply(m)
-        return
+XXXXdataX=XawaitXGetDevice(device).get()
+XXXXifXdata:
+XXXXXXXXnameX=Xdata["name"]
+XXXXXXXXdeviceX=Xdata["device"]
+XXXXelse:
+XXXXXXXXmX=X"coudn'tXfindXyourXdevice,XchackXdeviceX&Xtry!"
+XXXXXXXXawaitXmessage.reply(m)
+XXXXXXXXreturn
 
-    async with httpx.AsyncClient(http2=True) as http:
-        data = await http.get(
-            "https://raw.githubusercontent.com/androidtrackers/certified-android-devices/master/by_device.json"
-        )
-        db = json.loads(data.content)
-    device = db[device]
-    m = f"<b>{name}</b> variants:\n\n"
+XXXXasyncXwithXhttpx.AsyncClient(http2=True)XasXhttp:
+XXXXXXXXdataX=XawaitXhttp.get(
+XXXXXXXXXXXX"https://raw.githubusercontent.com/androidtrackers/certified-android-devices/master/by_device.json"
+XXXXXXXX)
+XXXXXXXXdbX=Xjson.loads(data.content)
+XXXXdeviceX=Xdb[device]
+XXXXmX=Xf"<b>{name}</b>Xvariants:\n\n"
 
-    for i in device:
-        name = i["name"]
-        model = i["model"]
-        m += "<b>Model</b>: <code>{}</code> \n<b>Name:</b> <code>{}</code>\n\n".format(
-            model, name
-        )
+XXXXforXiXinXdevice:
+XXXXXXXXnameX=Xi["name"]
+XXXXXXXXmodelX=Xi["model"]
+XXXXXXXXmX+=X"<b>Model</b>:X<code>{}</code>X\n<b>Name:</b>X<code>{}</code>\n\n".format(
+XXXXXXXXXXXXmodel,Xname
+XXXXXXXX)
 
-    await http.aclose()
-    await message.reply(m)
+XXXXawaitXhttp.aclose()
+XXXXawaitXmessage.reply(m)
 
 
 @register(cmds="magisk")
 @disableable_dec("magisk")
-async def magisk(message):
-    url = "https://raw.githubusercontent.com/topjohnwu/magisk_files/"
-    releases = "<b>Latest Magisk Releases:</b>\n"
-    variant = ["master/stable", "master/beta", "canary/canary"]
-    for variants in variant:
-        async with httpx.AsyncClient(http2=True) as http:
-            fetch = await http.get(url + variants + ".json")
-            data = json.loads(fetch.content)
-        if variants == "master/stable":
-            name = "<b>Stable</b>"
-            cc = 0
-            branch = "master"
-        elif variants == "master/beta":
-            name = "<b>Beta</b>"
-            cc = 0
-            branch = "master"
-        elif variants == "canary/canary":
-            name = "<b>Canary</b>"
-            cc = 1
-            branch = "canary"
+asyncXdefXmagisk(message):
+XXXXurlX=X"https://raw.githubusercontent.com/topjohnwu/magisk_files/"
+XXXXreleasesX=X"<b>LatestXMagiskXReleases:</b>\n"
+XXXXvariantX=X["master/stable",X"master/beta",X"canary/canary"]
+XXXXforXvariantsXinXvariant:
+XXXXXXXXasyncXwithXhttpx.AsyncClient(http2=True)XasXhttp:
+XXXXXXXXXXXXfetchX=XawaitXhttp.get(urlX+XvariantsX+X".json")
+XXXXXXXXXXXXdataX=Xjson.loads(fetch.content)
+XXXXXXXXifXvariantsX==X"master/stable":
+XXXXXXXXXXXXnameX=X"<b>Stable</b>"
+XXXXXXXXXXXXccX=X0
+XXXXXXXXXXXXbranchX=X"master"
+XXXXXXXXelifXvariantsX==X"master/beta":
+XXXXXXXXXXXXnameX=X"<b>Beta</b>"
+XXXXXXXXXXXXccX=X0
+XXXXXXXXXXXXbranchX=X"master"
+XXXXXXXXelifXvariantsX==X"canary/canary":
+XXXXXXXXXXXXnameX=X"<b>Canary</b>"
+XXXXXXXXXXXXccX=X1
+XXXXXXXXXXXXbranchX=X"canary"
 
-        if variants == "canary/canary":
-            releases += f'{name}: <a href="{url}{branch}/{data["magisk"]["link"]}">v{data["magisk"]["version"]}</a> (<code>{data["magisk"]["versionCode"]}</code>) | '
-        else:
-            releases += f'{name}: <a href="{data["magisk"]["link"]}">v{data["magisk"]["version"]}</a> (<code>{data["magisk"]["versionCode"]}</code>) | '
+XXXXXXXXifXvariantsX==X"canary/canary":
+XXXXXXXXXXXXreleasesX+=Xf'{name}:X<aXhref="{url}{branch}/{data["magisk"]["link"]}">v{data["magisk"]["version"]}</a>X(<code>{data["magisk"]["versionCode"]}</code>)X|X'
+XXXXXXXXelse:
+XXXXXXXXXXXXreleasesX+=Xf'{name}:X<aXhref="{data["magisk"]["link"]}">v{data["magisk"]["version"]}</a>X(<code>{data["magisk"]["versionCode"]}</code>)X|X'
 
-        if cc == 1:
-            releases += (
-                f'<a href="{url}{branch}/{data["uninstaller"]["link"]}">Uninstaller</a> | '
-                f'<a href="{url}{branch}/{data["magisk"]["note"]}">Changelog</a>\n'
-            )
-        else:
-            releases += (
-                f'<a href="{data["uninstaller"]["link"]}">Uninstaller</a>\n'
-                f'<a href="{data["magisk"]["note"]}">Changelog</a>\n'
-            )
+XXXXXXXXifXccX==X1:
+XXXXXXXXXXXXreleasesX+=X(
+XXXXXXXXXXXXXXXXf'<aXhref="{url}{branch}/{data["uninstaller"]["link"]}">Uninstaller</a>X|X'
+XXXXXXXXXXXXXXXXf'<aXhref="{url}{branch}/{data["magisk"]["note"]}">Changelog</a>\n'
+XXXXXXXXXXXX)
+XXXXXXXXelse:
+XXXXXXXXXXXXreleasesX+=X(
+XXXXXXXXXXXXXXXXf'<aXhref="{data["uninstaller"]["link"]}">Uninstaller</a>\n'
+XXXXXXXXXXXXXXXXf'<aXhref="{data["magisk"]["note"]}">Changelog</a>\n'
+XXXXXXXXXXXX)
 
-    await http.aclose()
-    await message.reply(releases, disable_web_page_preview=True)
+XXXXawaitXhttp.aclose()
+XXXXawaitXmessage.reply(releases,Xdisable_web_page_preview=True)
 
 
 @register(cmds="phh")
 @disableable_dec("phh")
-async def phh(message):
-    async with httpx.AsyncClient(http2=True) as http:
-        fetch = await http.get(
-            "https://api.github.com/repos/phhusson/treble_experimentations/releases/latest"
-        )
-        usr = json.loads(fetch.content)
-    text = "<b>Phh's latest GSI release(s):</b>\n"
-    for i in range(len(usr)):
-        try:
-            name = usr["assets"][i]["name"]
-            url = usr["assets"][i]["browser_download_url"]
-            text += f"<a href='{url}'>{name}</a>\n"
-        except IndexError:
-            continue
+asyncXdefXphh(message):
+XXXXasyncXwithXhttpx.AsyncClient(http2=True)XasXhttp:
+XXXXXXXXfetchX=XawaitXhttp.get(
+XXXXXXXXXXXX"https://api.github.com/repos/phhusson/treble_experimentations/releases/latest"
+XXXXXXXX)
+XXXXXXXXusrX=Xjson.loads(fetch.content)
+XXXXtextX=X"<b>Phh'sXlatestXGSIXrelease(s):</b>\n"
+XXXXforXiXinXrange(len(usr)):
+XXXXXXXXtry:
+XXXXXXXXXXXXnameX=Xusr["assets"][i]["name"]
+XXXXXXXXXXXXurlX=Xusr["assets"][i]["browser_download_url"]
+XXXXXXXXXXXXtextX+=Xf"<aXhref='{url}'>{name}</a>\n"
+XXXXXXXXexceptXIndexError:
+XXXXXXXXXXXXcontinue
 
-    await http.aclose()
-    await message.reply(text)
+XXXXawaitXhttp.aclose()
+XXXXawaitXmessage.reply(text)
 
 
 @register(cmds="phhmagisk")
 @disableable_dec("phhmagisk")
-async def phh_magisk(message):
-    async with httpx.AsyncClient(http2=True) as http:
-        fetch = await http.get(
-            "https://api.github.com/repos/expressluke/phh-magisk-builder/releases/latest"
-        )
-        usr = json.loads(fetch.content)
-    text = "<b>Phh's latest Magisk release(s):</b>\n"
-    for i in range(len(usr)):
-        try:
-            usr["assets"][i]["name"]
-            url = usr["assets"][i]["browser_download_url"]
-            tag = usr["tag_name"]
-            size_bytes = usr["assets"][i]["size"]
-            size = float("{:.2f}".format((size_bytes / 1024) / 1024))
-            text += f"<b>Tag:</b> <code>{tag}</code>\n"
-            text += f"<b>Size</b>: <code>{size} MB</code>\n\n"
-            btn = "Click here to download!"
-            button = InlineKeyboardMarkup().add(InlineKeyboardButton(text=btn, url=url))
-        except IndexError:
-            continue
+asyncXdefXphh_magisk(message):
+XXXXasyncXwithXhttpx.AsyncClient(http2=True)XasXhttp:
+XXXXXXXXfetchX=XawaitXhttp.get(
+XXXXXXXXXXXX"https://api.github.com/repos/expressluke/phh-magisk-builder/releases/latest"
+XXXXXXXX)
+XXXXXXXXusrX=Xjson.loads(fetch.content)
+XXXXtextX=X"<b>Phh'sXlatestXMagiskXrelease(s):</b>\n"
+XXXXforXiXinXrange(len(usr)):
+XXXXXXXXtry:
+XXXXXXXXXXXXusr["assets"][i]["name"]
+XXXXXXXXXXXXurlX=Xusr["assets"][i]["browser_download_url"]
+XXXXXXXXXXXXtagX=Xusr["tag_name"]
+XXXXXXXXXXXXsize_bytesX=Xusr["assets"][i]["size"]
+XXXXXXXXXXXXsizeX=Xfloat("{:.2f}".format((size_bytesX/X1024)X/X1024))
+XXXXXXXXXXXXtextX+=Xf"<b>Tag:</b>X<code>{tag}</code>\n"
+XXXXXXXXXXXXtextX+=Xf"<b>Size</b>:X<code>{size}XMB</code>\n\n"
+XXXXXXXXXXXXbtnX=X"ClickXhereXtoXdownload!"
+XXXXXXXXXXXXbuttonX=XInlineKeyboardMarkup().add(InlineKeyboardButton(text=btn,Xurl=url))
+XXXXXXXXexceptXIndexError:
+XXXXXXXXXXXXcontinue
 
-    await http.aclose()
-    await message.reply(text, reply_markup=button)
-    return
+XXXXawaitXhttp.aclose()
+XXXXawaitXmessage.reply(text,Xreply_markup=button)
+XXXXreturn
 
 
 @register(cmds="twrp")
 @disableable_dec("twrp")
-async def twrp(message):
-    device = get_arg(message).lower()
+asyncXdefXtwrp(message):
+XXXXdeviceX=Xget_arg(message).lower()
 
-    if not device:
-        m = "Type the device codename, example: <code>/twrp j7xelte</code>"
-        await message.reply(m)
-        return
+XXXXifXnotXdevice:
+XXXXXXXXmX=X"TypeXtheXdeviceXcodename,Xexample:X<code>/twrpXj7xelte</code>"
+XXXXXXXXawaitXmessage.reply(m)
+XXXXXXXXreturn
 
-    async with httpx.AsyncClient(http2=True) as http:
-        url = await http.get(f"https://eu.dl.twrp.me/{device}/")
-    if url.status_code == 404:
-        m = f"TWRP is not available for <code>{device}</code>"
-        await message.reply(m)
-        return
+XXXXasyncXwithXhttpx.AsyncClient(http2=True)XasXhttp:
+XXXXXXXXurlX=XawaitXhttp.get(f"https://eu.dl.twrp.me/{device}/")
+XXXXifXurl.status_codeX==X404:
+XXXXXXXXmX=Xf"TWRPXisXnotXavailableXforX<code>{device}</code>"
+XXXXXXXXawaitXmessage.reply(m)
+XXXXXXXXreturn
 
-    else:
-        m = "<b><u>TeamWin Recovery <i>official</i> release</u></b>\n"
-        m += f"  <b>Device:</b> {device}\n"
-        page = BeautifulSoup(url.content, "lxml")
-        date = page.find("em").text.strip()
-        m += f"  <b>Updated:</b> <code>{date}</code>\n"
-        trs = page.find("table").find_all("tr")
-        row = 2 if trs[0].find("a").text.endswith("tar") else 1
+XXXXelse:
+XXXXXXXXmX=X"<b><u>TeamWinXRecoveryX<i>official</i>Xrelease</u></b>\n"
+XXXXXXXXmX+=Xf"XX<b>Device:</b>X{device}\n"
+XXXXXXXXpageX=XBeautifulSoup(url.content,X"lxml")
+XXXXXXXXdateX=Xpage.find("em").text.strip()
+XXXXXXXXmX+=Xf"XX<b>Updated:</b>X<code>{date}</code>\n"
+XXXXXXXXtrsX=Xpage.find("table").find_all("tr")
+XXXXXXXXrowX=X2XifXtrs[0].find("a").text.endswith("tar")XelseX1
 
-        for i in range(row):
-            download = trs[i].find("a")
-            dl_link = f"https://dl.twrp.me{download['href']}"
-            dl_file = download.text
-            size = trs[i].find("span", {"class": "filesize"}).text
-        m += f"  <b>Size:</b> <code>{size}</code>\n"
-        m += f"  <b>File:</b> <code>{dl_file.lower()}</code>"
-        btn = "⬇️ Download"
-        button = InlineKeyboardMarkup().add(InlineKeyboardButton(text=btn, url=dl_link))
+XXXXXXXXforXiXinXrange(row):
+XXXXXXXXXXXXdownloadX=Xtrs[i].find("a")
+XXXXXXXXXXXXdl_linkX=Xf"https://dl.twrp.me{download['href']}"
+XXXXXXXXXXXXdl_fileX=Xdownload.text
+XXXXXXXXXXXXsizeX=Xtrs[i].find("span",X{"class":X"filesize"}).text
+XXXXXXXXmX+=Xf"XX<b>Size:</b>X<code>{size}</code>\n"
+XXXXXXXXmX+=Xf"XX<b>File:</b>X<code>{dl_file.lower()}</code>"
+XXXXXXXXbtnX=X"⬇️XDownload"
+XXXXXXXXbuttonX=XInlineKeyboardMarkup().add(InlineKeyboardButton(text=btn,Xurl=dl_link))
 
-        await http.aclose()
-        await message.reply(m, reply_markup=button)
+XXXXXXXXawaitXhttp.aclose()
+XXXXXXXXawaitXmessage.reply(m,Xreply_markup=button)
 
 
-@decorator.register(cmds=["samcheck", "samget"])
+@decorator.register(cmds=["samcheck",X"samget"])
 @disableable_dec("samcheck")
-async def check(message):
-    try:
-        msg_args = message.text.split()
-        temp = msg_args[1]
-        csc = msg_args[2]
-    except IndexError:
-        m = f"Please type your device <b>MODEL</b> and <b>CSC</b> into it!\ni.e <code>/{get_cmd(message)} SM-J710MN ZTO</code>!"
-        await message.reply(m)
-        return
+asyncXdefXcheck(message):
+XXXXtry:
+XXXXXXXXmsg_argsX=Xmessage.text.split()
+XXXXXXXXtempX=Xmsg_args[1]
+XXXXXXXXcscX=Xmsg_args[2]
+XXXXexceptXIndexError:
+XXXXXXXXmX=Xf"PleaseXtypeXyourXdeviceX<b>MODEL</b>XandX<b>CSC</b>XintoXit!\ni.eX<code>/{get_cmd(message)}XSM-J710MNXZTO</code>!"
+XXXXXXXXawaitXmessage.reply(m)
+XXXXXXXXreturn
 
-    model = "sm-" + temp if not temp.upper().startswith("SM-") else temp
-    async with httpx.AsyncClient(http2=True) as http:
-        fota = await http.get(
-            f"http://fota-cloud-dn.ospserver.net/firmware/{csc.upper()}/{model.upper()}/version.xml"
-        )
-        test = await http.get(
-            f"http://fota-cloud-dn.ospserver.net/firmware/{csc.upper()}/{model.upper()}/version.test.xml"
-        )
-    await http.aclose()
-    if test.status_code != 200:
-        m = f"Couldn't find any firmwares for {temp.upper()} - {csc.upper()}, please refine your search or try again later!"
-        await message.reply(m)
-        return
+XXXXmodelX=X"sm-"X+XtempXifXnotXtemp.upper().startswith("SM-")XelseXtemp
+XXXXasyncXwithXhttpx.AsyncClient(http2=True)XasXhttp:
+XXXXXXXXfotaX=XawaitXhttp.get(
+XXXXXXXXXXXXf"http://fota-cloud-dn.ospserver.net/firmware/{csc.upper()}/{model.upper()}/version.xml"
+XXXXXXXX)
+XXXXXXXXtestX=XawaitXhttp.get(
+XXXXXXXXXXXXf"http://fota-cloud-dn.ospserver.net/firmware/{csc.upper()}/{model.upper()}/version.test.xml"
+XXXXXXXX)
+XXXXawaitXhttp.aclose()
+XXXXifXtest.status_codeX!=X200:
+XXXXXXXXmX=Xf"Couldn'tXfindXanyXfirmwaresXforX{temp.upper()}X-X{csc.upper()},XpleaseXrefineXyourXsearchXorXtryXagainXlater!"
+XXXXXXXXawaitXmessage.reply(m)
+XXXXXXXXreturn
 
-    page1 = BeautifulSoup(fota.content, "lxml")
-    page2 = BeautifulSoup(test.content, "lxml")
-    os1 = page1.find("latest").get("o")
-    os2 = page2.find("latest").get("o")
-    if page1.find("latest").text.strip():
-        pda1, csc1, phone1 = page1.find("latest").text.strip().split("/")
-        m = f"<b>MODEL:</b> <code>{model.upper()}</code>\n<b>CSC:</b> <code>{csc.upper()}</code>\n\n"
-        m += "<b>Latest available firmware:</b>\n"
-        m += f"• PDA: <code>{pda1}</code>\n• CSC: <code>{csc1}</code>\n"
-        if phone1:
-            m += f"• Phone: <code>{phone1}</code>\n"
-        if os1:
-            m += f"• Android: <code>{os1}</code>\n"
-        m += "\n"
-    else:
-        m = f"<b>No public release found for {model.upper()} and {csc.upper()}.</b>\n\n"
-    m += "<b>Latest test firmware:</b>\n"
-    if len(page2.find("latest").text.strip().split("/")) == 3:
-        pda2, csc2, phone2 = page2.find("latest").text.strip().split("/")
-        m += f"• PDA: <code>{pda2}</code>\n• CSC: <code>{csc2}</code>\n"
-        if phone2:
-            m += f"• Phone: <code>{phone2}</code>\n"
-        if os2:
-            m += f"• Android: <code>{os2}</code>\n"
-    else:
-        md5 = page2.find("latest").text.strip()
-        m += f"• Hash: <code>{md5}</code>\n• Android: <code>{os2}</code>\n"
+XXXXpage1X=XBeautifulSoup(fota.content,X"lxml")
+XXXXpage2X=XBeautifulSoup(test.content,X"lxml")
+XXXXos1X=Xpage1.find("latest").get("o")
+XXXXos2X=Xpage2.find("latest").get("o")
+XXXXifXpage1.find("latest").text.strip():
+XXXXXXXXpda1,Xcsc1,Xphone1X=Xpage1.find("latest").text.strip().split("/")
+XXXXXXXXmX=Xf"<b>MODEL:</b>X<code>{model.upper()}</code>\n<b>CSC:</b>X<code>{csc.upper()}</code>\n\n"
+XXXXXXXXmX+=X"<b>LatestXavailableXfirmware:</b>\n"
+XXXXXXXXmX+=Xf"•XPDA:X<code>{pda1}</code>\n•XCSC:X<code>{csc1}</code>\n"
+XXXXXXXXifXphone1:
+XXXXXXXXXXXXmX+=Xf"•XPhone:X<code>{phone1}</code>\n"
+XXXXXXXXifXos1:
+XXXXXXXXXXXXmX+=Xf"•XAndroid:X<code>{os1}</code>\n"
+XXXXXXXXmX+=X"\n"
+XXXXelse:
+XXXXXXXXmX=Xf"<b>NoXpublicXreleaseXfoundXforX{model.upper()}XandX{csc.upper()}.</b>\n\n"
+XXXXmX+=X"<b>LatestXtestXfirmware:</b>\n"
+XXXXifXlen(page2.find("latest").text.strip().split("/"))X==X3:
+XXXXXXXXpda2,Xcsc2,Xphone2X=Xpage2.find("latest").text.strip().split("/")
+XXXXXXXXmX+=Xf"•XPDA:X<code>{pda2}</code>\n•XCSC:X<code>{csc2}</code>\n"
+XXXXXXXXifXphone2:
+XXXXXXXXXXXXmX+=Xf"•XPhone:X<code>{phone2}</code>\n"
+XXXXXXXXifXos2:
+XXXXXXXXXXXXmX+=Xf"•XAndroid:X<code>{os2}</code>\n"
+XXXXelse:
+XXXXXXXXmd5X=Xpage2.find("latest").text.strip()
+XXXXXXXXmX+=Xf"•XHash:X<code>{md5}</code>\n•XAndroid:X<code>{os2}</code>\n"
 
-    if get_cmd(message) == "samcheck":
-        await message.reply(m)
+XXXXifXget_cmd(message)X==X"samcheck":
+XXXXXXXXawaitXmessage.reply(m)
 
-    elif get_cmd(message) == "samget":
-        m += "\n<b>Download from below:</b>\n"
-        buttons = InlineKeyboardMarkup()
-        buttons.add(
-            InlineKeyboardButton(
-                "SamMobile",
-                url="https://www.sammobile.com/samsung/firmware/{}/{}/".format(
-                    model.upper(), csc.upper()
-                ),
-            ),
-            InlineKeyboardButton(
-                "SamFw",
-                url="https://samfw.com/firmware/{}/{}/".format(
-                    model.upper(), csc.upper()
-                ),
-            ),
-            InlineKeyboardButton(
-                "SamFrew",
-                url="https://samfrew.com/model/{}/region/{}/".format(
-                    model.upper(), csc.upper()
-                ),
-            ),
-        )
+XXXXelifXget_cmd(message)X==X"samget":
+XXXXXXXXmX+=X"\n<b>DownloadXfromXbelow:</b>\n"
+XXXXXXXXbuttonsX=XInlineKeyboardMarkup()
+XXXXXXXXbuttons.add(
+XXXXXXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXXXXX"SamMobile",
+XXXXXXXXXXXXXXXXurl="https://www.sammobile.com/samsung/firmware/{}/{}/".format(
+XXXXXXXXXXXXXXXXXXXXmodel.upper(),Xcsc.upper()
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXX),
+XXXXXXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXXXXX"SamFw",
+XXXXXXXXXXXXXXXXurl="https://samfw.com/firmware/{}/{}/".format(
+XXXXXXXXXXXXXXXXXXXXmodel.upper(),Xcsc.upper()
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXX),
+XXXXXXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXXXXX"SamFrew",
+XXXXXXXXXXXXXXXXurl="https://samfrew.com/model/{}/region/{}/".format(
+XXXXXXXXXXXXXXXXXXXXmodel.upper(),Xcsc.upper()
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXX),
+XXXXXXXX)
 
-        await message.reply(m, reply_markup=buttons)
+XXXXXXXXawaitXmessage.reply(m,Xreply_markup=buttons)
 
 
-@decorator.register(cmds=["ofox", "of"])
+@decorator.register(cmds=["ofox",X"of"])
 @disableable_dec("ofox")
-async def orangefox(message):
-    API_HOST = "https://api.orangefox.download/v3/"
-    try:
-        args = message.text.split()
-        codename = args[1].lower()
-    except BaseException:
-        codename = ""
-    try:
-        build_type = args[2].lower()
-    except BaseException:
-        build_type = ""
+asyncXdefXorangefox(message):
+XXXXAPI_HOSTX=X"https://api.orangefox.download/v3/"
+XXXXtry:
+XXXXXXXXargsX=Xmessage.text.split()
+XXXXXXXXcodenameX=Xargs[1].lower()
+XXXXexceptXBaseException:
+XXXXXXXXcodenameX=X""
+XXXXtry:
+XXXXXXXXbuild_typeX=Xargs[2].lower()
+XXXXexceptXBaseException:
+XXXXXXXXbuild_typeX=X""
 
-    if build_type == "":
-        build_type = "stable"
+XXXXifXbuild_typeX==X"":
+XXXXXXXXbuild_typeX=X"stable"
 
-    if codename == "devices" or codename == "":
-        reply_text = (
-            f"<b>OrangeFox Recovery <i>{build_type}</i> is currently avaible for:</b>"
-        )
+XXXXifXcodenameX==X"devices"XorXcodenameX==X"":
+XXXXXXXXreply_textX=X(
+XXXXXXXXXXXXf"<b>OrangeFoxXRecoveryX<i>{build_type}</i>XisXcurrentlyXavaibleXfor:</b>"
+XXXXXXXX)
 
-        async with httpx.AsyncClient(http2=True) as http:
-            data = await http.get(
-                API_HOST + f"devices/?release_type={build_type}&sort=device_name_asc"
-            )
-            devices = json.loads(data.text)
-            await http.aclose()
-        try:
-            for device in devices["data"]:
-                reply_text += (
-                    f"\n - {device['full_name']} (<code>{device['codename']}</code>)"
-                )
-        except BaseException:
-            await message.reply(
-                f"'<b>{build_type}</b>' is not a type of build available, the types are just '<b>beta</b>' or '<b>stable</b>'."
-            )
-            return
+XXXXXXXXasyncXwithXhttpx.AsyncClient(http2=True)XasXhttp:
+XXXXXXXXXXXXdataX=XawaitXhttp.get(
+XXXXXXXXXXXXXXXXAPI_HOSTX+Xf"devices/?release_type={build_type}&sort=device_name_asc"
+XXXXXXXXXXXX)
+XXXXXXXXXXXXdevicesX=Xjson.loads(data.text)
+XXXXXXXXXXXXawaitXhttp.aclose()
+XXXXXXXXtry:
+XXXXXXXXXXXXforXdeviceXinXdevices["data"]:
+XXXXXXXXXXXXXXXXreply_textX+=X(
+XXXXXXXXXXXXXXXXXXXXf"\nX-X{device['full_name']}X(<code>{device['codename']}</code>)"
+XXXXXXXXXXXXXXXX)
+XXXXXXXXexceptXBaseException:
+XXXXXXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXXXXXf"'<b>{build_type}</b>'XisXnotXaXtypeXofXbuildXavailable,XtheXtypesXareXjustX'<b>beta</b>'XorX'<b>stable</b>'."
+XXXXXXXXXXXX)
+XXXXXXXXXXXXreturn
 
-        if build_type == "stable":
-            reply_text += (
-                "\n\n"
-                + f"To get the latest Stable release use <code>/ofox (codename)</code>, for example: <code>/ofox raphael</code>"
-            )
-        elif build_type == "beta":
-            reply_text += (
-                "\n\n"
-                + f"To get the latest Beta release use <code>/ofox (codename) beta</code>, for example: <code>/ofox raphael beta</code>"
-            )
-        await message.reply(reply_text)
-        return
+XXXXXXXXifXbuild_typeX==X"stable":
+XXXXXXXXXXXXreply_textX+=X(
+XXXXXXXXXXXXXXXX"\n\n"
+XXXXXXXXXXXXXXXX+Xf"ToXgetXtheXlatestXStableXreleaseXuseX<code>/ofoxX(codename)</code>,XforXexample:X<code>/ofoxXraphael</code>"
+XXXXXXXXXXXX)
+XXXXXXXXelifXbuild_typeX==X"beta":
+XXXXXXXXXXXXreply_textX+=X(
+XXXXXXXXXXXXXXXX"\n\n"
+XXXXXXXXXXXXXXXX+Xf"ToXgetXtheXlatestXBetaXreleaseXuseX<code>/ofoxX(codename)Xbeta</code>,XforXexample:X<code>/ofoxXraphaelXbeta</code>"
+XXXXXXXXXXXX)
+XXXXXXXXawaitXmessage.reply(reply_text)
+XXXXXXXXreturn
 
-    async with httpx.AsyncClient(http2=True) as http:
-        data = await http.get(API_HOST + f"devices/get?codename={codename}")
-        device = json.loads(data.text)
-        await http.aclose()
-    if data.status_code == 404:
-        await message.reply("Device is not found!")
-        return
+XXXXasyncXwithXhttpx.AsyncClient(http2=True)XasXhttp:
+XXXXXXXXdataX=XawaitXhttp.get(API_HOSTX+Xf"devices/get?codename={codename}")
+XXXXXXXXdeviceX=Xjson.loads(data.text)
+XXXXXXXXawaitXhttp.aclose()
+XXXXifXdata.status_codeX==X404:
+XXXXXXXXawaitXmessage.reply("DeviceXisXnotXfound!")
+XXXXXXXXreturn
 
-    async with httpx.AsyncClient(http2=True) as http:
-        data = await http.get(
-            API_HOST
-            + f"releases/?codename={codename}&type={build_type}&sort=date_desc&limit=1"
-        )
-        if data.status_code == 404:
-            btn = "Device's page"
-            url = f"https://orangefox.download/device/{device['codename']}"
-            button = InlineKeyboardMarkup().add(InlineKeyboardButton(text=btn, url=url))
-            await message.reply(
-                f"⚠️ There is no '<b>{build_type}</b>' releases for <b>{device['full_name']}</b>.",
-                reply_markup=button,
-                disable_web_page_preview=True,
-            )
-            return
-        find_id = json.loads(data.text)
-        await http.aclose()
-        for build in find_id["data"]:
-            file_id = build["_id"]
+XXXXasyncXwithXhttpx.AsyncClient(http2=True)XasXhttp:
+XXXXXXXXdataX=XawaitXhttp.get(
+XXXXXXXXXXXXAPI_HOST
+XXXXXXXXXXXX+Xf"releases/?codename={codename}&type={build_type}&sort=date_desc&limit=1"
+XXXXXXXX)
+XXXXXXXXifXdata.status_codeX==X404:
+XXXXXXXXXXXXbtnX=X"Device'sXpage"
+XXXXXXXXXXXXurlX=Xf"https://orangefox.download/device/{device['codename']}"
+XXXXXXXXXXXXbuttonX=XInlineKeyboardMarkup().add(InlineKeyboardButton(text=btn,Xurl=url))
+XXXXXXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXXXXXf"⚠️XThereXisXnoX'<b>{build_type}</b>'XreleasesXforX<b>{device['full_name']}</b>.",
+XXXXXXXXXXXXXXXXreply_markup=button,
+XXXXXXXXXXXXXXXXdisable_web_page_preview=True,
+XXXXXXXXXXXX)
+XXXXXXXXXXXXreturn
+XXXXXXXXfind_idX=Xjson.loads(data.text)
+XXXXXXXXawaitXhttp.aclose()
+XXXXXXXXforXbuildXinXfind_id["data"]:
+XXXXXXXXXXXXfile_idX=Xbuild["_id"]
 
-    async with httpx.AsyncClient(http2=True) as http:
-        data = await http.get(API_HOST + f"releases/get?_id={file_id}")
-        release = json.loads(data.text)
-        await http.aclose()
-    if data.status_code == 404:
-        await message.reply("Release is not found!")
-        return
+XXXXasyncXwithXhttpx.AsyncClient(http2=True)XasXhttp:
+XXXXXXXXdataX=XawaitXhttp.get(API_HOSTX+Xf"releases/get?_id={file_id}")
+XXXXXXXXreleaseX=Xjson.loads(data.text)
+XXXXXXXXawaitXhttp.aclose()
+XXXXifXdata.status_codeX==X404:
+XXXXXXXXawaitXmessage.reply("ReleaseXisXnotXfound!")
+XXXXXXXXreturn
 
-    reply_text = f"<u><b>OrangeFox Recovery <i>{build_type}</i> release</b></u>\n"
-    reply_text += ("  <b>Device:</b> {fullname} (<code>{codename}</code>)\n").format(
-        fullname=device["full_name"], codename=device["codename"]
-    )
-    reply_text += ("  <b>Version:</b> {}\n").format(release["version"])
-    reply_text += ("  <b>Release date:</b> {}\n").format(
-        time.strftime("%d/%m/%Y", time.localtime(release["date"]))
-    )
+XXXXreply_textX=Xf"<u><b>OrangeFoxXRecoveryX<i>{build_type}</i>Xrelease</b></u>\n"
+XXXXreply_textX+=X("XX<b>Device:</b>X{fullname}X(<code>{codename}</code>)\n").format(
+XXXXXXXXfullname=device["full_name"],Xcodename=device["codename"]
+XXXX)
+XXXXreply_textX+=X("XX<b>Version:</b>X{}\n").format(release["version"])
+XXXXreply_textX+=X("XX<b>ReleaseXdate:</b>X{}\n").format(
+XXXXXXXXtime.strftime("%d/%m/%Y",Xtime.localtime(release["date"]))
+XXXX)
 
-    reply_text += ("  <b>Maintainer:</b> {name}\n").format(
-        name=device["maintainer"]["name"]
-    )
-    changelog = release["changelog"]
-    try:
-        reply_text += "  <u><b>Changelog:</b></u>\n"
-        for entry_num in range(len(changelog)):
-            if entry_num == 10:
-                break
-            reply_text += f"    - {changelog[entry_num]}\n"
-    except BaseException:
-        pass
+XXXXreply_textX+=X("XX<b>Maintainer:</b>X{name}\n").format(
+XXXXXXXXname=device["maintainer"]["name"]
+XXXX)
+XXXXchangelogX=Xrelease["changelog"]
+XXXXtry:
+XXXXXXXXreply_textX+=X"XX<u><b>Changelog:</b></u>\n"
+XXXXXXXXforXentry_numXinXrange(len(changelog)):
+XXXXXXXXXXXXifXentry_numX==X10:
+XXXXXXXXXXXXXXXXbreak
+XXXXXXXXXXXXreply_textX+=Xf"XXXX-X{changelog[entry_num]}\n"
+XXXXexceptXBaseException:
+XXXXXXXXpass
 
-    btn = "⬇️ Download"
-    url = release["mirrors"]["DL"]
-    button = InlineKeyboardMarkup().add(InlineKeyboardButton(text=btn, url=url))
-    await message.reply(reply_text, reply_markup=button, disable_web_page_preview=True)
-    return
+XXXXbtnX=X"⬇️XDownload"
+XXXXurlX=Xrelease["mirrors"]["DL"]
+XXXXbuttonX=XInlineKeyboardMarkup().add(InlineKeyboardButton(text=btn,Xurl=url))
+XXXXawaitXmessage.reply(reply_text,Xreply_markup=button,Xdisable_web_page_preview=True)
+XXXXreturn
 
 
-__mod_name__ = "Android"
+__mod_name__X=X"Android"
 
-__help__ = """
-Module specially made for Android users.
+__help__X=X"""
+ModuleXspeciallyXmadeXforXAndroidXusers.
 
 <b>GSI</b>
-- /phh: Get the latest PHH AOSP GSIs.
-- /phhmagisk: Get the latest PHH Magisk.
+-X/phh:XGetXtheXlatestXPHHXAOSPXGSIs.
+-X/phhmagisk:XGetXtheXlatestXPHHXMagisk.
 
-<b>Device firmware:</b>
-- /samcheck (model) (csc): Samsung only - shows the latest firmware info for the given device, taken from samsung servers.
-- /samget (model) (csc): Similar to the <code>/samcheck</code> command but having download buttons.
+<b>DeviceXfirmware:</b>
+-X/samcheckX(model)X(csc):XSamsungXonlyX-XshowsXtheXlatestXfirmwareXinfoXforXtheXgivenXdevice,XtakenXfromXsamsungXservers.
+-X/samgetX(model)X(csc):XSimilarXtoXtheX<code>/samcheck</code>XcommandXbutXhavingXdownloadXbuttons.
 
 <b>Misc</b>
-- /magisk: Get latest Magisk releases.
-- /twrp (codename): Gets latest TWRP for the android device using the codename.
-- /ofox (codename): Gets latest OFRP for the android device using the codename.
-- /ofox devices: Sends the list of devices with stable releases supported by OFRP.
-- /models (codename): Search for Android device models using codename.
-- /whatis (codename): Find out which smartphone is using the codename.
+-X/magisk:XGetXlatestXMagiskXreleases.
+-X/twrpX(codename):XGetsXlatestXTWRPXforXtheXandroidXdeviceXusingXtheXcodename.
+-X/ofoxX(codename):XGetsXlatestXOFRPXforXtheXandroidXdeviceXusingXtheXcodename.
+-X/ofoxXdevices:XSendsXtheXlistXofXdevicesXwithXstableXreleasesXsupportedXbyXOFRP.
+-X/modelsX(codename):XSearchXforXAndroidXdeviceXmodelsXusingXcodename.
+-X/whatisX(codename):XFindXoutXwhichXsmartphoneXisXusingXtheXcodename.
 """

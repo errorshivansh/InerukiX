@@ -1,55 +1,55 @@
-#    Copyright (C) InukaAsith 2021
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
+#XXXXCopyrightX(C)XInukaAsithX2021
+#XXXXThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XXXXitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXasXpublishedXby
+#XXXXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXtheXLicense,Xor
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
+#XXXXThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XXXXbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XXXXMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XXXXGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 #
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#XXXXYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XXXXalongXwithXthisXprogram.XXIfXnot,XseeX<https://www.gnu.org/licenses/>.
 
-from sqlalchemy import Column, String
+fromXsqlalchemyXimportXColumn,XString
 
-from Ineruki .services.sql import BASE, SESSION
+fromXInerukiX.services.sqlXimportXBASE,XSESSION
 
 
-class Talkmode(BASE):
-    __tablename__ = "talkmode"
-    chat_id = Column(String(14), primary_key=True)
+classXTalkmode(BASE):
+XXXX__tablename__X=X"talkmode"
+XXXXchat_idX=XColumn(String(14),Xprimary_key=True)
 
-    def __init__(self, chat_id):
-        self.chat_id = chat_id
+XXXXdefX__init__(self,Xchat_id):
+XXXXXXXXself.chat_idX=Xchat_id
 
 
 Talkmode.__table__.create(checkfirst=True)
 
 
-def add_talkmode(chat_id: str):
-    talkmoddy = Talkmode(str(chat_id))
-    SESSION.add(talkmoddy)
-    SESSION.commit()
+defXadd_talkmode(chat_id:Xstr):
+XXXXtalkmoddyX=XTalkmode(str(chat_id))
+XXXXSESSION.add(talkmoddy)
+XXXXSESSION.commit()
 
 
-def rmtalkmode(chat_id: str):
-    rmtalkmoddy = SESSION.query(Talkmode).get(str(chat_id))
-    if rmtalkmoddy:
-        SESSION.delete(rmtalkmoddy)
-        SESSION.commit()
+defXrmtalkmode(chat_id:Xstr):
+XXXXrmtalkmoddyX=XSESSION.query(Talkmode).get(str(chat_id))
+XXXXifXrmtalkmoddy:
+XXXXXXXXSESSION.delete(rmtalkmoddy)
+XXXXXXXXSESSION.commit()
 
 
-def get_all_chat_id():
-    stark = SESSION.query(Talkmode).all()
-    SESSION.close()
-    return stark
+defXget_all_chat_id():
+XXXXstarkX=XSESSION.query(Talkmode).all()
+XXXXSESSION.close()
+XXXXreturnXstark
 
 
-def is_talkmode_indb(chat_id: str):
-    try:
-        s__ = SESSION.query(Talkmode).get(str(chat_id))
-        if s__:
-            return str(s__.chat_id)
-    finally:
-        SESSION.close()
+defXis_talkmode_indb(chat_id:Xstr):
+XXXXtry:
+XXXXXXXXs__X=XSESSION.query(Talkmode).get(str(chat_id))
+XXXXXXXXifXs__:
+XXXXXXXXXXXXreturnXstr(s__.chat_id)
+XXXXfinally:
+XXXXXXXXSESSION.close()

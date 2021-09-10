@@ -1,497 +1,497 @@
-# Ported from https://github.com/TheHamkerCat/WilliamButcherBot
+#XPortedXfromXhttps://github.com/TheHamkerCat/WilliamButcherBot
 """
-MIT License
-Copyright (c) 2021 TheHamkerCat
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, E PRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+MITXLicense
+CopyrightX(c)X2021XTheHamkerCat
+PermissionXisXherebyXgranted,XfreeXofXcharge,XtoXanyXpersonXobtainingXaXcopy
+ofXthisXsoftwareXandXassociatedXdocumentationXfilesX(theX"Software"),XtoXdeal
+inXtheXSoftwareXwithoutXrestriction,XincludingXwithoutXlimitationXtheXrights
+toXuse,Xcopy,Xmodify,Xmerge,Xpublish,Xdistribute,Xsublicense,Xand/orXsell
+copiesXofXtheXSoftware,XandXtoXpermitXpersonsXtoXwhomXtheXSoftwareXis
+furnishedXtoXdoXso,XsubjectXtoXtheXfollowingXconditions:
+TheXaboveXcopyrightXnoticeXandXthisXpermissionXnoticeXshallXbeXincludedXinXall
+copiesXorXsubstantialXportionsXofXtheXSoftware.
+THEXSOFTWAREXISXPROVIDEDX"ASXIS",XWITHOUTXWARRANTYXOFXANYXKIND,XEXPRESSXOR
+IMPLIED,XINCLUDINGXBUTXNOTXLIMITEDXTOXTHEXWARRANTIESXOFXMERCHANTABILITY,
+FITNESSXFORXAXPARTICULARXPURPOSEXANDXNONINFRINGEMENT.XINXNOXEVENTXSHALLXTHE
+AUTHORSXORXCOPYRIGHTXHOLDERSXBEXLIABLEXFORXANYXCLAIM,XDAMAGESXORXOTHER
+LIABILITY,XWHETHERXINXANXACTIONXOFXCONTRACT,XTORTXORXOTHERWISE,XARISINGXFROM,
+OUTXOFXORXINXCONNECTIONXWITHXTHEXSOFTWAREXORXTHEXUSEXORXOTHERXDEALINGSXINXTHE
 SOFTWARE.
 """
 
-import json
-import sys
-from random import randint
-from time import time
+importXjson
+importXsys
+fromXrandomXimportXrandint
+fromXtimeXimportXtime
 
-import aiohttp
-from aiohttp import ClientSession
-from googletrans import Translator
-from motor import version as mongover
-from pykeyboard import InlineKeyboard
-from pyrogram import __version__ as pyrover
-from pyrogram.raw.functions import Ping
-from pyrogram.types import (
-    InlineKeyboardButton,
-    InlineQueryResultArticle,
-    InlineQueryResultPhoto,
-    InputTextMessageContent,
+importXaiohttp
+fromXaiohttpXimportXClientSession
+fromXgoogletransXimportXTranslator
+fromXmotorXimportXversionXasXmongover
+fromXpykeyboardXimportXInlineKeyboard
+fromXpyrogramXimportX__version__XasXpyrover
+fromXpyrogram.raw.functionsXimportXPing
+fromXpyrogram.typesXimportX(
+XXXXInlineKeyboardButton,
+XXXXInlineQueryResultArticle,
+XXXXInlineQueryResultPhoto,
+XXXXInputTextMessageContent,
 )
-from Python_ARQ import ARQ
-from search_engine_parser import GoogleSearch
+fromXPython_ARQXimportXARQ
+fromXsearch_engine_parserXimportXGoogleSearch
 
-from Ineruki  import BOT_USERNAME, OWNER_ID
-from Ineruki .config import get_str_key
-from Ineruki .function.pluginhelpers import convert_seconds_to_minutes as time_convert
-from Ineruki .function.pluginhelpers import fetch
-from Ineruki .services.pyrogram import pbot
+fromXInerukiXXimportXBOT_USERNAME,XOWNER_ID
+fromXInerukiX.configXimportXget_str_key
+fromXInerukiX.function.pluginhelpersXimportXconvert_seconds_to_minutesXasXtime_convert
+fromXInerukiX.function.pluginhelpersXimportXfetch
+fromXInerukiX.services.pyrogramXimportXpbot
 
-ARQ_API = get_str_key("ARQ_API", required=True)
-ARQ_API_KEY = ARQ_API
-SUDOERS = OWNER_ID
-ARQ_API_URL = "https://thearq.tech"
+ARQ_APIX=Xget_str_key("ARQ_API",Xrequired=True)
+ARQ_API_KEYX=XARQ_API
+SUDOERSX=XOWNER_ID
+ARQ_API_URLX=X"https://thearq.tech"
 
-# Aiohttp Client
-print("[INFO]: INITIALZING AIOHTTP SESSION")
-aiohttpsession = ClientSession()
-# ARQ Client
-print("[INFO]: INITIALIZING ARQ CLIENT")
-arq = ARQ(ARQ_API_URL, ARQ_API_KEY, aiohttpsession)
+#XAiohttpXClient
+print("[INFO]:XINITIALZINGXAIOHTTPXSESSION")
+aiohttpsessionX=XClientSession()
+#XARQXClient
+print("[INFO]:XINITIALIZINGXARQXCLIENT")
+arqX=XARQ(ARQ_API_URL,XARQ_API_KEY,Xaiohttpsession)
 
-app = pbot
-import socket
-
-
-async def _netcat(host, port, content):
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((host, int(port)))
-    s.sendall(content.encode())
-    s.shutdown(socket.SHUT_WR)
-    while True:
-        data = s.recv(4096).decode("utf-8").strip("\n\x00")
-        if not data:
-            break
-        return data
-    s.close()
+appX=Xpbot
+importXsocket
 
 
-async def paste(content):
-    link = await _netcat("ezup.dev", 9999, content)
-    return link
+asyncXdefX_netcat(host,Xport,Xcontent):
+XXXXsX=Xsocket.socket(socket.AF_INET,Xsocket.SOCK_STREAM)
+XXXXs.connect((host,Xint(port)))
+XXXXs.sendall(content.encode())
+XXXXs.shutdown(socket.SHUT_WR)
+XXXXwhileXTrue:
+XXXXXXXXdataX=Xs.recv(4096).decode("utf-8").strip("\n\x00")
+XXXXXXXXifXnotXdata:
+XXXXXXXXXXXXbreak
+XXXXXXXXreturnXdata
+XXXXs.close()
 
 
-async def inline_help_func(__HELP__):
-    buttons = InlineKeyboard(row_width=2)
-    buttons.add(
-        InlineKeyboardButton("Get More Help.", url=f"t.me/{BOT_USERNAME}?start=start"),
-        InlineKeyboardButton("Go Inline!", switch_inline_query_current_chat=""),
-    )
-    answerss = [
-        InlineQueryResultArticle(
-            title="Inline Commands",
-            description="Help Related To Inline Usage.",
-            input_message_content=InputTextMessageContent(__HELP__),
-            thumb_url="https://telegra.ph/file/109e8fe98acc6d262b7c6.jpg",
-            reply_markup=buttons,
-        )
-    ]
-    answerss = await alive_function(answerss)
-    return answerss
+asyncXdefXpaste(content):
+XXXXlinkX=XawaitX_netcat("ezup.dev",X9999,Xcontent)
+XXXXreturnXlink
 
 
-async def alive_function(answers):
-    buttons = InlineKeyboard(row_width=2)
-    bot_state = "Dead" if not await app.get_me() else "Alive"
-    # ubot_state = 'Dead' if not await app2.get_me() else 'Alive'
-    buttons.add(
-        InlineKeyboardButton("Main Bot", url="https://t.me/Ineruki bot"),
-        InlineKeyboardButton("Go Inline!", switch_inline_query_current_chat=""),
-    )
+asyncXdefXinline_help_func(__HELP__):
+XXXXbuttonsX=XInlineKeyboard(row_width=2)
+XXXXbuttons.add(
+XXXXXXXXInlineKeyboardButton("GetXMoreXHelp.",Xurl=f"t.me/{BOT_USERNAME}?start=start"),
+XXXXXXXXInlineKeyboardButton("GoXInline!",Xswitch_inline_query_current_chat=""),
+XXXX)
+XXXXanswerssX=X[
+XXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXtitle="InlineXCommands",
+XXXXXXXXXXXXdescription="HelpXRelatedXToXInlineXUsage.",
+XXXXXXXXXXXXinput_message_content=InputTextMessageContent(__HELP__),
+XXXXXXXXXXXXthumb_url="https://telegra.ph/file/109e8fe98acc6d262b7c6.jpg",
+XXXXXXXXXXXXreply_markup=buttons,
+XXXXXXXX)
+XXXX]
+XXXXanswerssX=XawaitXalive_function(answerss)
+XXXXreturnXanswerss
 
-    msg = f"""
-**[Ineruki ✨](https://github.com/errorshivansh):**
-**MainBot:** `{bot_state}`
-**UserBot:** `Alive`
-**Python:** `3.9`
-**Pyrogram:** `{pyrover}`
-**MongoDB:** `{mongover}`
-**Platform:** `{sys.platform}`
-**Profiles:** [BOT](t.me/{BOT_USERNAME}) | [UBOT](t.me/Inerukixhelper)
+
+asyncXdefXalive_function(answers):
+XXXXbuttonsX=XInlineKeyboard(row_width=2)
+XXXXbot_stateX=X"Dead"XifXnotXawaitXapp.get_me()XelseX"Alive"
+XXXX#Xubot_stateX=X'Dead'XifXnotXawaitXapp2.get_me()XelseX'Alive'
+XXXXbuttons.add(
+XXXXXXXXInlineKeyboardButton("MainXBot",Xurl="https://t.me/InerukiXbot"),
+XXXXXXXXInlineKeyboardButton("GoXInline!",Xswitch_inline_query_current_chat=""),
+XXXX)
+
+XXXXmsgX=Xf"""
+**[InerukiX✨](https://github.com/errorshivansh):**
+**MainBot:**X`{bot_state}`
+**UserBot:**X`Alive`
+**Python:**X`3.9`
+**Pyrogram:**X`{pyrover}`
+**MongoDB:**X`{mongover}`
+**Platform:**X`{sys.platform}`
+**Profiles:**X[BOT](t.me/{BOT_USERNAME})X|X[UBOT](t.me/Inerukixhelper)
 """
-    answers.append(
-        InlineQueryResultArticle(
-            title="Alive",
-            description="Check Bot's Stats",
-            thumb_url="https://telegra.ph/file/debc179305d2e1f140636.jpg",
-            input_message_content=InputTextMessageContent(
-                msg, disable_web_page_preview=True
-            ),
-            reply_markup=buttons,
-        )
-    )
-    return answers
+XXXXanswers.append(
+XXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXtitle="Alive",
+XXXXXXXXXXXXdescription="CheckXBot'sXStats",
+XXXXXXXXXXXXthumb_url="https://telegra.ph/file/debc179305d2e1f140636.jpg",
+XXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXmsg,Xdisable_web_page_preview=True
+XXXXXXXXXXXX),
+XXXXXXXXXXXXreply_markup=buttons,
+XXXXXXXX)
+XXXX)
+XXXXreturnXanswers
 
 
-async def webss(url):
-    start_time = time()
-    if "." not in url:
-        return
-    screenshot = await fetch(f"https://patheticprogrammers.cf/ss?site={url}")
-    end_time = time()
-    # m = await app.send_photo(LOG_GROUP_ID, photo=screenshot["url"])
-    await m.delete()
-    a = []
-    pic = InlineQueryResultPhoto(
-        photo_url=screenshot["url"],
-        caption=(f"`{url}`\n__Took {round(end_time - start_time)} Seconds.__"),
-    )
-    a.append(pic)
-    return a
+asyncXdefXwebss(url):
+XXXXstart_timeX=Xtime()
+XXXXifX"."XnotXinXurl:
+XXXXXXXXreturn
+XXXXscreenshotX=XawaitXfetch(f"https://patheticprogrammers.cf/ss?site={url}")
+XXXXend_timeX=Xtime()
+XXXX#XmX=XawaitXapp.send_photo(LOG_GROUP_ID,Xphoto=screenshot["url"])
+XXXXawaitXm.delete()
+XXXXaX=X[]
+XXXXpicX=XInlineQueryResultPhoto(
+XXXXXXXXphoto_url=screenshot["url"],
+XXXXXXXXcaption=(f"`{url}`\n__TookX{round(end_timeX-Xstart_time)}XSeconds.__"),
+XXXX)
+XXXXa.append(pic)
+XXXXreturnXa
 
 
-async def translate_func(answers, lang, tex):
-    i = Translator().translate(tex, dest=lang)
-    msg = f"""
-__**Translated from {i.src} to {lang}**__
+asyncXdefXtranslate_func(answers,Xlang,Xtex):
+XXXXiX=XTranslator().translate(tex,Xdest=lang)
+XXXXmsgX=Xf"""
+__**TranslatedXfromX{i.src}XtoX{lang}**__
 
 **INPUT:**
 {tex}
 
 **OUTPUT:**
 {i.text}"""
-    answers.extend(
-        [
-            InlineQueryResultArticle(
-                title=f"Translated from {i.src} to {lang}.",
-                description=i.text,
-                input_message_content=InputTextMessageContent(msg),
-            ),
-            InlineQueryResultArticle(
-                title=i.text, input_message_content=InputTextMessageContent(i.text)
-            ),
-        ]
-    )
-    return answers
+XXXXanswers.extend(
+XXXXXXXX[
+XXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXtitle=f"TranslatedXfromX{i.src}XtoX{lang}.",
+XXXXXXXXXXXXXXXXdescription=i.text,
+XXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(msg),
+XXXXXXXXXXXX),
+XXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXtitle=i.text,Xinput_message_content=InputTextMessageContent(i.text)
+XXXXXXXXXXXX),
+XXXXXXXX]
+XXXX)
+XXXXreturnXanswers
 
 
-async def urban_func(answers, text):
-    results = await arq.urbandict(text)
-    if not results.ok:
-        answers.append(
-            InlineQueryResultArticle(
-                title="Error",
-                description=results.result,
-                input_message_content=InputTextMessageContent(results.result),
-            )
-        )
-        return answers
-    results = results.result
-    limit = 0
-    for i in results:
-        if limit > 48:
-            break
-        limit += 1
-        msg = f"""
-**Query:** {text}
+asyncXdefXurban_func(answers,Xtext):
+XXXXresultsX=XawaitXarq.urbandict(text)
+XXXXifXnotXresults.ok:
+XXXXXXXXanswers.append(
+XXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXtitle="Error",
+XXXXXXXXXXXXXXXXdescription=results.result,
+XXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(results.result),
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturnXanswers
+XXXXresultsX=Xresults.result
+XXXXlimitX=X0
+XXXXforXiXinXresults:
+XXXXXXXXifXlimitX>X48:
+XXXXXXXXXXXXbreak
+XXXXXXXXlimitX+=X1
+XXXXXXXXmsgX=Xf"""
+**Query:**X{text}
 
-**Definition:** __{i.definition}__
+**Definition:**X__{i.definition}__
 
-**Example:** __{i.example}__"""
+**Example:**X__{i.example}__"""
 
-        answers.append(
-            InlineQueryResultArticle(
-                title=i.word,
-                description=i.definition,
-                input_message_content=InputTextMessageContent(msg),
-            )
-        )
-    return answers
+XXXXXXXXanswers.append(
+XXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXtitle=i.word,
+XXXXXXXXXXXXXXXXdescription=i.definition,
+XXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(msg),
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXreturnXanswers
 
 
-async def google_search_func(answers, text):
-    gresults = await GoogleSearch().async_search(text)
-    limit = 0
-    for i in gresults:
-        if limit > 48:
-            break
-        limit += 1
+asyncXdefXgoogle_search_func(answers,Xtext):
+XXXXgresultsX=XawaitXGoogleSearch().async_search(text)
+XXXXlimitX=X0
+XXXXforXiXinXgresults:
+XXXXXXXXifXlimitX>X48:
+XXXXXXXXXXXXbreak
+XXXXXXXXlimitX+=X1
 
-        try:
-            msg = f"""
+XXXXXXXXtry:
+XXXXXXXXXXXXmsgX=Xf"""
 [{i['titles']}]({i['links']})
 {i['descriptions']}"""
 
-            answers.append(
-                InlineQueryResultArticle(
-                    title=i["titles"],
-                    description=i["descriptions"],
-                    input_message_content=InputTextMessageContent(
-                        msg, disable_web_page_preview=True
-                    ),
-                )
-            )
-        except KeyError:
-            pass
-    return answers
+XXXXXXXXXXXXanswers.append(
+XXXXXXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXXXXXtitle=i["titles"],
+XXXXXXXXXXXXXXXXXXXXdescription=i["descriptions"],
+XXXXXXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXXXXXmsg,Xdisable_web_page_preview=True
+XXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX)
+XXXXXXXXexceptXKeyError:
+XXXXXXXXXXXXpass
+XXXXreturnXanswers
 
 
-async def wall_func(answers, text):
-    results = await arq.wall(text)
-    if not results.ok:
-        answers.append(
-            InlineQueryResultArticle(
-                title="Error",
-                description=results.result,
-                input_message_content=InputTextMessageContent(results.result),
-            )
-        )
-        return answers
-    limit = 0
-    results = results.result
-    for i in results:
-        if limit > 48:
-            break
-        limit += 1
-        answers.append(
-            InlineQueryResultPhoto(
-                photo_url=i.url_image,
-                thumb_url=i.url_thumb,
-                caption=f"[Source]({i.url_image})",
-            )
-        )
-    return answers
+asyncXdefXwall_func(answers,Xtext):
+XXXXresultsX=XawaitXarq.wall(text)
+XXXXifXnotXresults.ok:
+XXXXXXXXanswers.append(
+XXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXtitle="Error",
+XXXXXXXXXXXXXXXXdescription=results.result,
+XXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(results.result),
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturnXanswers
+XXXXlimitX=X0
+XXXXresultsX=Xresults.result
+XXXXforXiXinXresults:
+XXXXXXXXifXlimitX>X48:
+XXXXXXXXXXXXbreak
+XXXXXXXXlimitX+=X1
+XXXXXXXXanswers.append(
+XXXXXXXXXXXXInlineQueryResultPhoto(
+XXXXXXXXXXXXXXXXphoto_url=i.url_image,
+XXXXXXXXXXXXXXXXthumb_url=i.url_thumb,
+XXXXXXXXXXXXXXXXcaption=f"[Source]({i.url_image})",
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXreturnXanswers
 
 
-async def saavn_func(answers, text):
-    buttons_list = []
-    results = await arq.saavn(text)
-    if not results.ok:
-        answers.append(
-            InlineQueryResultArticle(
-                title="Error",
-                description=results.result,
-                input_message_content=InputTextMessageContent(results.result),
-            )
-        )
-        return answers
-    results = results.result
-    for count, i in enumerate(results):
-        buttons = InlineKeyboard(row_width=1)
-        buttons.add(InlineKeyboardButton("Download | Play", url=i.media_url))
-        buttons_list.append(buttons)
-        duration = await time_convert(i.duration)
-        caption = f"""
-**Title:** {i.song}
-**Album:** {i.album}
-**Duration:** {duration}
-**Release:** {i.year}
-**Singers:** {i.singers}"""
-        description = f"{i.album} | {duration} " + f"| {i.singers} ({i.year})"
-        answers.append(
-            InlineQueryResultArticle(
-                title=i.song,
-                input_message_content=InputTextMessageContent(
-                    caption, disable_web_page_preview=True
-                ),
-                description=description,
-                thumb_url=i.image,
-                reply_markup=buttons_list[count],
-            )
-        )
-    return answers
+asyncXdefXsaavn_func(answers,Xtext):
+XXXXbuttons_listX=X[]
+XXXXresultsX=XawaitXarq.saavn(text)
+XXXXifXnotXresults.ok:
+XXXXXXXXanswers.append(
+XXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXtitle="Error",
+XXXXXXXXXXXXXXXXdescription=results.result,
+XXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(results.result),
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturnXanswers
+XXXXresultsX=Xresults.result
+XXXXforXcount,XiXinXenumerate(results):
+XXXXXXXXbuttonsX=XInlineKeyboard(row_width=1)
+XXXXXXXXbuttons.add(InlineKeyboardButton("DownloadX|XPlay",Xurl=i.media_url))
+XXXXXXXXbuttons_list.append(buttons)
+XXXXXXXXdurationX=XawaitXtime_convert(i.duration)
+XXXXXXXXcaptionX=Xf"""
+**Title:**X{i.song}
+**Album:**X{i.album}
+**Duration:**X{duration}
+**Release:**X{i.year}
+**Singers:**X{i.singers}"""
+XXXXXXXXdescriptionX=Xf"{i.album}X|X{duration}X"X+Xf"|X{i.singers}X({i.year})"
+XXXXXXXXanswers.append(
+XXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXtitle=i.song,
+XXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXcaption,Xdisable_web_page_preview=True
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXdescription=description,
+XXXXXXXXXXXXXXXXthumb_url=i.image,
+XXXXXXXXXXXXXXXXreply_markup=buttons_list[count],
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXreturnXanswers
 
 
-async def paste_func(answers, text):
-    start_time = time()
-    url = await paste(text)
-    msg = f"__**{url}**__"
-    end_time = time()
-    answers.append(
-        InlineQueryResultArticle(
-            title=f"Pasted In {round(end_time - start_time)} Seconds.",
-            description=url,
-            input_message_content=InputTextMessageContent(msg),
-        )
-    )
-    return answers
+asyncXdefXpaste_func(answers,Xtext):
+XXXXstart_timeX=Xtime()
+XXXXurlX=XawaitXpaste(text)
+XXXXmsgX=Xf"__**{url}**__"
+XXXXend_timeX=Xtime()
+XXXXanswers.append(
+XXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXtitle=f"PastedXInX{round(end_timeX-Xstart_time)}XSeconds.",
+XXXXXXXXXXXXdescription=url,
+XXXXXXXXXXXXinput_message_content=InputTextMessageContent(msg),
+XXXXXXXX)
+XXXX)
+XXXXreturnXanswers
 
 
-async def deezer_func(answers, text):
-    buttons_list = []
-    results = await arq.deezer(text, 5)
-    if not results.ok:
-        answers.append(
-            InlineQueryResultArticle(
-                title="Error",
-                description=results.result,
-                input_message_content=InputTextMessageContent(results.result),
-            )
-        )
-        return answers
-    results = results.result
-    for count, i in enumerate(results):
-        buttons = InlineKeyboard(row_width=1)
-        buttons.add(InlineKeyboardButton("Download | Play", url=i.url))
-        buttons_list.append(buttons)
-        duration = await time_convert(i.duration)
-        caption = f"""
-**Title:** {i.title}
-**Artist:** {i.artist}
-**Duration:** {duration}
-**Source:** [Deezer]({i.source})"""
-        description = f"{i.artist} | {duration}"
-        answers.append(
-            InlineQueryResultArticle(
-                title=i.title,
-                thumb_url=i.thumbnail,
-                description=description,
-                input_message_content=InputTextMessageContent(
-                    caption, disable_web_page_preview=True
-                ),
-                reply_markup=buttons_list[count],
-            )
-        )
-    return answers
+asyncXdefXdeezer_func(answers,Xtext):
+XXXXbuttons_listX=X[]
+XXXXresultsX=XawaitXarq.deezer(text,X5)
+XXXXifXnotXresults.ok:
+XXXXXXXXanswers.append(
+XXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXtitle="Error",
+XXXXXXXXXXXXXXXXdescription=results.result,
+XXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(results.result),
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturnXanswers
+XXXXresultsX=Xresults.result
+XXXXforXcount,XiXinXenumerate(results):
+XXXXXXXXbuttonsX=XInlineKeyboard(row_width=1)
+XXXXXXXXbuttons.add(InlineKeyboardButton("DownloadX|XPlay",Xurl=i.url))
+XXXXXXXXbuttons_list.append(buttons)
+XXXXXXXXdurationX=XawaitXtime_convert(i.duration)
+XXXXXXXXcaptionX=Xf"""
+**Title:**X{i.title}
+**Artist:**X{i.artist}
+**Duration:**X{duration}
+**Source:**X[Deezer]({i.source})"""
+XXXXXXXXdescriptionX=Xf"{i.artist}X|X{duration}"
+XXXXXXXXanswers.append(
+XXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXtitle=i.title,
+XXXXXXXXXXXXXXXXthumb_url=i.thumbnail,
+XXXXXXXXXXXXXXXXdescription=description,
+XXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXcaption,Xdisable_web_page_preview=True
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXreply_markup=buttons_list[count],
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXreturnXanswers
 
 
-# Used my api key here, don't fuck with it
-async def shortify(url):
-    if "." not in url:
-        return
-    header = {
-        "Authorization": "Bearer ad39983fa42d0b19e4534f33671629a4940298dc",
-        "Content-Type": "application/json",
-    }
-    payload = {"long_url": f"{url}"}
-    payload = json.dumps(payload)
-    async with aiohttp.ClientSession() as session:
-        async with session.post(
-            "https://api-ssl.bitly.com/v4/shorten", headers=header, data=payload
-        ) as resp:
-            data = await resp.json()
-    msg = data["link"]
-    a = []
-    b = InlineQueryResultArticle(
-        title="Link Shortened!",
-        description=data["link"],
-        input_message_content=InputTextMessageContent(
-            msg, disable_web_page_preview=True
-        ),
-    )
-    a.append(b)
-    return a
+#XUsedXmyXapiXkeyXhere,Xdon'tXfuckXwithXit
+asyncXdefXshortify(url):
+XXXXifX"."XnotXinXurl:
+XXXXXXXXreturn
+XXXXheaderX=X{
+XXXXXXXX"Authorization":X"BearerXad39983fa42d0b19e4534f33671629a4940298dc",
+XXXXXXXX"Content-Type":X"application/json",
+XXXX}
+XXXXpayloadX=X{"long_url":Xf"{url}"}
+XXXXpayloadX=Xjson.dumps(payload)
+XXXXasyncXwithXaiohttp.ClientSession()XasXsession:
+XXXXXXXXasyncXwithXsession.post(
+XXXXXXXXXXXX"https://api-ssl.bitly.com/v4/shorten",Xheaders=header,Xdata=payload
+XXXXXXXX)XasXresp:
+XXXXXXXXXXXXdataX=XawaitXresp.json()
+XXXXmsgX=Xdata["link"]
+XXXXaX=X[]
+XXXXbX=XInlineQueryResultArticle(
+XXXXXXXXtitle="LinkXShortened!",
+XXXXXXXXdescription=data["link"],
+XXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXmsg,Xdisable_web_page_preview=True
+XXXXXXXX),
+XXXX)
+XXXXa.append(b)
+XXXXreturnXa
 
 
-async def torrent_func(answers, text):
-    results = await arq.torrent(text)
-    if not results.ok:
-        answers.append(
-            InlineQueryResultArticle(
-                title="Error",
-                description=results.result,
-                input_message_content=InputTextMessageContent(results.result),
-            )
-        )
-        return answers
-    limit = 0
-    results = results.result
-    for i in results:
-        if limit > 48:
-            break
-        title = i.name
-        size = i.size
-        seeds = i.seeds
-        leechs = i.leechs
-        upload_date = i.uploaded + " Ago"
-        magnet = i.magnet
-        caption = f"""
-**Title:** __{title}__
-**Size:** __{size}__
-**Seeds:** __{seeds}__
-**Leechs:** __{leechs}__
-**Uploaded:** __{upload_date}__
-**Magnet:** `{magnet}`"""
+asyncXdefXtorrent_func(answers,Xtext):
+XXXXresultsX=XawaitXarq.torrent(text)
+XXXXifXnotXresults.ok:
+XXXXXXXXanswers.append(
+XXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXtitle="Error",
+XXXXXXXXXXXXXXXXdescription=results.result,
+XXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(results.result),
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturnXanswers
+XXXXlimitX=X0
+XXXXresultsX=Xresults.result
+XXXXforXiXinXresults:
+XXXXXXXXifXlimitX>X48:
+XXXXXXXXXXXXbreak
+XXXXXXXXtitleX=Xi.name
+XXXXXXXXsizeX=Xi.size
+XXXXXXXXseedsX=Xi.seeds
+XXXXXXXXleechsX=Xi.leechs
+XXXXXXXXupload_dateX=Xi.uploadedX+X"XAgo"
+XXXXXXXXmagnetX=Xi.magnet
+XXXXXXXXcaptionX=Xf"""
+**Title:**X__{title}__
+**Size:**X__{size}__
+**Seeds:**X__{seeds}__
+**Leechs:**X__{leechs}__
+**Uploaded:**X__{upload_date}__
+**Magnet:**X`{magnet}`"""
 
-        description = f"{size} | {upload_date} | Seeds: {seeds}"
-        answers.append(
-            InlineQueryResultArticle(
-                title=title,
-                description=description,
-                input_message_content=InputTextMessageContent(
-                    caption, disable_web_page_preview=True
-                ),
-            )
-        )
-        limit += 1
-    return answers
+XXXXXXXXdescriptionX=Xf"{size}X|X{upload_date}X|XSeeds:X{seeds}"
+XXXXXXXXanswers.append(
+XXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXtitle=title,
+XXXXXXXXXXXXXXXXdescription=description,
+XXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(
+XXXXXXXXXXXXXXXXXXXXcaption,Xdisable_web_page_preview=True
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXlimitX+=X1
+XXXXreturnXanswers
 
 
-async def wiki_func(answers, text):
-    data = await arq.wiki(text)
-    if not data.ok:
-        answers.append(
-            InlineQueryResultArticle(
-                title="Error",
-                description=data.result,
-                input_message_content=InputTextMessageContent(data.result),
-            )
-        )
-        return answers
-    data = data.result
-    msg = f"""
+asyncXdefXwiki_func(answers,Xtext):
+XXXXdataX=XawaitXarq.wiki(text)
+XXXXifXnotXdata.ok:
+XXXXXXXXanswers.append(
+XXXXXXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXXXXXtitle="Error",
+XXXXXXXXXXXXXXXXdescription=data.result,
+XXXXXXXXXXXXXXXXinput_message_content=InputTextMessageContent(data.result),
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXreturnXanswers
+XXXXdataX=Xdata.result
+XXXXmsgX=Xf"""
 **QUERY:**
 {data.title}
 
 **ANSWER:**
 __{data.answer}__"""
-    answers.append(
-        InlineQueryResultArticle(
-            title=data.title,
-            description=data.answer,
-            input_message_content=InputTextMessageContent(msg),
-        )
-    )
-    return answers
+XXXXanswers.append(
+XXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXtitle=data.title,
+XXXXXXXXXXXXdescription=data.answer,
+XXXXXXXXXXXXinput_message_content=InputTextMessageContent(msg),
+XXXXXXXX)
+XXXX)
+XXXXreturnXanswers
 
 
-async def ping_func(answers):
-    t1 = time()
-    ping = Ping(ping_id=randint(696969, 6969696))
-    await app.send(ping)
-    t2 = time()
-    ping = f"{str(round((t2 - t1), 2))} Seconds"
-    answers.append(
-        InlineQueryResultArticle(
-            title=ping, input_message_content=InputTextMessageContent(f"__**{ping}**__")
-        )
-    )
-    return answers
+asyncXdefXping_func(answers):
+XXXXt1X=Xtime()
+XXXXpingX=XPing(ping_id=randint(696969,X6969696))
+XXXXawaitXapp.send(ping)
+XXXXt2X=Xtime()
+XXXXpingX=Xf"{str(round((t2X-Xt1),X2))}XSeconds"
+XXXXanswers.append(
+XXXXXXXXInlineQueryResultArticle(
+XXXXXXXXXXXXtitle=ping,Xinput_message_content=InputTextMessageContent(f"__**{ping}**__")
+XXXXXXXX)
+XXXX)
+XXXXreturnXanswers
 
 
-async def pokedexinfo(answers, pokemon):
-    Pokemon = f"https://some-random-api.ml/pokedex?pokemon={pokemon}"
-    result = await fetch(Pokemon)
-    buttons = InlineKeyboard(row_width=1)
-    buttons.add(
-        InlineKeyboardButton("Pokedex", switch_inline_query_current_chat="pokedex")
-    )
-    caption = f"""
-**Pokemon:** `{result['name']}`
-**Pokedex:** `{result['id']}`
-**Type:** `{result['type']}`
-**Abilities:** `{result['abilities']}`
-**Height:** `{result['height']}`
-**Weight:** `{result['weight']}`
-**Gender:** `{result['gender']}`
-**Stats:** `{result['stats']}`
-**Description:** `{result['description']}`"""
-    answers.append(
-        InlineQueryResultPhoto(
-            photo_url=f"https://img.pokemondb.net/artwork/large/{pokemon}.jpg",
-            title=result["name"],
-            description=result["description"],
-            caption=caption,
-            reply_markup=buttons,
-        )
-    )
-    return answers
+asyncXdefXpokedexinfo(answers,Xpokemon):
+XXXXPokemonX=Xf"https://some-random-api.ml/pokedex?pokemon={pokemon}"
+XXXXresultX=XawaitXfetch(Pokemon)
+XXXXbuttonsX=XInlineKeyboard(row_width=1)
+XXXXbuttons.add(
+XXXXXXXXInlineKeyboardButton("Pokedex",Xswitch_inline_query_current_chat="pokedex")
+XXXX)
+XXXXcaptionX=Xf"""
+**Pokemon:**X`{result['name']}`
+**Pokedex:**X`{result['id']}`
+**Type:**X`{result['type']}`
+**Abilities:**X`{result['abilities']}`
+**Height:**X`{result['height']}`
+**Weight:**X`{result['weight']}`
+**Gender:**X`{result['gender']}`
+**Stats:**X`{result['stats']}`
+**Description:**X`{result['description']}`"""
+XXXXanswers.append(
+XXXXXXXXInlineQueryResultPhoto(
+XXXXXXXXXXXXphoto_url=f"https://img.pokemondb.net/artwork/large/{pokemon}.jpg",
+XXXXXXXXXXXXtitle=result["name"],
+XXXXXXXXXXXXdescription=result["description"],
+XXXXXXXXXXXXcaption=caption,
+XXXXXXXXXXXXreply_markup=buttons,
+XXXXXXXX)
+XXXX)
+XXXXreturnXanswers

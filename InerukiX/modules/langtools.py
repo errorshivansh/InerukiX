@@ -1,135 +1,135 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import json
+importXjson
 
-import requests
-from google_trans_new import google_translator
-from PyDictionary import PyDictionary
-from telethon import *
-from telethon.tl.types import *
+importXrequests
+fromXgoogle_trans_newXimportXgoogle_translator
+fromXPyDictionaryXimportXPyDictionary
+fromXtelethonXimportX*
+fromXtelethon.tl.typesXimportX*
 
-from Ineruki .services.events import register
+fromXInerukiX.services.eventsXimportXregister
 
-API_KEY = "6ae0c3a0-afdc-4532-a810-82ded0054236"
-URL = "http://services.gingersoftware.com/Ginger/correct/json/GingerTheText"
-
-
-@register(pattern="^/tr ?(.*)")
-async def _(event):
-    input_str = event.pattern_match.group(1)
-    if event.reply_to_msg_id:
-        previous_message = await event.get_reply_message()
-        text = previous_message.message
-        lan = input_str or "en"
-    elif "|" in input_str:
-        lan, text = input_str.split("|")
-    else:
-        await event.reply(
-            "`/tr <LanguageCode>` as reply to a message or `/tr <LanguageCode> | <text>`"
-        )
-        return
-    text = text.strip()
-    lan = lan.strip()
-    translator = google_translator()
-    try:
-        translated = translator.translate(text, lang_tgt=lan)
-        after_tr_text = translated
-        detect_result = translator.detect(text)
-        output_str = ("**TRANSLATED Succesfully** from {} to {}\n\n" "{}").format(
-            detect_result[0], lan, after_tr_text
-        )
-        await event.reply(output_str)
-    except Exception as exc:
-        await event.reply(str(exc))
+API_KEYX=X"6ae0c3a0-afdc-4532-a810-82ded0054236"
+URLX=X"http://services.gingersoftware.com/Ginger/correct/json/GingerTheText"
 
 
-@register(pattern="^/spell(?: |$)(.*)")
-async def _(event):
-    ctext = await event.get_reply_message()
-    msg = ctext.text
-    #  print (msg)
-    params = dict(lang="US", clientVersion="2.0", apiKey=API_KEY, text=msg)
+@register(pattern="^/trX?(.*)")
+asyncXdefX_(event):
+XXXXinput_strX=Xevent.pattern_match.group(1)
+XXXXifXevent.reply_to_msg_id:
+XXXXXXXXprevious_messageX=XawaitXevent.get_reply_message()
+XXXXXXXXtextX=Xprevious_message.message
+XXXXXXXXlanX=Xinput_strXorX"en"
+XXXXelifX"|"XinXinput_str:
+XXXXXXXXlan,XtextX=Xinput_str.split("|")
+XXXXelse:
+XXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXX"`/trX<LanguageCode>`XasXreplyXtoXaXmessageXorX`/trX<LanguageCode>X|X<text>`"
+XXXXXXXX)
+XXXXXXXXreturn
+XXXXtextX=Xtext.strip()
+XXXXlanX=Xlan.strip()
+XXXXtranslatorX=Xgoogle_translator()
+XXXXtry:
+XXXXXXXXtranslatedX=Xtranslator.translate(text,Xlang_tgt=lan)
+XXXXXXXXafter_tr_textX=Xtranslated
+XXXXXXXXdetect_resultX=Xtranslator.detect(text)
+XXXXXXXXoutput_strX=X("**TRANSLATEDXSuccesfully**XfromX{}XtoX{}\n\n"X"{}").format(
+XXXXXXXXXXXXdetect_result[0],Xlan,Xafter_tr_text
+XXXXXXXX)
+XXXXXXXXawaitXevent.reply(output_str)
+XXXXexceptXExceptionXasXexc:
+XXXXXXXXawaitXevent.reply(str(exc))
 
-    res = requests.get(URL, params=params)
-    changes = json.loads(res.text).get("LightGingerTheTextResult")
-    curr_string = ""
-    prev_end = 0
 
-    for change in changes:
-        start = change.get("From")
-        end = change.get("To") + 1
-        suggestions = change.get("Suggestions")
-        if suggestions:
-            sugg_str = suggestions[0].get("Text")
-            curr_string += msg[prev_end:start] + sugg_str
-            prev_end = end
+@register(pattern="^/spell(?:X|$)(.*)")
+asyncXdefX_(event):
+XXXXctextX=XawaitXevent.get_reply_message()
+XXXXmsgX=Xctext.text
+XXXX#XXprintX(msg)
+XXXXparamsX=Xdict(lang="US",XclientVersion="2.0",XapiKey=API_KEY,Xtext=msg)
 
-    curr_string += msg[prev_end:]
-    await event.reply(curr_string)
+XXXXresX=Xrequests.get(URL,Xparams=params)
+XXXXchangesX=Xjson.loads(res.text).get("LightGingerTheTextResult")
+XXXXcurr_stringX=X""
+XXXXprev_endX=X0
+
+XXXXforXchangeXinXchanges:
+XXXXXXXXstartX=Xchange.get("From")
+XXXXXXXXendX=Xchange.get("To")X+X1
+XXXXXXXXsuggestionsX=Xchange.get("Suggestions")
+XXXXXXXXifXsuggestions:
+XXXXXXXXXXXXsugg_strX=Xsuggestions[0].get("Text")
+XXXXXXXXXXXXcurr_stringX+=Xmsg[prev_end:start]X+Xsugg_str
+XXXXXXXXXXXXprev_endX=Xend
+
+XXXXcurr_stringX+=Xmsg[prev_end:]
+XXXXawaitXevent.reply(curr_string)
 
 
-dictionary = PyDictionary()
+dictionaryX=XPyDictionary()
 
 
 @register(pattern="^/define")
-async def _(event):
-    text = event.text[len("/define ") :]
-    word = f"{text}"
-    let = dictionary.meaning(word)
-    set = str(let)
-    jet = set.replace("{", "")
-    net = jet.replace("}", "")
-    got = net.replace("'", "")
-    await event.reply(got)
+asyncXdefX_(event):
+XXXXtextX=Xevent.text[len("/defineX")X:]
+XXXXwordX=Xf"{text}"
+XXXXletX=Xdictionary.meaning(word)
+XXXXsetX=Xstr(let)
+XXXXjetX=Xset.replace("{",X"")
+XXXXnetX=Xjet.replace("}",X"")
+XXXXgotX=Xnet.replace("'",X"")
+XXXXawaitXevent.reply(got)
 
 
 @register(pattern="^/synonyms")
-async def _(event):
-    text = event.text[len("/synonyms ") :]
-    word = f"{text}"
-    let = dictionary.synonym(word)
-    set = str(let)
-    jet = set.replace("{", "")
-    net = jet.replace("}", "")
-    got = net.replace("'", "")
-    await event.reply(got)
+asyncXdefX_(event):
+XXXXtextX=Xevent.text[len("/synonymsX")X:]
+XXXXwordX=Xf"{text}"
+XXXXletX=Xdictionary.synonym(word)
+XXXXsetX=Xstr(let)
+XXXXjetX=Xset.replace("{",X"")
+XXXXnetX=Xjet.replace("}",X"")
+XXXXgotX=Xnet.replace("'",X"")
+XXXXawaitXevent.reply(got)
 
 
 @register(pattern="^/antonyms")
-async def _(event):
-    text = message.text[len("/antonyms ") :]
-    word = f"{text}"
-    let = dictionary.antonym(word)
-    set = str(let)
-    jet = set.replace("{", "")
-    net = jet.replace("}", "")
-    got = net.replace("'", "")
-    await event.reply(got)
+asyncXdefX_(event):
+XXXXtextX=Xmessage.text[len("/antonymsX")X:]
+XXXXwordX=Xf"{text}"
+XXXXletX=Xdictionary.antonym(word)
+XXXXsetX=Xstr(let)
+XXXXjetX=Xset.replace("{",X"")
+XXXXnetX=Xjet.replace("}",X"")
+XXXXgotX=Xnet.replace("'",X"")
+XXXXawaitXevent.reply(got)
 
 
-__help__ = """
- - /tr <i>language code</i> or /tr <i>language code</i> , <i>text</i>: Type in reply to a message or (/tr <i>language code</i> , <i>text</i>) to get it's translation in the destination language
- - /define <i>text</i>: Type the word or expression you want to search\nFor example /define lesbian
- - /spell: while replying to a message, will reply with a grammar corrected version
- - /forbesify: Correct your punctuations better use the advanged spell module
- - /synonyms <i>word</i>: Find the synonyms of a word
- - /antonyms <i>word</i>: Find the antonyms of a word
+__help__X=X"""
+X-X/trX<i>languageXcode</i>XorX/trX<i>languageXcode</i>X,X<i>text</i>:XTypeXinXreplyXtoXaXmessageXorX(/trX<i>languageXcode</i>X,X<i>text</i>)XtoXgetXit'sXtranslationXinXtheXdestinationXlanguage
+X-X/defineX<i>text</i>:XTypeXtheXwordXorXexpressionXyouXwantXtoXsearch\nForXexampleX/defineXlesbian
+X-X/spell:XwhileXreplyingXtoXaXmessage,XwillXreplyXwithXaXgrammarXcorrectedXversion
+X-X/forbesify:XCorrectXyourXpunctuationsXbetterXuseXtheXadvangedXspellXmodule
+X-X/synonymsX<i>word</i>:XFindXtheXsynonymsXofXaXword
+X-X/antonymsX<i>word</i>:XFindXtheXantonymsXofXaXword
 """
 
-__mod_name__ = "Lang-Tools"
+__mod_name__X=X"Lang-Tools"

@@ -1,40 +1,40 @@
-# This file is part of Utah (Telegram Bot)
+#XThisXfileXisXpartXofXUtahX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import sys
+importXsys
 
-import redis as redis_lib
+importXredisXasXredis_lib
 
-from Ineruki  import log
-from Ineruki .config import get_str_key
+fromXInerukiXXimportXlog
+fromXInerukiX.configXimportXget_str_key
 
-# Init Redis
-redis = redis_lib.Redis(
-    host=get_str_key("REDIS_URI"),
-    port=get_str_key("REDIS_PORT"),
-    password=get_str_key("REDIS_PASS"),
-    decode_responses=True,
+#XInitXRedis
+redisX=Xredis_lib.Redis(
+XXXXhost=get_str_key("REDIS_URI"),
+XXXXport=get_str_key("REDIS_PORT"),
+XXXXpassword=get_str_key("REDIS_PASS"),
+XXXXdecode_responses=True,
 )
 
-bredis = redis_lib.Redis(
-    host=get_str_key("REDIS_URI"),
-    port=get_str_key("REDIS_PORT"),
-    password=get_str_key("REDIS_PASS"),
+bredisX=Xredis_lib.Redis(
+XXXXhost=get_str_key("REDIS_URI"),
+XXXXport=get_str_key("REDIS_PORT"),
+XXXXpassword=get_str_key("REDIS_PASS"),
 )
 
 try:
-    redis.ping()
-except redis_lib.ConnectionError:
-    sys.exit(log.critical("Can't connect to RedisDB! Exiting..."))
+XXXXredis.ping()
+exceptXredis_lib.ConnectionError:
+XXXXsys.exit(log.critical("Can'tXconnectXtoXRedisDB!XExiting..."))

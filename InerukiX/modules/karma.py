@@ -1,242 +1,242 @@
-# Ported From WilliamButcher Bot.
-# Credits Goes to WilliamButcherBot
-# Ported from https://github.com/TheHamkerCat/WilliamButcherBot
+#XPortedXFromXWilliamButcherXBot.
+#XCreditsXGoesXtoXWilliamButcherBot
+#XPortedXfromXhttps://github.com/TheHamkerCat/WilliamButcherBot
 """
-MIT License
-Copyright (c) 2021 TheHamkerCat
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, E PRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+MITXLicense
+CopyrightX(c)X2021XTheHamkerCat
+PermissionXisXherebyXgranted,XfreeXofXcharge,XtoXanyXpersonXobtainingXaXcopy
+ofXthisXsoftwareXandXassociatedXdocumentationXfilesX(theX"Software"),XtoXdeal
+inXtheXSoftwareXwithoutXrestriction,XincludingXwithoutXlimitationXtheXrights
+toXuse,Xcopy,Xmodify,Xmerge,Xpublish,Xdistribute,Xsublicense,Xand/orXsell
+copiesXofXtheXSoftware,XandXtoXpermitXpersonsXtoXwhomXtheXSoftwareXis
+furnishedXtoXdoXso,XsubjectXtoXtheXfollowingXconditions:
+TheXaboveXcopyrightXnoticeXandXthisXpermissionXnoticeXshallXbeXincludedXinXall
+copiesXorXsubstantialXportionsXofXtheXSoftware.
+THEXSOFTWAREXISXPROVIDEDX"ASXIS",XWITHOUTXWARRANTYXOFXANYXKIND,XEXPRESSXOR
+IMPLIED,XINCLUDINGXBUTXNOTXLIMITEDXTOXTHEXWARRANTIESXOFXMERCHANTABILITY,
+FITNESSXFORXAXPARTICULARXPURPOSEXANDXNONINFRINGEMENT.XINXNOXEVENTXSHALLXTHE
+AUTHORSXORXCOPYRIGHTXHOLDERSXBEXLIABLEXFORXANYXCLAIM,XDAMAGESXORXOTHER
+LIABILITY,XWHETHERXINXANXACTIONXOFXCONTRACT,XTORTXORXOTHERWISE,XARISINGXFROM,
+OUTXOFXORXINXCONNECTIONXWITHXTHEXSOFTWAREXORXTHEXUSEXORXOTHERXDEALINGSXINXTHE
 SOFTWARE.
 """
 
-from typing import Dict, Union
+fromXtypingXimportXDict,XUnion
 
-from pyrogram import filters
+fromXpyrogramXimportXfilters
 
-from Ineruki .db.mongo_helpers.karma import is_karma_on, karma_off, karma_on
-from Ineruki .function.pluginhelpers import member_permissions
-from Ineruki .services.mongo2 import db
-from Ineruki .services.pyrogram import pbot as app
+fromXInerukiX.db.mongo_helpers.karmaXimportXis_karma_on,Xkarma_off,Xkarma_on
+fromXInerukiX.function.pluginhelpersXimportXmember_permissions
+fromXInerukiX.services.mongo2XimportXdb
+fromXInerukiX.services.pyrogramXimportXpbotXasXapp
 
-karmadb = db.karma
-karma_positive_group = 3
-karma_negative_group = 4
-
-
-async def int_to_alpha(user_id: int) -> str:
-    alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
-    text = ""
-    user_id = str(user_id)
-    for i in user_id:
-        text += alphabet[int(i)]
-    return text
+karmadbX=Xdb.karma
+karma_positive_groupX=X3
+karma_negative_groupX=X4
 
 
-async def alpha_to_int(user_id_alphabet: str) -> int:
-    alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
-    user_id = ""
-    for i in user_id_alphabet:
-        index = alphabet.index(i)
-        user_id += str(index)
-    user_id = int(user_id)
-    return user_id
+asyncXdefXint_to_alpha(user_id:Xint)X->Xstr:
+XXXXalphabetX=X["a",X"b",X"c",X"d",X"e",X"f",X"g",X"h",X"i",X"j"]
+XXXXtextX=X""
+XXXXuser_idX=Xstr(user_id)
+XXXXforXiXinXuser_id:
+XXXXXXXXtextX+=Xalphabet[int(i)]
+XXXXreturnXtext
 
 
-async def get_karmas_count() -> dict:
-    chats = karmadb.find({"chat_id": {"$lt": 0}})
-    if not chats:
-        return {}
-    chats_count = 0
-    karmas_count = 0
-    for chat in await chats.to_list(length=1000000):
-        for i in chat["karma"]:
-            karmas_count += chat["karma"][i]["karma"]
-        chats_count += 1
-    return {"chats_count": chats_count, "karmas_count": karmas_count}
+asyncXdefXalpha_to_int(user_id_alphabet:Xstr)X->Xint:
+XXXXalphabetX=X["a",X"b",X"c",X"d",X"e",X"f",X"g",X"h",X"i",X"j"]
+XXXXuser_idX=X""
+XXXXforXiXinXuser_id_alphabet:
+XXXXXXXXindexX=Xalphabet.index(i)
+XXXXXXXXuser_idX+=Xstr(index)
+XXXXuser_idX=Xint(user_id)
+XXXXreturnXuser_id
 
 
-async def get_karmas(chat_id: int) -> Dict[str, int]:
-    karma = await karmadb.find_one({"chat_id": chat_id})
-    if karma:
-        karma = karma["karma"]
-    else:
-        karma = {}
-    return karma
+asyncXdefXget_karmas_count()X->Xdict:
+XXXXchatsX=Xkarmadb.find({"chat_id":X{"$lt":X0}})
+XXXXifXnotXchats:
+XXXXXXXXreturnX{}
+XXXXchats_countX=X0
+XXXXkarmas_countX=X0
+XXXXforXchatXinXawaitXchats.to_list(length=1000000):
+XXXXXXXXforXiXinXchat["karma"]:
+XXXXXXXXXXXXkarmas_countX+=Xchat["karma"][i]["karma"]
+XXXXXXXXchats_countX+=X1
+XXXXreturnX{"chats_count":Xchats_count,X"karmas_count":Xkarmas_count}
 
 
-async def get_karma(chat_id: int, name: str) -> Union[bool, dict]:
-    name = name.lower().strip()
-    karmas = await get_karmas(chat_id)
-    if name in karmas:
-        return karmas[name]
+asyncXdefXget_karmas(chat_id:Xint)X->XDict[str,Xint]:
+XXXXkarmaX=XawaitXkarmadb.find_one({"chat_id":Xchat_id})
+XXXXifXkarma:
+XXXXXXXXkarmaX=Xkarma["karma"]
+XXXXelse:
+XXXXXXXXkarmaX=X{}
+XXXXreturnXkarma
 
 
-async def update_karma(chat_id: int, name: str, karma: dict):
-    name = name.lower().strip()
-    karmas = await get_karmas(chat_id)
-    karmas[name] = karma
-    await karmadb.update_one(
-        {"chat_id": chat_id}, {"$set": {"karma": karmas}}, upsert=True
-    )
+asyncXdefXget_karma(chat_id:Xint,Xname:Xstr)X->XUnion[bool,Xdict]:
+XXXXnameX=Xname.lower().strip()
+XXXXkarmasX=XawaitXget_karmas(chat_id)
+XXXXifXnameXinXkarmas:
+XXXXXXXXreturnXkarmas[name]
 
 
-_mod_name_ = "Karma"
-_help_ = """[UPVOTE] - Use upvote keywords like "+", "+1", "thanks" etc to upvote a message.
-[DOWNVOTE] - Use downvote keywords like "-", "-1", etc to downvote a message.
-Reply to a message with /karma to check a user's karma
-Send /karma without replying to any message to chek karma list of top 10 users
-<i> Special Credits to WilliamButcherBot </i>"""
+asyncXdefXupdate_karma(chat_id:Xint,Xname:Xstr,Xkarma:Xdict):
+XXXXnameX=Xname.lower().strip()
+XXXXkarmasX=XawaitXget_karmas(chat_id)
+XXXXkarmas[name]X=Xkarma
+XXXXawaitXkarmadb.update_one(
+XXXXXXXX{"chat_id":Xchat_id},X{"$set":X{"karma":Xkarmas}},Xupsert=True
+XXXX)
 
 
-regex_upvote = r"^((?i)\+|\+\+|\+1|thx|tnx|ty|thank you|thanx|thanks|pro|cool|good|👍)$"
-regex_downvote = r"^(\-|\-\-|\-1|👎)$"
+_mod_name_X=X"Karma"
+_help_X=X"""[UPVOTE]X-XUseXupvoteXkeywordsXlikeX"+",X"+1",X"thanks"XetcXtoXupvoteXaXmessage.
+[DOWNVOTE]X-XUseXdownvoteXkeywordsXlikeX"-",X"-1",XetcXtoXdownvoteXaXmessage.
+ReplyXtoXaXmessageXwithX/karmaXtoXcheckXaXuser'sXkarma
+SendX/karmaXwithoutXreplyingXtoXanyXmessageXtoXchekXkarmaXlistXofXtopX10Xusers
+<i>XSpecialXCreditsXtoXWilliamButcherBotX</i>"""
 
 
-@app.on_message(
-    filters.text
-    & filters.group
-    & filters.incoming
-    & filters.reply
-    & filters.regex(regex_upvote)
-    & ~filters.via_bot
-    & ~filters.bot
-    & ~filters.edited,
-    group=karma_positive_group,
-)
-async def upvote(_, message):
-
-    if not await is_karma_on(message.chat.id):
-        return
-    try:
-        if message.reply_to_message.from_user.id == message.from_user.id:
-            return
-    except:
-        return
-    chat_id = message.chat.id
-    try:
-        user_id = message.reply_to_message.from_user.id
-    except:
-        return
-    user_mention = message.reply_to_message.from_user.mention
-    current_karma = await get_karma(chat_id, await int_to_alpha(user_id))
-    if current_karma:
-        current_karma = current_karma["karma"]
-        karma = current_karma + 1
-        new_karma = {"karma": karma}
-        await update_karma(chat_id, await int_to_alpha(user_id), new_karma)
-    else:
-        karma = 1
-        new_karma = {"karma": karma}
-        await update_karma(chat_id, await int_to_alpha(user_id), new_karma)
-    await message.reply_text(
-        f"Incremented Karma of {user_mention} By 1 \nTotal Points: {karma}"
-    )
+regex_upvoteX=Xr"^((?i)\+|\+\+|\+1|thx|tnx|ty|thankXyou|thanx|thanks|pro|cool|good|👍)$"
+regex_downvoteX=Xr"^(\-|\-\-|\-1|👎)$"
 
 
 @app.on_message(
-    filters.text
-    & filters.group
-    & filters.incoming
-    & filters.reply
-    & filters.regex(regex_downvote)
-    & ~filters.via_bot
-    & ~filters.bot
-    & ~filters.edited,
-    group=karma_negative_group,
+XXXXfilters.text
+XXXX&Xfilters.group
+XXXX&Xfilters.incoming
+XXXX&Xfilters.reply
+XXXX&Xfilters.regex(regex_upvote)
+XXXX&X~filters.via_bot
+XXXX&X~filters.bot
+XXXX&X~filters.edited,
+XXXXgroup=karma_positive_group,
 )
-async def downvote(_, message):
+asyncXdefXupvote(_,Xmessage):
 
-    if not await is_karma_on(message.chat.id):
-        return
-    try:
-        if message.reply_to_message.from_user.id == message.from_user.id:
-            return
-    except:
-        return
-    chat_id = message.chat.id
-    try:
-        user_id = message.reply_to_message.from_user.id
-    except:
-        return
-    user_mention = message.reply_to_message.from_user.mention
-    current_karma = await get_karma(chat_id, await int_to_alpha(user_id))
-    if current_karma:
-        current_karma = current_karma["karma"]
-        karma = current_karma - 1
-        new_karma = {"karma": karma}
-        await update_karma(chat_id, await int_to_alpha(user_id), new_karma)
-    else:
-        karma = 1
-        new_karma = {"karma": karma}
-        await update_karma(chat_id, await int_to_alpha(user_id), new_karma)
-    await message.reply_text(
-        f"Decremented Karma Of {user_mention} By 1 \nTotal Points: {karma}"
-    )
+XXXXifXnotXawaitXis_karma_on(message.chat.id):
+XXXXXXXXreturn
+XXXXtry:
+XXXXXXXXifXmessage.reply_to_message.from_user.idX==Xmessage.from_user.id:
+XXXXXXXXXXXXreturn
+XXXXexcept:
+XXXXXXXXreturn
+XXXXchat_idX=Xmessage.chat.id
+XXXXtry:
+XXXXXXXXuser_idX=Xmessage.reply_to_message.from_user.id
+XXXXexcept:
+XXXXXXXXreturn
+XXXXuser_mentionX=Xmessage.reply_to_message.from_user.mention
+XXXXcurrent_karmaX=XawaitXget_karma(chat_id,XawaitXint_to_alpha(user_id))
+XXXXifXcurrent_karma:
+XXXXXXXXcurrent_karmaX=Xcurrent_karma["karma"]
+XXXXXXXXkarmaX=Xcurrent_karmaX+X1
+XXXXXXXXnew_karmaX=X{"karma":Xkarma}
+XXXXXXXXawaitXupdate_karma(chat_id,XawaitXint_to_alpha(user_id),Xnew_karma)
+XXXXelse:
+XXXXXXXXkarmaX=X1
+XXXXXXXXnew_karmaX=X{"karma":Xkarma}
+XXXXXXXXawaitXupdate_karma(chat_id,XawaitXint_to_alpha(user_id),Xnew_karma)
+XXXXawaitXmessage.reply_text(
+XXXXXXXXf"IncrementedXKarmaXofX{user_mention}XByX1X\nTotalXPoints:X{karma}"
+XXXX)
 
 
-@app.on_message(filters.command("karma") & filters.group)
-async def karma(_, message):
-    chat_id = message.chat.id
-    if len(message.command) != 2:
-        if not message.reply_to_message:
-            karma = await get_karmas(chat_id)
-            msg = f"**Karma list of {message.chat.title}:- **\n"
-            limit = 0
-            karma_dicc = {}
-            for i in karma:
-                user_id = await alpha_to_int(i)
-                user_karma = karma[i]["karma"]
-                karma_dicc[str(user_id)] = user_karma
-                karma_arranged = dict(
-                    sorted(karma_dicc.items(), key=lambda item: item[1], reverse=True)
-                )
-            for user_idd, karma_count in karma_arranged.items():
-                if limit > 9:
-                    break
-                try:
-                    user_name = (await app.get_users(int(user_idd))).username
-                except Exception:
-                    continue
-                msg += f"{user_name} : `{karma_count}`\n"
-                limit += 1
-            await message.reply_text(msg)
-        else:
-            user_id = message.reply_to_message.from_user.id
-            karma = await get_karma(chat_id, await int_to_alpha(user_id))
-            if karma:
-                karma = karma["karma"]
-                await message.reply_text(f"**Total Points**: __{karma}__")
-            else:
-                karma = 0
-                await message.reply_text(f"**Total Points**: __{karma}__")
-        return
-    status = message.text.split(None, 1)[1].strip()
-    status = status.lower()
-    chat_id = message.chat.id
-    user_id = message.from_user.id
-    permissions = await member_permissions(chat_id, user_id)
-    if "can_change_info" not in permissions:
-        await message.reply_text("You don't have enough permissions.")
-        return
-    if status == "on" or status == "ON":
-        await karma_on(chat_id)
-        await message.reply_text(
-            f"Added Chat {chat_id} To Database. Karma will be enabled here"
-        )
-    elif status == "off" or status == "OFF":
-        await karma_off(chat_id)
-        await message.reply_text(
-            f"Removed Chat {chat_id} To Database. Karma will be disabled here"
-        )
+@app.on_message(
+XXXXfilters.text
+XXXX&Xfilters.group
+XXXX&Xfilters.incoming
+XXXX&Xfilters.reply
+XXXX&Xfilters.regex(regex_downvote)
+XXXX&X~filters.via_bot
+XXXX&X~filters.bot
+XXXX&X~filters.edited,
+XXXXgroup=karma_negative_group,
+)
+asyncXdefXdownvote(_,Xmessage):
+
+XXXXifXnotXawaitXis_karma_on(message.chat.id):
+XXXXXXXXreturn
+XXXXtry:
+XXXXXXXXifXmessage.reply_to_message.from_user.idX==Xmessage.from_user.id:
+XXXXXXXXXXXXreturn
+XXXXexcept:
+XXXXXXXXreturn
+XXXXchat_idX=Xmessage.chat.id
+XXXXtry:
+XXXXXXXXuser_idX=Xmessage.reply_to_message.from_user.id
+XXXXexcept:
+XXXXXXXXreturn
+XXXXuser_mentionX=Xmessage.reply_to_message.from_user.mention
+XXXXcurrent_karmaX=XawaitXget_karma(chat_id,XawaitXint_to_alpha(user_id))
+XXXXifXcurrent_karma:
+XXXXXXXXcurrent_karmaX=Xcurrent_karma["karma"]
+XXXXXXXXkarmaX=Xcurrent_karmaX-X1
+XXXXXXXXnew_karmaX=X{"karma":Xkarma}
+XXXXXXXXawaitXupdate_karma(chat_id,XawaitXint_to_alpha(user_id),Xnew_karma)
+XXXXelse:
+XXXXXXXXkarmaX=X1
+XXXXXXXXnew_karmaX=X{"karma":Xkarma}
+XXXXXXXXawaitXupdate_karma(chat_id,XawaitXint_to_alpha(user_id),Xnew_karma)
+XXXXawaitXmessage.reply_text(
+XXXXXXXXf"DecrementedXKarmaXOfX{user_mention}XByX1X\nTotalXPoints:X{karma}"
+XXXX)
+
+
+@app.on_message(filters.command("karma")X&Xfilters.group)
+asyncXdefXkarma(_,Xmessage):
+XXXXchat_idX=Xmessage.chat.id
+XXXXifXlen(message.command)X!=X2:
+XXXXXXXXifXnotXmessage.reply_to_message:
+XXXXXXXXXXXXkarmaX=XawaitXget_karmas(chat_id)
+XXXXXXXXXXXXmsgX=Xf"**KarmaXlistXofX{message.chat.title}:-X**\n"
+XXXXXXXXXXXXlimitX=X0
+XXXXXXXXXXXXkarma_diccX=X{}
+XXXXXXXXXXXXforXiXinXkarma:
+XXXXXXXXXXXXXXXXuser_idX=XawaitXalpha_to_int(i)
+XXXXXXXXXXXXXXXXuser_karmaX=Xkarma[i]["karma"]
+XXXXXXXXXXXXXXXXkarma_dicc[str(user_id)]X=Xuser_karma
+XXXXXXXXXXXXXXXXkarma_arrangedX=Xdict(
+XXXXXXXXXXXXXXXXXXXXsorted(karma_dicc.items(),Xkey=lambdaXitem:Xitem[1],Xreverse=True)
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXforXuser_idd,Xkarma_countXinXkarma_arranged.items():
+XXXXXXXXXXXXXXXXifXlimitX>X9:
+XXXXXXXXXXXXXXXXXXXXbreak
+XXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXuser_nameX=X(awaitXapp.get_users(int(user_idd))).username
+XXXXXXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXXXXXcontinue
+XXXXXXXXXXXXXXXXmsgX+=Xf"{user_name}X:X`{karma_count}`\n"
+XXXXXXXXXXXXXXXXlimitX+=X1
+XXXXXXXXXXXXawaitXmessage.reply_text(msg)
+XXXXXXXXelse:
+XXXXXXXXXXXXuser_idX=Xmessage.reply_to_message.from_user.id
+XXXXXXXXXXXXkarmaX=XawaitXget_karma(chat_id,XawaitXint_to_alpha(user_id))
+XXXXXXXXXXXXifXkarma:
+XXXXXXXXXXXXXXXXkarmaX=Xkarma["karma"]
+XXXXXXXXXXXXXXXXawaitXmessage.reply_text(f"**TotalXPoints**:X__{karma}__")
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXkarmaX=X0
+XXXXXXXXXXXXXXXXawaitXmessage.reply_text(f"**TotalXPoints**:X__{karma}__")
+XXXXXXXXreturn
+XXXXstatusX=Xmessage.text.split(None,X1)[1].strip()
+XXXXstatusX=Xstatus.lower()
+XXXXchat_idX=Xmessage.chat.id
+XXXXuser_idX=Xmessage.from_user.id
+XXXXpermissionsX=XawaitXmember_permissions(chat_id,Xuser_id)
+XXXXifX"can_change_info"XnotXinXpermissions:
+XXXXXXXXawaitXmessage.reply_text("YouXdon'tXhaveXenoughXpermissions.")
+XXXXXXXXreturn
+XXXXifXstatusX==X"on"XorXstatusX==X"ON":
+XXXXXXXXawaitXkarma_on(chat_id)
+XXXXXXXXawaitXmessage.reply_text(
+XXXXXXXXXXXXf"AddedXChatX{chat_id}XToXDatabase.XKarmaXwillXbeXenabledXhere"
+XXXXXXXX)
+XXXXelifXstatusX==X"off"XorXstatusX==X"OFF":
+XXXXXXXXawaitXkarma_off(chat_id)
+XXXXXXXXawaitXmessage.reply_text(
+XXXXXXXXXXXXf"RemovedXChatX{chat_id}XToXDatabase.XKarmaXwillXbeXdisabledXhere"
+XXXXXXXX)

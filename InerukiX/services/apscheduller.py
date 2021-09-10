@@ -1,41 +1,41 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-from apscheduler.executors.asyncio import AsyncIOExecutor
-from apscheduler.jobstores.redis import RedisJobStore
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from pytz import utc
+fromXapscheduler.executors.asyncioXimportXAsyncIOExecutor
+fromXapscheduler.jobstores.redisXimportXRedisJobStore
+fromXapscheduler.schedulers.asyncioXimportXAsyncIOScheduler
+fromXpytzXimportXutc
 
-from Ineruki .config import get_str_key
-from Ineruki .utils.logger import log
+fromXInerukiX.configXimportXget_str_key
+fromXInerukiX.utils.loggerXimportXlog
 
-DEFAULT = "default"
+DEFAULTX=X"default"
 
-jobstores = {
-    DEFAULT: RedisJobStore(
-        host=get_str_key("REDIS_URI"),
-        port=get_str_key("REDIS_PORT"),
-        password=get_str_key("REDIS_PASS"),
-    )
+jobstoresX=X{
+XXXXDEFAULT:XRedisJobStore(
+XXXXXXXXhost=get_str_key("REDIS_URI"),
+XXXXXXXXport=get_str_key("REDIS_PORT"),
+XXXXXXXXpassword=get_str_key("REDIS_PASS"),
+XXXX)
 }
-executors = {DEFAULT: AsyncIOExecutor()}
-job_defaults = {"coalesce": False, "max_instances": 3}
+executorsX=X{DEFAULT:XAsyncIOExecutor()}
+job_defaultsX=X{"coalesce":XFalse,X"max_instances":X3}
 
-scheduler = AsyncIOScheduler(
-    jobstores=jobstores, executors=executors, job_defaults=job_defaults, timezone=utc
+schedulerX=XAsyncIOScheduler(
+XXXXjobstores=jobstores,Xexecutors=executors,Xjob_defaults=job_defaults,Xtimezone=utc
 )
 
-log.info("Starting apscheduller...")
+log.info("StartingXapscheduller...")
 scheduler.start()

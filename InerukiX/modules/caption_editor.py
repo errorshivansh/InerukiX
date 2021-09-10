@@ -1,41 +1,41 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-from pyrogram import filters
-from pyrogram.errors import RPCError
+fromXpyrogramXimportXfilters
+fromXpyrogram.errorsXimportXRPCError
 
-from Ineruki .function.pluginhelpers import admins_only, get_text
-from Ineruki .services.pyrogram import pbot
+fromXInerukiX.function.pluginhelpersXimportXadmins_only,Xget_text
+fromXInerukiX.services.pyrogramXimportXpbot
 
 
 @pbot.on_message(
-    filters.command("cedit") & ~filters.edited & ~filters.bot & ~filters.private
+XXXXfilters.command("cedit")X&X~filters.editedX&X~filters.botX&X~filters.private
 )
 @admins_only
-async def loltime(client, message):
-    lol = await message.reply("Processing please wait")
-    cap = get_text(message)
-    if not message.reply_to_message:
-        await lol.edit("reply to any message to edit caption")
-    reply = message.reply_to_message
-    try:
-        await reply.copy(message.chat.id, caption=cap)
-        await lol.delete()
-    except RPCError as i:
-        await lol.edit(i)
-        return
+asyncXdefXloltime(client,Xmessage):
+XXXXlolX=XawaitXmessage.reply("ProcessingXpleaseXwait")
+XXXXcapX=Xget_text(message)
+XXXXifXnotXmessage.reply_to_message:
+XXXXXXXXawaitXlol.edit("replyXtoXanyXmessageXtoXeditXcaption")
+XXXXreplyX=Xmessage.reply_to_message
+XXXXtry:
+XXXXXXXXawaitXreply.copy(message.chat.id,Xcaption=cap)
+XXXXXXXXawaitXlol.delete()
+XXXXexceptXRPCErrorXasXi:
+XXXXXXXXawaitXlol.edit(i)
+XXXXXXXXreturn

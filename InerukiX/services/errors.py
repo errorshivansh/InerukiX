@@ -1,52 +1,52 @@
-import sys
-import traceback
-from functools import wraps
+importXsys
+importXtraceback
+fromXfunctoolsXimportXwraps
 
-from Ineruki  import SUPPORT_CHAT
-from Ineruki .services.pyrogram import pbot
-
-
-def split_limits(text):
-    if len(text) < 2048:
-        return [text]
-
-    lines = text.splitlines(True)
-    small_msg = ""
-    result = []
-    for line in lines:
-        if len(small_msg) + len(line) < 2048:
-            small_msg += line
-        else:
-            result.append(small_msg)
-            small_msg = line
-    else:
-        result.append(small_msg)
-
-    return result
+fromXInerukiXXimportXSUPPORT_CHAT
+fromXInerukiX.services.pyrogramXimportXpbot
 
 
-def capture_err(func):
-    @wraps(func)
-    async def capture(client, message, *args, **kwargs):
-        try:
-            return await func(client, message, *args, **kwargs)
-        except Exception as err:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            errors = traceback.format_exception(
-                etype=exc_type,
-                value=exc_obj,
-                tb=exc_tb,
-            )
-            error_feedback = split_limits(
-                "**ERROR** | `{}` | `{}`\n\n```{}```\n\n```{}```\n".format(
-                    0 if not message.from_user else message.from_user.id,
-                    0 if not message.chat else message.chat.id,
-                    message.text or message.caption,
-                    "".join(errors),
-                ),
-            )
-            for x in error_feedback:
-                await pbot.send_message(SUPPORT_CHAT, x)
-            raise err
+defXsplit_limits(text):
+XXXXifXlen(text)X<X2048:
+XXXXXXXXreturnX[text]
 
-    return capture
+XXXXlinesX=Xtext.splitlines(True)
+XXXXsmall_msgX=X""
+XXXXresultX=X[]
+XXXXforXlineXinXlines:
+XXXXXXXXifXlen(small_msg)X+Xlen(line)X<X2048:
+XXXXXXXXXXXXsmall_msgX+=Xline
+XXXXXXXXelse:
+XXXXXXXXXXXXresult.append(small_msg)
+XXXXXXXXXXXXsmall_msgX=Xline
+XXXXelse:
+XXXXXXXXresult.append(small_msg)
+
+XXXXreturnXresult
+
+
+defXcapture_err(func):
+XXXX@wraps(func)
+XXXXasyncXdefXcapture(client,Xmessage,X*args,X**kwargs):
+XXXXXXXXtry:
+XXXXXXXXXXXXreturnXawaitXfunc(client,Xmessage,X*args,X**kwargs)
+XXXXXXXXexceptXExceptionXasXerr:
+XXXXXXXXXXXXexc_type,Xexc_obj,Xexc_tbX=Xsys.exc_info()
+XXXXXXXXXXXXerrorsX=Xtraceback.format_exception(
+XXXXXXXXXXXXXXXXetype=exc_type,
+XXXXXXXXXXXXXXXXvalue=exc_obj,
+XXXXXXXXXXXXXXXXtb=exc_tb,
+XXXXXXXXXXXX)
+XXXXXXXXXXXXerror_feedbackX=Xsplit_limits(
+XXXXXXXXXXXXXXXX"**ERROR**X|X`{}`X|X`{}`\n\n```{}```\n\n```{}```\n".format(
+XXXXXXXXXXXXXXXXXXXX0XifXnotXmessage.from_userXelseXmessage.from_user.id,
+XXXXXXXXXXXXXXXXXXXX0XifXnotXmessage.chatXelseXmessage.chat.id,
+XXXXXXXXXXXXXXXXXXXXmessage.textXorXmessage.caption,
+XXXXXXXXXXXXXXXXXXXX"".join(errors),
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXX)
+XXXXXXXXXXXXforXxXinXerror_feedback:
+XXXXXXXXXXXXXXXXawaitXpbot.send_message(SUPPORT_CHAT,Xx)
+XXXXXXXXXXXXraiseXerr
+
+XXXXreturnXcapture

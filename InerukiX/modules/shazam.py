@@ -1,64 +1,64 @@
-import os
-from json import JSONDecodeError
+importXos
+fromXjsonXimportXJSONDecodeError
 
-import requests
+importXrequests
 
-# import ffmpeg
-from pyrogram import filters
+#XimportXffmpeg
+fromXpyrogramXimportXfilters
 
-from Ineruki .function.pluginhelpers import admins_only, edit_or_reply, fetch_audio
-from Ineruki .services.pyrogram import pbot
+fromXInerukiX.function.pluginhelpersXimportXadmins_only,Xedit_or_reply,Xfetch_audio
+fromXInerukiX.services.pyrogramXimportXpbot
 
 
-@pbot.on_message(filters.command(["identify", "shazam"]))
+@pbot.on_message(filters.command(["identify",X"shazam"]))
 @admins_only
-async def shazamm(client, message):
-    kek = await edit_or_reply(message, "`Shazaming In Progress!`")
-    if not message.reply_to_message:
-        await kek.edit("Reply To The Audio.")
-        return
-    if os.path.exists("friday.mp3"):
-        os.remove("friday.mp3")
-    kkk = await fetch_audio(client, message)
-    downloaded_file_name = kkk
-    f = {"file": (downloaded_file_name, open(downloaded_file_name, "rb"))}
-    await kek.edit("**Searching For This Song In Friday's DataBase.**")
-    r = requests.post("https://starkapi.herokuapp.com/shazam/", files=f)
-    try:
-        xo = r.json()
-    except JSONDecodeError:
-        await kek.edit(
-            "`Seems Like Our Server Has Some Issues, Please Try Again Later!`"
-        )
-        return
-    if xo.get("success") is False:
-        await kek.edit("`Song Not Found IN Database. Please Try Again.`")
-        os.remove(downloaded_file_name)
-        return
-    xoo = xo.get("response")
-    zz = xoo[1]
-    zzz = zz.get("track")
-    zzz.get("sections")[3]
-    nt = zzz.get("images")
-    image = nt.get("coverarthq")
-    by = zzz.get("subtitle")
-    title = zzz.get("title")
-    messageo = f"""<b>Song Shazamed.</b>
-<b>Song Name : </b>{title}
-<b>Song By : </b>{by}
-<u><b>Identified Using @Ineruki Bot - Join our support @InerukiSupport_Official</b></u>
-<i>Powered by @FridayOT</i>
+asyncXdefXshazamm(client,Xmessage):
+XXXXkekX=XawaitXedit_or_reply(message,X"`ShazamingXInXProgress!`")
+XXXXifXnotXmessage.reply_to_message:
+XXXXXXXXawaitXkek.edit("ReplyXToXTheXAudio.")
+XXXXXXXXreturn
+XXXXifXos.path.exists("friday.mp3"):
+XXXXXXXXos.remove("friday.mp3")
+XXXXkkkX=XawaitXfetch_audio(client,Xmessage)
+XXXXdownloaded_file_nameX=Xkkk
+XXXXfX=X{"file":X(downloaded_file_name,Xopen(downloaded_file_name,X"rb"))}
+XXXXawaitXkek.edit("**SearchingXForXThisXSongXInXFriday'sXDataBase.**")
+XXXXrX=Xrequests.post("https://starkapi.herokuapp.com/shazam/",Xfiles=f)
+XXXXtry:
+XXXXXXXXxoX=Xr.json()
+XXXXexceptXJSONDecodeError:
+XXXXXXXXawaitXkek.edit(
+XXXXXXXXXXXX"`SeemsXLikeXOurXServerXHasXSomeXIssues,XPleaseXTryXAgainXLater!`"
+XXXXXXXX)
+XXXXXXXXreturn
+XXXXifXxo.get("success")XisXFalse:
+XXXXXXXXawaitXkek.edit("`SongXNotXFoundXINXDatabase.XPleaseXTryXAgain.`")
+XXXXXXXXos.remove(downloaded_file_name)
+XXXXXXXXreturn
+XXXXxooX=Xxo.get("response")
+XXXXzzX=Xxoo[1]
+XXXXzzzX=Xzz.get("track")
+XXXXzzz.get("sections")[3]
+XXXXntX=Xzzz.get("images")
+XXXXimageX=Xnt.get("coverarthq")
+XXXXbyX=Xzzz.get("subtitle")
+XXXXtitleX=Xzzz.get("title")
+XXXXmessageoX=Xf"""<b>SongXShazamed.</b>
+<b>SongXNameX:X</b>{title}
+<b>SongXByX:X</b>{by}
+<u><b>IdentifiedXUsingX@InerukiXBotX-XJoinXourXsupportX@InerukiSupport_Official</b></u>
+<i>PoweredXbyX@FridayOT</i>
 """
-    await client.send_photo(message.chat.id, image, messageo, parse_mode="HTML")
-    os.remove(downloaded_file_name)
-    await kek.delete()
+XXXXawaitXclient.send_photo(message.chat.id,Ximage,Xmessageo,Xparse_mode="HTML")
+XXXXos.remove(downloaded_file_name)
+XXXXawaitXkek.delete()
 
 
-# __mod_name__ = "Shazam"
-# __help__ = """
-# <b> SHAZAMMER </b>
-# <u> Find any song with it's music or part of song</u>
-# - /shazam : identify the song from Friday's Database
+#X__mod_name__X=X"Shazam"
+#X__help__X=X"""
+#X<b>XSHAZAMMERX</b>
+#X<u>XFindXanyXsongXwithXit'sXmusicXorXpartXofXsong</u>
+#X-X/shazamX:XidentifyXtheXsongXfromXFriday'sXDatabase
 
-# <i> Special credits to friday userbot</i>
-# """
+#X<i>XSpecialXcreditsXtoXfridayXuserbot</i>
+#X"""

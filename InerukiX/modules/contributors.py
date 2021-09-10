@@ -1,34 +1,34 @@
-# Copyright (C) 2021 ProgrammingError
+#XCopyrightX(C)X2021XProgrammingError
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import github  # pyGithub
-from pyrogram import filters
+importXgithubXX#XpyGithub
+fromXpyrogramXimportXfilters
 
-from Ineruki .services.pyrogram import pbot as client
+fromXInerukiX.services.pyrogramXimportXpbotXasXclient
 
 
-@client.on_message(filters.command("contributors") & ~filters.edited)
-async def give_cobtribs(c, m):
-    g = github.Github()
-    co = ""
-    n = 0
-    repo = g.get_repo("errorshivansh/Ineruki ")
-    for i in repo.get_contributors():
-        n += 1
-        co += f"{n}. [{i.login}](https://github.com/{i.login})\n"
-    t = f"**Ineruki  Contributors**\n\n{co}"
-    await m.reply(t, disable_web_page_preview=True)
+@client.on_message(filters.command("contributors")X&X~filters.edited)
+asyncXdefXgive_cobtribs(c,Xm):
+XXXXgX=Xgithub.Github()
+XXXXcoX=X""
+XXXXnX=X0
+XXXXrepoX=Xg.get_repo("errorshivansh/InerukiX")
+XXXXforXiXinXrepo.get_contributors():
+XXXXXXXXnX+=X1
+XXXXXXXXcoX+=Xf"{n}.X[{i.login}](https://github.com/{i.login})\n"
+XXXXtX=Xf"**InerukiXXContributors**\n\n{co}"
+XXXXawaitXm.reply(t,Xdisable_web_page_preview=True)

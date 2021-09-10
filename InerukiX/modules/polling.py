@@ -1,438 +1,438 @@
-# Copyright (C) 2021 errorshivansh
+#XCopyrightX(C)X2021Xerrorshivansh
 
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-from pymongo import MongoClient
-from telethon import *
-from telethon.tl import *
+fromXpymongoXimportXMongoClient
+fromXtelethonXimportX*
+fromXtelethon.tlXimportX*
 
-from Ineruki  import BOT_ID
-from Ineruki .config import get_str_key
-from Ineruki .services.events import register
-from Ineruki .services.telethon import tbot
+fromXInerukiXXimportXBOT_ID
+fromXInerukiX.configXimportXget_str_key
+fromXInerukiX.services.eventsXimportXregister
+fromXInerukiX.services.telethonXimportXtbot
 
-MONGO_DB_URI = get_str_key("MONGO_URI", required=True)
-client = MongoClient()
-client = MongoClient(MONGO_DB_URI)
-db = client["Ineruki "]
-approved_users = db.approve
-dbb = client["Ineruki "]
-poll_id = dbb.pollid
-
-
-async def is_register_admin(chat, user):
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
-        return isinstance(
-            (
-                await tbot(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    if isinstance(chat, types.InputPeerChat):
-        ui = await tbot.get_peer_id(user)
-        ps = (
-            await tbot(functions.messages.GetFullChatRequest(chat.chat_id))
-        ).full_chat.participants.participants
-        return isinstance(
-            next((p for p in ps if p.user_id == ui), None),
-            (types.ChatParticipantAdmin, types.ChatParticipantCreator),
-        )
-    return None
+MONGO_DB_URIX=Xget_str_key("MONGO_URI",Xrequired=True)
+clientX=XMongoClient()
+clientX=XMongoClient(MONGO_DB_URI)
+dbX=Xclient["InerukiX"]
+approved_usersX=Xdb.approve
+dbbX=Xclient["InerukiX"]
+poll_idX=Xdbb.pollid
 
 
-@register(pattern="^/poll (.*)")
-async def _(event):
-    approved_userss = approved_users.find({})
-    for ch in approved_userss:
-        iid = ch["id"]
-        userss = ch["user"]
-    if event.is_group:
-        if await is_register_admin(event.input_chat, event.message.sender_id):
-            pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
-            return
-    try:
-        quew = event.pattern_match.group(1)
-    except Exception:
-        await event.reply("Where is the question ?")
-        return
-    if "|" in quew:
-        secrets, quess, options = quew.split("|")
-    secret = secrets.strip()
-
-    if not secret:
-        await event.reply("I need a poll id of 5 digits to make a poll")
-        return
-
-    try:
-        secret = str(secret)
-    except ValueError:
-        await event.reply("Poll id should contain only numbers")
-        return
-
-    # print(secret)
-
-    if len(secret) != 5:
-        await event.reply("Poll id should be an integer of 5 digits")
-        return
-
-    allpoll = poll_id.find({})
-    # print(secret)
-    for c in allpoll:
-        if event.sender_id == c["user"]:
-            await event.reply(
-                "Please stop the previous poll before creating a new one !"
-            )
-            return
-    poll_id.insert_one({"user": event.sender_id, "pollid": secret})
-
-    ques = quess.strip()
-    option = options.strip()
-    quiz = option.split(" ")[1 - 1]
-    if "True" in quiz:
-        quizy = True
-        if "@" in quiz:
-            one, two = quiz.split("@")
-            rightone = two.strip()
-        else:
-            await event.reply(
-                "You need to select the right answer with question number like True@1, True@3 etc.."
-            )
-            return
-
-        quizoptionss = []
-        try:
-            ab = option.split(" ")[4 - 1]
-            cd = option.split(" ")[5 - 1]
-            quizoptionss.append(types.PollAnswer(ab, b"1"))
-            quizoptionss.append(types.PollAnswer(cd, b"2"))
-        except Exception:
-            await event.reply("At least need two options to create a poll")
-            return
-        try:
-            ef = option.split(" ")[6 - 1]
-            quizoptionss.append(types.PollAnswer(ef, b"3"))
-        except Exception:
-            ef = None
-        try:
-            gh = option.split(" ")[7 - 1]
-            quizoptionss.append(types.PollAnswer(gh, b"4"))
-        except Exception:
-            gh = None
-        try:
-            ij = option.split(" ")[8 - 1]
-            quizoptionss.append(types.PollAnswer(ij, b"5"))
-        except Exception:
-            ij = None
-        try:
-            kl = option.split(" ")[9 - 1]
-            quizoptionss.append(types.PollAnswer(kl, b"6"))
-        except Exception:
-            kl = None
-        try:
-            mn = option.split(" ")[10 - 1]
-            quizoptionss.append(types.PollAnswer(mn, b"7"))
-        except Exception:
-            mn = None
-        try:
-            op = option.split(" ")[11 - 1]
-            quizoptionss.append(types.PollAnswer(op, b"8"))
-        except Exception:
-            op = None
-        try:
-            qr = option.split(" ")[12 - 1]
-            quizoptionss.append(types.PollAnswer(qr, b"9"))
-        except Exception:
-            qr = None
-        try:
-            st = option.split(" ")[13 - 1]
-            quizoptionss.append(types.PollAnswer(st, b"10"))
-        except Exception:
-            st = None
-
-    elif "False" in quiz:
-        quizy = False
-    else:
-        await event.reply("Wrong arguments provided !")
-        return
-
-    pvote = option.split(" ")[2 - 1]
-    if "True" in pvote:
-        pvoty = True
-    elif "False" in pvote:
-        pvoty = False
-    else:
-        await event.reply("Wrong arguments provided !")
-        return
-    mchoice = option.split(" ")[3 - 1]
-    if "True" in mchoice:
-        mchoicee = True
-    elif "False" in mchoice:
-        mchoicee = False
-    else:
-        await event.reply("Wrong arguments provided !")
-        return
-    optionss = []
-    try:
-        ab = option.split(" ")[4 - 1]
-        cd = option.split(" ")[5 - 1]
-        optionss.append(types.PollAnswer(ab, b"1"))
-        optionss.append(types.PollAnswer(cd, b"2"))
-    except Exception:
-        await event.reply("At least need two options to create a poll")
-        return
-    try:
-        ef = option.split(" ")[6 - 1]
-        optionss.append(types.PollAnswer(ef, b"3"))
-    except Exception:
-        ef = None
-    try:
-        gh = option.split(" ")[7 - 1]
-        optionss.append(types.PollAnswer(gh, b"4"))
-    except Exception:
-        gh = None
-    try:
-        ij = option.split(" ")[8 - 1]
-        optionss.append(types.PollAnswer(ij, b"5"))
-    except Exception:
-        ij = None
-    try:
-        kl = option.split(" ")[9 - 1]
-        optionss.append(types.PollAnswer(kl, b"6"))
-    except Exception:
-        kl = None
-    try:
-        mn = option.split(" ")[10 - 1]
-        optionss.append(types.PollAnswer(mn, b"7"))
-    except Exception:
-        mn = None
-    try:
-        op = option.split(" ")[11 - 1]
-        optionss.append(types.PollAnswer(op, b"8"))
-    except Exception:
-        op = None
-    try:
-        qr = option.split(" ")[12 - 1]
-        optionss.append(types.PollAnswer(qr, b"9"))
-    except Exception:
-        qr = None
-    try:
-        st = option.split(" ")[13 - 1]
-        optionss.append(types.PollAnswer(st, b"10"))
-    except Exception:
-        st = None
-
-    if pvoty is False and quizy is False and mchoicee is False:
-        await tbot.send_file(
-            event.chat_id,
-            types.InputMediaPoll(
-                poll=types.Poll(id=12345, question=ques, answers=optionss, quiz=False)
-            ),
-        )
-
-    if pvoty is True and quizy is False and mchoicee is True:
-        await tbot.send_file(
-            event.chat_id,
-            types.InputMediaPoll(
-                poll=types.Poll(
-                    id=12345,
-                    question=ques,
-                    answers=optionss,
-                    quiz=False,
-                    multiple_choice=True,
-                    public_voters=True,
-                )
-            ),
-        )
-
-    if pvoty is False and quizy is False and mchoicee is True:
-        await tbot.send_file(
-            event.chat_id,
-            types.InputMediaPoll(
-                poll=types.Poll(
-                    id=12345,
-                    question=ques,
-                    answers=optionss,
-                    quiz=False,
-                    multiple_choice=True,
-                    public_voters=False,
-                )
-            ),
-        )
-
-    if pvoty is True and quizy is False and mchoicee is False:
-        await tbot.send_file(
-            event.chat_id,
-            types.InputMediaPoll(
-                poll=types.Poll(
-                    id=12345,
-                    question=ques,
-                    answers=optionss,
-                    quiz=False,
-                    multiple_choice=False,
-                    public_voters=True,
-                )
-            ),
-        )
-
-    if pvoty is False and quizy is True and mchoicee is False:
-        await tbot.send_file(
-            event.chat_id,
-            types.InputMediaPoll(
-                poll=types.Poll(
-                    id=12345, question=ques, answers=quizoptionss, quiz=True
-                ),
-                correct_answers=[f"{rightone}"],
-            ),
-        )
-
-    if pvoty is True and quizy is True and mchoicee is False:
-        await tbot.send_file(
-            event.chat_id,
-            types.InputMediaPoll(
-                poll=types.Poll(
-                    id=12345,
-                    question=ques,
-                    answers=quizoptionss,
-                    quiz=True,
-                    public_voters=True,
-                ),
-                correct_answers=[f"{rightone}"],
-            ),
-        )
-
-    if pvoty is True and quizy is True and mchoicee is True:
-        await event.reply("You can't use multiple voting with quiz mode")
-        return
-    if pvoty is False and quizy is True and mchoicee is True:
-        await event.reply("You can't use multiple voting with quiz mode")
-        return
+asyncXdefXis_register_admin(chat,Xuser):
+XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXX(
+XXXXXXXXXXXXXXXXawaitXtbot(functions.channels.GetParticipantRequest(chat,Xuser))
+XXXXXXXXXXXX).participant,
+XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
+XXXXXXXX)
+XXXXifXisinstance(chat,Xtypes.InputPeerChat):
+XXXXXXXXuiX=XawaitXtbot.get_peer_id(user)
+XXXXXXXXpsX=X(
+XXXXXXXXXXXXawaitXtbot(functions.messages.GetFullChatRequest(chat.chat_id))
+XXXXXXXX).full_chat.participants.participants
+XXXXXXXXreturnXisinstance(
+XXXXXXXXXXXXnext((pXforXpXinXpsXifXp.user_idX==Xui),XNone),
+XXXXXXXXXXXX(types.ChatParticipantAdmin,Xtypes.ChatParticipantCreator),
+XXXXXXXX)
+XXXXreturnXNone
 
 
-@register(pattern="^/stoppoll (.*)")
-async def stop(event):
-    secret = event.pattern_match.group(1)
-    # print(secret)
-    approved_userss = approved_users.find({})
-    for ch in approved_userss:
-        iid = ch["id"]
-        userss = ch["user"]
-    if event.is_group:
-        if await is_register_admin(event.input_chat, event.message.sender_id):
-            pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
-            return
+@register(pattern="^/pollX(.*)")
+asyncXdefX_(event):
+XXXXapproved_userssX=Xapproved_users.find({})
+XXXXforXchXinXapproved_userss:
+XXXXXXXXiidX=Xch["id"]
+XXXXXXXXuserssX=Xch["user"]
+XXXXifXevent.is_group:
+XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
+XXXXXXXXXXXXpass
+XXXXXXXXelifXevent.chat_idX==XiidXandXevent.sender_idX==Xuserss:
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+XXXXtry:
+XXXXXXXXquewX=Xevent.pattern_match.group(1)
+XXXXexceptXException:
+XXXXXXXXawaitXevent.reply("WhereXisXtheXquestionX?")
+XXXXXXXXreturn
+XXXXifX"|"XinXquew:
+XXXXXXXXsecrets,Xquess,XoptionsX=Xquew.split("|")
+XXXXsecretX=Xsecrets.strip()
 
-    if not event.reply_to_msg_id:
-        await event.reply("Please reply to a poll to stop it")
-        return
+XXXXifXnotXsecret:
+XXXXXXXXawaitXevent.reply("IXneedXaXpollXidXofX5XdigitsXtoXmakeXaXpoll")
+XXXXXXXXreturn
 
-    if input is None:
-        await event.reply("Where is the poll id ?")
-        return
+XXXXtry:
+XXXXXXXXsecretX=Xstr(secret)
+XXXXexceptXValueError:
+XXXXXXXXawaitXevent.reply("PollXidXshouldXcontainXonlyXnumbers")
+XXXXXXXXreturn
 
-    try:
-        secret = str(secret)
-    except ValueError:
-        await event.reply("Poll id should contain only numbers")
-        return
+XXXX#Xprint(secret)
 
-    if len(secret) != 5:
-        await event.reply("Poll id should be an integer of 5 digits")
-        return
+XXXXifXlen(secret)X!=X5:
+XXXXXXXXawaitXevent.reply("PollXidXshouldXbeXanXintegerXofX5Xdigits")
+XXXXXXXXreturn
 
-    msg = await event.get_reply_message()
+XXXXallpollX=Xpoll_id.find({})
+XXXX#Xprint(secret)
+XXXXforXcXinXallpoll:
+XXXXXXXXifXevent.sender_idX==Xc["user"]:
+XXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXX"PleaseXstopXtheXpreviousXpollXbeforeXcreatingXaXnewXoneX!"
+XXXXXXXXXXXX)
+XXXXXXXXXXXXreturn
+XXXXpoll_id.insert_one({"user":Xevent.sender_id,X"pollid":Xsecret})
 
-    if str(msg.sender_id) != str(BOT_ID):
-        await event.reply(
-            "I can't do this operation on this poll.\nProbably it's not created by me"
-        )
-        return
-    print(secret)
-    if msg.poll:
-        allpoll = poll_id.find({})
-        for c in allpoll:
-            if not event.sender_id == c["user"] and not secret == c["pollid"]:
-                await event.reply(
-                    "Oops, either you haven't created this poll or you have given wrong poll id"
-                )
-                return
-        if msg.poll.poll.closed:
-            await event.reply("Oops, the poll is already closed.")
-            return
-        poll_id.delete_one({"user": event.sender_id})
-        pollid = msg.poll.poll.id
-        await msg.edit(
-            file=types.InputMediaPoll(
-                poll=types.Poll(id=pollid, question="", answers=[], closed=True)
-            )
-        )
-        await event.reply("Successfully stopped the poll")
-    else:
-        await event.reply("This isn't a poll")
+XXXXquesX=Xquess.strip()
+XXXXoptionX=Xoptions.strip()
+XXXXquizX=Xoption.split("X")[1X-X1]
+XXXXifX"True"XinXquiz:
+XXXXXXXXquizyX=XTrue
+XXXXXXXXifX"@"XinXquiz:
+XXXXXXXXXXXXone,XtwoX=Xquiz.split("@")
+XXXXXXXXXXXXrightoneX=Xtwo.strip()
+XXXXXXXXelse:
+XXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXX"YouXneedXtoXselectXtheXrightXanswerXwithXquestionXnumberXlikeXTrue@1,XTrue@3Xetc.."
+XXXXXXXXXXXX)
+XXXXXXXXXXXXreturn
+
+XXXXXXXXquizoptionssX=X[]
+XXXXXXXXtry:
+XXXXXXXXXXXXabX=Xoption.split("X")[4X-X1]
+XXXXXXXXXXXXcdX=Xoption.split("X")[5X-X1]
+XXXXXXXXXXXXquizoptionss.append(types.PollAnswer(ab,Xb"1"))
+XXXXXXXXXXXXquizoptionss.append(types.PollAnswer(cd,Xb"2"))
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXawaitXevent.reply("AtXleastXneedXtwoXoptionsXtoXcreateXaXpoll")
+XXXXXXXXXXXXreturn
+XXXXXXXXtry:
+XXXXXXXXXXXXefX=Xoption.split("X")[6X-X1]
+XXXXXXXXXXXXquizoptionss.append(types.PollAnswer(ef,Xb"3"))
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXefX=XNone
+XXXXXXXXtry:
+XXXXXXXXXXXXghX=Xoption.split("X")[7X-X1]
+XXXXXXXXXXXXquizoptionss.append(types.PollAnswer(gh,Xb"4"))
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXghX=XNone
+XXXXXXXXtry:
+XXXXXXXXXXXXijX=Xoption.split("X")[8X-X1]
+XXXXXXXXXXXXquizoptionss.append(types.PollAnswer(ij,Xb"5"))
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXijX=XNone
+XXXXXXXXtry:
+XXXXXXXXXXXXklX=Xoption.split("X")[9X-X1]
+XXXXXXXXXXXXquizoptionss.append(types.PollAnswer(kl,Xb"6"))
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXklX=XNone
+XXXXXXXXtry:
+XXXXXXXXXXXXmnX=Xoption.split("X")[10X-X1]
+XXXXXXXXXXXXquizoptionss.append(types.PollAnswer(mn,Xb"7"))
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXmnX=XNone
+XXXXXXXXtry:
+XXXXXXXXXXXXopX=Xoption.split("X")[11X-X1]
+XXXXXXXXXXXXquizoptionss.append(types.PollAnswer(op,Xb"8"))
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXopX=XNone
+XXXXXXXXtry:
+XXXXXXXXXXXXqrX=Xoption.split("X")[12X-X1]
+XXXXXXXXXXXXquizoptionss.append(types.PollAnswer(qr,Xb"9"))
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXqrX=XNone
+XXXXXXXXtry:
+XXXXXXXXXXXXstX=Xoption.split("X")[13X-X1]
+XXXXXXXXXXXXquizoptionss.append(types.PollAnswer(st,Xb"10"))
+XXXXXXXXexceptXException:
+XXXXXXXXXXXXstX=XNone
+
+XXXXelifX"False"XinXquiz:
+XXXXXXXXquizyX=XFalse
+XXXXelse:
+XXXXXXXXawaitXevent.reply("WrongXargumentsXprovidedX!")
+XXXXXXXXreturn
+
+XXXXpvoteX=Xoption.split("X")[2X-X1]
+XXXXifX"True"XinXpvote:
+XXXXXXXXpvotyX=XTrue
+XXXXelifX"False"XinXpvote:
+XXXXXXXXpvotyX=XFalse
+XXXXelse:
+XXXXXXXXawaitXevent.reply("WrongXargumentsXprovidedX!")
+XXXXXXXXreturn
+XXXXmchoiceX=Xoption.split("X")[3X-X1]
+XXXXifX"True"XinXmchoice:
+XXXXXXXXmchoiceeX=XTrue
+XXXXelifX"False"XinXmchoice:
+XXXXXXXXmchoiceeX=XFalse
+XXXXelse:
+XXXXXXXXawaitXevent.reply("WrongXargumentsXprovidedX!")
+XXXXXXXXreturn
+XXXXoptionssX=X[]
+XXXXtry:
+XXXXXXXXabX=Xoption.split("X")[4X-X1]
+XXXXXXXXcdX=Xoption.split("X")[5X-X1]
+XXXXXXXXoptionss.append(types.PollAnswer(ab,Xb"1"))
+XXXXXXXXoptionss.append(types.PollAnswer(cd,Xb"2"))
+XXXXexceptXException:
+XXXXXXXXawaitXevent.reply("AtXleastXneedXtwoXoptionsXtoXcreateXaXpoll")
+XXXXXXXXreturn
+XXXXtry:
+XXXXXXXXefX=Xoption.split("X")[6X-X1]
+XXXXXXXXoptionss.append(types.PollAnswer(ef,Xb"3"))
+XXXXexceptXException:
+XXXXXXXXefX=XNone
+XXXXtry:
+XXXXXXXXghX=Xoption.split("X")[7X-X1]
+XXXXXXXXoptionss.append(types.PollAnswer(gh,Xb"4"))
+XXXXexceptXException:
+XXXXXXXXghX=XNone
+XXXXtry:
+XXXXXXXXijX=Xoption.split("X")[8X-X1]
+XXXXXXXXoptionss.append(types.PollAnswer(ij,Xb"5"))
+XXXXexceptXException:
+XXXXXXXXijX=XNone
+XXXXtry:
+XXXXXXXXklX=Xoption.split("X")[9X-X1]
+XXXXXXXXoptionss.append(types.PollAnswer(kl,Xb"6"))
+XXXXexceptXException:
+XXXXXXXXklX=XNone
+XXXXtry:
+XXXXXXXXmnX=Xoption.split("X")[10X-X1]
+XXXXXXXXoptionss.append(types.PollAnswer(mn,Xb"7"))
+XXXXexceptXException:
+XXXXXXXXmnX=XNone
+XXXXtry:
+XXXXXXXXopX=Xoption.split("X")[11X-X1]
+XXXXXXXXoptionss.append(types.PollAnswer(op,Xb"8"))
+XXXXexceptXException:
+XXXXXXXXopX=XNone
+XXXXtry:
+XXXXXXXXqrX=Xoption.split("X")[12X-X1]
+XXXXXXXXoptionss.append(types.PollAnswer(qr,Xb"9"))
+XXXXexceptXException:
+XXXXXXXXqrX=XNone
+XXXXtry:
+XXXXXXXXstX=Xoption.split("X")[13X-X1]
+XXXXXXXXoptionss.append(types.PollAnswer(st,Xb"10"))
+XXXXexceptXException:
+XXXXXXXXstX=XNone
+
+XXXXifXpvotyXisXFalseXandXquizyXisXFalseXandXmchoiceeXisXFalse:
+XXXXXXXXawaitXtbot.send_file(
+XXXXXXXXXXXXevent.chat_id,
+XXXXXXXXXXXXtypes.InputMediaPoll(
+XXXXXXXXXXXXXXXXpoll=types.Poll(id=12345,Xquestion=ques,Xanswers=optionss,Xquiz=False)
+XXXXXXXXXXXX),
+XXXXXXXX)
+
+XXXXifXpvotyXisXTrueXandXquizyXisXFalseXandXmchoiceeXisXTrue:
+XXXXXXXXawaitXtbot.send_file(
+XXXXXXXXXXXXevent.chat_id,
+XXXXXXXXXXXXtypes.InputMediaPoll(
+XXXXXXXXXXXXXXXXpoll=types.Poll(
+XXXXXXXXXXXXXXXXXXXXid=12345,
+XXXXXXXXXXXXXXXXXXXXquestion=ques,
+XXXXXXXXXXXXXXXXXXXXanswers=optionss,
+XXXXXXXXXXXXXXXXXXXXquiz=False,
+XXXXXXXXXXXXXXXXXXXXmultiple_choice=True,
+XXXXXXXXXXXXXXXXXXXXpublic_voters=True,
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX),
+XXXXXXXX)
+
+XXXXifXpvotyXisXFalseXandXquizyXisXFalseXandXmchoiceeXisXTrue:
+XXXXXXXXawaitXtbot.send_file(
+XXXXXXXXXXXXevent.chat_id,
+XXXXXXXXXXXXtypes.InputMediaPoll(
+XXXXXXXXXXXXXXXXpoll=types.Poll(
+XXXXXXXXXXXXXXXXXXXXid=12345,
+XXXXXXXXXXXXXXXXXXXXquestion=ques,
+XXXXXXXXXXXXXXXXXXXXanswers=optionss,
+XXXXXXXXXXXXXXXXXXXXquiz=False,
+XXXXXXXXXXXXXXXXXXXXmultiple_choice=True,
+XXXXXXXXXXXXXXXXXXXXpublic_voters=False,
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX),
+XXXXXXXX)
+
+XXXXifXpvotyXisXTrueXandXquizyXisXFalseXandXmchoiceeXisXFalse:
+XXXXXXXXawaitXtbot.send_file(
+XXXXXXXXXXXXevent.chat_id,
+XXXXXXXXXXXXtypes.InputMediaPoll(
+XXXXXXXXXXXXXXXXpoll=types.Poll(
+XXXXXXXXXXXXXXXXXXXXid=12345,
+XXXXXXXXXXXXXXXXXXXXquestion=ques,
+XXXXXXXXXXXXXXXXXXXXanswers=optionss,
+XXXXXXXXXXXXXXXXXXXXquiz=False,
+XXXXXXXXXXXXXXXXXXXXmultiple_choice=False,
+XXXXXXXXXXXXXXXXXXXXpublic_voters=True,
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXX),
+XXXXXXXX)
+
+XXXXifXpvotyXisXFalseXandXquizyXisXTrueXandXmchoiceeXisXFalse:
+XXXXXXXXawaitXtbot.send_file(
+XXXXXXXXXXXXevent.chat_id,
+XXXXXXXXXXXXtypes.InputMediaPoll(
+XXXXXXXXXXXXXXXXpoll=types.Poll(
+XXXXXXXXXXXXXXXXXXXXid=12345,Xquestion=ques,Xanswers=quizoptionss,Xquiz=True
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXcorrect_answers=[f"{rightone}"],
+XXXXXXXXXXXX),
+XXXXXXXX)
+
+XXXXifXpvotyXisXTrueXandXquizyXisXTrueXandXmchoiceeXisXFalse:
+XXXXXXXXawaitXtbot.send_file(
+XXXXXXXXXXXXevent.chat_id,
+XXXXXXXXXXXXtypes.InputMediaPoll(
+XXXXXXXXXXXXXXXXpoll=types.Poll(
+XXXXXXXXXXXXXXXXXXXXid=12345,
+XXXXXXXXXXXXXXXXXXXXquestion=ques,
+XXXXXXXXXXXXXXXXXXXXanswers=quizoptionss,
+XXXXXXXXXXXXXXXXXXXXquiz=True,
+XXXXXXXXXXXXXXXXXXXXpublic_voters=True,
+XXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXcorrect_answers=[f"{rightone}"],
+XXXXXXXXXXXX),
+XXXXXXXX)
+
+XXXXifXpvotyXisXTrueXandXquizyXisXTrueXandXmchoiceeXisXTrue:
+XXXXXXXXawaitXevent.reply("YouXcan'tXuseXmultipleXvotingXwithXquizXmode")
+XXXXXXXXreturn
+XXXXifXpvotyXisXFalseXandXquizyXisXTrueXandXmchoiceeXisXTrue:
+XXXXXXXXawaitXevent.reply("YouXcan'tXuseXmultipleXvotingXwithXquizXmode")
+XXXXXXXXreturn
+
+
+@register(pattern="^/stoppollX(.*)")
+asyncXdefXstop(event):
+XXXXsecretX=Xevent.pattern_match.group(1)
+XXXX#Xprint(secret)
+XXXXapproved_userssX=Xapproved_users.find({})
+XXXXforXchXinXapproved_userss:
+XXXXXXXXiidX=Xch["id"]
+XXXXXXXXuserssX=Xch["user"]
+XXXXifXevent.is_group:
+XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
+XXXXXXXXXXXXpass
+XXXXXXXXelifXevent.chat_idX==XiidXandXevent.sender_idX==Xuserss:
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+
+XXXXifXnotXevent.reply_to_msg_id:
+XXXXXXXXawaitXevent.reply("PleaseXreplyXtoXaXpollXtoXstopXit")
+XXXXXXXXreturn
+
+XXXXifXinputXisXNone:
+XXXXXXXXawaitXevent.reply("WhereXisXtheXpollXidX?")
+XXXXXXXXreturn
+
+XXXXtry:
+XXXXXXXXsecretX=Xstr(secret)
+XXXXexceptXValueError:
+XXXXXXXXawaitXevent.reply("PollXidXshouldXcontainXonlyXnumbers")
+XXXXXXXXreturn
+
+XXXXifXlen(secret)X!=X5:
+XXXXXXXXawaitXevent.reply("PollXidXshouldXbeXanXintegerXofX5Xdigits")
+XXXXXXXXreturn
+
+XXXXmsgX=XawaitXevent.get_reply_message()
+
+XXXXifXstr(msg.sender_id)X!=Xstr(BOT_ID):
+XXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXX"IXcan'tXdoXthisXoperationXonXthisXpoll.\nProbablyXit'sXnotXcreatedXbyXme"
+XXXXXXXX)
+XXXXXXXXreturn
+XXXXprint(secret)
+XXXXifXmsg.poll:
+XXXXXXXXallpollX=Xpoll_id.find({})
+XXXXXXXXforXcXinXallpoll:
+XXXXXXXXXXXXifXnotXevent.sender_idX==Xc["user"]XandXnotXsecretX==Xc["pollid"]:
+XXXXXXXXXXXXXXXXawaitXevent.reply(
+XXXXXXXXXXXXXXXXXXXX"Oops,XeitherXyouXhaven'tXcreatedXthisXpollXorXyouXhaveXgivenXwrongXpollXid"
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXreturn
+XXXXXXXXifXmsg.poll.poll.closed:
+XXXXXXXXXXXXawaitXevent.reply("Oops,XtheXpollXisXalreadyXclosed.")
+XXXXXXXXXXXXreturn
+XXXXXXXXpoll_id.delete_one({"user":Xevent.sender_id})
+XXXXXXXXpollidX=Xmsg.poll.poll.id
+XXXXXXXXawaitXmsg.edit(
+XXXXXXXXXXXXfile=types.InputMediaPoll(
+XXXXXXXXXXXXXXXXpoll=types.Poll(id=pollid,Xquestion="",Xanswers=[],Xclosed=True)
+XXXXXXXXXXXX)
+XXXXXXXX)
+XXXXXXXXawaitXevent.reply("SuccessfullyXstoppedXtheXpoll")
+XXXXelse:
+XXXXXXXXawaitXevent.reply("ThisXisn'tXaXpoll")
 
 
 @register(pattern="^/forgotpollid$")
-async def stop(event):
-    approved_userss = approved_users.find({})
-    for ch in approved_userss:
-        iid = ch["id"]
-        userss = ch["user"]
-    if event.is_group:
-        if await is_register_admin(event.input_chat, event.message.sender_id):
-            pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
-            return
-    allpoll = poll_id.find({})
-    for c in allpoll:
-        if event.sender_id == c["user"]:
-            try:
-                poll_id.delete_one({"user": event.sender_id})
-                await event.reply("Done you can now create a new poll.")
-            except Exception:
-                await event.reply("Seems like you haven't created any poll yet !")
+asyncXdefXstop(event):
+XXXXapproved_userssX=Xapproved_users.find({})
+XXXXforXchXinXapproved_userss:
+XXXXXXXXiidX=Xch["id"]
+XXXXXXXXuserssX=Xch["user"]
+XXXXifXevent.is_group:
+XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
+XXXXXXXXXXXXpass
+XXXXXXXXelifXevent.chat_idX==XiidXandXevent.sender_idX==Xuserss:
+XXXXXXXXXXXXpass
+XXXXXXXXelse:
+XXXXXXXXXXXXreturn
+XXXXallpollX=Xpoll_id.find({})
+XXXXforXcXinXallpoll:
+XXXXXXXXifXevent.sender_idX==Xc["user"]:
+XXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXpoll_id.delete_one({"user":Xevent.sender_id})
+XXXXXXXXXXXXXXXXawaitXevent.reply("DoneXyouXcanXnowXcreateXaXnewXpoll.")
+XXXXXXXXXXXXexceptXException:
+XXXXXXXXXXXXXXXXawaitXevent.reply("SeemsXlikeXyouXhaven'tXcreatedXanyXpollXyetX!")
 
 
-__help__ = """
-You can now send polls anonymously with Ineruki
-Here is how you can do it:
-<b> Parameters </b> -
- - poll-id - a poll id consists of an 5 digit random integer, this id is automatically removed from the system when you stop your previous poll
- - question - the question you wanna ask
- - [True@optionnumber/False](1) - quiz mode, you must state the correct answer with @ eg: True@ or True@2
- - [True/False](2) - public votes
- - [True/False](3) - multiple choice
-<b> Syntax </b> -
-- /poll [poll-id] <i>question</i> | <i>True@optionnumber/False</i> [True/False] [True/False] [option1] [option2] ... upto [option10]
-<b> Examples </b> -
-- /poll 12345 | am i cool? | False False False yes no`
-- /poll 12345 | am i cool? | True@1 False False yes no`
-<b> To stop a poll </b>
-Reply to the poll with `/stoppoll [poll-id]` to stop the poll
-<b> Fogot poll id </b>
-- /forgotpollid - to reset poll
+__help__X=X"""
+YouXcanXnowXsendXpollsXanonymouslyXwithXIneruki
+HereXisXhowXyouXcanXdoXit:
+<b>XParametersX</b>X-
+X-Xpoll-idX-XaXpollXidXconsistsXofXanX5XdigitXrandomXinteger,XthisXidXisXautomaticallyXremovedXfromXtheXsystemXwhenXyouXstopXyourXpreviousXpoll
+X-XquestionX-XtheXquestionXyouXwannaXask
+X-X[True@optionnumber/False](1)X-XquizXmode,XyouXmustXstateXtheXcorrectXanswerXwithX@Xeg:XTrue@XorXTrue@2
+X-X[True/False](2)X-XpublicXvotes
+X-X[True/False](3)X-XmultipleXchoice
+<b>XSyntaxX</b>X-
+-X/pollX[poll-id]X<i>question</i>X|X<i>True@optionnumber/False</i>X[True/False]X[True/False]X[option1]X[option2]X...XuptoX[option10]
+<b>XExamplesX</b>X-
+-X/pollX12345X|XamXiXcool?X|XFalseXFalseXFalseXyesXno`
+-X/pollX12345X|XamXiXcool?X|XTrue@1XFalseXFalseXyesXno`
+<b>XToXstopXaXpollX</b>
+ReplyXtoXtheXpollXwithX`/stoppollX[poll-id]`XtoXstopXtheXpoll
+<b>XFogotXpollXidX</b>
+-X/forgotpollidX-XtoXresetXpoll
 
 """
 
 
-__mod_name__ = "Polls"
+__mod_name__X=X"Polls"

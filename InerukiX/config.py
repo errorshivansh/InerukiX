@@ -1,108 +1,108 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import os
-import sys
+importXos
+importXsys
 
-import yaml
-from envparse import env
+importXyaml
+fromXenvparseXimportXenv
 
-from Ineruki .utils.logger import log
+fromXInerukiX.utils.loggerXimportXlog
 
-DEFAULTS = {
-    "LOAD_MODULES": True,
-    "DEBUG_MODE": True,
-    "REDIS_HOST": "localhost",
-    "REDIS_PORT": 6379,
-    "REDIS_DB_FSM": 1,
-    "MONGODB_URI": "localhost",
-    "MONGO_DB": "Ineruki ",
-    "API_PORT": 8080,
-    "JOIN_CONFIRM_DURATION": "30m",
+DEFAULTSX=X{
+XXXX"LOAD_MODULES":XTrue,
+XXXX"DEBUG_MODE":XTrue,
+XXXX"REDIS_HOST":X"localhost",
+XXXX"REDIS_PORT":X6379,
+XXXX"REDIS_DB_FSM":X1,
+XXXX"MONGODB_URI":X"localhost",
+XXXX"MONGO_DB":X"InerukiX",
+XXXX"API_PORT":X8080,
+XXXX"JOIN_CONFIRM_DURATION":X"30m",
 }
 
-CONFIG_PATH = "data/bot_conf.yaml"
-if os.name == "nt":
-    log.debug("Detected Windows, changing config path...")
-    CONFIG_PATH = os.getcwd() + "\\data\\bot_conf.yaml"
+CONFIG_PATHX=X"data/bot_conf.yaml"
+ifXos.nameX==X"nt":
+XXXXlog.debug("DetectedXWindows,XchangingXconfigXpath...")
+XXXXCONFIG_PATHX=Xos.getcwd()X+X"\\data\\bot_conf.yaml"
 
-if os.path.isfile(CONFIG_PATH):
-    log.info(CONFIG_PATH)
-    for item in (
-        data := yaml.load(open("data/bot_conf.yaml", "r"), Loader=yaml.CLoader)
-    ):
-        DEFAULTS[item.upper()] = data[item]
+ifXos.path.isfile(CONFIG_PATH):
+XXXXlog.info(CONFIG_PATH)
+XXXXforXitemXinX(
+XXXXXXXXdataX:=Xyaml.load(open("data/bot_conf.yaml",X"r"),XLoader=yaml.CLoader)
+XXXX):
+XXXXXXXXDEFAULTS[item.upper()]X=Xdata[item]
 else:
-    log.info("Using env vars")
+XXXXlog.info("UsingXenvXvars")
 
 
-def get_str_key(name, required=False):
-    if name in DEFAULTS:
-        default = DEFAULTS[name]
-    else:
-        default = None
-    if not (data := env.str(name, default=default)) and not required:
-        log.warn("No str key: " + name)
-        return None
-    elif not data:
-        log.critical("No str key: " + name)
-        sys.exit(2)
-    else:
-        return data
+defXget_str_key(name,Xrequired=False):
+XXXXifXnameXinXDEFAULTS:
+XXXXXXXXdefaultX=XDEFAULTS[name]
+XXXXelse:
+XXXXXXXXdefaultX=XNone
+XXXXifXnotX(dataX:=Xenv.str(name,Xdefault=default))XandXnotXrequired:
+XXXXXXXXlog.warn("NoXstrXkey:X"X+Xname)
+XXXXXXXXreturnXNone
+XXXXelifXnotXdata:
+XXXXXXXXlog.critical("NoXstrXkey:X"X+Xname)
+XXXXXXXXsys.exit(2)
+XXXXelse:
+XXXXXXXXreturnXdata
 
 
-def get_int_key(name, required=False):
-    if name in DEFAULTS:
-        default = DEFAULTS[name]
-    else:
-        default = None
-    if not (data := env.int(name, default=default)) and not required:
-        log.warn("No int key: " + name)
-        return None
-    elif not data:
-        log.critical("No int key: " + name)
-        sys.exit(2)
-    else:
-        return data
+defXget_int_key(name,Xrequired=False):
+XXXXifXnameXinXDEFAULTS:
+XXXXXXXXdefaultX=XDEFAULTS[name]
+XXXXelse:
+XXXXXXXXdefaultX=XNone
+XXXXifXnotX(dataX:=Xenv.int(name,Xdefault=default))XandXnotXrequired:
+XXXXXXXXlog.warn("NoXintXkey:X"X+Xname)
+XXXXXXXXreturnXNone
+XXXXelifXnotXdata:
+XXXXXXXXlog.critical("NoXintXkey:X"X+Xname)
+XXXXXXXXsys.exit(2)
+XXXXelse:
+XXXXXXXXreturnXdata
 
 
-def get_list_key(name, required=False):
-    if name in DEFAULTS:
-        default = DEFAULTS[name]
-    else:
-        default = None
-    if not (data := env.list(name, default=default)) and not required:
-        log.warn("No list key: " + name)
-        return []
-    elif not data:
-        log.critical("No list key: " + name)
-        sys.exit(2)
-    else:
-        return data
+defXget_list_key(name,Xrequired=False):
+XXXXifXnameXinXDEFAULTS:
+XXXXXXXXdefaultX=XDEFAULTS[name]
+XXXXelse:
+XXXXXXXXdefaultX=XNone
+XXXXifXnotX(dataX:=Xenv.list(name,Xdefault=default))XandXnotXrequired:
+XXXXXXXXlog.warn("NoXlistXkey:X"X+Xname)
+XXXXXXXXreturnX[]
+XXXXelifXnotXdata:
+XXXXXXXXlog.critical("NoXlistXkey:X"X+Xname)
+XXXXXXXXsys.exit(2)
+XXXXelse:
+XXXXXXXXreturnXdata
 
 
-def get_bool_key(name, required=False):
-    if name in DEFAULTS:
-        default = DEFAULTS[name]
-    else:
-        default = None
-    if not (data := env.bool(name, default=default)) and not required:
-        log.warn("No bool key: " + name)
-        return False
-    elif not data:
-        log.critical("No bool key: " + name)
-        sys.exit(2)
-    else:
-        return data
+defXget_bool_key(name,Xrequired=False):
+XXXXifXnameXinXDEFAULTS:
+XXXXXXXXdefaultX=XDEFAULTS[name]
+XXXXelse:
+XXXXXXXXdefaultX=XNone
+XXXXifXnotX(dataX:=Xenv.bool(name,Xdefault=default))XandXnotXrequired:
+XXXXXXXXlog.warn("NoXboolXkey:X"X+Xname)
+XXXXXXXXreturnXFalse
+XXXXelifXnotXdata:
+XXXXXXXXlog.critical("NoXboolXkey:X"X+Xname)
+XXXXXXXXsys.exit(2)
+XXXXelse:
+XXXXXXXXreturnXdata

@@ -1,84 +1,84 @@
-# Ineruki  Example plugin format
+#XInerukiXXExampleXpluginXformat
 
-## Basic: Simple Plugins
+##XBasic:XSimpleXPlugins
 ```python3
 
-from Ineruki .decorator import register
-from .utils.disable import disableable_dec
-from .utils.message import get_args_str
+fromXInerukiX.decoratorXimportXregister
+fromX.utils.disableXimportXdisableable_dec
+fromX.utils.messageXimportXget_args_str
 
 @register(cmds="Hi")
 @disableable_dec("Hi")
-async def _(message):
-    j = "Hello there"
-    await message.reply(j)
-    
-__mod_name__ = "Hi"
-__help__ = """
+asyncXdefX_(message):
+XXXXjX=X"HelloXthere"
+XXXXawaitXmessage.reply(j)
+XXXX
+__mod_name__X=X"Hi"
+__help__X=X"""
 <b>Hi</b>
-- /hi: Say Hello There
+-X/hi:XSayXHelloXThere
 """
 ```
 
-## Basic: Env Vars
+##XBasic:XEnvXVars
 ```python3
-# You can import env like this. If config present auto use config
+#XYouXcanXimportXenvXlikeXthis.XIfXconfigXpresentXautoXuseXconfig
 
-from Ineruki .decorator import register
-from .utils.disable import disableable_dec
-from .utils.message import get_args_str
-from Ineruki .config import get_int_key, get_str_key
+fromXInerukiX.decoratorXimportXregister
+fromX.utils.disableXimportXdisableable_dec
+fromX.utils.messageXimportXget_args_str
+fromXInerukiX.configXimportXget_int_key,Xget_str_key
 
-HI_STRING = get_str_key("HI_STRING", required=True) # String
-MULTI = get_int_key("MULTI", required=True) #Intiger
+HI_STRINGX=Xget_str_key("HI_STRING",Xrequired=True)X#XString
+MULTIX=Xget_int_key("MULTI",Xrequired=True)X#Intiger
 
 @register(cmds="Hi")
 @disableable_dec("Hi")
-async def _(message):
-    j = HI_STRING*MULTI
-    await message.reply(j)
-    
-__mod_name__ = "Hi"
-__help__ = """
+asyncXdefX_(message):
+XXXXjX=XHI_STRING*MULTI
+XXXXawaitXmessage.reply(j)
+XXXX
+__mod_name__X=X"Hi"
+__help__X=X"""
 <b>Hi</b>
-- /hi: Say Hello There
+-X/hi:XSayXHelloXThere
 """
 ```
 
 
 
-## Advanced: Pyrogram
+##XAdvanced:XPyrogram
 ```python3
-from Ineruki .function.pluginhelpers import admins_only
-from Ineruki .services.pyrogram import pbot
+fromXInerukiX.function.pluginhelpersXimportXadmins_only
+fromXInerukiX.services.pyrogramXimportXpbot
 
-@pbot.on_message(filters.command("hi") & ~filters.edited & ~filters.bot)
+@pbot.on_message(filters.command("hi")X&X~filters.editedX&X~filters.bot)
 @admins_only
-async def hmm(client, message):
-    j = "Hello there"
-    await message.reply(j)
-    
-__mod_name__ = "Hi"
-__help__ = """
+asyncXdefXhmm(client,Xmessage):
+XXXXjX=X"HelloXthere"
+XXXXawaitXmessage.reply(j)
+XXXX
+__mod_name__X=X"Hi"
+__help__X=X"""
 <b>Hi</b>
-- /hi: Say Hello There
+-X/hi:XSayXHelloXThere
 """
 ```
 
-## Advanced: Telethon
+##XAdvanced:XTelethon
 ```python3
 
-from Ineruki .services.telethon import tbot
-from Ineruki .services.events import register
+fromXInerukiX.services.telethonXimportXtbot
+fromXInerukiX.services.eventsXimportXregister
 
 @register(pattern="^/hi$")
-async def hmm(event):
-    j = "Hello there"
-    await event.reply(j)
-    
-__mod_name__ = "Hi"
-__help__ = """
+asyncXdefXhmm(event):
+XXXXjX=X"HelloXthere"
+XXXXawaitXevent.reply(j)
+XXXX
+__mod_name__X=X"Hi"
+__help__X=X"""
 <b>Hi</b>
-- /hi: Say Hello There
+-X/hi:XSayXHelloXThere
 """
 ```

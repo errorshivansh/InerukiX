@@ -1,31 +1,31 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-def list_all_fonts():
-    import glob
-    from os.path import basename, dirname, isfile
-
-    mod_paths = glob.glob(dirname(__file__) + "/*.ttf")
-    all_fonts = [
-        dirname(f) + "/" + basename(f)
-        for f in mod_paths
-        if isfile(f) and f.endswith(".ttf")
-    ]
-    return all_fonts
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
 
-ALL_FONTS = sorted(list_all_fonts())
-__all__ = ALL_FONTS + ["ALL_FONTS"]
+defXlist_all_fonts():
+XXXXimportXglob
+XXXXfromXos.pathXimportXbasename,Xdirname,Xisfile
+
+XXXXmod_pathsX=Xglob.glob(dirname(__file__)X+X"/*.ttf")
+XXXXall_fontsX=X[
+XXXXXXXXdirname(f)X+X"/"X+Xbasename(f)
+XXXXXXXXforXfXinXmod_paths
+XXXXXXXXifXisfile(f)XandXf.endswith(".ttf")
+XXXX]
+XXXXreturnXall_fonts
+
+
+ALL_FONTSX=Xsorted(list_all_fonts())
+__all__X=XALL_FONTSX+X["ALL_FONTS"]

@@ -1,28 +1,28 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import html
+importXhtml
 
-from Ineruki  import bot
-from Ineruki .config import get_int_key
-from Ineruki .utils.logger import log
+fromXInerukiXXimportXbot
+fromXInerukiX.configXimportXget_int_key
+fromXInerukiX.utils.loggerXimportXlog
 
 
-async def channel_log(msg, info_log=True):
-    chat_id = get_int_key("LOGS_CHANNEL_ID")
-    if info_log:
-        log.info(msg)
+asyncXdefXchannel_log(msg,Xinfo_log=True):
+XXXXchat_idX=Xget_int_key("LOGS_CHANNEL_ID")
+XXXXifXinfo_log:
+XXXXXXXXlog.info(msg)
 
-    await bot.send_message(chat_id, html.escape(msg, quote=False))
+XXXXawaitXbot.send_message(chat_id,Xhtml.escape(msg,Xquote=False))

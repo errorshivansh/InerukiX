@@ -1,36 +1,36 @@
-# Copyright (C) 2020-2021 by DevsExpo@Github, < https://github.com/DevsExpo >.
+#XCopyrightX(C)X2020-2021XbyXDevsExpo@Github,X<Xhttps://github.com/DevsExpoX>.
 #
-# This file is part of < https://github.com/DevsExpo/FridayUserBot > project,
-# and is released under the "GNU v3.0 License Agreement".
-# Please see < https://github.com/DevsExpo/blob/master/LICENSE >
+#XThisXfileXisXpartXofX<Xhttps://github.com/DevsExpo/FridayUserBotX>Xproject,
+#XandXisXreleasedXunderXtheX"GNUXv3.0XLicenseXAgreement".
+#XPleaseXseeX<Xhttps://github.com/DevsExpo/blob/master/LICENSEX>
 #
-# All rights reserved.
+#XAllXrightsXreserved.
 
 
-from pyrogram import filters
+fromXpyrogramXimportXfilters
 
-from Ineruki .function.pluginhelpers import admins_only, get_text
-from Ineruki .services.pyrogram import pbot
+fromXInerukiX.function.pluginhelpersXimportXadmins_only,Xget_text
+fromXInerukiX.services.pyrogramXimportXpbot
 
 
-@pbot.on_message(filters.command("tagall") & ~filters.edited & ~filters.bot)
+@pbot.on_message(filters.command("tagall")X&X~filters.editedX&X~filters.bot)
 @admins_only
-async def tagall(client, message):
-    await message.reply("`Processing.....`")
-    sh = get_text(message)
-    if not sh:
-        sh = "Hi!"
-    mentions = ""
-    async for member in client.iter_chat_members(message.chat.id):
-        mentions += member.user.mention + " "
-    n = 4096
-    kk = [mentions[i : i + n] for i in range(0, len(mentions), n)]
-    for i in kk:
-        j = f"<b>{sh}</b> \n{i}"
-        await client.send_message(message.chat.id, j, parse_mode="html")
+asyncXdefXtagall(client,Xmessage):
+XXXXawaitXmessage.reply("`Processing.....`")
+XXXXshX=Xget_text(message)
+XXXXifXnotXsh:
+XXXXXXXXshX=X"Hi!"
+XXXXmentionsX=X""
+XXXXasyncXforXmemberXinXclient.iter_chat_members(message.chat.id):
+XXXXXXXXmentionsX+=Xmember.user.mentionX+X"X"
+XXXXnX=X4096
+XXXXkkX=X[mentions[iX:XiX+Xn]XforXiXinXrange(0,Xlen(mentions),Xn)]
+XXXXforXiXinXkk:
+XXXXXXXXjX=Xf"<b>{sh}</b>X\n{i}"
+XXXXXXXXawaitXclient.send_message(message.chat.id,Xj,Xparse_mode="html")
 
 
-_mod_name_ = "Tagall"
-_help_ = """
-- /tagall : Tag everyone in a chat
+_mod_name_X=X"Tagall"
+_help_X=X"""
+-X/tagallX:XTagXeveryoneXinXaXchat
 """

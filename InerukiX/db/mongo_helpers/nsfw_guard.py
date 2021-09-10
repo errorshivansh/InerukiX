@@ -1,24 +1,24 @@
-from Ineruki .services.mongo2 import db
+fromXInerukiX.services.mongo2XimportXdb
 
-nsfwdb = db.nsfw
-
-
-async def is_nsfw_on(chat_id: int) -> bool:
-    chat = await nsfwdb.find_one({"chat_id": chat_id})
-    if not chat:
-        return False
-    return True
+nsfwdbX=Xdb.nsfw
 
 
-async def nsfw_on(chat_id: int):
-    is_nsfw = await is_nsfw_on(chat_id)
-    if is_nsfw:
-        return
-    return await nsfwdb.insert_one({"chat_id": chat_id})
+asyncXdefXis_nsfw_on(chat_id:Xint)X->Xbool:
+XXXXchatX=XawaitXnsfwdb.find_one({"chat_id":Xchat_id})
+XXXXifXnotXchat:
+XXXXXXXXreturnXFalse
+XXXXreturnXTrue
 
 
-async def nsfw_off(chat_id: int):
-    is_nsfw = await is_nsfw_on(chat_id)
-    if not is_nsfw:
-        return
-    return await nsfwdb.delete_one({"chat_id": chat_id})
+asyncXdefXnsfw_on(chat_id:Xint):
+XXXXis_nsfwX=XawaitXis_nsfw_on(chat_id)
+XXXXifXis_nsfw:
+XXXXXXXXreturn
+XXXXreturnXawaitXnsfwdb.insert_one({"chat_id":Xchat_id})
+
+
+asyncXdefXnsfw_off(chat_id:Xint):
+XXXXis_nsfwX=XawaitXis_nsfw_on(chat_id)
+XXXXifXnotXis_nsfw:
+XXXXXXXXreturn
+XXXXreturnXawaitXnsfwdb.delete_one({"chat_id":Xchat_id})

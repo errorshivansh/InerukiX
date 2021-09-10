@@ -1,233 +1,233 @@
-#    Copyright (C) 2020-2021 by @InukaAsith
-#    This programme is a part of Ineruki TG bot project
+#XXXXCopyrightX(C)X2020-2021XbyX@InukaAsith
+#XXXXThisXprogrammeXisXaXpartXofXInerukiXTGXbotXproject
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
+#XXXXThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XXXXitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXasXpublishedXby
+#XXXXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXtheXLicense,Xor
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
+#XXXXThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XXXXbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XXXXMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XXXXGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 #
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#XXXXYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XXXXalongXwithXthisXprogram.XXIfXnot,XseeX<https://www.gnu.org/licenses/>.
 
 
-import logging
-import time
+importXlogging
+importXtime
 
-from pyrogram import filters
-from pyrogram.errors import RPCError
-from pyrogram.errors.exceptions.bad_request_400 import (
-    ChannelPrivate,
-    ChatAdminRequired,
-    PeerIdInvalid,
-    UsernameNotOccupied,
-    UserNotParticipant,
+fromXpyrogramXimportXfilters
+fromXpyrogram.errorsXimportXRPCError
+fromXpyrogram.errors.exceptions.bad_request_400XimportX(
+XXXXChannelPrivate,
+XXXXChatAdminRequired,
+XXXXPeerIdInvalid,
+XXXXUsernameNotOccupied,
+XXXXUserNotParticipant,
 )
-from pyrogram.types import ChatPermissions, InlineKeyboardButton, InlineKeyboardMarkup
+fromXpyrogram.typesXimportXChatPermissions,XInlineKeyboardButton,XInlineKeyboardMarkup
 
-from Ineruki  import BOT_ID
+fromXInerukiXXimportXBOT_ID
 
-# from Ineruki  import OWNER_ID as SUDO_USERS
-from Ineruki .services.pyrogram import pbot
-from Ineruki .services.sql import forceSubscribe_sql as sql
+#XfromXInerukiXXimportXOWNER_IDXasXSUDO_USERS
+fromXInerukiX.services.pyrogramXimportXpbot
+fromXInerukiX.services.sqlXimportXforceSubscribe_sqlXasXsql
 
 logging.basicConfig(level=logging.INFO)
 
-static_data_filter = filters.create(
-    lambda _, __, query: query.data == "onUnMuteRequest"
+static_data_filterX=Xfilters.create(
+XXXXlambdaX_,X__,Xquery:Xquery.dataX==X"onUnMuteRequest"
 )
 
 
 @pbot.on_callback_query(static_data_filter)
-def _onUnMuteRequest(client, cb):
-    try:
-        user_id = cb.from_user.id
-        chat_id = cb.message.chat.id
-    except:
-        return
-    chat_db = sql.fs_settings(chat_id)
-    if chat_db:
-        channel = chat_db.channel
-        try:
-            chat_member = client.get_chat_member(chat_id, user_id)
-        except:
-            return
-        if chat_member.restricted_by:
-            if chat_member.restricted_by.id == BOT_ID:
-                try:
-                    client.get_chat_member(channel, user_id)
-                    client.unban_chat_member(chat_id, user_id)
-                    cb.message.delete()
-                    # if cb.message.reply_to_message.from_user.id == user_id:
-                    # cb.message.delete()
-                except UserNotParticipant:
-                    client.answer_callback_query(
-                        cb.id,
-                        text=f"❗ Join our @{channel} channel and press 'UnMute Me' button.",
-                        show_alert=True,
-                    )
-                except ChannelPrivate:
-                    client.unban_chat_member(chat_id, user_id)
-                    cb.message.delete()
+defX_onUnMuteRequest(client,Xcb):
+XXXXtry:
+XXXXXXXXuser_idX=Xcb.from_user.id
+XXXXXXXXchat_idX=Xcb.message.chat.id
+XXXXexcept:
+XXXXXXXXreturn
+XXXXchat_dbX=Xsql.fs_settings(chat_id)
+XXXXifXchat_db:
+XXXXXXXXchannelX=Xchat_db.channel
+XXXXXXXXtry:
+XXXXXXXXXXXXchat_memberX=Xclient.get_chat_member(chat_id,Xuser_id)
+XXXXXXXXexcept:
+XXXXXXXXXXXXreturn
+XXXXXXXXifXchat_member.restricted_by:
+XXXXXXXXXXXXifXchat_member.restricted_by.idX==XBOT_ID:
+XXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXclient.get_chat_member(channel,Xuser_id)
+XXXXXXXXXXXXXXXXXXXXclient.unban_chat_member(chat_id,Xuser_id)
+XXXXXXXXXXXXXXXXXXXXcb.message.delete()
+XXXXXXXXXXXXXXXXXXXX#XifXcb.message.reply_to_message.from_user.idX==Xuser_id:
+XXXXXXXXXXXXXXXXXXXX#Xcb.message.delete()
+XXXXXXXXXXXXXXXXexceptXUserNotParticipant:
+XXXXXXXXXXXXXXXXXXXXclient.answer_callback_query(
+XXXXXXXXXXXXXXXXXXXXXXXXcb.id,
+XXXXXXXXXXXXXXXXXXXXXXXXtext=f"❗XJoinXourX@{channel}XchannelXandXpressX'UnMuteXMe'Xbutton.",
+XXXXXXXXXXXXXXXXXXXXXXXXshow_alert=True,
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXexceptXChannelPrivate:
+XXXXXXXXXXXXXXXXXXXXclient.unban_chat_member(chat_id,Xuser_id)
+XXXXXXXXXXXXXXXXXXXXcb.message.delete()
 
-            else:
-                client.answer_callback_query(
-                    cb.id,
-                    text="❗ You have been muted by admins due to some other reason.",
-                    show_alert=True,
-                )
-        else:
-            if not client.get_chat_member(chat_id, BOT_ID).status == "administrator":
-                client.send_message(
-                    chat_id,
-                    f"❗ **{cb.from_user.mention} is trying to UnMute himself but i can't unmute him because i am not an admin in this chat add me as admin again.**\n__#Leaving this chat...__",
-                )
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXclient.answer_callback_query(
+XXXXXXXXXXXXXXXXXXXXcb.id,
+XXXXXXXXXXXXXXXXXXXXtext="❗XYouXhaveXbeenXmutedXbyXadminsXdueXtoXsomeXotherXreason.",
+XXXXXXXXXXXXXXXXXXXXshow_alert=True,
+XXXXXXXXXXXXXXXX)
+XXXXXXXXelse:
+XXXXXXXXXXXXifXnotXclient.get_chat_member(chat_id,XBOT_ID).statusX==X"administrator":
+XXXXXXXXXXXXXXXXclient.send_message(
+XXXXXXXXXXXXXXXXXXXXchat_id,
+XXXXXXXXXXXXXXXXXXXXf"❗X**{cb.from_user.mention}XisXtryingXtoXUnMuteXhimselfXbutXiXcan'tXunmuteXhimXbecauseXiXamXnotXanXadminXinXthisXchatXaddXmeXasXadminXagain.**\n__#LeavingXthisXchat...__",
+XXXXXXXXXXXXXXXX)
 
-            else:
-                client.answer_callback_query(
-                    cb.id,
-                    text="❗ Warning! Don't press the button when you cn talk.",
-                    show_alert=True,
-                )
-
-
-@pbot.on_message(filters.text & ~filters.private & ~filters.edited, group=1)
-def _check_member(client, message):
-    chat_id = message.chat.id
-    chat_db = sql.fs_settings(chat_id)
-    if chat_db:
-        try:
-            user_id = message.from_user.id
-        except:
-            return
-        try:
-            if (
-                not client.get_chat_member(chat_id, user_id).status
-                in ("administrator", "creator")
-                and not user_id == 1141839926
-            ):
-                channel = chat_db.channel
-                try:
-                    client.get_chat_member(channel, user_id)
-                except UserNotParticipant:
-                    try:
-                        sent_message = message.reply_text(
-                            "Welcome {} 🙏 \n **You havent joined our @{} Channel yet** 😭 \n \nPlease Join [Our Channel](https://t.me/{}) and hit the **UNMUTE ME** Button. \n \n ".format(
-                                message.from_user.mention, channel, channel
-                            ),
-                            disable_web_page_preview=True,
-                            reply_markup=InlineKeyboardMarkup(
-                                [
-                                    [
-                                        InlineKeyboardButton(
-                                            "Join Channel",
-                                            url="https://t.me/{}".format(channel),
-                                        )
-                                    ],
-                                    [
-                                        InlineKeyboardButton(
-                                            "UnMute Me", callback_data="onUnMuteRequest"
-                                        )
-                                    ],
-                                ]
-                            ),
-                        )
-                        client.restrict_chat_member(
-                            chat_id, user_id, ChatPermissions(can_send_messages=False)
-                        )
-                    except ChatAdminRequired:
-                        sent_message.edit(
-                            "❗ **Ineruki is not admin here..**\n__Give me ban permissions and retry.. \n#Ending FSub...__"
-                        )
-                    except RPCError:
-                        return
-
-                except ChatAdminRequired:
-                    client.send_message(
-                        chat_id,
-                        text=f"❗ **I not an admin of @{channel} channel.**\n__Give me admin of that channel and retry.\n#Ending FSub...__",
-                    )
-                except ChannelPrivate:
-                    return
-        except:
-            return
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXclient.answer_callback_query(
+XXXXXXXXXXXXXXXXXXXXcb.id,
+XXXXXXXXXXXXXXXXXXXXtext="❗XWarning!XDon'tXpressXtheXbuttonXwhenXyouXcnXtalk.",
+XXXXXXXXXXXXXXXXXXXXshow_alert=True,
+XXXXXXXXXXXXXXXX)
 
 
-@pbot.on_message(filters.command(["forcesubscribe", "forcesub"]) & ~filters.private)
-def config(client, message):
-    user = client.get_chat_member(message.chat.id, message.from_user.id)
-    if user.status is "creator" or user.user.id == 1141839926:
-        chat_id = message.chat.id
-        if len(message.command) > 1:
-            input_str = message.command[1]
-            input_str = input_str.replace("@", "")
-            if input_str.lower() in ("off", "no", "disable"):
-                sql.disapprove(chat_id)
-                message.reply_text("❌ **Force Subscribe is Disabled Successfully.**")
-            elif input_str.lower() in ("clear"):
-                sent_message = message.reply_text(
-                    "**Unmuting all members who are muted by me...**"
-                )
-                try:
-                    for chat_member in client.get_chat_members(
-                        message.chat.id, filter="restricted"
-                    ):
-                        if chat_member.restricted_by.id == BOT_ID:
-                            client.unban_chat_member(chat_id, chat_member.user.id)
-                            time.sleep(1)
-                    sent_message.edit("✅ **UnMuted all members who are muted by me.**")
-                except ChatAdminRequired:
-                    sent_message.edit(
-                        "❗ **I am not an admin in this chat.**\n__I can't unmute members because i am not an admin in this chat make me admin with ban user permission.__"
-                    )
-            else:
-                try:
-                    client.get_chat_member(input_str, "me")
-                    sql.add_channel(chat_id, input_str)
-                    message.reply_text(
-                        f"✅ **Force Subscribe is Enabled**\n__Force Subscribe is enabled, all the group members have to subscribe this [channel](https://t.me/{input_str}) in order to send messages in this group.__",
-                        disable_web_page_preview=True,
-                    )
-                except UserNotParticipant:
-                    message.reply_text(
-                        f"❗ **Not an Admin in the Channel**\n__I am not an admin in the [channel](https://t.me/{input_str}). Add me as a admin in order to enable ForceSubscribe.__",
-                        disable_web_page_preview=True,
-                    )
-                except (UsernameNotOccupied, PeerIdInvalid):
-                    message.reply_text(f"❗ **Invalid Channel Username.**")
-                except Exception as err:
-                    message.reply_text(f"❗ **ERROR:** ```{err}```")
-        else:
-            if sql.fs_settings(chat_id):
-                message.reply_text(
-                    f"✅ **Force Subscribe is enabled in this chat.**\n__For this [Channel](https://t.me/{sql.fs_settings(chat_id).channel})__",
-                    disable_web_page_preview=True,
-                )
-            else:
-                message.reply_text("❌ **Force Subscribe is disabled in this chat.**")
-    else:
-        message.reply_text(
-            "❗ **Group Creator Required**\n__You have to be the group creator to do that.__"
-        )
+@pbot.on_message(filters.textX&X~filters.privateX&X~filters.edited,Xgroup=1)
+defX_check_member(client,Xmessage):
+XXXXchat_idX=Xmessage.chat.id
+XXXXchat_dbX=Xsql.fs_settings(chat_id)
+XXXXifXchat_db:
+XXXXXXXXtry:
+XXXXXXXXXXXXuser_idX=Xmessage.from_user.id
+XXXXXXXXexcept:
+XXXXXXXXXXXXreturn
+XXXXXXXXtry:
+XXXXXXXXXXXXifX(
+XXXXXXXXXXXXXXXXnotXclient.get_chat_member(chat_id,Xuser_id).status
+XXXXXXXXXXXXXXXXinX("administrator",X"creator")
+XXXXXXXXXXXXXXXXandXnotXuser_idX==X1141839926
+XXXXXXXXXXXX):
+XXXXXXXXXXXXXXXXchannelX=Xchat_db.channel
+XXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXclient.get_chat_member(channel,Xuser_id)
+XXXXXXXXXXXXXXXXexceptXUserNotParticipant:
+XXXXXXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXXXXXsent_messageX=Xmessage.reply_text(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXX"WelcomeX{}X🙏X\nX**YouXhaventXjoinedXourX@{}XChannelXyet**X😭X\nX\nPleaseXJoinX[OurXChannel](https://t.me/{})XandXhitXtheX**UNMUTEXME**XButton.X\nX\nX".format(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXmessage.from_user.mention,Xchannel,Xchannel
+XXXXXXXXXXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXdisable_web_page_preview=True,
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXreply_markup=InlineKeyboardMarkup(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX[
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX[
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"JoinXChannel",
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXurl="https://t.me/{}".format(channel),
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX],
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX[
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXInlineKeyboardButton(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"UnMuteXMe",Xcallback_data="onUnMuteRequest"
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX],
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX]
+XXXXXXXXXXXXXXXXXXXXXXXXXXXX),
+XXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXXXXXclient.restrict_chat_member(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXchat_id,Xuser_id,XChatPermissions(can_send_messages=False)
+XXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXexceptXChatAdminRequired:
+XXXXXXXXXXXXXXXXXXXXXXXXsent_message.edit(
+XXXXXXXXXXXXXXXXXXXXXXXXXXXX"❗X**InerukiXisXnotXadminXhere..**\n__GiveXmeXbanXpermissionsXandXretry..X\n#EndingXFSub...__"
+XXXXXXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXXXXXexceptXRPCError:
+XXXXXXXXXXXXXXXXXXXXXXXXreturn
+
+XXXXXXXXXXXXXXXXexceptXChatAdminRequired:
+XXXXXXXXXXXXXXXXXXXXclient.send_message(
+XXXXXXXXXXXXXXXXXXXXXXXXchat_id,
+XXXXXXXXXXXXXXXXXXXXXXXXtext=f"❗X**IXnotXanXadminXofX@{channel}Xchannel.**\n__GiveXmeXadminXofXthatXchannelXandXretry.\n#EndingXFSub...__",
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXexceptXChannelPrivate:
+XXXXXXXXXXXXXXXXXXXXreturn
+XXXXXXXXexcept:
+XXXXXXXXXXXXreturn
 
 
-__help__ = """
+@pbot.on_message(filters.command(["forcesubscribe",X"forcesub"])X&X~filters.private)
+defXconfig(client,Xmessage):
+XXXXuserX=Xclient.get_chat_member(message.chat.id,Xmessage.from_user.id)
+XXXXifXuser.statusXisX"creator"XorXuser.user.idX==X1141839926:
+XXXXXXXXchat_idX=Xmessage.chat.id
+XXXXXXXXifXlen(message.command)X>X1:
+XXXXXXXXXXXXinput_strX=Xmessage.command[1]
+XXXXXXXXXXXXinput_strX=Xinput_str.replace("@",X"")
+XXXXXXXXXXXXifXinput_str.lower()XinX("off",X"no",X"disable"):
+XXXXXXXXXXXXXXXXsql.disapprove(chat_id)
+XXXXXXXXXXXXXXXXmessage.reply_text("❌X**ForceXSubscribeXisXDisabledXSuccessfully.**")
+XXXXXXXXXXXXelifXinput_str.lower()XinX("clear"):
+XXXXXXXXXXXXXXXXsent_messageX=Xmessage.reply_text(
+XXXXXXXXXXXXXXXXXXXX"**UnmutingXallXmembersXwhoXareXmutedXbyXme...**"
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXforXchat_memberXinXclient.get_chat_members(
+XXXXXXXXXXXXXXXXXXXXXXXXmessage.chat.id,Xfilter="restricted"
+XXXXXXXXXXXXXXXXXXXX):
+XXXXXXXXXXXXXXXXXXXXXXXXifXchat_member.restricted_by.idX==XBOT_ID:
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXclient.unban_chat_member(chat_id,Xchat_member.user.id)
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXtime.sleep(1)
+XXXXXXXXXXXXXXXXXXXXsent_message.edit("✅X**UnMutedXallXmembersXwhoXareXmutedXbyXme.**")
+XXXXXXXXXXXXXXXXexceptXChatAdminRequired:
+XXXXXXXXXXXXXXXXXXXXsent_message.edit(
+XXXXXXXXXXXXXXXXXXXXXXXX"❗X**IXamXnotXanXadminXinXthisXchat.**\n__IXcan'tXunmuteXmembersXbecauseXiXamXnotXanXadminXinXthisXchatXmakeXmeXadminXwithXbanXuserXpermission.__"
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXtry:
+XXXXXXXXXXXXXXXXXXXXclient.get_chat_member(input_str,X"me")
+XXXXXXXXXXXXXXXXXXXXsql.add_channel(chat_id,Xinput_str)
+XXXXXXXXXXXXXXXXXXXXmessage.reply_text(
+XXXXXXXXXXXXXXXXXXXXXXXXf"✅X**ForceXSubscribeXisXEnabled**\n__ForceXSubscribeXisXenabled,XallXtheXgroupXmembersXhaveXtoXsubscribeXthisX[channel](https://t.me/{input_str})XinXorderXtoXsendXmessagesXinXthisXgroup.__",
+XXXXXXXXXXXXXXXXXXXXXXXXdisable_web_page_preview=True,
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXexceptXUserNotParticipant:
+XXXXXXXXXXXXXXXXXXXXmessage.reply_text(
+XXXXXXXXXXXXXXXXXXXXXXXXf"❗X**NotXanXAdminXinXtheXChannel**\n__IXamXnotXanXadminXinXtheX[channel](https://t.me/{input_str}).XAddXmeXasXaXadminXinXorderXtoXenableXForceSubscribe.__",
+XXXXXXXXXXXXXXXXXXXXXXXXdisable_web_page_preview=True,
+XXXXXXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXXXXXexceptX(UsernameNotOccupied,XPeerIdInvalid):
+XXXXXXXXXXXXXXXXXXXXmessage.reply_text(f"❗X**InvalidXChannelXUsername.**")
+XXXXXXXXXXXXXXXXexceptXExceptionXasXerr:
+XXXXXXXXXXXXXXXXXXXXmessage.reply_text(f"❗X**ERROR:**X```{err}```")
+XXXXXXXXelse:
+XXXXXXXXXXXXifXsql.fs_settings(chat_id):
+XXXXXXXXXXXXXXXXmessage.reply_text(
+XXXXXXXXXXXXXXXXXXXXf"✅X**ForceXSubscribeXisXenabledXinXthisXchat.**\n__ForXthisX[Channel](https://t.me/{sql.fs_settings(chat_id).channel})__",
+XXXXXXXXXXXXXXXXXXXXdisable_web_page_preview=True,
+XXXXXXXXXXXXXXXX)
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXmessage.reply_text("❌X**ForceXSubscribeXisXdisabledXinXthisXchat.**")
+XXXXelse:
+XXXXXXXXmessage.reply_text(
+XXXXXXXXXXXX"❗X**GroupXCreatorXRequired**\n__YouXhaveXtoXbeXtheXgroupXcreatorXtoXdoXthat.__"
+XXXXXXXX)
+
+
+__help__X=X"""
 <b>ForceSubscribe:</b>
-- Ineruki can mute members who are not subscribed your channel until they subscribe
-- When enabled I will mute unsubscribed members and show them a unmute button. When they pressed the button I will unmute them
+-XInerukiXcanXmuteXmembersXwhoXareXnotXsubscribedXyourXchannelXuntilXtheyXsubscribe
+-XWhenXenabledXIXwillXmuteXunsubscribedXmembersXandXshowXthemXaXunmuteXbutton.XWhenXtheyXpressedXtheXbuttonXIXwillXunmuteXthem
 <b>Setup</b>
-1) First of all add me in the group as admin with ban users permission and in the channel as admin.
-Note: Only creator of the group can setup me and i will not allow force subscribe again if not done so.
- 
+1)XFirstXofXallXaddXmeXinXtheXgroupXasXadminXwithXbanXusersXpermissionXandXinXtheXchannelXasXadmin.
+Note:XOnlyXcreatorXofXtheXgroupXcanXsetupXmeXandXiXwillXnotXallowXforceXsubscribeXagainXifXnotXdoneXso.
+X
 <b>Commmands</b>
- - /forcesubscribe - To get the current settings.
- - /forcesubscribe no/off/disable - To turn of ForceSubscribe.
- - /forcesubscribe {channel username} - To turn on and setup the channel.
- - /forcesubscribe clear - To unmute all members who muted by me.
-Note: /forcesub is an alias of /forcesubscribe
- 
+X-X/forcesubscribeX-XToXgetXtheXcurrentXsettings.
+X-X/forcesubscribeXno/off/disableX-XToXturnXofXForceSubscribe.
+X-X/forcesubscribeX{channelXusername}X-XToXturnXonXandXsetupXtheXchannel.
+X-X/forcesubscribeXclearX-XToXunmuteXallXmembersXwhoXmutedXbyXme.
+Note:X/forcesubXisXanXaliasXofX/forcesubscribe
+X
 """
-__mod_name__ = "Force Subscribe "
+__mod_name__X=X"ForceXSubscribeX"

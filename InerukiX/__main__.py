@@ -1,105 +1,105 @@
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
-import asyncio
-import os
-from importlib import import_module
+importXasyncio
+importXos
+fromXimportlibXimportXimport_module
 
-from aiogram import executor
-from aiogram.contrib.middlewares.logging import LoggingMiddleware
+fromXaiogramXimportXexecutor
+fromXaiogram.contrib.middlewares.loggingXimportXLoggingMiddleware
 
-from Ineruki  import TOKEN, bot, dp
-from Ineruki .config import get_bool_key, get_list_key
-from Ineruki .modules import ALL_MODULES, LOADED_MODULES, MOD_HELP
-from Ineruki .utils.logger import log
+fromXInerukiXXimportXTOKEN,Xbot,Xdp
+fromXInerukiX.configXimportXget_bool_key,Xget_list_key
+fromXInerukiX.modulesXimportXALL_MODULES,XLOADED_MODULES,XMOD_HELP
+fromXInerukiX.utils.loggerXimportXlog
 
-if get_bool_key("DEBUG_MODE"):
-    log.debug("Enabling logging middleware.")
-    dp.middleware.setup(LoggingMiddleware())
+ifXget_bool_key("DEBUG_MODE"):
+XXXXlog.debug("EnablingXloggingXmiddleware.")
+XXXXdp.middleware.setup(LoggingMiddleware())
 
-LOAD = get_list_key("LOAD")
-DONT_LOAD = get_list_key("DONT_LOAD")
+LOADX=Xget_list_key("LOAD")
+DONT_LOADX=Xget_list_key("DONT_LOAD")
 
-if get_bool_key("LOAD_MODULES"):
-    if len(LOAD) > 0:
-        modules = LOAD
-    else:
-        modules = ALL_MODULES
+ifXget_bool_key("LOAD_MODULES"):
+XXXXifXlen(LOAD)X>X0:
+XXXXXXXXmodulesX=XLOAD
+XXXXelse:
+XXXXXXXXmodulesX=XALL_MODULES
 
-    modules = [x for x in modules if x not in DONT_LOAD]
+XXXXmodulesX=X[xXforXxXinXmodulesXifXxXnotXinXDONT_LOAD]
 
-    log.info("Modules to load: %s", str(modules))
-    for module_name in modules:
-        # Load pm_menu at last
-        if module_name == "pm_menu":
-            continue
-        log.debug(f"Importing <d><n>{module_name}</></>")
-        imported_module = import_module("Ineruki .modules." + module_name)
-        if hasattr(imported_module, "__help__"):
-            if hasattr(imported_module, "__mod_name__"):
-                MOD_HELP[imported_module.__mod_name__] = imported_module.__help__
-            else:
-                MOD_HELP[imported_module.__name__] = imported_module.__help__
-        LOADED_MODULES.append(imported_module)
-    log.info("Modules loaded!")
+XXXXlog.info("ModulesXtoXload:X%s",Xstr(modules))
+XXXXforXmodule_nameXinXmodules:
+XXXXXXXX#XLoadXpm_menuXatXlast
+XXXXXXXXifXmodule_nameX==X"pm_menu":
+XXXXXXXXXXXXcontinue
+XXXXXXXXlog.debug(f"ImportingX<d><n>{module_name}</></>")
+XXXXXXXXimported_moduleX=Ximport_module("InerukiX.modules."X+Xmodule_name)
+XXXXXXXXifXhasattr(imported_module,X"__help__"):
+XXXXXXXXXXXXifXhasattr(imported_module,X"__mod_name__"):
+XXXXXXXXXXXXXXXXMOD_HELP[imported_module.__mod_name__]X=Ximported_module.__help__
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXMOD_HELP[imported_module.__name__]X=Ximported_module.__help__
+XXXXXXXXLOADED_MODULES.append(imported_module)
+XXXXlog.info("ModulesXloaded!")
 else:
-    log.warning("Not importing modules!")
+XXXXlog.warning("NotXimportingXmodules!")
 
-loop = asyncio.get_event_loop()
+loopX=Xasyncio.get_event_loop()
 
-import_module("Ineruki .modules.pm_menu")
-# Import misc stuff
-import_module("Ineruki .utils.exit_gracefully")
-if not get_bool_key("DEBUG_MODE"):
-    import_module("Ineruki .utils.sentry")
-
-
-async def before_srv_task(loop):
-    for module in [m for m in LOADED_MODULES if hasattr(m, "__before_serving__")]:
-        log.debug("Before serving: " + module.__name__)
-        loop.create_task(module.__before_serving__(loop))
+import_module("InerukiX.modules.pm_menu")
+#XImportXmiscXstuff
+import_module("InerukiX.utils.exit_gracefully")
+ifXnotXget_bool_key("DEBUG_MODE"):
+XXXXimport_module("InerukiX.utils.sentry")
 
 
-async def start(_):
-    log.debug("Starting before serving task for all modules...")
-    loop.create_task(before_srv_task(loop))
-
-    if not get_bool_key("DEBUG_MODE"):
-        log.debug("Waiting 2 seconds...")
-        await asyncio.sleep(2)
+asyncXdefXbefore_srv_task(loop):
+XXXXforXmoduleXinX[mXforXmXinXLOADED_MODULESXifXhasattr(m,X"__before_serving__")]:
+XXXXXXXXlog.debug("BeforeXserving:X"X+Xmodule.__name__)
+XXXXXXXXloop.create_task(module.__before_serving__(loop))
 
 
-async def start_webhooks(_):
-    url = os.getenv("WEBHOOK_URL") + f"/{TOKEN}"
-    await bot.set_webhook(url)
-    return await start(_)
+asyncXdefXstart(_):
+XXXXlog.debug("StartingXbeforeXservingXtaskXforXallXmodules...")
+XXXXloop.create_task(before_srv_task(loop))
+
+XXXXifXnotXget_bool_key("DEBUG_MODE"):
+XXXXXXXXlog.debug("WaitingX2Xseconds...")
+XXXXXXXXawaitXasyncio.sleep(2)
 
 
-log.info("Starting loop..")
-log.info("Aiogram: Using polling method")
+asyncXdefXstart_webhooks(_):
+XXXXurlX=Xos.getenv("WEBHOOK_URL")X+Xf"/{TOKEN}"
+XXXXawaitXbot.set_webhook(url)
+XXXXreturnXawaitXstart(_)
 
-if os.getenv("WEBHOOKS", False):
-    port = os.getenv("WEBHOOKS_PORT", 8080)
-    executor.start_webhook(dp, f"/{TOKEN}", on_startup=start_webhooks, port=port)
+
+log.info("StartingXloop..")
+log.info("Aiogram:XUsingXpollingXmethod")
+
+ifXos.getenv("WEBHOOKS",XFalse):
+XXXXportX=Xos.getenv("WEBHOOKS_PORT",X8080)
+XXXXexecutor.start_webhook(dp,Xf"/{TOKEN}",Xon_startup=start_webhooks,Xport=port)
 else:
-    executor.start_polling(
-        dp,
-        loop=loop,
-        on_startup=start,
-        timeout=15,
-        relax=0.1,
-        fast=True,
-        skip_updates=True,
-    )
+XXXXexecutor.start_polling(
+XXXXXXXXdp,
+XXXXXXXXloop=loop,
+XXXXXXXXon_startup=start,
+XXXXXXXXtimeout=15,
+XXXXXXXXrelax=0.1,
+XXXXXXXXfast=True,
+XXXXXXXXskip_updates=True,
+XXXX)

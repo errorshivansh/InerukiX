@@ -1,317 +1,317 @@
-# Copyright (C) 2018 - 2020 MrYacha. All rights reserved. Source code available under the AGPL.
-# Copyright (C) 2021 errorshivansh
-# Copyright (C) 2020 Inuka Asith
+#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
+#XCopyrightX(C)X2021Xerrorshivansh
+#XCopyrightX(C)X2020XInukaXAsith
 
-# This file is part of Ineruki (Telegram Bot)
+#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
+#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
+#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
+#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
+#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
+#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
+#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
 
 
-import re
-from contextlib import suppress
-from datetime import datetime
+importXre
+fromXcontextlibXimportXsuppress
+fromXdatetimeXimportXdatetime
 
-import wikipedia
+importXwikipedia
 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
-from aiogram.utils.exceptions import (
-    BadRequest,
-    MessageNotModified,
-    MessageToDeleteNotFound,
+#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
+#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+fromXaiogram.typesXimportXInlineKeyboardButton,XInlineKeyboardMarkup,XMessage
+fromXaiogram.utils.exceptionsXimportX(
+XXXXBadRequest,
+XXXXMessageNotModified,
+XXXXMessageToDeleteNotFound,
 )
 
-from Ineruki .decorator import register
+fromXInerukiX.decoratorXimportXregister
 
-from .utils.disable import disableable_dec
-from .utils.httpx import http
-from .utils.language import get_strings_dec
-from .utils.message import get_args_str
-from .utils.notes import get_parsed_note_list, send_note, t_unparse_note_item
-from .utils.user_details import is_user_admin
+fromX.utils.disableXimportXdisableable_dec
+fromX.utils.httpxXimportXhttp
+fromX.utils.languageXimportXget_strings_dec
+fromX.utils.messageXimportXget_args_str
+fromX.utils.notesXimportXget_parsed_note_list,Xsend_note,Xt_unparse_note_item
+fromX.utils.user_detailsXimportXis_user_admin
 
 
-@register(cmds="buttonshelp", no_args=True, only_pm=True)
-async def buttons_help(message):
-    await message.reply(
-        """
+@register(cmds="buttonshelp",Xno_args=True,Xonly_pm=True)
+asyncXdefXbuttons_help(message):
+XXXXawaitXmessage.reply(
+XXXXXXXX"""
 <b>Buttons:</b>
-Here you will know how to setup buttons in your note, welcome note, etc...
+HereXyouXwillXknowXhowXtoXsetupXbuttonsXinXyourXnote,XwelcomeXnote,Xetc...
 
-There are different types of buttons!
+ThereXareXdifferentXtypesXofXbuttons!
 
-<i>Due to current Implementation adding invalid button syntax to your note will raise error! This will be fixed in next major version.</i>
+<i>DueXtoXcurrentXImplementationXaddingXinvalidXbuttonXsyntaxXtoXyourXnoteXwillXraiseXerror!XThisXwillXbeXfixedXinXnextXmajorXversion.</i>
 
-<b>Did you know?</b>
-You could save buttons in same row using this syntax
-<code>[Button](btn{mode}:{args if any}:same)</code>
-(adding <code>:same</code> like that does the job.)
+<b>DidXyouXknow?</b>
+YouXcouldXsaveXbuttonsXinXsameXrowXusingXthisXsyntax
+<code>[Button](btn{mode}:{argsXifXany}:same)</code>
+(addingX<code>:same</code>XlikeXthatXdoesXtheXjob.)
 
-<b>Button Note:</b>
-<i>Don't confuse this title with notes with buttons</i> 😜
+<b>ButtonXNote:</b>
+<i>Don'tXconfuseXthisXtitleXwithXnotesXwithXbuttons</i>X😜
 
-This types of button will allow you to show specific notes to users when they click on buttons!
+ThisXtypesXofXbuttonXwillXallowXyouXtoXshowXspecificXnotesXtoXusersXwhenXtheyXclickXonXbuttons!
 
-You can save note with button note without any hassle by adding below line to your note ( Don't forget to replace <code>notename</code> according to you 😀)
+YouXcanXsaveXnoteXwithXbuttonXnoteXwithoutXanyXhassleXbyXaddingXbelowXlineXtoXyourXnoteX(XDon'tXforgetXtoXreplaceX<code>notename</code>XaccordingXtoXyouX😀)
 
-<code>[Button Name](btnnote:notename)</code>
+<code>[ButtonXName](btnnote:notename)</code>
 
-<b>URL Button:</b>
-Ah as you guessed! This method is used to add URL button to your note. With this you can redirect users to your website or even redirecting them to any channel, chat or messages!
+<b>URLXButton:</b>
+AhXasXyouXguessed!XThisXmethodXisXusedXtoXaddXURLXbuttonXtoXyourXnote.XWithXthisXyouXcanXredirectXusersXtoXyourXwebsiteXorXevenXredirectingXthemXtoXanyXchannel,XchatXorXmessages!
 
-You can add URL button by adding following syntax to your note
+YouXcanXaddXURLXbuttonXbyXaddingXfollowingXsyntaxXtoXyourXnote
 
-<code>[Button Name](btnurl:https://your.link.here)</code>
+<code>[ButtonXName](btnurl:https://your.link.here)</code>
 
-<b>Button rules:</b>
-Well in v2 we introduced some changes, rules are now saved seperately unlike saved as note before v2 so it require seperate button method!
+<b>ButtonXrules:</b>
+WellXinXv2XweXintroducedXsomeXchanges,XrulesXareXnowXsavedXseperatelyXunlikeXsavedXasXnoteXbeforeXv2XsoXitXrequireXseperateXbuttonXmethod!
 
-You can use this button method for including Rules button in your welcome messages, filters etc.. literally anywhere*
+YouXcanXuseXthisXbuttonXmethodXforXincludingXRulesXbuttonXinXyourXwelcomeXmessages,XfiltersXetc..XliterallyXanywhere*
 
-You use this button with adding following syntax to your message which support formatting!
-<code>[Button Name](btnrules)</code>
-    """
-    )
+YouXuseXthisXbuttonXwithXaddingXfollowingXsyntaxXtoXyourXmessageXwhichXsupportXformatting!
+<code>[ButtonXName](btnrules)</code>
+XXXX"""
+XXXX)
 
 
-@register(cmds="variableshelp", no_args=True, only_pm=True)
-async def buttons_help(message):
-    await message.reply(
-        """
+@register(cmds="variableshelp",Xno_args=True,Xonly_pm=True)
+asyncXdefXbuttons_help(message):
+XXXXawaitXmessage.reply(
+XXXXXXXX"""
 <b>Variables:</b>
-Variables are special words which will be replaced by actual info
+VariablesXareXspecialXwordsXwhichXwillXbeXreplacedXbyXactualXinfo
 
-<b>Avaible variables:</b>
-<code>{first}</code>: User's first name
-<code>{last}</code>: User's last name
-<code>{fullname}</code>: User's full name
-<code>{id}</code>: User's ID
-<code>{mention}</code>: Mention the user using first name
-<code>{username}</code>: Get the username, if user don't have username will be returned mention
-<code>{chatid}</code>: Chat's ID
-<code>{chatname}</code>: Chat name
-<code>{chatnick}</code>: Chat username
-    """
-    )
+<b>AvaibleXvariables:</b>
+<code>{first}</code>:XUser'sXfirstXname
+<code>{last}</code>:XUser'sXlastXname
+<code>{fullname}</code>:XUser'sXfullXname
+<code>{id}</code>:XUser'sXID
+<code>{mention}</code>:XMentionXtheXuserXusingXfirstXname
+<code>{username}</code>:XGetXtheXusername,XifXuserXdon'tXhaveXusernameXwillXbeXreturnedXmention
+<code>{chatid}</code>:XChat'sXID
+<code>{chatname}</code>:XChatXname
+<code>{chatnick}</code>:XChatXusername
+XXXX"""
+XXXX)
 
 
 @register(cmds="wiki")
 @disableable_dec("wiki")
-async def wiki(message):
-    args = get_args_str(message)
-    wikipedia.set_lang("en")
-    try:
-        pagewiki = wikipedia.page(args)
-    except wikipedia.exceptions.PageError as e:
-        await message.reply(f"No results found!\nError: <code>{e}</code>")
-        return
-    except wikipedia.exceptions.DisambiguationError as refer:
-        refer = str(refer).split("\n")
-        if len(refer) >= 6:
-            batas = 6
-        else:
-            batas = len(refer)
-        text = ""
-        for x in range(batas):
-            if x == 0:
-                text += refer[x] + "\n"
-            else:
-                text += "- `" + refer[x] + "`\n"
-        await message.reply(text)
-        return
-    except IndexError:
-        msg.reply_text("Write a message to search from wikipedia sources.")
-        return
-    title = pagewiki.title
-    summary = pagewiki.summary
-    button = InlineKeyboardMarkup().add(
-        InlineKeyboardButton("🔧 More Info...", url=wikipedia.page(args).url)
-    )
-    await message.reply(
-        ("The result of {} is:\n\n<b>{}</b>\n{}").format(args, title, summary),
-        reply_markup=button,
-    )
+asyncXdefXwiki(message):
+XXXXargsX=Xget_args_str(message)
+XXXXwikipedia.set_lang("en")
+XXXXtry:
+XXXXXXXXpagewikiX=Xwikipedia.page(args)
+XXXXexceptXwikipedia.exceptions.PageErrorXasXe:
+XXXXXXXXawaitXmessage.reply(f"NoXresultsXfound!\nError:X<code>{e}</code>")
+XXXXXXXXreturn
+XXXXexceptXwikipedia.exceptions.DisambiguationErrorXasXrefer:
+XXXXXXXXreferX=Xstr(refer).split("\n")
+XXXXXXXXifXlen(refer)X>=X6:
+XXXXXXXXXXXXbatasX=X6
+XXXXXXXXelse:
+XXXXXXXXXXXXbatasX=Xlen(refer)
+XXXXXXXXtextX=X""
+XXXXXXXXforXxXinXrange(batas):
+XXXXXXXXXXXXifXxX==X0:
+XXXXXXXXXXXXXXXXtextX+=Xrefer[x]X+X"\n"
+XXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXtextX+=X"-X`"X+Xrefer[x]X+X"`\n"
+XXXXXXXXawaitXmessage.reply(text)
+XXXXXXXXreturn
+XXXXexceptXIndexError:
+XXXXXXXXmsg.reply_text("WriteXaXmessageXtoXsearchXfromXwikipediaXsources.")
+XXXXXXXXreturn
+XXXXtitleX=Xpagewiki.title
+XXXXsummaryX=Xpagewiki.summary
+XXXXbuttonX=XInlineKeyboardMarkup().add(
+XXXXXXXXInlineKeyboardButton("🔧XMoreXInfo...",Xurl=wikipedia.page(args).url)
+XXXX)
+XXXXawaitXmessage.reply(
+XXXXXXXX("TheXresultXofX{}Xis:\n\n<b>{}</b>\n{}").format(args,Xtitle,Xsummary),
+XXXXXXXXreply_markup=button,
+XXXX)
 
 
 @register(cmds="github")
 @disableable_dec("github")
-async def github(message):
-    text = message.text[len("/github ") :]
-    response = await http.get(f"https://api.github.com/users/{text}")
-    usr = response.json()
+asyncXdefXgithub(message):
+XXXXtextX=Xmessage.text[len("/githubX")X:]
+XXXXresponseX=XawaitXhttp.get(f"https://api.github.com/users/{text}")
+XXXXusrX=Xresponse.json()
 
-    if usr.get("login"):
-        text = f"<b>Username:</b> <a href='https://github.com/{usr['login']}'>{usr['login']}</a>"
+XXXXifXusr.get("login"):
+XXXXXXXXtextX=Xf"<b>Username:</b>X<aXhref='https://github.com/{usr['login']}'>{usr['login']}</a>"
 
-        whitelist = [
-            "name",
-            "id",
-            "type",
-            "location",
-            "blog",
-            "bio",
-            "followers",
-            "following",
-            "hireable",
-            "public_gists",
-            "public_repos",
-            "email",
-            "company",
-            "updated_at",
-            "created_at",
-        ]
+XXXXXXXXwhitelistX=X[
+XXXXXXXXXXXX"name",
+XXXXXXXXXXXX"id",
+XXXXXXXXXXXX"type",
+XXXXXXXXXXXX"location",
+XXXXXXXXXXXX"blog",
+XXXXXXXXXXXX"bio",
+XXXXXXXXXXXX"followers",
+XXXXXXXXXXXX"following",
+XXXXXXXXXXXX"hireable",
+XXXXXXXXXXXX"public_gists",
+XXXXXXXXXXXX"public_repos",
+XXXXXXXXXXXX"email",
+XXXXXXXXXXXX"company",
+XXXXXXXXXXXX"updated_at",
+XXXXXXXXXXXX"created_at",
+XXXXXXXX]
 
-        difnames = {
-            "id": "Account ID",
-            "type": "Account type",
-            "created_at": "Account created at",
-            "updated_at": "Last updated",
-            "public_repos": "Public Repos",
-            "public_gists": "Public Gists",
-        }
+XXXXXXXXdifnamesX=X{
+XXXXXXXXXXXX"id":X"AccountXID",
+XXXXXXXXXXXX"type":X"AccountXtype",
+XXXXXXXXXXXX"created_at":X"AccountXcreatedXat",
+XXXXXXXXXXXX"updated_at":X"LastXupdated",
+XXXXXXXXXXXX"public_repos":X"PublicXRepos",
+XXXXXXXXXXXX"public_gists":X"PublicXGists",
+XXXXXXXX}
 
-        goaway = [None, 0, "null", ""]
+XXXXXXXXgoawayX=X[None,X0,X"null",X""]
 
-        for x, y in usr.items():
-            if x in whitelist:
-                x = difnames.get(x, x.title())
+XXXXXXXXforXx,XyXinXusr.items():
+XXXXXXXXXXXXifXxXinXwhitelist:
+XXXXXXXXXXXXXXXXxX=Xdifnames.get(x,Xx.title())
 
-                if x in ("Account created at", "Last updated"):
-                    y = datetime.strptime(y, "%Y-%m-%dT%H:%M:%SZ")
+XXXXXXXXXXXXXXXXifXxXinX("AccountXcreatedXat",X"LastXupdated"):
+XXXXXXXXXXXXXXXXXXXXyX=Xdatetime.strptime(y,X"%Y-%m-%dT%H:%M:%SZ")
 
-                if y not in goaway:
-                    if x == "Blog":
-                        x = "Website"
-                        y = f"<a href='{y}'>Here!</a>"
-                        text += "\n<b>{}:</b> {}".format(x, y)
-                    else:
-                        text += "\n<b>{}:</b> <code>{}</code>".format(x, y)
-        reply_text = text
-    else:
-        reply_text = "User not found. Make sure you entered valid username!"
-    await message.reply(reply_text, disable_web_page_preview=True)
+XXXXXXXXXXXXXXXXifXyXnotXinXgoaway:
+XXXXXXXXXXXXXXXXXXXXifXxX==X"Blog":
+XXXXXXXXXXXXXXXXXXXXXXXXxX=X"Website"
+XXXXXXXXXXXXXXXXXXXXXXXXyX=Xf"<aXhref='{y}'>Here!</a>"
+XXXXXXXXXXXXXXXXXXXXXXXXtextX+=X"\n<b>{}:</b>X{}".format(x,Xy)
+XXXXXXXXXXXXXXXXXXXXelse:
+XXXXXXXXXXXXXXXXXXXXXXXXtextX+=X"\n<b>{}:</b>X<code>{}</code>".format(x,Xy)
+XXXXXXXXreply_textX=Xtext
+XXXXelse:
+XXXXXXXXreply_textX=X"UserXnotXfound.XMakeXsureXyouXenteredXvalidXusername!"
+XXXXawaitXmessage.reply(reply_text,Xdisable_web_page_preview=True)
 
 
 @register(cmds="ip")
 @disableable_dec("ip")
-async def ip(message):
-    try:
-        ip = message.text.split(maxsplit=1)[1]
-    except IndexError:
-        await message.reply(f"Apparently you forgot something!")
-        return
+asyncXdefXip(message):
+XXXXtry:
+XXXXXXXXipX=Xmessage.text.split(maxsplit=1)[1]
+XXXXexceptXIndexError:
+XXXXXXXXawaitXmessage.reply(f"ApparentlyXyouXforgotXsomething!")
+XXXXXXXXreturn
 
-    response = await http.get(f"http://ip-api.com/json/{ip}")
-    if response.status_code == 200:
-        lookup_json = response.json()
-    else:
-        await message.reply(
-            f"An error occurred when looking for <b>{ip}</b>: <b>{response.status_code}</b>"
-        )
-        return
+XXXXresponseX=XawaitXhttp.get(f"http://ip-api.com/json/{ip}")
+XXXXifXresponse.status_codeX==X200:
+XXXXXXXXlookup_jsonX=Xresponse.json()
+XXXXelse:
+XXXXXXXXawaitXmessage.reply(
+XXXXXXXXXXXXf"AnXerrorXoccurredXwhenXlookingXforX<b>{ip}</b>:X<b>{response.status_code}</b>"
+XXXXXXXX)
+XXXXXXXXreturn
 
-    fixed_lookup = {}
+XXXXfixed_lookupX=X{}
 
-    for key, value in lookup_json.items():
-        special = {
-            "lat": "Latitude",
-            "lon": "Longitude",
-            "isp": "ISP",
-            "as": "AS",
-            "asname": "AS name",
-        }
-        if key in special:
-            fixed_lookup[special[key]] = str(value)
-            continue
+XXXXforXkey,XvalueXinXlookup_json.items():
+XXXXXXXXspecialX=X{
+XXXXXXXXXXXX"lat":X"Latitude",
+XXXXXXXXXXXX"lon":X"Longitude",
+XXXXXXXXXXXX"isp":X"ISP",
+XXXXXXXXXXXX"as":X"AS",
+XXXXXXXXXXXX"asname":X"ASXname",
+XXXXXXXX}
+XXXXXXXXifXkeyXinXspecial:
+XXXXXXXXXXXXfixed_lookup[special[key]]X=Xstr(value)
+XXXXXXXXXXXXcontinue
 
-        key = re.sub(r"([a-z])([A-Z])", r"\g<1> \g<2>", key)
-        key = key.capitalize()
+XXXXXXXXkeyX=Xre.sub(r"([a-z])([A-Z])",Xr"\g<1>X\g<2>",Xkey)
+XXXXXXXXkeyX=Xkey.capitalize()
 
-        if not value:
-            value = "None"
+XXXXXXXXifXnotXvalue:
+XXXXXXXXXXXXvalueX=X"None"
 
-        fixed_lookup[key] = str(value)
+XXXXXXXXfixed_lookup[key]X=Xstr(value)
 
-    text = ""
+XXXXtextX=X""
 
-    for key, value in fixed_lookup.items():
-        text = text + f"<b>{key}:</b> <code>{value}</code>\n"
+XXXXforXkey,XvalueXinXfixed_lookup.items():
+XXXXXXXXtextX=XtextX+Xf"<b>{key}:</b>X<code>{value}</code>\n"
 
-    await message.reply(text)
-
-
-@register(cmds="cancel", state="*", allow_kwargs=True)
-async def cancel_handle(message, state, **kwargs):
-    await state.finish()
-    await message.reply("Cancelled.")
+XXXXawaitXmessage.reply(text)
 
 
-async def delmsg_filter_handle(message, chat, data):
-    if await is_user_admin(data["chat_id"], message.from_user.id):
-        return
-    with suppress(MessageToDeleteNotFound):
-        await message.delete()
+@register(cmds="cancel",Xstate="*",Xallow_kwargs=True)
+asyncXdefXcancel_handle(message,Xstate,X**kwargs):
+XXXXawaitXstate.finish()
+XXXXawaitXmessage.reply("Cancelled.")
 
 
-async def replymsg_filter_handler(message, chat, data):
-    text, kwargs = await t_unparse_note_item(
-        message, data["reply_text"], chat["chat_id"]
-    )
-    kwargs["reply_to"] = message.message_id
-    with suppress(BadRequest):
-        await send_note(chat["chat_id"], text, **kwargs)
+asyncXdefXdelmsg_filter_handle(message,Xchat,Xdata):
+XXXXifXawaitXis_user_admin(data["chat_id"],Xmessage.from_user.id):
+XXXXXXXXreturn
+XXXXwithXsuppress(MessageToDeleteNotFound):
+XXXXXXXXawaitXmessage.delete()
 
 
-@get_strings_dec("misc")
-async def replymsg_setup_start(message, strings):
-    with suppress(MessageNotModified):
-        await message.edit_text(strings["send_text"])
-
-
-async def replymsg_setup_finish(message, data):
-    reply_text = await get_parsed_note_list(
-        message, allow_reply_message=False, split_args=-1
-    )
-    return {"reply_text": reply_text}
+asyncXdefXreplymsg_filter_handler(message,Xchat,Xdata):
+XXXXtext,XkwargsX=XawaitXt_unparse_note_item(
+XXXXXXXXmessage,Xdata["reply_text"],Xchat["chat_id"]
+XXXX)
+XXXXkwargs["reply_to"]X=Xmessage.message_id
+XXXXwithXsuppress(BadRequest):
+XXXXXXXXawaitXsend_note(chat["chat_id"],Xtext,X**kwargs)
 
 
 @get_strings_dec("misc")
-async def customise_reason_start(message: Message, strings: dict):
-    await message.reply(strings["send_customised_reason"])
+asyncXdefXreplymsg_setup_start(message,Xstrings):
+XXXXwithXsuppress(MessageNotModified):
+XXXXXXXXawaitXmessage.edit_text(strings["send_text"])
+
+
+asyncXdefXreplymsg_setup_finish(message,Xdata):
+XXXXreply_textX=XawaitXget_parsed_note_list(
+XXXXXXXXmessage,Xallow_reply_message=False,Xsplit_args=-1
+XXXX)
+XXXXreturnX{"reply_text":Xreply_text}
 
 
 @get_strings_dec("misc")
-async def customise_reason_finish(message: Message, _: dict, strings: dict):
-    if message.text is None:
-        await message.reply(strings["expected_text"])
-        return False
-    elif message.text in {"None"}:
-        return {"reason": None}
-    return {"reason": message.text}
+asyncXdefXcustomise_reason_start(message:XMessage,Xstrings:Xdict):
+XXXXawaitXmessage.reply(strings["send_customised_reason"])
 
 
-__filters__ = {
-    "delete_message": {
-        "title": {"module": "misc", "string": "delmsg_filter_title"},
-        "handle": delmsg_filter_handle,
-        "del_btn_name": lambda msg, data: f"Del message: {data['handler']}",
-    },
-    "reply_message": {
-        "title": {"module": "misc", "string": "replymsg_filter_title"},
-        "handle": replymsg_filter_handler,
-        "setup": {"start": replymsg_setup_start, "finish": replymsg_setup_finish},
-        "del_btn_name": lambda msg, data: f"Reply to {data['handler']}: \"{data['reply_text'].get('text', 'None')}\" ",
-    },
+@get_strings_dec("misc")
+asyncXdefXcustomise_reason_finish(message:XMessage,X_:Xdict,Xstrings:Xdict):
+XXXXifXmessage.textXisXNone:
+XXXXXXXXawaitXmessage.reply(strings["expected_text"])
+XXXXXXXXreturnXFalse
+XXXXelifXmessage.textXinX{"None"}:
+XXXXXXXXreturnX{"reason":XNone}
+XXXXreturnX{"reason":Xmessage.text}
+
+
+__filters__X=X{
+XXXX"delete_message":X{
+XXXXXXXX"title":X{"module":X"misc",X"string":X"delmsg_filter_title"},
+XXXXXXXX"handle":Xdelmsg_filter_handle,
+XXXXXXXX"del_btn_name":XlambdaXmsg,Xdata:Xf"DelXmessage:X{data['handler']}",
+XXXX},
+XXXX"reply_message":X{
+XXXXXXXX"title":X{"module":X"misc",X"string":X"replymsg_filter_title"},
+XXXXXXXX"handle":Xreplymsg_filter_handler,
+XXXXXXXX"setup":X{"start":Xreplymsg_setup_start,X"finish":Xreplymsg_setup_finish},
+XXXXXXXX"del_btn_name":XlambdaXmsg,Xdata:Xf"ReplyXtoX{data['handler']}:X\"{data['reply_text'].get('text',X'None')}\"X",
+XXXX},
 }
