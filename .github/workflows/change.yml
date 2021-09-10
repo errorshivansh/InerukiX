@@ -21,9 +21,9 @@ jobs:
 
         with:
 
-          find: "X"
+          find: " "
 
-          replace: " "
+          replace: "X"
 
       - name: Create Pull Request
 
