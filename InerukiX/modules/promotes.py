@@ -1,102 +1,102 @@
-#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
-#XCopyrightX(C)X2021Xerrorshivansh
-#XCopyrightX(C)X2020XInukaXAsith
+#Copyright(C)2018-2020MrYacha.Allrightsreserved.SourcecodeavailableundertheAGPL.
+#Copyright(C)2021errorshivansh
+#Copyright(C)2020InukaAsith
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXhtml
+importhtml
 
-fromXaiogram.utils.exceptionsXimportXChatAdminRequired
-fromXtelethon.errorsXimportXAdminRankEmojiNotAllowedError
+fromaiogram.utils.exceptionsimportChatAdminRequired
+fromtelethon.errorsimportAdminRankEmojiNotAllowedError
 
-fromXInerukiXXimportXBOT_ID,Xbot
-fromXInerukiX.decoratorXimportXregister
-fromXInerukiX.services.telethonXimportXtbot
+fromInerukiimportBOT_ID,bot
+fromIneruki.decoratorimportregister
+fromIneruki.services.telethonimporttbot
 
-fromX.utils.connectionsXimportXchat_connection
-fromX.utils.languageXimportXget_strings_dec
-fromX.utils.user_detailsXimportX(
-XXXXget_admins_rights,
-XXXXget_user_and_text_dec,
-XXXXget_user_dec,
-XXXXget_user_link,
+from.utils.connectionsimportchat_connection
+from.utils.languageimportget_strings_dec
+from.utils.user_detailsimport(
+get_admins_rights,
+get_user_and_text_dec,
+get_user_dec,
+get_user_link,
 )
 
 
-@register(cmds="promote",Xbot_can_promote_members=True,Xuser_can_promote_members=True)
-@chat_connection(admin=True,Xonly_groups=True)
+@register(cmds="promote",bot_can_promote_members=True,user_can_promote_members=True)
+@chat_connection(admin=True,only_groups=True)
 @get_user_and_text_dec()
 @get_strings_dec("promotes")
-asyncXdefXpromote(message,Xchat,Xuser,Xargs,Xstrings):
-XXXXchat_idX=Xchat["chat_id"]
-XXXXtextX=Xstrings["promote_success"].format(
-XXXXXXXXuser=awaitXget_user_link(user["user_id"]),Xchat_name=chat["chat_title"]
-XXXX)
+asyncdefpromote(message,chat,user,args,strings):
+chat_id=chat["chat_id"]
+text=strings["promote_success"].format(
+user=awaitget_user_link(user["user_id"]),chat_name=chat["chat_title"]
+)
 
-XXXXifXuser["user_id"]X==XBOT_ID:
-XXXXXXXXreturn
+ifuser["user_id"]==BOT_ID:
+return
 
-XXXXifXuser["user_id"]X==Xmessage.from_user.id:
-XXXXXXXXreturnXawaitXmessage.reply(strings["cant_promote_yourself"])
+ifuser["user_id"]==message.from_user.id:
+returnawaitmessage.reply(strings["cant_promote_yourself"])
 
-XXXXtitleX=XNone
+title=None
 
-XXXXifXargs:
-XXXXXXXXifXlen(args)X>X16:
-XXXXXXXXXXXXawaitXmessage.reply(strings["rank_to_loong"])
-XXXXXXXXXXXXreturn
-XXXXXXXXtitleX=Xargs
-XXXXXXXXtextX+=Xstrings["promote_title"].format(role=html.escape(title,Xquote=False))
+ifargs:
+iflen(args)>16:
+awaitmessage.reply(strings["rank_to_loong"])
+return
+title=args
+text+=strings["promote_title"].format(role=html.escape(title,quote=False))
 
-XXXXtry:
-XXXXXXXXawaitXtbot.edit_admin(
-XXXXXXXXXXXXchat_id,
-XXXXXXXXXXXXuser["user_id"],
-XXXXXXXXXXXXinvite_users=True,
-XXXXXXXXXXXXchange_info=True,
-XXXXXXXXXXXXban_users=True,
-XXXXXXXXXXXXdelete_messages=True,
-XXXXXXXXXXXXpin_messages=True,
-XXXXXXXXXXXXtitle=title,
-XXXXXXXX)
-XXXXexceptXValueError:
-XXXXXXXXreturnXawaitXmessage.reply(strings["cant_get_user"])
-XXXXexceptXAdminRankEmojiNotAllowedError:
-XXXXXXXXreturnXawaitXmessage.reply(strings["emoji_not_allowed"])
-XXXXawaitXget_admins_rights(chat_id,Xforce_update=True)XX#XResetXaXcache
-XXXXawaitXmessage.reply(text)
+try:
+awaittbot.edit_admin(
+chat_id,
+user["user_id"],
+invite_users=True,
+change_info=True,
+ban_users=True,
+delete_messages=True,
+pin_messages=True,
+title=title,
+)
+exceptValueError:
+returnawaitmessage.reply(strings["cant_get_user"])
+exceptAdminRankEmojiNotAllowedError:
+returnawaitmessage.reply(strings["emoji_not_allowed"])
+awaitget_admins_rights(chat_id,force_update=True)#Resetacache
+awaitmessage.reply(text)
 
 
-@register(cmds="demote",Xbot_can_promote_members=True,Xuser_can_promote_members=True)
-@chat_connection(admin=True,Xonly_groups=True)
+@register(cmds="demote",bot_can_promote_members=True,user_can_promote_members=True)
+@chat_connection(admin=True,only_groups=True)
 @get_user_dec()
 @get_strings_dec("promotes")
-asyncXdefXdemote(message,Xchat,Xuser,Xstrings):
-XXXXchat_idX=Xchat["chat_id"]
-XXXXifXuser["user_id"]X==XBOT_ID:
-XXXXXXXXreturn
+asyncdefdemote(message,chat,user,strings):
+chat_id=chat["chat_id"]
+ifuser["user_id"]==BOT_ID:
+return
 
-XXXXtry:
-XXXXXXXXawaitXbot.promote_chat_member(chat_id,Xuser["user_id"])
-XXXXexceptXChatAdminRequired:
-XXXXXXXXreturnXawaitXmessage.reply(strings["demote_failed"])
+try:
+awaitbot.promote_chat_member(chat_id,user["user_id"])
+exceptChatAdminRequired:
+returnawaitmessage.reply(strings["demote_failed"])
 
-XXXXawaitXget_admins_rights(chat_id,Xforce_update=True)XX#XResetXaXcache
-XXXXawaitXmessage.reply(
-XXXXXXXXstrings["demote_success"].format(
-XXXXXXXXXXXXuser=awaitXget_user_link(user["user_id"]),Xchat_name=chat["chat_title"]
-XXXXXXXX)
-XXXX)
+awaitget_admins_rights(chat_id,force_update=True)#Resetacache
+awaitmessage.reply(
+strings["demote_success"].format(
+user=awaitget_user_link(user["user_id"]),chat_name=chat["chat_title"]
+)
+)

@@ -1,89 +1,89 @@
-#XReconfiguredXwithXAioGramXbyXInerukiDevTeam
-#XTimerXaddedXbyXMissJuliaRobot
-importXthreading
-importXtime
+#ReconfiguredwithAioGrambyInerukiDevTeam
+#TimeraddedbyMissJuliaRobot
+importthreading
+importtime
 
-fromXsqlalchemyXimportXBoolean,XColumn,XInteger,XString,XUnicodeText
+fromsqlalchemyimportBoolean,Column,Integer,String,UnicodeText
 
-fromXInerukiX.services.sqlXimportXBASE,XSESSION
+fromIneruki.services.sqlimportBASE,SESSION
 
 
-classXAFK(BASE):
-XXXX__tablename__X=X"afk_usrs"
+classAFK(BASE):
+__tablename__="afk_usrs"
 
-XXXXuser_idX=XColumn(Integer,Xprimary_key=True)
-XXXXis_afkX=XColumn(Boolean)
-XXXXreasonX=XColumn(UnicodeText)
-XXXXstart_timeX=XColumn(String)
+user_id=Column(Integer,primary_key=True)
+is_afk=Column(Boolean)
+reason=Column(UnicodeText)
+start_time=Column(String)
 
-XXXXdefX__init__(self,Xuser_id,Xreason="",Xis_afk=True,Xstart_time=""):
-XXXXXXXXself.user_idX=Xuser_id
-XXXXXXXXself.reasonX=Xreason
-XXXXXXXXself.is_afkX=Xis_afk
-XXXXXXXXself.start_timeX=Xstart_time
+def__init__(self,user_id,reason="",is_afk=True,start_time=""):
+self.user_id=user_id
+self.reason=reason
+self.is_afk=is_afk
+self.start_time=start_time
 
-XXXXdefX__repr__(self):
-XXXXXXXXreturnX"afk_statusXforX{}".format(self.user_id)
+def__repr__(self):
+return"afk_statusfor{}".format(self.user_id)
 
 
 AFK.__table__.create(checkfirst=True)
-INSERTION_LOCKX=Xthreading.RLock()
+INSERTION_LOCK=threading.RLock()
 
-AFK_USERSX=X{}
-AFK_USERSSX=X{}
-
-
-defXis_afk(user_id):
-XXXXreturnXuser_idXinXAFK_USERS
-XXXXreturnXuser_idXinXAFK_USERSS
+AFK_USERS={}
+AFK_USERSS={}
 
 
-defXcheck_afk_status(user_id):
-XXXXtry:
-XXXXXXXXreturnXSESSION.query(AFK).get(user_id)
-XXXXfinally:
-XXXXXXXXSESSION.close()
+defis_afk(user_id):
+returnuser_idinAFK_USERS
+returnuser_idinAFK_USERSS
 
 
-defXset_afk(user_id,Xreason,Xstart_time=""):
-XXXXwithXINSERTION_LOCK:
-XXXXXXXXcurrX=XSESSION.query(AFK).get(user_id)
-XXXXXXXXifXnotXcurr:
-XXXXXXXXXXXXcurrX=XAFK(user_id,Xreason,XTrue,Xstart_time)
-XXXXXXXXelse:
-XXXXXXXXXXXXcurr.is_afkX=XTrue
-XXXXXXXXXXXXcurr.reasonX=Xreason
-XXXXXXXXXXXXcurr.start_timeX=Xtime.time()
-XXXXXXXXAFK_USERS[user_id]X=Xreason
-XXXXXXXXAFK_USERSS[user_id]X=Xstart_time
-XXXXXXXXSESSION.add(curr)
-XXXXXXXXSESSION.commit()
+defcheck_afk_status(user_id):
+try:
+returnSESSION.query(AFK).get(user_id)
+finally:
+SESSION.close()
 
 
-defXrm_afk(user_id):
-XXXXwithXINSERTION_LOCK:
-XXXXXXXXcurrX=XSESSION.query(AFK).get(user_id)
-XXXXXXXXifXcurr:
-XXXXXXXXXXXXifXuser_idXinXAFK_USERS:XX#XsanityXcheck
-XXXXXXXXXXXXXXXXdelXAFK_USERS[user_id]
-XXXXXXXXXXXXXXXXdelXAFK_USERSS[user_id]
-XXXXXXXXXXXXSESSION.delete(curr)
-XXXXXXXXXXXXSESSION.commit()
-XXXXXXXXXXXXreturnXTrue
+defset_afk(user_id,reason,start_time=""):
+withINSERTION_LOCK:
+curr=SESSION.query(AFK).get(user_id)
+ifnotcurr:
+curr=AFK(user_id,reason,True,start_time)
+else:
+curr.is_afk=True
+curr.reason=reason
+curr.start_time=time.time()
+AFK_USERS[user_id]=reason
+AFK_USERSS[user_id]=start_time
+SESSION.add(curr)
+SESSION.commit()
 
-XXXXXXXXSESSION.close()
-XXXXXXXXreturnXFalse
+
+defrm_afk(user_id):
+withINSERTION_LOCK:
+curr=SESSION.query(AFK).get(user_id)
+ifcurr:
+ifuser_idinAFK_USERS:#sanitycheck
+delAFK_USERS[user_id]
+delAFK_USERSS[user_id]
+SESSION.delete(curr)
+SESSION.commit()
+returnTrue
+
+SESSION.close()
+returnFalse
 
 
-defX__load_afk_users():
-XXXXglobalXAFK_USERS
-XXXXglobalXAFK_USERSS
-XXXXtry:
-XXXXXXXXall_afkX=XSESSION.query(AFK).all()
-XXXXXXXXAFK_USERSX=X{user.user_id:Xuser.reasonXforXuserXinXall_afkXifXuser.is_afk}
-XXXXXXXXAFK_USERSSX=X{user.user_id:Xuser.start_timeXforXuserXinXall_afkXifXuser.is_afk}
-XXXXfinally:
-XXXXXXXXSESSION.close()
+def__load_afk_users():
+globalAFK_USERS
+globalAFK_USERSS
+try:
+all_afk=SESSION.query(AFK).all()
+AFK_USERS={user.user_id:user.reasonforuserinall_afkifuser.is_afk}
+AFK_USERSS={user.user_id:user.start_timeforuserinall_afkifuser.is_afk}
+finally:
+SESSION.close()
 
 
 __load_afk_users()

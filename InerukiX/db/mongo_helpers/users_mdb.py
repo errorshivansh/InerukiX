@@ -1,37 +1,37 @@
-importXpymongo
+importpymongo
 
-fromXInerukiX.configXimportXget_str_key
+fromIneruki.configimportget_str_key
 
-MONGO2X=Xget_str_key("FILTERS_MONGO",XNone)
-MONGOX=Xget_str_key("MONGO_URI",Xrequired=True)
-ifXMONGO2X==XNone:
-XXXXMONGO2X=XMONGO
-myclientX=Xpymongo.MongoClient(MONGO2)
-mydbX=Xmyclient["Ineruki"]
-mycolX=Xmydb["USERS"]
-
-
-asyncXdefXadd_user(id,Xusername,Xname,Xdcid):
-XXXXdataX=X{"_id":Xid,X"username":Xusername,X"name":Xname,X"dc_id":Xdcid}
-XXXXtry:
-XXXXXXXXmycol.update_one({"_id":Xid},X{"$set":Xdata},Xupsert=True)
-XXXXexcept:
-XXXXXXXXpass
+MONGO2=get_str_key("FILTERS_MONGO",None)
+MONGO=get_str_key("MONGO_URI",required=True)
+ifMONGO2==None:
+MONGO2=MONGO
+myclient=pymongo.MongoClient(MONGO2)
+mydb=myclient["Ineruki"]
+mycol=mydb["USERS"]
 
 
-asyncXdefXall_users():
-XXXXcountX=Xmycol.count()
-XXXXreturnXcount
+asyncdefadd_user(id,username,name,dcid):
+data={"_id":id,"username":username,"name":name,"dc_id":dcid}
+try:
+mycol.update_one({"_id":id},{"$set":data},upsert=True)
+except:
+pass
 
 
-asyncXdefXfind_user(id):
-XXXXqueryX=Xmycol.find({"_id":Xid})
+asyncdefall_users():
+count=mycol.count()
+returncount
 
-XXXXtry:
-XXXXXXXXforXfileXinXquery:
-XXXXXXXXXXXXnameX=Xfile["name"]
-XXXXXXXXXXXXusernameX=Xfile["username"]
-XXXXXXXXXXXXdc_idX=Xfile["dc_id"]
-XXXXXXXXreturnXname,Xusername,Xdc_id
-XXXXexcept:
-XXXXXXXXreturnXNone,XNone,XNone
+
+asyncdeffind_user(id):
+query=mycol.find({"_id":id})
+
+try:
+forfileinquery:
+name=file["name"]
+username=file["username"]
+dc_id=file["dc_id"]
+returnname,username,dc_id
+except:
+returnNone,None,None

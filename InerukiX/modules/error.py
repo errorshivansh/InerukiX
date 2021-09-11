@@ -1,155 +1,155 @@
-#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
-#XCopyrightX(C)X2021Xerrorshivansh
-#XCopyrightX(C)X2020XInukaXAsith
+#Copyright(C)2018-2020MrYacha.Allrightsreserved.SourcecodeavailableundertheAGPL.
+#Copyright(C)2021errorshivansh
+#Copyright(C)2020InukaAsith
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXhtml
-importXsys
+importhtml
+importsys
 
-fromXaiogram.typesXimportXUpdate
-fromXredis.exceptionsXimportXRedisError
+fromaiogram.typesimportUpdate
+fromredis.exceptionsimportRedisError
 
-fromXInerukiXXimportXOWNER_ID,Xbot,Xdp
-fromXInerukiX.services.redisXimportXredis
-fromXInerukiX.utils.loggerXimportXlog
+fromInerukiimportOWNER_ID,bot,dp
+fromIneruki.services.redisimportredis
+fromIneruki.utils.loggerimportlog
 
-SENTX=X[]
+SENT=[]
 
 
-defXcatch_redis_error(**dec_kwargs):
-XXXXdefXwrapped(func):
-XXXXXXXXasyncXdefXwrapped_1(*args,X**kwargs):
-XXXXXXXXXXXXglobalXSENT
-XXXXXXXXXXXX#XWeXcan'tXuseXredisXhere
-XXXXXXXXXXXX#XSoXweXsaveXdataX-X'messageXsentXto'XinXaXlistXvariable
-XXXXXXXXXXXXupdate:XUpdateX=Xargs[0]
+defcatch_redis_error(**dec_kwargs):
+defwrapped(func):
+asyncdefwrapped_1(*args,**kwargs):
+globalSENT
+#Wecan'tuseredishere
+#Sowesavedata-'messagesentto'inalistvariable
+update:Update=args[0]
 
-XXXXXXXXXXXXifXupdate.messageXisXnotXNone:
-XXXXXXXXXXXXXXXXmessageX=Xupdate.message
-XXXXXXXXXXXXelifXupdate.callback_queryXisXnotXNone:
-XXXXXXXXXXXXXXXXmessageX=Xupdate.callback_query.message
-XXXXXXXXXXXXelifXupdate.edited_messageXisXnotXNone:
-XXXXXXXXXXXXXXXXmessageX=Xupdate.edited_message
-XXXXXXXXXXXXelse:
-XXXXXXXXXXXXXXXXreturnXTrue
+ifupdate.messageisnotNone:
+message=update.message
+elifupdate.callback_queryisnotNone:
+message=update.callback_query.message
+elifupdate.edited_messageisnotNone:
+message=update.edited_message
+else:
+returnTrue
 
-XXXXXXXXXXXXchat_idX=Xmessage.chat.idXifX"chat"XinXmessageXelseXNone
-XXXXXXXXXXXXtry:
-XXXXXXXXXXXXXXXXreturnXawaitXfunc(*args,X**kwargs)
-XXXXXXXXXXXXexceptXRedisError:
-XXXXXXXXXXXXXXXXifXchat_idXnotXinXSENT:
-XXXXXXXXXXXXXXXXXXXXtextX=X(
-XXXXXXXXXXXXXXXXXXXXXXXX"SorryXforXinconvenience!XIXencounteredXerrorXinXmyXredisXDB,XwhichXisXnecessaryXforXX"
-XXXXXXXXXXXXXXXXXXXXXXXX"runningXbotX\n\nPleaseXreportXthisXtoXmyXsupportXgroupXimmediatelyXwhenXyouXseeXthisXerror!"
-XXXXXXXXXXXXXXXXXXXX)
-XXXXXXXXXXXXXXXXXXXXifXawaitXbot.send_message(chat_id,Xtext):
-XXXXXXXXXXXXXXXXXXXXXXXXSENT.append(chat_id)
-XXXXXXXXXXXXXXXX#XAlertXbotXowner
-XXXXXXXXXXXXXXXXifXOWNER_IDXnotXinXSENT:
-XXXXXXXXXXXXXXXXXXXXtextX=X"TexasXpanic:XGotXredisXerror"
-XXXXXXXXXXXXXXXXXXXXifXawaitXbot.send_message(OWNER_ID,Xtext):
-XXXXXXXXXXXXXXXXXXXXXXXXSENT.append(OWNER_ID)
-XXXXXXXXXXXXXXXXlog.error(RedisError,Xexc_info=True)
-XXXXXXXXXXXXXXXXreturnXTrue
+chat_id=message.chat.idif"chat"inmessageelseNone
+try:
+returnawaitfunc(*args,**kwargs)
+exceptRedisError:
+ifchat_idnotinSENT:
+text=(
+"Sorryforinconvenience!IencounterederrorinmyredisDB,whichisnecessaryfor"
+"runningbot\n\nPleasereportthistomysupportgroupimmediatelywhenyouseethiserror!"
+)
+ifawaitbot.send_message(chat_id,text):
+SENT.append(chat_id)
+#Alertbotowner
+ifOWNER_IDnotinSENT:
+text="Texaspanic:Gotrediserror"
+ifawaitbot.send_message(OWNER_ID,text):
+SENT.append(OWNER_ID)
+log.error(RedisError,exc_info=True)
+returnTrue
 
-XXXXXXXXreturnXwrapped_1
+returnwrapped_1
 
-XXXXreturnXwrapped
+returnwrapped
 
 
 @dp.errors_handler()
 @catch_redis_error()
-asyncXdefXall_errors_handler(update:XUpdate,Xerror):
-XXXXifXupdate.messageXisXnotXNone:
-XXXXXXXXmessageX=Xupdate.message
-XXXXelifXupdate.callback_queryXisXnotXNone:
-XXXXXXXXmessageX=Xupdate.callback_query.message
-XXXXelifXupdate.edited_messageXisXnotXNone:
-XXXXXXXXmessageX=Xupdate.edited_message
-XXXXelse:
-XXXXXXXXreturnXTrueXX#XweXdon'tXwantXotherXguysXinXplayground
+asyncdefall_errors_handler(update:Update,error):
+ifupdate.messageisnotNone:
+message=update.message
+elifupdate.callback_queryisnotNone:
+message=update.callback_query.message
+elifupdate.edited_messageisnotNone:
+message=update.edited_message
+else:
+returnTrue#wedon'twantotherguysinplayground
 
-XXXXchat_idX=Xmessage.chat.id
-XXXXerr_tltX=Xsys.exc_info()[0].__name__
-XXXXerr_msgX=Xstr(sys.exc_info()[1])
+chat_id=message.chat.id
+err_tlt=sys.exc_info()[0].__name__
+err_msg=str(sys.exc_info()[1])
 
-XXXXlog.warn(
-XXXXXXXX"ErrorXcausedXupdateXis:X\n"
-XXXXXXXX+Xhtml.escape(str(parse_update(message)),Xquote=False)
-XXXX)
+log.warn(
+"Errorcausedupdateis:\n"
++html.escape(str(parse_update(message)),quote=False)
+)
 
-XXXXifXredis.get(chat_id)X==Xstr(error):
-XXXXXXXX#XbyXerr_tltXweXassumeXthatXitXisXsameXerror
-XXXXXXXXreturnXTrue
+ifredis.get(chat_id)==str(error):
+#byerr_tltweassumethatitissameerror
+returnTrue
 
-XXXXifXerr_tltX==X"BadRequest"XandXerr_msgX==X"HaveXnoXrightsXtoXsendXaXmessage":
-XXXXXXXXreturnXTrue
+iferr_tlt=="BadRequest"anderr_msg=="Havenorightstosendamessage":
+returnTrue
 
-XXXXignored_errorsX=X(
-XXXXXXXX"FloodWaitError",
-XXXXXXXX"RetryAfter",
-XXXXXXXX"SlowModeWaitError",
-XXXXXXXX"InvalidQueryID",
-XXXX)
-XXXXifXerr_tltXinXignored_errors:
-XXXXXXXXreturnXTrue
+ignored_errors=(
+"FloodWaitError",
+"RetryAfter",
+"SlowModeWaitError",
+"InvalidQueryID",
+)
+iferr_tltinignored_errors:
+returnTrue
 
-XXXXifXerr_tltXinX("NetworkError",X"TelegramAPIError",X"RestartingTelegram"):
-XXXXXXXXlog.error("Conn/APIXerrorXdetected",Xexc_info=error)
-XXXXXXXXreturnXTrue
+iferr_tltin("NetworkError","TelegramAPIError","RestartingTelegram"):
+log.error("Conn/APIerrordetected",exc_info=error)
+returnTrue
 
-XXXXtextX=X"<b>Sorry,XIXencounteredXaXerror!</b>\n"
-XXXXtextX+=Xf"<code>{html.escape(err_tlt,Xquote=False)}:X{html.escape(err_msg,Xquote=False)}</code>"
-XXXXredis.set(chat_id,Xstr(error),Xex=600)
-XXXXawaitXbot.send_message(chat_id,Xtext)
+text="<b>Sorry,Iencounteredaerror!</b>\n"
+text+=f"<code>{html.escape(err_tlt,quote=False)}:{html.escape(err_msg,quote=False)}</code>"
+redis.set(chat_id,str(error),ex=600)
+awaitbot.send_message(chat_id,text)
 
 
-defXparse_update(update):
-XXXX#XTheXparserXtoXhideXsensitiveXinformationsXinXtheXupdateX(forXlogging)
+defparse_update(update):
+#Theparsertohidesensitiveinformationsintheupdate(forlogging)
 
-XXXXifXisinstance(update,XUpdate):XX#XHacc
-XXXXXXXXifXupdate.messageXisXnotXNone:
-XXXXXXXXXXXXupdateX=Xupdate.message
-XXXXXXXXelifXupdate.callback_queryXisXnotXNone:
-XXXXXXXXXXXXupdateX=Xupdate.callback_query.message
-XXXXXXXXelifXupdate.edited_messageXisXnotXNone:
-XXXXXXXXXXXXupdateX=Xupdate.edited_message
-XXXXXXXXelse:
-XXXXXXXXXXXXreturn
+ifisinstance(update,Update):#Hacc
+ifupdate.messageisnotNone:
+update=update.message
+elifupdate.callback_queryisnotNone:
+update=update.callback_query.message
+elifupdate.edited_messageisnotNone:
+update=update.edited_message
+else:
+return
 
-XXXXifX"chat"XinXupdate:
-XXXXXXXXchatX=Xupdate["chat"]
-XXXXXXXXchat["id"]X=Xchat["title"]X=Xchat["username"]X=Xchat["first_name"]X=Xchat[
-XXXXXXXXXXXX"last_name"
-XXXXXXXX]X=X[]
-XXXXifXuserX:=Xupdate["from"]:
-XXXXXXXXuser["id"]X=Xuser["first_name"]X=Xuser["last_name"]X=Xuser["username"]X=X[]
-XXXXifX"reply_to_message"XinXupdate:
-XXXXXXXXreply_msgX=Xupdate["reply_to_message"]
-XXXXXXXXreply_msg["chat"]["id"]X=Xreply_msg["chat"]["title"]X=Xreply_msg["chat"][
-XXXXXXXXXXXX"first_name"
-XXXXXXXX]X=Xreply_msg["chat"]["last_name"]X=Xreply_msg["chat"]["username"]X=X[]
-XXXXXXXXreply_msg["from"]["id"]X=Xreply_msg["from"]["first_name"]X=Xreply_msg["from"][
-XXXXXXXXXXXX"last_name"
-XXXXXXXX]X=Xreply_msg["from"]["username"]X=X[]
-XXXXXXXXreply_msg["message_id"]X=X[]
-XXXXXXXXreply_msg["new_chat_members"]X=Xreply_msg["left_chat_member"]X=X[]
-XXXXifX("new_chat_members",X"left_chat_member")XinXupdate:
-XXXXXXXXupdate["new_chat_members"]X=Xupdate["left_chat_member"]X=X[]
-XXXXifX"message_id"XinXupdate:
-XXXXXXXXupdate["message_id"]X=X[]
-XXXXreturnXupdate
+if"chat"inupdate:
+chat=update["chat"]
+chat["id"]=chat["title"]=chat["username"]=chat["first_name"]=chat[
+"last_name"
+]=[]
+ifuser:=update["from"]:
+user["id"]=user["first_name"]=user["last_name"]=user["username"]=[]
+if"reply_to_message"inupdate:
+reply_msg=update["reply_to_message"]
+reply_msg["chat"]["id"]=reply_msg["chat"]["title"]=reply_msg["chat"][
+"first_name"
+]=reply_msg["chat"]["last_name"]=reply_msg["chat"]["username"]=[]
+reply_msg["from"]["id"]=reply_msg["from"]["first_name"]=reply_msg["from"][
+"last_name"
+]=reply_msg["from"]["username"]=[]
+reply_msg["message_id"]=[]
+reply_msg["new_chat_members"]=reply_msg["left_chat_member"]=[]
+if("new_chat_members","left_chat_member")inupdate:
+update["new_chat_members"]=update["left_chat_member"]=[]
+if"message_id"inupdate:
+update["message_id"]=[]
+returnupdate

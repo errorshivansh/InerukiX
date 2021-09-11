@@ -1,74 +1,74 @@
-#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
-#XCopyrightX(C)X2019XAiogram
+#Copyright(C)2018-2020MrYacha.Allrightsreserved.SourcecodeavailableundertheAGPL.
+#Copyright(C)2019Aiogram
 #
-#XThisXfileXisXpartXofXInerukiBot.
+#ThisfileispartofInerukiBot.
 #
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-fromXaiogramXimportXtypes
-fromXaiogram.dispatcher.filtersXimportXBoundFilter
+fromaiogramimporttypes
+fromaiogram.dispatcher.filtersimportBoundFilter
 
-fromXInerukiXXimportXdp
-
-
-classXNotForwarded(BoundFilter):
-XXXXkeyX=X"not_forwarded"
-
-XXXXdefX__init__(self,Xnot_forwarded):
-XXXXXXXXself.not_forwardedX=Xnot_forwarded
-
-XXXXasyncXdefXcheck(self,Xmessage:Xtypes.Message):
-XXXXXXXXifX"forward_from"XnotXinXmessage:
-XXXXXXXXXXXXreturnXTrue
+fromInerukiimportdp
 
 
-classXNoArgs(BoundFilter):
-XXXXkeyX=X"no_args"
+classNotForwarded(BoundFilter):
+key="not_forwarded"
 
-XXXXdefX__init__(self,Xno_args):
-XXXXXXXXself.no_argsX=Xno_args
+def__init__(self,not_forwarded):
+self.not_forwarded=not_forwarded
 
-XXXXasyncXdefXcheck(self,Xmessage:Xtypes.Message):
-XXXXXXXXifXnotXlen(message.text.split("X"))X>X1:
-XXXXXXXXXXXXreturnXTrue
-
-
-classXHasArgs(BoundFilter):
-XXXXkeyX=X"has_args"
-
-XXXXdefX__init__(self,Xhas_args):
-XXXXXXXXself.has_argsX=Xhas_args
-
-XXXXasyncXdefXcheck(self,Xmessage:Xtypes.Message):
-XXXXXXXXifXlen(message.text.split("X"))X>X1:
-XXXXXXXXXXXXreturnXTrue
+asyncdefcheck(self,message:types.Message):
+if"forward_from"notinmessage:
+returnTrue
 
 
-classXCmdNotMonospaced(BoundFilter):
-XXXXkeyX=X"cmd_not_mono"
+classNoArgs(BoundFilter):
+key="no_args"
 
-XXXXdefX__init__(self,Xcmd_not_mono):
-XXXXXXXXself.cmd_not_monoX=Xcmd_not_mono
+def__init__(self,no_args):
+self.no_args=no_args
 
-XXXXasyncXdefXcheck(self,Xmessage:Xtypes.Message):
-XXXXXXXXifX(
-XXXXXXXXXXXXmessage.entities
-XXXXXXXXXXXXandXmessage.entities[0]["type"]X==X"code"
-XXXXXXXXXXXXandXmessage.entities[0]["offset"]X<X1
-XXXXXXXX):
-XXXXXXXXXXXXreturnXFalse
-XXXXXXXXreturnXTrue
+asyncdefcheck(self,message:types.Message):
+ifnotlen(message.text.split(""))>1:
+returnTrue
+
+
+classHasArgs(BoundFilter):
+key="has_args"
+
+def__init__(self,has_args):
+self.has_args=has_args
+
+asyncdefcheck(self,message:types.Message):
+iflen(message.text.split(""))>1:
+returnTrue
+
+
+classCmdNotMonospaced(BoundFilter):
+key="cmd_not_mono"
+
+def__init__(self,cmd_not_mono):
+self.cmd_not_mono=cmd_not_mono
+
+asyncdefcheck(self,message:types.Message):
+if(
+message.entities
+andmessage.entities[0]["type"]=="code"
+andmessage.entities[0]["offset"]<1
+):
+returnFalse
+returnTrue
 
 
 dp.filters_factory.bind(NotForwarded)

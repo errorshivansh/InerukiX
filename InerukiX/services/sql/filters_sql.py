@@ -1,97 +1,97 @@
-fromXsqlalchemyXimportXColumn,XLargeBinary,XNumeric,XString,XUnicodeText
+fromsqlalchemyimportColumn,LargeBinary,Numeric,String,UnicodeText
 
-fromXInerukiX.services.sqlXimportXBASE,XSESSION
+fromIneruki.services.sqlimportBASE,SESSION
 
 
-classXFilters(BASE):
-XXXX__tablename__X=X"cust_filters"
-XXXXchat_idX=XColumn(String(14),Xprimary_key=True)
-XXXXkeywordX=XColumn(UnicodeText,Xprimary_key=True)
-XXXXreplyX=XColumn(UnicodeText)
-XXXXsnip_typeX=XColumn(Numeric)
-XXXXmedia_idX=XColumn(UnicodeText)
-XXXXmedia_access_hashX=XColumn(UnicodeText)
-XXXXmedia_file_referenceX=XColumn(LargeBinary)
+classFilters(BASE):
+__tablename__="cust_filters"
+chat_id=Column(String(14),primary_key=True)
+keyword=Column(UnicodeText,primary_key=True)
+reply=Column(UnicodeText)
+snip_type=Column(Numeric)
+media_id=Column(UnicodeText)
+media_access_hash=Column(UnicodeText)
+media_file_reference=Column(LargeBinary)
 
-XXXXdefX__init__(
-XXXXXXXXself,
-XXXXXXXXchat_id,
-XXXXXXXXkeyword,
-XXXXXXXXreply,
-XXXXXXXXsnip_type,
-XXXXXXXXmedia_id=None,
-XXXXXXXXmedia_access_hash=None,
-XXXXXXXXmedia_file_reference=None,
-XXXX):
-XXXXXXXXself.chat_idX=Xchat_id
-XXXXXXXXself.keywordX=Xkeyword
-XXXXXXXXself.replyX=Xreply
-XXXXXXXXself.snip_typeX=Xsnip_type
-XXXXXXXXself.media_idX=Xmedia_id
-XXXXXXXXself.media_access_hashX=Xmedia_access_hash
-XXXXXXXXself.media_file_referenceX=Xmedia_file_reference
+def__init__(
+self,
+chat_id,
+keyword,
+reply,
+snip_type,
+media_id=None,
+media_access_hash=None,
+media_file_reference=None,
+):
+self.chat_id=chat_id
+self.keyword=keyword
+self.reply=reply
+self.snip_type=snip_type
+self.media_id=media_id
+self.media_access_hash=media_access_hash
+self.media_file_reference=media_file_reference
 
 
 Filters.__table__.create(checkfirst=True)
 
 
-defXget_filter(chat_id,Xkeyword):
-XXXXtry:
-XXXXXXXXreturnXSESSION.query(Filters).get((str(chat_id),Xkeyword))
-XXXXexceptXBaseException:
-XXXXXXXXreturnXNone
-XXXXfinally:
-XXXXXXXXSESSION.close()
+defget_filter(chat_id,keyword):
+try:
+returnSESSION.query(Filters).get((str(chat_id),keyword))
+exceptBaseException:
+returnNone
+finally:
+SESSION.close()
 
 
-defXget_all_filters(chat_id):
-XXXXtry:
-XXXXXXXXreturnXSESSION.query(Filters).filter(Filters.chat_idX==Xstr(chat_id)).all()
-XXXXexceptXBaseException:
-XXXXXXXXreturnXNone
-XXXXfinally:
-XXXXXXXXSESSION.close()
+defget_all_filters(chat_id):
+try:
+returnSESSION.query(Filters).filter(Filters.chat_id==str(chat_id)).all()
+exceptBaseException:
+returnNone
+finally:
+SESSION.close()
 
 
-defXadd_filter(
-XXXXchat_id,
-XXXXkeyword,
-XXXXreply,
-XXXXsnip_type,
-XXXXmedia_id,
-XXXXmedia_access_hash,
-XXXXmedia_file_reference,
+defadd_filter(
+chat_id,
+keyword,
+reply,
+snip_type,
+media_id,
+media_access_hash,
+media_file_reference,
 ):
-XXXXadderX=XSESSION.query(Filters).get((str(chat_id),Xkeyword))
-XXXXifXadder:
-XXXXXXXXadder.replyX=Xreply
-XXXXXXXXadder.snip_typeX=Xsnip_type
-XXXXXXXXadder.media_idX=Xmedia_id
-XXXXXXXXadder.media_access_hashX=Xmedia_access_hash
-XXXXXXXXadder.media_file_referenceX=Xmedia_file_reference
-XXXXelse:
-XXXXXXXXadderX=XFilters(
-XXXXXXXXXXXXchat_id,
-XXXXXXXXXXXXkeyword,
-XXXXXXXXXXXXreply,
-XXXXXXXXXXXXsnip_type,
-XXXXXXXXXXXXmedia_id,
-XXXXXXXXXXXXmedia_access_hash,
-XXXXXXXXXXXXmedia_file_reference,
-XXXXXXXX)
-XXXXSESSION.add(adder)
-XXXXSESSION.commit()
+adder=SESSION.query(Filters).get((str(chat_id),keyword))
+ifadder:
+adder.reply=reply
+adder.snip_type=snip_type
+adder.media_id=media_id
+adder.media_access_hash=media_access_hash
+adder.media_file_reference=media_file_reference
+else:
+adder=Filters(
+chat_id,
+keyword,
+reply,
+snip_type,
+media_id,
+media_access_hash,
+media_file_reference,
+)
+SESSION.add(adder)
+SESSION.commit()
 
 
-defXremove_filter(chat_id,Xkeyword):
-XXXXsaved_filterX=XSESSION.query(Filters).get((str(chat_id),Xkeyword))
-XXXXifXsaved_filter:
-XXXXXXXXSESSION.delete(saved_filter)
-XXXXXXXXSESSION.commit()
+defremove_filter(chat_id,keyword):
+saved_filter=SESSION.query(Filters).get((str(chat_id),keyword))
+ifsaved_filter:
+SESSION.delete(saved_filter)
+SESSION.commit()
 
 
-defXremove_all_filters(chat_id):
-XXXXsaved_filterX=XSESSION.query(Filters).filter(Filters.chat_idX==Xstr(chat_id))
-XXXXifXsaved_filter:
-XXXXXXXXsaved_filter.delete()
-XXXXXXXXSESSION.commit()
+defremove_all_filters(chat_id):
+saved_filter=SESSION.query(Filters).filter(Filters.chat_id==str(chat_id))
+ifsaved_filter:
+saved_filter.delete()
+SESSION.commit()

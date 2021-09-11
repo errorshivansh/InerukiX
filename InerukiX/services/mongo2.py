@@ -1,14 +1,14 @@
-#XSupportXDualXMongoXDBXnow
-#XForXfreeXusers
+#SupportDualMongoDBnow
+#Forfreeusers
 
-fromXmotor.motor_asyncioXimportXAsyncIOMotorClientXasXMongoClient
+frommotor.motor_asyncioimportAsyncIOMotorClientasMongoClient
 
-fromXInerukiX.configXimportXget_str_key
+fromIneruki.configimportget_str_key
 
-MONGO2X=Xget_str_key("MONGO_URI_2",XNone)
-MONGOX=Xget_str_key("MONGO_URI",Xrequired=True)
-ifXMONGO2X==XNone:
-XXXXMONGO2X=XMONGO
+MONGO2=get_str_key("MONGO_URI_2",None)
+MONGO=get_str_key("MONGO_URI",required=True)
+ifMONGO2==None:
+MONGO2=MONGO
 
-mongo_clientX=XMongoClient(MONGO2)
-dbX=Xmongo_client.Ineruki
+mongo_client=MongoClient(MONGO2)
+db=mongo_client.Ineruki

@@ -1,58 +1,58 @@
-__mod_name__X=X"🛠XExtras"
-__help__X=X"""
-TheXmoduleXthatXcontainsXextraXtoolsXthatXhelpXyouXtoXdoXmanyXcoolXstuff.
+__mod_name__="🛠Extras"
+__help__="""
+Themodulethatcontainsextratoolsthathelpyoutodomanycoolstuff.
 
-<b>XAvailableXCommandsX</b>
+<b>AvailableCommands</b>
 
-<b>XAFKX</b>
--X/afkXreasonX:XmarkXyourselfXasXAFK(AwayXFromXKeyboard)
-XX
-<b>XURLXLOCKX</b>X
-XBlockXlinksXsentXbyXusersXinXyourXgroupX
--X/urllockX[on/off]:XEnable/DisableXURLXLock
+<b>AFK</b>
+-/afkreason:markyourselfasAFK(AwayFromKeyboard)
 
-<b>XDATEXTIMEX</b>
--X/datetimeX[timezone]:XGetXtheXpresentXdateXandXtimeXinformation
-YouXcanXcheckXoutXthisX[link](https://timezonedb.com/time-zones)XforXtheXavailableXtimezones
+<b>URLLOCK</b>
+Blocklinkssentbyusersinyourgroup
+-/urllock[on/off]:Enable/DisableURLLock
 
-<b>XPASTEX</b>
--X/pasteX[reply]
-Usage:XCreateXaXpasteXorXaXshortenedXurlXusingXnekobinX(https://nekobin.com)
+<b>DATETIME</b>
+-/datetime[timezone]:Getthepresentdateandtimeinformation
+Youcancheckoutthis[link](https://timezonedb.com/time-zones)fortheavailabletimezones
 
-<b>XTELEGRAPHX</b>
--X/telegraphXmediaX:XToXMakeXLinkXofXAnyXImageXOrXMP4Xvideo.X
--X/telegraphXtextX:XToXmakeXLinkXofXAnyXTextXWritten.X
+<b>PASTE</b>
+-/paste[reply]
+Usage:Createapasteorashortenedurlusingnekobin(https://nekobin.com)
 
-<b>XTORRENTX</b>
--X/torrentX[QUERY]:XSearchXforXtorrentXlinks
+<b>TELEGRAPH</b>
+-/telegraphmedia:ToMakeLinkofAnyImageOrMP4video.
+-/telegraphtext:TomakeLinkofAnyTextWritten.
 
-<b>XTEXTXTOXSPEECHX</b>
--X/tts:XReplyXtoXanyXmessageXtoXgetXtextXtoXspeechXoutput
--X/stt:XTypeXinXreplyXtoXaXvoiceXmessage(englishXonly)XtoXextractXtextXfromXit.
+<b>TORRENT</b>
+-/torrent[QUERY]:Searchfortorrentlinks
 
-<b>XVIRUSXSCANX</b>
--X/scanit:XScanXaXfileXforXvirusX(MAXXSIZEX=X3MB)
-X
+<b>TETTOSPEECH</b>
+-/tts:Replytoanymessagetogettexttospeechoutput
+-/stt:Typeinreplytoavoicemessage(englishonly)toextracttextfromit.
+
+<b>VIRUSSCAN</b>
+-/scanit:Scanafileforvirus(MASIZE=3MB)
+
 <b>COUNTRY</b>
--X/countryX[countryXname]*:*XGatheringXinfoXaboutXgivenXcountry
+-/country[countryname]*:*Gatheringinfoaboutgivencountry
 
-<b>COVID</b>XXXXXXXXXXXXXX
--X/covidX-XToXGetXGlobalXStatsXofXCovid.
--X/covidX[COUNTRY]X-XToXGetXStatsXofXAXSingleXCountry.
-XX
-<b>MATCHXINFO</b>XXXXX
--X/csX-XGathersXmatchXinformationX(globally)
+<b>COVID</b>
+-/covid-ToGetGlobalStatsofCovid.
+-/covid[COUNTRY]-ToGetStatsofASingleCountry.
 
-<b>QRXCODE</b>XXXXX
--X/getqrX-XGetXtextXinXqr.
--X/makeqrX-XMakeXaXqrXcode.
-XX
-<b>XKARMAX</b>
-[UPVOTE]X-XUseXupvoteXkeywordsXlikeX"+",X"+1",X"thanks"XetcXtoXupvoteXaXmessage.
-[DOWNVOTE]X-XUseXdownvoteXkeywordsXlikeX"-",X"-1",XetcXtoXdownvoteXaXmessage.
+<b>MATCHINFO</b>
+-/cs-Gathersmatchinformation(globally)
 
--X/karmaX[ON/OFF]:XEnable/DisableXkarmaXinXgroup.X
--X/karmaX[ReplyXtoXaXmessage]:XCheckXuser'sXkarma
--X/karma:XChekXkarmaXlistXofXtopX10Xusers
-XXXXXXXX
+<b>QRCODE</b>
+-/getqr-Gettextinqr.
+-/makeqr-Makeaqrcode.
+
+<b>KARMA</b>
+[UPVOTE]-Useupvotekeywordslike"+","+1","thanks"etctoupvoteamessage.
+[DOWNVOTE]-Usedownvotekeywordslike"-","-1",etctodownvoteamessage.
+
+-/karma[ON/OFF]:Enable/Disablekarmaingroup.
+-/karma[Replytoamessage]:Checkuser'skarma
+-/karma:Chekkarmalistoftop10users
+
 """

@@ -1,32 +1,32 @@
-#XThisXfileXisXpartXofXInerukiXBotX(TelegramXBot)
+#ThisfileispartofInerukiBot(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXsys
+importsys
 
-fromXtelethonXimportXTelegramClient
-fromXtelethon.sessionsXimportXStringSession
+fromtelethonimportTelegramClient
+fromtelethon.sessionsimportStringSession
 
-fromXInerukiX.configXimportXget_int_key,Xget_str_key
+fromIneruki.configimportget_int_key,get_str_key
 
-STRING_SESSIONX=Xget_str_key("STRING_SESSION",Xrequired=True)
-API_IDX=Xget_int_key("APP_ID",Xrequired=True)
-API_HASHX=Xget_str_key("APP_HASH",Xrequired=True)
+STRING_SESSION=get_str_key("STRING_SESSION",required=True)
+API_ID=get_int_key("APP_ID",required=True)
+API_HASH=get_str_key("APP_HASH",required=True)
 
-ubotX=XTelegramClient(StringSession(STRING_SESSION),XAPI_ID,XAPI_HASH)
+ubot=TelegramClient(StringSession(STRING_SESSION),API_ID,API_HASH)
 try:
-XXXXubot.start()
-exceptXBaseException:
-XXXXprint("UserbotXErrorX!XHaveXyouXaddedXaXSTRING_SESSIONXinXdeploying??")
-XXXXsys.exit(1)
+ubot.start()
+exceptBaseException:
+print("UserbotError!HaveyouaddedaSTRING_SESSIONindeploying??")
+sys.exit(1)

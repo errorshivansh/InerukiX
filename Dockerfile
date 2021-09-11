@@ -1,8 +1,8 @@
-FROMXpython:3.9
-WORKDIRX.
-ENVXPYTHONUNBUFFERED=1
-COPYXrequirements.txtX.
-COPYXdeploy.shX.
-RUNXbashXdeploy.sh
-COPYX.X.
-CMDX["python3",X"-m",X"InerukiX"]
+FROMpython:3.9
+WORKDIR.
+ENVPYTHONUNBUFFERED=1
+COPYrequirements.txt.
+COPYdeploy.sh.
+RUNbashdeploy.sh
+COPY..
+CMD["python3","-m","Ineruki"]

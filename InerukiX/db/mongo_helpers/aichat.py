@@ -1,37 +1,37 @@
-fromXInerukiX.services.mongoXimportXmongodbXasXdb_x
+fromIneruki.services.mongoimportmongodbasdb_x
 
-lydiaX=Xdb_x["CAHTBOT"]
-
-
-defXadd_chat(chat_id):
-XXXXstarkX=Xlydia.find_one({"chat_id":Xchat_id})
-XXXXifXstark:
-XXXXXXXXreturnXFalse
-XXXXelse:
-XXXXXXXXlydia.insert_one({"chat_id":Xchat_id})
-XXXXXXXXreturnXTrue
+lydia=db_x["CAHTBOT"]
 
 
-defXremove_chat(chat_id):
-XXXXstarkX=Xlydia.find_one({"chat_id":Xchat_id})
-XXXXifXnotXstark:
-XXXXXXXXreturnXFalse
-XXXXelse:
-XXXXXXXXlydia.delete_one({"chat_id":Xchat_id})
-XXXXXXXXreturnXTrue
+defadd_chat(chat_id):
+stark=lydia.find_one({"chat_id":chat_id})
+ifstark:
+returnFalse
+else:
+lydia.insert_one({"chat_id":chat_id})
+returnTrue
 
 
-defXget_all_chats():
-XXXXrX=Xlist(lydia.find())
-XXXXifXr:
-XXXXXXXXreturnXr
-XXXXelse:
-XXXXXXXXreturnXFalse
+defremove_chat(chat_id):
+stark=lydia.find_one({"chat_id":chat_id})
+ifnotstark:
+returnFalse
+else:
+lydia.delete_one({"chat_id":chat_id})
+returnTrue
 
 
-defXget_session(chat_id):
-XXXXstarkX=Xlydia.find_one({"chat_id":Xchat_id})
-XXXXifXnotXstark:
-XXXXXXXXreturnXFalse
-XXXXelse:
-XXXXXXXXreturnXstark
+defget_all_chats():
+r=list(lydia.find())
+ifr:
+returnr
+else:
+returnFalse
+
+
+defget_session(chat_id):
+stark=lydia.find_one({"chat_id":chat_id})
+ifnotstark:
+returnFalse
+else:
+returnstark

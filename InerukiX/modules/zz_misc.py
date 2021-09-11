@@ -1,62 +1,62 @@
-__mod_name__X=X"MiscX⚙️"
+__mod_name__="Misc⚙️"
 
-__help__X=X"""
-AnX"oddsXandXends"XmoduleXforXsmall,XsimpleXcommandsXwhichXdon'tXreallyXfitXanywhere.
+__help__="""
+An"oddsandends"moduleforsmall,simplecommandswhichdon'treallyfitanywhere.
 
-<b>AvailableXcommands:</b>
+<b>Availablecommands:</b>
 
 <b>BASIC</b>
--X/githubX(username):XReturnsXinfoXaboutXaXGitHubXuserXorXorganization.
--X/wikiX(keywords):XGetXwikipediaXarticlesXjustXusingXthisXbot.
--X/imdb:XSearchXforXaXmovie
--X/cancel:XDisablesXcurrentXstate.XCanXhelpXinXcasesXifXInerukiXBotXnotXresponingXonXyourXmessage.
--X/id:XgetXtheXcurrentXgroupXid.XIfXusedXbyXreplyingXtoXaXmessage,XgetsXthatXuser'sXid.
--X/info:XgetXinformationXaboutXaXuser.
--X/paste:XPaseXtheXtext/fileXinXnekobin
--X/gps:XFindXaXlocation
+-/github(username):ReturnsinfoaboutaGitHubuserororganization.
+-/wiki(keywords):Getwikipediaarticlesjustusingthisbot.
+-/imdb:Searchforamovie
+-/cancel:Disablescurrentstate.CanhelpincasesifInerukiBotnotresponingonyourmessage.
+-/id:getthecurrentgroupid.Ifusedbyreplyingtoamessage,getsthatuser'sid.
+-/info:getinformationaboutauser.
+-/paste:Pasethetext/fileinnekobin
+-/gps:Findalocation
 
-<b>BOOKXDOWNLOADX</b>
--X/bookX<i>bookXname</i>X:XUsageX:GetsXInstantXDownloadXLinkXOfXGivenXBook.
+<b>BOOKDOWNLOAD</b>
+-/book<i>bookname</i>:Usage:GetsInstantDownloadLinkOfGivenBook.
 
-<b>FAKEXINFO</b>
--X/fakegenX:XGeneratesXFakeXInformation
--X/picgenX:XgenerateXaXfakeXpic
+<b>FAKEINFO</b>
+-/fakegen:GeneratesFakeInformation
+-/picgen:generateafakepic
 
 <b>ZIPPER</b>
--X/zip:XreplyXtoXaXtelegramXfileXtoXcompressXitXinX.zipXformat
--X/unzip:XreplyXtoXaXtelegramXfileXtoXdecompressXitXfromXtheX.zipXformat
+-/zip:replytoatelegramfiletocompressitin.zipformat
+-/unzip:replytoatelegramfiletodecompressitfromthe.zipformat
 
 <b>WEATHER</b>
--X/weather:XGivesXweatherXforcast
--X/wheatherimg:XGivesXweatherXimage
+-/weather:Givesweatherforcast
+-/wheatherimg:Givesweatherimage
 
-<b>PHONEXINFO</b>
--X/phoneX[phoneXno]:XGathersXnoXinfo
+<b>PHONEINFO</b>
+-/phone[phoneno]:Gathersnoinfo
 
 <b>CURRENCY</b>
-X-X/cashX:XcurrencyXconverter
-ExampleXsyntax:X`/cashX1XUSDXINR`
+-/cash:currencyconverter
+Examplesyntax:`/cash1USDINR`
 
-<b>NAMEXHISTORY</b>
--X/namehistoryX[REPLY]:XGetXtheXUsernameXandXNameXhistoryXofXuser.
+<b>NAMEHISTORY</b>
+-/namehistory[REPLY]:GettheUsernameandNamehistoryofuser.
 
 <b>SEND</b>
--X/sendX[MESSAGE]:XSendXgivenXtextXbyXbot.
+-/send[MESSAGE]:Sendgiventextbybot.
 
-<b>CCXCHECKER</b>
--X/auX[cc]:XStripeXAuthXgivenXCC
--X/ppX[cc]:XPaypalX1$XGuestXCharge
--X/ssX[cc]:XSpeedyXStripeXAuth
--X/chX[cc]:XCheckXIfXCCXisXLive
--X/binX[bin]:XGather'sXInfoXAboutXtheXbin
--X/genX[bin]:XGeneratesXCCXwithXgivenXbin
--X/keyX[sk]:XChecksXifXStripeXkeyXisXLive
+<b>CCCHECKER</b>
+-/au[cc]:StripeAuthgivenCC
+-/pp[cc]:Paypal1$GuestCharge
+-/ss[cc]:SpeedyStripeAuth
+-/ch[cc]:CheckIfCCisLive
+-/bin[bin]:Gather'sInfoAboutthebin
+-/gen[bin]:GeneratesCCwithgivenbin
+-/key[sk]:ChecksifStripekeyisLive
 
-XXNote:XFormatXofXccXisXccnum|mm|yy|cvv
-XXPrivacyXwarning:XDon'tXcheckXanyXofXyourXpersonalXCC's.
-XX
-<b>URLXTOOLS</b>
--X/shortX(url):XShortifyXgivenXurl.
--X/ipX(url):XDisplaysXinformationXaboutXanXIPX/Xdomain.
--X/directX(url):XGeneratesXdirectXlinksXfromXtheXsourceforge.net
+Note:Formatofccisccnum|mm|yy|cvv
+Privacywarning:Don'tcheckanyofyourpersonalCC's.
+
+<b>URLTOOLS</b>
+-/short(url):Shortifygivenurl.
+-/ip(url):DisplaysinformationaboutanIP/domain.
+-/direct(url):Generatesdirectlinksfromthesourceforge.net
 """

@@ -1,77 +1,77 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-fromXaiogram.utils.exceptionsXimportXBadRequest
+fromaiogram.utils.exceptionsimportBadRequest
 
-fromXInerukiXXimportXbot
-fromXInerukiX.decoratorXimportXregister
+fromInerukiimportbot
+fromIneruki.decoratorimportregister
 
-fromX.utils.connectionsXimportXchat_connection
-fromX.utils.languageXimportXget_strings_dec
-fromX.utils.messageXimportXget_arg
+from.utils.connectionsimportchat_connection
+from.utils.languageimportget_strings_dec
+from.utils.messageimportget_arg
 
 
-@register(cmds="unpin",Xuser_can_pin_messages=True,Xbot_can_pin_messages=True)
+@register(cmds="unpin",user_can_pin_messages=True,bot_can_pin_messages=True)
 @chat_connection(admin=True)
 @get_strings_dec("pins")
-asyncXdefXunpin_message(message,Xchat,Xstrings):
-XXXX#XsupportXunpinningXall
-XXXXifXget_arg(message)XinX{"all"}:
-XXXXXXXXreturnXawaitXbot.unpin_all_chat_messages(chat["chat_id"])
+asyncdefunpin_message(message,chat,strings):
+#supportunpinningall
+ifget_arg(message)in{"all"}:
+returnawaitbot.unpin_all_chat_messages(chat["chat_id"])
 
-XXXXtry:
-XXXXXXXXawaitXbot.unpin_chat_message(chat["chat_id"])
-XXXXexceptXBadRequest:
-XXXXXXXXawaitXmessage.reply(strings["chat_not_modified_unpin"])
-XXXXXXXXreturn
+try:
+awaitbot.unpin_chat_message(chat["chat_id"])
+exceptBadRequest:
+awaitmessage.reply(strings["chat_not_modified_unpin"])
+return
 
 
-@register(cmds="pin",Xuser_can_pin_messages=True,Xbot_can_pin_messages=True)
+@register(cmds="pin",user_can_pin_messages=True,bot_can_pin_messages=True)
 @get_strings_dec("pins")
-asyncXdefXpin_message(message,Xstrings):
-XXXXifX"reply_to_message"XnotXinXmessage:
-XXXXXXXXawaitXmessage.reply(strings["no_reply_msg"])
-XXXXXXXXreturn
-XXXXmsgX=Xmessage.reply_to_message.message_id
-XXXXargX=Xget_arg(message).lower()
+asyncdefpin_message(message,strings):
+if"reply_to_message"notinmessage:
+awaitmessage.reply(strings["no_reply_msg"])
+return
+msg=message.reply_to_message.message_id
+arg=get_arg(message).lower()
 
-XXXXdndX=XTrue
-XXXXloudX=X["loud",X"notify"]
-XXXXifXargXinXloud:
-XXXXXXXXdndX=XFalse
+dnd=True
+loud=["loud","notify"]
+ifarginloud:
+dnd=False
 
-XXXXtry:
-XXXXXXXXawaitXbot.pin_chat_message(message.chat.id,Xmsg,Xdisable_notification=dnd)
-XXXXexceptXBadRequest:
-XXXXXXXXawaitXmessage.reply(strings["chat_not_modified_pin"])
+try:
+awaitbot.pin_chat_message(message.chat.id,msg,disable_notification=dnd)
+exceptBadRequest:
+awaitmessage.reply(strings["chat_not_modified_pin"])
 
 
-__mod_name__X=X"Pinning"
+__mod_name__="Pinning"
 
-__help__X=X"""
-AllXtheXpinXrelatedXcommandsXcanXbeXfoundXhere;XkeepXyourXchatXupXtoXdateXonXtheXlatestXnewsXwithXaXsimpleXpinnedXmessage!
+__help__="""
+Allthepinrelatedcommandscanbefoundhere;keepyourchatuptodateonthelatestnewswithasimplepinnedmessage!
 
-<b>XBasicXPinsX</b>
--X/pin:XsilentlyXpinsXtheXmessageXrepliedXtoX-XaddX'loud'XorX'notify'XtoXgiveXnotifsXtoXusers.
--X/unpin:XunpinsXtheXcurrentlyXpinnedXmessageX-XaddX'all'XtoXunpinXallXpinnedXmessages.
+<b>BasicPins</b>
+-/pin:silentlypinsthemessagerepliedto-add'loud'or'notify'togivenotifstousers.
+-/unpin:unpinsthecurrentlypinnedmessage-add'all'tounpinallpinnedmessages.
 
-<b>XOtherX</b>
--X/permapinX[reply]:XPinXaXcustomXmessageXthroughXtheXbot.XThisXmessageXcanXcontainXmarkdown,Xbuttons,XandXallXtheXotherXcoolXfeatures.
--X/unpinall:XUnpinsXallXpinnedXmessages.
--X/antichannelpinX[yes/no/on/off]:XDon'tXletXtelegramXauto-pinXlinkedXchannels.XIfXnoXargumentsXareXgiven,XshowsXcurrentXsetting.
--X/cleanlinkedX[yes/no/on/off]:XDeleteXmessagesXsentXbyXtheXlinkedXchannel.
+<b>Other</b>
+-/permapin[reply]:Pinacustommessagethroughthebot.Thismessagecancontainmarkdown,buttons,andalltheothercoolfeatures.
+-/unpinall:Unpinsallpinnedmessages.
+-/antichannelpin[yes/no/on/off]:Don'tlettelegramauto-pinlinkedchannels.Ifnoargumentsaregiven,showscurrentsetting.
+-/cleanlinked[yes/no/on/off]:Deletemessagessentbythelinkedchannel.
 
-Note:XWhenXusingXantichannelXpins,XmakeXsureXtoXuseXtheX/unpinXcommand,XinsteadXofXdoingXitXmanually.XOtherwise,XtheXoldXmessageXwillXgetXre-pinnedXwhenXtheXchannelXsendsXanyXmessages.
+Note:Whenusingantichannelpins,makesuretousethe/unpincommand,insteadofdoingitmanually.Otherwise,theoldmessagewillgetre-pinnedwhenthechannelsendsanymessages.
 """

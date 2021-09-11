@@ -1,41 +1,41 @@
-#XCopyrightX(C)X2021Xerrorshivansh
+#Copyright(C)2021errorshivansh
 
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-fromXpyrogramXimportXfilters
-fromXpyrogram.errorsXimportXRPCError
+frompyrogramimportfilters
+frompyrogram.errorsimportRPCError
 
-fromXInerukiX.function.pluginhelpersXimportXadmins_only,Xget_text
-fromXInerukiX.services.pyrogramXimportXpbot
+fromIneruki.function.pluginhelpersimportadmins_only,get_text
+fromIneruki.services.pyrogramimportpbot
 
 
 @pbot.on_message(
-XXXXfilters.command("cedit")X&X~filters.editedX&X~filters.botX&X~filters.private
+filters.command("cedit")&~filters.edited&~filters.bot&~filters.private
 )
 @admins_only
-asyncXdefXloltime(client,Xmessage):
-XXXXlolX=XawaitXmessage.reply("ProcessingXpleaseXwait")
-XXXXcapX=Xget_text(message)
-XXXXifXnotXmessage.reply_to_message:
-XXXXXXXXawaitXlol.edit("replyXtoXanyXmessageXtoXeditXcaption")
-XXXXreplyX=Xmessage.reply_to_message
-XXXXtry:
-XXXXXXXXawaitXreply.copy(message.chat.id,Xcaption=cap)
-XXXXXXXXawaitXlol.delete()
-XXXXexceptXRPCErrorXasXi:
-XXXXXXXXawaitXlol.edit(i)
-XXXXXXXXreturn
+asyncdefloltime(client,message):
+lol=awaitmessage.reply("Processingpleasewait")
+cap=get_text(message)
+ifnotmessage.reply_to_message:
+awaitlol.edit("replytoanymessagetoeditcaption")
+reply=message.reply_to_message
+try:
+awaitreply.copy(message.chat.id,caption=cap)
+awaitlol.delete()
+exceptRPCErrorasi:
+awaitlol.edit(i)
+return

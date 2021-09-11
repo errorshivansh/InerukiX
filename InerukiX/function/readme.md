@@ -1,27 +1,27 @@
-#XHereXweXdefineXfunctions
+#Herewedefinefunctions
 
-##XEssentials
-###XImportingXPyrogramXadminXcheck
+##Essentials
+###ImportingPyrogramadmincheck
 ```python3
-fromXInerukiX.function.pluginhelpersXimportXadmins_only
+fromIneruki.function.pluginhelpersimportadmins_only
 
 @admins_only
 ```
 
-###XGettingXtextXfromXcmd
+###Gettingtextfromcmd
 ```python3
-fromXInerukiX.function.pluginhelpersXimportXget_text
+fromIneruki.function.pluginhelpersimportget_text
 
-asyncXdefXhi(client,message):
-XXargsX=Xget_text(message)
+asyncdefhi(client,message):
+args=get_text(message)
 ```
 
-###XEditXorXreply
+###Editorreply
 ```python3
-fromXInerukiX.function.pluginhelpersXimportXedit_or_reply
+fromIneruki.function.pluginhelpersimportedit_or_reply
 
-asyncXdefXhi(client,message):
-XXawaitXedit_or_reply("Hi")
+asyncdefhi(client,message):
+awaitedit_or_reply("Hi")
 ```
-##XSOMEXFUNCTIONSXAREXCOPIEDXFROMXhttps://github.com/TheHamkerCat/WilliamButcherBot
-##XANDXSOMEXFROMXFRIDAYXUSERBOT
+##SOMEFUNCTIONSARECOPIEDFROMhttps://github.com/TheHamkerCat/WilliamButcherBot
+##ANDSOMEFROMFRIDAYUSERBOT

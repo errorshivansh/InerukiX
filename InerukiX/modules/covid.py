@@ -1,38 +1,38 @@
-#XCopyrightX(C)X2021XTheHamkerCat
-#XEditedXbyXerrorshivansh
+#Copyright(C)2021TheHamkerCat
+#Editedbyerrorshivansh
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-fromXpyrogramXimportXfilters
+frompyrogramimportfilters
 
-fromXInerukiX.function.pluginhelpersXimportXfetch,Xjson_prettify
-fromXInerukiX.services.pyrogramXimportXpbotXasXapp
+fromIneruki.function.pluginhelpersimportfetch,json_prettify
+fromIneruki.services.pyrogramimportpbotasapp
 
 
-@app.on_message(filters.command("covid")X&X~filters.edited)
-asyncXdefXcovid(_,Xmessage):
-XXXXifXlen(message.command)X==X1:
-XXXXXXXXdataX=XawaitXfetch("https://corona.lmao.ninja/v2/all")
-XXXXXXXXdataX=XawaitXjson_prettify(data)
-XXXXXXXXawaitXapp.send_message(message.chat.id,Xtext=data)
-XXXXXXXXreturn
-XXXXifXlen(message.command)X!=X1:
-XXXXXXXXcountryX=Xmessage.text.split(None,X1)[1].strip()
-XXXXXXXXcountryX=Xcountry.replace("X",X"")
-XXXXXXXXdataX=XawaitXfetch(f"https://corona.lmao.ninja/v2/countries/{country}")
-XXXXXXXXdataX=XawaitXjson_prettify(data)
-XXXXXXXXawaitXapp.send_message(message.chat.id,Xtext=data)
-XXXXXXXXreturn
+@app.on_message(filters.command("covid")&~filters.edited)
+asyncdefcovid(_,message):
+iflen(message.command)==1:
+data=awaitfetch("https://corona.lmao.ninja/v2/all")
+data=awaitjson_prettify(data)
+awaitapp.send_message(message.chat.id,text=data)
+return
+iflen(message.command)!=1:
+country=message.text.split(None,1)[1].strip()
+country=country.replace("","")
+data=awaitfetch(f"https://corona.lmao.ninja/v2/countries/{country}")
+data=awaitjson_prettify(data)
+awaitapp.send_message(message.chat.id,text=data)
+return

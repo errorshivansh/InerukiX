@@ -1,55 +1,55 @@
-#XXXXCopyrightX(C)XMidhunXKMX2020-2021
-#XXXXThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XXXXitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXasXpublishedXby
-#XXXXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXtheXLicense,Xor
+#Copyright(C)MidhunKM2020-2021
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseaspublishedby
+#theFreeSoftwareFoundation,eitherversion3oftheLicense,or
 #
-#XXXXThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XXXXbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XXXXMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XXXXGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 #
-#XXXXYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XXXXalongXwithXthisXprogram.XXIfXnot,XseeX<https://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<https://www.gnu.org/licenses/>.
 
-fromXsqlalchemyXimportXColumn,XString
+fromsqlalchemyimportColumn,String
 
-fromXInerukiX.services.sqlXimportXBASE,XSESSION
+fromIneruki.services.sqlimportBASE,SESSION
 
 
-classXNightmode(BASE):
-XXXX__tablename__X=X"nightmode"
-XXXXchat_idX=XColumn(String(14),Xprimary_key=True)
+classNightmode(BASE):
+__tablename__="nightmode"
+chat_id=Column(String(14),primary_key=True)
 
-XXXXdefX__init__(self,Xchat_id):
-XXXXXXXXself.chat_idX=Xchat_id
+def__init__(self,chat_id):
+self.chat_id=chat_id
 
 
 Nightmode.__table__.create(checkfirst=True)
 
 
-defXadd_nightmode(chat_id:Xstr):
-XXXXnightmoddyX=XNightmode(str(chat_id))
-XXXXSESSION.add(nightmoddy)
-XXXXSESSION.commit()
+defadd_nightmode(chat_id:str):
+nightmoddy=Nightmode(str(chat_id))
+SESSION.add(nightmoddy)
+SESSION.commit()
 
 
-defXrmnightmode(chat_id:Xstr):
-XXXXrmnightmoddyX=XSESSION.query(Nightmode).get(str(chat_id))
-XXXXifXrmnightmoddy:
-XXXXXXXXSESSION.delete(rmnightmoddy)
-XXXXXXXXSESSION.commit()
+defrmnightmode(chat_id:str):
+rmnightmoddy=SESSION.query(Nightmode).get(str(chat_id))
+ifrmnightmoddy:
+SESSION.delete(rmnightmoddy)
+SESSION.commit()
 
 
-defXget_all_chat_id():
-XXXXstarkX=XSESSION.query(Nightmode).all()
-XXXXSESSION.close()
-XXXXreturnXstark
+defget_all_chat_id():
+stark=SESSION.query(Nightmode).all()
+SESSION.close()
+returnstark
 
 
-defXis_nightmode_indb(chat_id:Xstr):
-XXXXtry:
-XXXXXXXXs__X=XSESSION.query(Nightmode).get(str(chat_id))
-XXXXXXXXifXs__:
-XXXXXXXXXXXXreturnXstr(s__.chat_id)
-XXXXfinally:
-XXXXXXXXSESSION.close()
+defis_nightmode_indb(chat_id:str):
+try:
+s__=SESSION.query(Nightmode).get(str(chat_id))
+ifs__:
+returnstr(s__.chat_id)
+finally:
+SESSION.close()

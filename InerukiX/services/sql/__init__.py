@@ -1,16 +1,16 @@
-fromXsqlalchemyXimportXcreate_engine
-fromXsqlalchemy.ext.declarativeXimportXdeclarative_base
-fromXsqlalchemy.ormXimportXscoped_session,Xsessionmaker
+fromsqlalchemyimportcreate_engine
+fromsqlalchemy.ext.declarativeimportdeclarative_base
+fromsqlalchemy.ormimportscoped_session,sessionmaker
 
-fromXInerukiXXimportXPOSTGRESS_URLXasXDB_URI
-
-
-defXstart()X->Xscoped_session:
-XXXXengineX=Xcreate_engine(DB_URI,Xclient_encoding="utf8")
-XXXXBASE.metadata.bindX=Xengine
-XXXXBASE.metadata.create_all(engine)
-XXXXreturnXscoped_session(sessionmaker(bind=engine,Xautoflush=False))
+fromInerukiimportPOSTGRESS_URLasDB_URI
 
 
-BASEX=Xdeclarative_base()
-SESSIONX=Xstart()
+defstart()->scoped_session:
+engine=create_engine(DB_URI,client_encoding="utf8")
+BASE.metadata.bind=engine
+BASE.metadata.create_all(engine)
+returnscoped_session(sessionmaker(bind=engine,autoflush=False))
+
+
+BASE=declarative_base()
+SESSION=start()

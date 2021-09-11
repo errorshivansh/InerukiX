@@ -1,29 +1,29 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
 
-fromXtelethonXimportXTelegramClient
+fromtelethonimportTelegramClient
 
-fromXInerukiX.configXimportXget_int_key,Xget_str_key
+fromIneruki.configimportget_int_key,get_str_key
 
-TOKENX=Xget_str_key("TOKEN",Xrequired=True)
-NAMEX=XTOKEN.split(":")[0]
+TOKEN=get_str_key("TOKEN",required=True)
+NAME=TOKEN.split(":")[0]
 
-tbotX=XTelegramClient(
-XXXXNAME,Xget_int_key("APP_ID",Xrequired=True),Xget_str_key("APP_HASH",Xrequired=True)
+tbot=TelegramClient(
+NAME,get_int_key("APP_ID",required=True),get_str_key("APP_HASH",required=True)
 )
 
-#XTelethon
+#Telethon
 tbot.start(bot_token=TOKEN)

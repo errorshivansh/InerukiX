@@ -1,502 +1,502 @@
-#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
-#XCopyrightX(C)X2021Xerrorshivansh
-#XCopyrightX(C)X2020XInukaXAsith
+#Copyright(C)2018-2020MrYacha.Allrightsreserved.SourcecodeavailableundertheAGPL.
+#Copyright(C)2021errorshivansh
+#Copyright(C)2020InukaAsith
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXasyncio
-importXdatetimeXX#Xnoqa:XF401
-fromXcontextlibXimportXsuppress
+importasyncio
+importdatetime#noqa:F401
+fromcontextlibimportsuppress
 
-fromXaiogram.utils.exceptionsXimportXMessageNotModified
-fromXbabel.datesXimportXformat_timedelta
+fromaiogram.utils.exceptionsimportMessageNotModified
+frombabel.datesimportformat_timedelta
 
-fromXInerukiXXimportXBOT_ID,Xbot
-fromXInerukiX.decoratorXimportXregister
-fromXInerukiX.services.redisXimportXredis
-fromXInerukiX.services.telethonXimportXtbot
+fromInerukiimportBOT_ID,bot
+fromIneruki.decoratorimportregister
+fromIneruki.services.redisimportredis
+fromIneruki.services.telethonimporttbot
 
-fromX.miscXimportXcustomise_reason_finish,Xcustomise_reason_start
-fromX.utils.connectionsXimportXchat_connection
-fromX.utils.languageXimportXget_strings_dec
-fromX.utils.messageXimportXInvalidTimeUnit,Xconvert_time,Xget_cmd
-fromX.utils.restrictionsXimportXban_user,Xkick_user,Xmute_user,Xunban_user,Xunmute_user
-fromX.utils.user_detailsXimportX(
-XXXXget_user_and_text_dec,
-XXXXget_user_dec,
-XXXXget_user_link,
-XXXXis_user_admin,
+from.miscimportcustomise_reason_finish,customise_reason_start
+from.utils.connectionsimportchat_connection
+from.utils.languageimportget_strings_dec
+from.utils.messageimportInvalidTimeUnit,convert_time,get_cmd
+from.utils.restrictionsimportban_user,kick_user,mute_user,unban_user,unmute_user
+from.utils.user_detailsimport(
+get_user_and_text_dec,
+get_user_dec,
+get_user_link,
+is_user_admin,
 )
 
 
 @register(
-XXXXcmds=["kick",X"skick"],
-XXXXbot_can_restrict_members=True,
-XXXXuser_can_restrict_members=True,
+cmds=["kick","skick"],
+bot_can_restrict_members=True,
+user_can_restrict_members=True,
 )
-@chat_connection(admin=True,Xonly_groups=True)
+@chat_connection(admin=True,only_groups=True)
 @get_user_and_text_dec()
 @get_strings_dec("restrictions")
-asyncXdefXkick_user_cmd(message,Xchat,Xuser,Xargs,Xstrings):
-XXXXchat_idX=Xchat["chat_id"]
-XXXXuser_idX=Xuser["user_id"]
+asyncdefkick_user_cmd(message,chat,user,args,strings):
+chat_id=chat["chat_id"]
+user_id=user["user_id"]
 
-XXXXifXuser_idX==XBOT_ID:
-XXXXXXXXawaitXmessage.reply(strings["kick_InerukiX"])
-XXXXXXXXreturn
+ifuser_id==BOT_ID:
+awaitmessage.reply(strings["kick_Ineruki"])
+return
 
-XXXXelifXuser_idX==Xmessage.from_user.id:
-XXXXXXXXawaitXmessage.reply(strings["kick_self"])
-XXXXXXXXreturn
+elifuser_id==message.from_user.id:
+awaitmessage.reply(strings["kick_self"])
+return
 
-XXXXelifXawaitXis_user_admin(chat_id,Xuser_id):
-XXXXXXXXawaitXmessage.reply(strings["kick_admin"])
-XXXXXXXXreturn
+elifawaitis_user_admin(chat_id,user_id):
+awaitmessage.reply(strings["kick_admin"])
+return
 
-XXXXtextX=Xstrings["user_kicked"].format(
-XXXXXXXXuser=awaitXget_user_link(user_id),
-XXXXXXXXadmin=awaitXget_user_link(message.from_user.id),
-XXXXXXXXchat_name=chat["chat_title"],
-XXXX)
+text=strings["user_kicked"].format(
+user=awaitget_user_link(user_id),
+admin=awaitget_user_link(message.from_user.id),
+chat_name=chat["chat_title"],
+)
 
-XXXX#XAddXreason
-XXXXifXargs:
-XXXXXXXXtextX+=Xstrings["reason"]X%Xargs
+#Addreason
+ifargs:
+text+=strings["reason"]%args
 
-XXXX#XCheckXifXsilent
-XXXXsilentX=XFalse
-XXXXifXget_cmd(message)X==X"skick":
-XXXXXXXXsilentX=XTrue
-XXXXXXXXkeyX=X"leave_silent:"X+Xstr(chat_id)
-XXXXXXXXredis.set(key,Xuser_id)
-XXXXXXXXredis.expire(key,X30)
-XXXXXXXXtextX+=Xstrings["purge"]
+#Checkifsilent
+silent=False
+ifget_cmd(message)=="skick":
+silent=True
+key="leave_silent:"+str(chat_id)
+redis.set(key,user_id)
+redis.expire(key,30)
+text+=strings["purge"]
 
-XXXXawaitXkick_user(chat_id,Xuser_id)
+awaitkick_user(chat_id,user_id)
 
-XXXXmsgX=XawaitXmessage.reply(text)
+msg=awaitmessage.reply(text)
 
-XXXX#XDelXmsgsXifXsilent
-XXXXifXsilent:
-XXXXXXXXto_delX=X[msg.message_id,Xmessage.message_id]
-XXXXXXXXifX(
-XXXXXXXXXXXX"reply_to_message"XinXmessage
-XXXXXXXXXXXXandXmessage.reply_to_message.from_user.idX==Xuser_id
-XXXXXXXX):
-XXXXXXXXXXXXto_del.append(message.reply_to_message.message_id)
-XXXXXXXXawaitXasyncio.sleep(5)
-XXXXXXXXawaitXtbot.delete_messages(chat_id,Xto_del)
+#Delmsgsifsilent
+ifsilent:
+to_del=[msg.message_id,message.message_id]
+if(
+"reply_to_message"inmessage
+andmessage.reply_to_message.from_user.id==user_id
+):
+to_del.append(message.reply_to_message.message_id)
+awaitasyncio.sleep(5)
+awaittbot.delete_messages(chat_id,to_del)
 
 
 @register(
-XXXXcmds=["mute",X"smute",X"tmute",X"stmute"],
-XXXXbot_can_restrict_members=True,
-XXXXuser_can_restrict_members=True,
+cmds=["mute","smute","tmute","stmute"],
+bot_can_restrict_members=True,
+user_can_restrict_members=True,
 )
-@chat_connection(admin=True,Xonly_groups=True)
+@chat_connection(admin=True,only_groups=True)
 @get_user_and_text_dec()
 @get_strings_dec("restrictions")
-asyncXdefXmute_user_cmd(message,Xchat,Xuser,Xargs,Xstrings):
-XXXXchat_idX=Xchat["chat_id"]
-XXXXuser_idX=Xuser["user_id"]
+asyncdefmute_user_cmd(message,chat,user,args,strings):
+chat_id=chat["chat_id"]
+user_id=user["user_id"]
 
-XXXXifXuser_idX==XBOT_ID:
-XXXXXXXXawaitXmessage.reply(strings["mute_InerukiX"])
-XXXXXXXXreturn
+ifuser_id==BOT_ID:
+awaitmessage.reply(strings["mute_Ineruki"])
+return
 
-XXXXelifXuser_idX==Xmessage.from_user.id:
-XXXXXXXXawaitXmessage.reply(strings["mute_self"])
-XXXXXXXXreturn
+elifuser_id==message.from_user.id:
+awaitmessage.reply(strings["mute_self"])
+return
 
-XXXXelifXawaitXis_user_admin(chat_id,Xuser_id):
-XXXXXXXXawaitXmessage.reply(strings["mute_admin"])
-XXXXXXXXreturn
+elifawaitis_user_admin(chat_id,user_id):
+awaitmessage.reply(strings["mute_admin"])
+return
 
-XXXXtextX=Xstrings["user_muted"].format(
-XXXXXXXXuser=awaitXget_user_link(user_id),
-XXXXXXXXadmin=awaitXget_user_link(message.from_user.id),
-XXXXXXXXchat_name=chat["chat_title"],
-XXXX)
+text=strings["user_muted"].format(
+user=awaitget_user_link(user_id),
+admin=awaitget_user_link(message.from_user.id),
+chat_name=chat["chat_title"],
+)
 
-XXXXcurr_cmdX=Xget_cmd(message)
+curr_cmd=get_cmd(message)
 
-XXXX#XCheckXifXtemprotary
-XXXXuntil_dateX=XNone
-XXXXifXcurr_cmdXinX("tmute",X"stmute"):
-XXXXXXXXifXargsXisXnotXNoneXandXlen(argsX:=Xargs.split())X>X0:
-XXXXXXXXXXXXtry:
-XXXXXXXXXXXXXXXXuntil_dateX=Xconvert_time(args[0])
-XXXXXXXXXXXXexceptX(InvalidTimeUnit,XTypeError,XValueError):
-XXXXXXXXXXXXXXXXawaitXmessage.reply(strings["invalid_time"])
-XXXXXXXXXXXXXXXXreturn
+#Checkiftemprotary
+until_date=None
+ifcurr_cmdin("tmute","stmute"):
+ifargsisnotNoneandlen(args:=args.split())>0:
+try:
+until_date=convert_time(args[0])
+except(InvalidTimeUnit,TypeError,ValueError):
+awaitmessage.reply(strings["invalid_time"])
+return
 
-XXXXXXXXXXXXtextX+=Xstrings["on_time"]X%Xformat_timedelta(
-XXXXXXXXXXXXXXXXuntil_date,Xlocale=strings["language_info"]["babel"]
-XXXXXXXXXXXX)
+text+=strings["on_time"]%format_timedelta(
+until_date,locale=strings["language_info"]["babel"]
+)
 
-XXXXXXXXXXXX#XAddXreason
-XXXXXXXXXXXXifXlen(args)X>X1:
-XXXXXXXXXXXXXXXXtextX+=Xstrings["reason"]X%X"X".join(args[1:])
-XXXXXXXXelse:
-XXXXXXXXXXXXawaitXmessage.reply(strings["enter_time"])
-XXXXXXXXXXXXreturn
-XXXXelse:
-XXXXXXXX#XAddXreason
-XXXXXXXXifXargsXisXnotXNoneXandXlen(argsX:=Xargs.split())X>X0:
-XXXXXXXXXXXXtextX+=Xstrings["reason"]X%X"X".join(args[0:])
+#Addreason
+iflen(args)>1:
+text+=strings["reason"]%"".join(args[1:])
+else:
+awaitmessage.reply(strings["enter_time"])
+return
+else:
+#Addreason
+ifargsisnotNoneandlen(args:=args.split())>0:
+text+=strings["reason"]%"".join(args[0:])
 
-XXXX#XCheckXifXsilent
-XXXXsilentX=XFalse
-XXXXifXcurr_cmdXinX("smute",X"stmute"):
-XXXXXXXXsilentX=XTrue
-XXXXXXXXkeyX=X"leave_silent:"X+Xstr(chat_id)
-XXXXXXXXredis.set(key,Xuser_id)
-XXXXXXXXredis.expire(key,X30)
-XXXXXXXXtextX+=Xstrings["purge"]
+#Checkifsilent
+silent=False
+ifcurr_cmdin("smute","stmute"):
+silent=True
+key="leave_silent:"+str(chat_id)
+redis.set(key,user_id)
+redis.expire(key,30)
+text+=strings["purge"]
 
-XXXXawaitXmute_user(chat_id,Xuser_id,Xuntil_date=until_date)
+awaitmute_user(chat_id,user_id,until_date=until_date)
 
-XXXXmsgX=XawaitXmessage.reply(text)
+msg=awaitmessage.reply(text)
 
-XXXX#XDelXmsgsXifXsilent
-XXXXifXsilent:
-XXXXXXXXto_delX=X[msg.message_id,Xmessage.message_id]
-XXXXXXXXifX(
-XXXXXXXXXXXX"reply_to_message"XinXmessage
-XXXXXXXXXXXXandXmessage.reply_to_message.from_user.idX==Xuser_id
-XXXXXXXX):
-XXXXXXXXXXXXto_del.append(message.reply_to_message.message_id)
-XXXXXXXXawaitXasyncio.sleep(5)
-XXXXXXXXawaitXtbot.delete_messages(chat_id,Xto_del)
+#Delmsgsifsilent
+ifsilent:
+to_del=[msg.message_id,message.message_id]
+if(
+"reply_to_message"inmessage
+andmessage.reply_to_message.from_user.id==user_id
+):
+to_del.append(message.reply_to_message.message_id)
+awaitasyncio.sleep(5)
+awaittbot.delete_messages(chat_id,to_del)
 
 
-@register(cmds="unmute",Xbot_can_restrict_members=True,Xuser_can_restrict_members=True)
-@chat_connection(admin=True,Xonly_groups=True)
+@register(cmds="unmute",bot_can_restrict_members=True,user_can_restrict_members=True)
+@chat_connection(admin=True,only_groups=True)
 @get_user_dec()
 @get_strings_dec("restrictions")
-asyncXdefXunmute_user_cmd(message,Xchat,Xuser,Xstrings):
-XXXXchat_idX=Xchat["chat_id"]
-XXXXuser_idX=Xuser["user_id"]
+asyncdefunmute_user_cmd(message,chat,user,strings):
+chat_id=chat["chat_id"]
+user_id=user["user_id"]
 
-XXXXifXuser_idX==XBOT_ID:
-XXXXXXXXawaitXmessage.reply(strings["unmute_InerukiX"])
-XXXXXXXXreturn
+ifuser_id==BOT_ID:
+awaitmessage.reply(strings["unmute_Ineruki"])
+return
 
-XXXXelifXuser_idX==Xmessage.from_user.id:
-XXXXXXXXawaitXmessage.reply(strings["unmute_self"])
-XXXXXXXXreturn
+elifuser_id==message.from_user.id:
+awaitmessage.reply(strings["unmute_self"])
+return
 
-XXXXelifXawaitXis_user_admin(chat_id,Xuser_id):
-XXXXXXXXawaitXmessage.reply(strings["unmute_admin"])
-XXXXXXXXreturn
+elifawaitis_user_admin(chat_id,user_id):
+awaitmessage.reply(strings["unmute_admin"])
+return
 
-XXXXawaitXunmute_user(chat_id,Xuser_id)
+awaitunmute_user(chat_id,user_id)
 
-XXXXtextX=Xstrings["user_unmuted"].format(
-XXXXXXXXuser=awaitXget_user_link(user_id),
-XXXXXXXXadmin=awaitXget_user_link(message.from_user.id),
-XXXXXXXXchat_name=chat["chat_title"],
-XXXX)
+text=strings["user_unmuted"].format(
+user=awaitget_user_link(user_id),
+admin=awaitget_user_link(message.from_user.id),
+chat_name=chat["chat_title"],
+)
 
-XXXXawaitXmessage.reply(text)
+awaitmessage.reply(text)
 
 
 @register(
-XXXXcmds=["ban",X"sban",X"tban",X"stban"],
-XXXXbot_can_restrict_members=True,
-XXXXuser_can_restrict_members=True,
+cmds=["ban","sban","tban","stban"],
+bot_can_restrict_members=True,
+user_can_restrict_members=True,
 )
-@chat_connection(admin=True,Xonly_groups=True)
+@chat_connection(admin=True,only_groups=True)
 @get_user_and_text_dec()
 @get_strings_dec("restrictions")
-asyncXdefXban_user_cmd(message,Xchat,Xuser,Xargs,Xstrings):
-XXXXchat_idX=Xchat["chat_id"]
-XXXXuser_idX=Xuser["user_id"]
+asyncdefban_user_cmd(message,chat,user,args,strings):
+chat_id=chat["chat_id"]
+user_id=user["user_id"]
 
-XXXXifXuser_idX==XBOT_ID:
-XXXXXXXXawaitXmessage.reply(strings["ban_InerukiX"])
-XXXXXXXXreturn
+ifuser_id==BOT_ID:
+awaitmessage.reply(strings["ban_Ineruki"])
+return
 
-XXXXelifXuser_idX==Xmessage.from_user.id:
-XXXXXXXXawaitXmessage.reply(strings["ban_self"])
-XXXXXXXXreturn
+elifuser_id==message.from_user.id:
+awaitmessage.reply(strings["ban_self"])
+return
 
-XXXXelifXawaitXis_user_admin(chat_id,Xuser_id):
-XXXXXXXXawaitXmessage.reply(strings["ban_admin"])
-XXXXXXXXreturn
+elifawaitis_user_admin(chat_id,user_id):
+awaitmessage.reply(strings["ban_admin"])
+return
 
-XXXXtextX=Xstrings["user_banned"].format(
-XXXXXXXXuser=awaitXget_user_link(user_id),
-XXXXXXXXadmin=awaitXget_user_link(message.from_user.id),
-XXXXXXXXchat_name=chat["chat_title"],
-XXXX)
+text=strings["user_banned"].format(
+user=awaitget_user_link(user_id),
+admin=awaitget_user_link(message.from_user.id),
+chat_name=chat["chat_title"],
+)
 
-XXXXcurr_cmdX=Xget_cmd(message)
+curr_cmd=get_cmd(message)
 
-XXXX#XCheckXifXtemprotary
-XXXXuntil_dateX=XNone
-XXXXifXcurr_cmdXinX("tban",X"stban"):
-XXXXXXXXifXargsXisXnotXNoneXandXlen(argsX:=Xargs.split())X>X0:
-XXXXXXXXXXXXtry:
-XXXXXXXXXXXXXXXXuntil_dateX=Xconvert_time(args[0])
-XXXXXXXXXXXXexceptX(InvalidTimeUnit,XTypeError,XValueError):
-XXXXXXXXXXXXXXXXawaitXmessage.reply(strings["invalid_time"])
-XXXXXXXXXXXXXXXXreturn
+#Checkiftemprotary
+until_date=None
+ifcurr_cmdin("tban","stban"):
+ifargsisnotNoneandlen(args:=args.split())>0:
+try:
+until_date=convert_time(args[0])
+except(InvalidTimeUnit,TypeError,ValueError):
+awaitmessage.reply(strings["invalid_time"])
+return
 
-XXXXXXXXXXXXtextX+=Xstrings["on_time"]X%Xformat_timedelta(
-XXXXXXXXXXXXXXXXuntil_date,Xlocale=strings["language_info"]["babel"]
-XXXXXXXXXXXX)
+text+=strings["on_time"]%format_timedelta(
+until_date,locale=strings["language_info"]["babel"]
+)
 
-XXXXXXXXXXXX#XAddXreason
-XXXXXXXXXXXXifXlen(args)X>X1:
-XXXXXXXXXXXXXXXXtextX+=Xstrings["reason"]X%X"X".join(args[1:])
-XXXXXXXXelse:
-XXXXXXXXXXXXawaitXmessage.reply(strings["enter_time"])
-XXXXXXXXXXXXreturn
-XXXXelse:
-XXXXXXXX#XAddXreason
-XXXXXXXXifXargsXisXnotXNoneXandXlen(argsX:=Xargs.split())X>X0:
-XXXXXXXXXXXXtextX+=Xstrings["reason"]X%X"X".join(args[0:])
+#Addreason
+iflen(args)>1:
+text+=strings["reason"]%"".join(args[1:])
+else:
+awaitmessage.reply(strings["enter_time"])
+return
+else:
+#Addreason
+ifargsisnotNoneandlen(args:=args.split())>0:
+text+=strings["reason"]%"".join(args[0:])
 
-XXXX#XCheckXifXsilent
-XXXXsilentX=XFalse
-XXXXifXcurr_cmdXinX("sban",X"stban"):
-XXXXXXXXsilentX=XTrue
-XXXXXXXXkeyX=X"leave_silent:"X+Xstr(chat_id)
-XXXXXXXXredis.set(key,Xuser_id)
-XXXXXXXXredis.expire(key,X30)
-XXXXXXXXtextX+=Xstrings["purge"]
+#Checkifsilent
+silent=False
+ifcurr_cmdin("sban","stban"):
+silent=True
+key="leave_silent:"+str(chat_id)
+redis.set(key,user_id)
+redis.expire(key,30)
+text+=strings["purge"]
 
-XXXXawaitXban_user(chat_id,Xuser_id,Xuntil_date=until_date)
+awaitban_user(chat_id,user_id,until_date=until_date)
 
-XXXXmsgX=XawaitXmessage.reply(text)
+msg=awaitmessage.reply(text)
 
-XXXX#XDelXmsgsXifXsilent
-XXXXifXsilent:
-XXXXXXXXto_delX=X[msg.message_id,Xmessage.message_id]
-XXXXXXXXifX(
-XXXXXXXXXXXX"reply_to_message"XinXmessage
-XXXXXXXXXXXXandXmessage.reply_to_message.from_user.idX==Xuser_id
-XXXXXXXX):
-XXXXXXXXXXXXto_del.append(message.reply_to_message.message_id)
-XXXXXXXXawaitXasyncio.sleep(5)
-XXXXXXXXawaitXtbot.delete_messages(chat_id,Xto_del)
+#Delmsgsifsilent
+ifsilent:
+to_del=[msg.message_id,message.message_id]
+if(
+"reply_to_message"inmessage
+andmessage.reply_to_message.from_user.id==user_id
+):
+to_del.append(message.reply_to_message.message_id)
+awaitasyncio.sleep(5)
+awaittbot.delete_messages(chat_id,to_del)
 
 
-@register(cmds="unban",Xbot_can_restrict_members=True,Xuser_can_restrict_members=True)
-@chat_connection(admin=True,Xonly_groups=True)
+@register(cmds="unban",bot_can_restrict_members=True,user_can_restrict_members=True)
+@chat_connection(admin=True,only_groups=True)
 @get_user_dec()
 @get_strings_dec("restrictions")
-asyncXdefXunban_user_cmd(message,Xchat,Xuser,Xstrings):
-XXXXchat_idX=Xchat["chat_id"]
-XXXXuser_idX=Xuser["user_id"]
+asyncdefunban_user_cmd(message,chat,user,strings):
+chat_id=chat["chat_id"]
+user_id=user["user_id"]
 
-XXXXifXuser_idX==XBOT_ID:
-XXXXXXXXawaitXmessage.reply(strings["unban_InerukiX"])
-XXXXXXXXreturn
+ifuser_id==BOT_ID:
+awaitmessage.reply(strings["unban_Ineruki"])
+return
 
-XXXXelifXuser_idX==Xmessage.from_user.id:
-XXXXXXXXawaitXmessage.reply(strings["unban_self"])
-XXXXXXXXreturn
+elifuser_id==message.from_user.id:
+awaitmessage.reply(strings["unban_self"])
+return
 
-XXXXelifXawaitXis_user_admin(chat_id,Xuser_id):
-XXXXXXXXawaitXmessage.reply(strings["unban_admin"])
-XXXXXXXXreturn
+elifawaitis_user_admin(chat_id,user_id):
+awaitmessage.reply(strings["unban_admin"])
+return
 
-XXXXawaitXunban_user(chat_id,Xuser_id)
+awaitunban_user(chat_id,user_id)
 
-XXXXtextX=Xstrings["user_unband"].format(
-XXXXXXXXuser=awaitXget_user_link(user_id),
-XXXXXXXXadmin=awaitXget_user_link(message.from_user.id),
-XXXXXXXXchat_name=chat["chat_title"],
-XXXX)
+text=strings["user_unband"].format(
+user=awaitget_user_link(user_id),
+admin=awaitget_user_link(message.from_user.id),
+chat_name=chat["chat_title"],
+)
 
-XXXXawaitXmessage.reply(text)
+awaitmessage.reply(text)
 
 
 @register(f="leave")
-asyncXdefXleave_silent(message):
-XXXXifXnotXmessage.from_user.idX==XBOT_ID:
-XXXXXXXXreturn
+asyncdefleave_silent(message):
+ifnotmessage.from_user.id==BOT_ID:
+return
 
-XXXXifXredis.get("leave_silent:"X+Xstr(message.chat.id))X==Xmessage.left_chat_member.id:
-XXXXXXXXawaitXmessage.delete()
-
-
-@get_strings_dec("restrictions")
-asyncXdefXfilter_handle_ban(message,Xchat,Xdata:Xdict,Xstrings=None):
-XXXXifXawaitXis_user_admin(chat["chat_id"],Xmessage.from_user.id):
-XXXXXXXXreturn
-XXXXifXawaitXban_user(chat["chat_id"],Xmessage.from_user.id):
-XXXXXXXXreasonX=Xdata.get("reason",XNone)XorXstrings["filter_action_rsn"]
-XXXXXXXXtextX=Xstrings["filtr_ban_success"]X%X(
-XXXXXXXXXXXXawaitXget_user_link(BOT_ID),
-XXXXXXXXXXXXawaitXget_user_link(message.from_user.id),
-XXXXXXXXXXXXreason,
-XXXXXXXX)
-XXXXXXXXawaitXbot.send_message(chat["chat_id"],Xtext)
+ifredis.get("leave_silent:"+str(message.chat.id))==message.left_chat_member.id:
+awaitmessage.delete()
 
 
 @get_strings_dec("restrictions")
-asyncXdefXfilter_handle_mute(message,Xchat,Xdata,Xstrings=None):
-XXXXifXawaitXis_user_admin(chat["chat_id"],Xmessage.from_user.id):
-XXXXXXXXreturn
-XXXXifXawaitXmute_user(chat["chat_id"],Xmessage.from_user.id):
-XXXXXXXXreasonX=Xdata.get("reason",XNone)XorXstrings["filter_action_rsn"]
-XXXXXXXXtextX=Xstrings["filtr_mute_success"]X%X(
-XXXXXXXXXXXXawaitXget_user_link(BOT_ID),
-XXXXXXXXXXXXawaitXget_user_link(message.from_user.id),
-XXXXXXXXXXXXreason,
-XXXXXXXX)
-XXXXXXXXawaitXbot.send_message(chat["chat_id"],Xtext)
+asyncdeffilter_handle_ban(message,chat,data:dict,strings=None):
+ifawaitis_user_admin(chat["chat_id"],message.from_user.id):
+return
+ifawaitban_user(chat["chat_id"],message.from_user.id):
+reason=data.get("reason",None)orstrings["filter_action_rsn"]
+text=strings["filtr_ban_success"]%(
+awaitget_user_link(BOT_ID),
+awaitget_user_link(message.from_user.id),
+reason,
+)
+awaitbot.send_message(chat["chat_id"],text)
 
 
 @get_strings_dec("restrictions")
-asyncXdefXfilter_handle_tmute(message,Xchat,Xdata,Xstrings=None):
-XXXXifXawaitXis_user_admin(chat["chat_id"],Xmessage.from_user.id):
-XXXXXXXXreturn
-XXXXifXawaitXmute_user(
-XXXXXXXXchat["chat_id"],Xmessage.from_user.id,Xuntil_date=eval(data["time"])
-XXXX):
-XXXXXXXXreasonX=Xdata.get("reason",XNone)XorXstrings["filter_action_rsn"]
-XXXXXXXXtimeX=Xformat_timedelta(
-XXXXXXXXXXXXeval(data["time"]),Xlocale=strings["language_info"]["babel"]
-XXXXXXXX)
-XXXXXXXXtextX=Xstrings["filtr_tmute_success"]X%X(
-XXXXXXXXXXXXawaitXget_user_link(BOT_ID),
-XXXXXXXXXXXXawaitXget_user_link(message.from_user.id),
-XXXXXXXXXXXXtime,
-XXXXXXXXXXXXreason,
-XXXXXXXX)
-XXXXXXXXawaitXbot.send_message(chat["chat_id"],Xtext)
+asyncdeffilter_handle_mute(message,chat,data,strings=None):
+ifawaitis_user_admin(chat["chat_id"],message.from_user.id):
+return
+ifawaitmute_user(chat["chat_id"],message.from_user.id):
+reason=data.get("reason",None)orstrings["filter_action_rsn"]
+text=strings["filtr_mute_success"]%(
+awaitget_user_link(BOT_ID),
+awaitget_user_link(message.from_user.id),
+reason,
+)
+awaitbot.send_message(chat["chat_id"],text)
 
 
 @get_strings_dec("restrictions")
-asyncXdefXfilter_handle_tban(message,Xchat,Xdata,Xstrings=None):
-XXXXifXawaitXis_user_admin(chat["chat_id"],Xmessage.from_user.id):
-XXXXXXXXreturn
-XXXXifXawaitXban_user(
-XXXXXXXXchat["chat_id"],Xmessage.from_user.id,Xuntil_date=eval(data["time"])
-XXXX):
-XXXXXXXXreasonX=Xdata.get("reason",XNone)XorXstrings["filter_action_rsn"]
-XXXXXXXXtimeX=Xformat_timedelta(
-XXXXXXXXXXXXeval(data["time"]),Xlocale=strings["language_info"]["babel"]
-XXXXXXXX)
-XXXXXXXXtextX=Xstrings["filtr_tban_success"]X%X(
-XXXXXXXXXXXXawaitXget_user_link(BOT_ID),
-XXXXXXXXXXXXawaitXget_user_link(message.from_user.id),
-XXXXXXXXXXXXtime,
-XXXXXXXXXXXXreason,
-XXXXXXXX)
-XXXXXXXXawaitXbot.send_message(chat["chat_id"],Xtext)
+asyncdeffilter_handle_tmute(message,chat,data,strings=None):
+ifawaitis_user_admin(chat["chat_id"],message.from_user.id):
+return
+ifawaitmute_user(
+chat["chat_id"],message.from_user.id,until_date=eval(data["time"])
+):
+reason=data.get("reason",None)orstrings["filter_action_rsn"]
+time=format_timedelta(
+eval(data["time"]),locale=strings["language_info"]["babel"]
+)
+text=strings["filtr_tmute_success"]%(
+awaitget_user_link(BOT_ID),
+awaitget_user_link(message.from_user.id),
+time,
+reason,
+)
+awaitbot.send_message(chat["chat_id"],text)
 
 
 @get_strings_dec("restrictions")
-asyncXdefXtime_setup_start(message,Xstrings):
-XXXXwithXsuppress(MessageNotModified):
-XXXXXXXXawaitXmessage.edit_text(strings["time_setup_start"])
+asyncdeffilter_handle_tban(message,chat,data,strings=None):
+ifawaitis_user_admin(chat["chat_id"],message.from_user.id):
+return
+ifawaitban_user(
+chat["chat_id"],message.from_user.id,until_date=eval(data["time"])
+):
+reason=data.get("reason",None)orstrings["filter_action_rsn"]
+time=format_timedelta(
+eval(data["time"]),locale=strings["language_info"]["babel"]
+)
+text=strings["filtr_tban_success"]%(
+awaitget_user_link(BOT_ID),
+awaitget_user_link(message.from_user.id),
+time,
+reason,
+)
+awaitbot.send_message(chat["chat_id"],text)
 
 
 @get_strings_dec("restrictions")
-asyncXdefXtime_setup_finish(message,Xdata,Xstrings):
-XXXXtry:
-XXXXXXXXtimeX=Xconvert_time(message.text)
-XXXXexceptX(InvalidTimeUnit,XTypeError,XValueError):
-XXXXXXXXawaitXmessage.reply(strings["invalid_time"])
-XXXXXXXXreturnXNone
-XXXXelse:
-XXXXXXXXreturnX{"time":Xrepr(time)}
+asyncdeftime_setup_start(message,strings):
+withsuppress(MessageNotModified):
+awaitmessage.edit_text(strings["time_setup_start"])
 
 
 @get_strings_dec("restrictions")
-asyncXdefXfilter_handle_kick(message,Xchat,Xdata,Xstrings=None):
-XXXXifXawaitXis_user_admin(chat["chat_id"],Xmessage.from_user.id):
-XXXXXXXXreturn
-XXXXifXawaitXkick_user(chat["chat_id"],Xmessage.from_user.id):
-XXXXXXXXawaitXbot.send_message(
-XXXXXXXXXXXXchat["chat_id"],
-XXXXXXXXXXXXstrings["user_kicked"].format(
-XXXXXXXXXXXXXXXXuser=awaitXget_user_link(message.from_user.id),
-XXXXXXXXXXXXXXXXadmin=awaitXget_user_link(BOT_ID),
-XXXXXXXXXXXXXXXXchat_name=chat["chat_title"],
-XXXXXXXXXXXX),
-XXXXXXXX)
+asyncdeftime_setup_finish(message,data,strings):
+try:
+time=convert_time(message.text)
+except(InvalidTimeUnit,TypeError,ValueError):
+awaitmessage.reply(strings["invalid_time"])
+returnNone
+else:
+return{"time":repr(time)}
 
 
-__filters__X=X{
-XXXX"ban_user":X{
-XXXXXXXX"title":X{"module":X"restrictions",X"string":X"filter_title_ban"},
-XXXXXXXX"setup":X{"start":Xcustomise_reason_start,X"finish":Xcustomise_reason_finish},
-XXXXXXXX"handle":Xfilter_handle_ban,
-XXXX},
-XXXX"mute_user":X{
-XXXXXXXX"title":X{"module":X"restrictions",X"string":X"filter_title_mute"},
-XXXXXXXX"setup":X{"start":Xcustomise_reason_start,X"finish":Xcustomise_reason_finish},
-XXXXXXXX"handle":Xfilter_handle_mute,
-XXXX},
-XXXX"tmute_user":X{
-XXXXXXXX"title":X{"module":X"restrictions",X"string":X"filter_title_tmute"},
-XXXXXXXX"handle":Xfilter_handle_tmute,
-XXXXXXXX"setup":X[
-XXXXXXXXXXXX{"start":Xtime_setup_start,X"finish":Xtime_setup_finish},
-XXXXXXXXXXXX{"start":Xcustomise_reason_start,X"finish":Xcustomise_reason_finish},
-XXXXXXXX],
-XXXX},
-XXXX"tban_user":X{
-XXXXXXXX"title":X{"module":X"restrictions",X"string":X"filter_title_tban"},
-XXXXXXXX"handle":Xfilter_handle_tban,
-XXXXXXXX"setup":X[
-XXXXXXXXXXXX{"start":Xtime_setup_start,X"finish":Xtime_setup_finish},
-XXXXXXXXXXXX{"start":Xcustomise_reason_start,X"finish":Xcustomise_reason_finish},
-XXXXXXXX],
-XXXX},
-XXXX"kick_user":X{
-XXXXXXXX"title":X{"module":X"restrictions",X"string":X"filter_title_kick"},
-XXXXXXXX"handle":Xfilter_handle_kick,
-XXXX},
+@get_strings_dec("restrictions")
+asyncdeffilter_handle_kick(message,chat,data,strings=None):
+ifawaitis_user_admin(chat["chat_id"],message.from_user.id):
+return
+ifawaitkick_user(chat["chat_id"],message.from_user.id):
+awaitbot.send_message(
+chat["chat_id"],
+strings["user_kicked"].format(
+user=awaitget_user_link(message.from_user.id),
+admin=awaitget_user_link(BOT_ID),
+chat_name=chat["chat_title"],
+),
+)
+
+
+__filters__={
+"ban_user":{
+"title":{"module":"restrictions","string":"filter_title_ban"},
+"setup":{"start":customise_reason_start,"finish":customise_reason_finish},
+"handle":filter_handle_ban,
+},
+"mute_user":{
+"title":{"module":"restrictions","string":"filter_title_mute"},
+"setup":{"start":customise_reason_start,"finish":customise_reason_finish},
+"handle":filter_handle_mute,
+},
+"tmute_user":{
+"title":{"module":"restrictions","string":"filter_title_tmute"},
+"handle":filter_handle_tmute,
+"setup":[
+{"start":time_setup_start,"finish":time_setup_finish},
+{"start":customise_reason_start,"finish":customise_reason_finish},
+],
+},
+"tban_user":{
+"title":{"module":"restrictions","string":"filter_title_tban"},
+"handle":filter_handle_tban,
+"setup":[
+{"start":time_setup_start,"finish":time_setup_finish},
+{"start":customise_reason_start,"finish":customise_reason_finish},
+],
+},
+"kick_user":{
+"title":{"module":"restrictions","string":"filter_title_kick"},
+"handle":filter_handle_kick,
+},
 }
 
 
-__mod_name__X=X"Restrictions"
+__mod_name__="Restrictions"
 
-__help__X=X"""
-GeneralXadmin'sXrightsXisXrestrictXusersXandXcontrolXtheirXrulesXwithXthisXmoduleXyouXcanXeaselyXdoXit.
+__help__="""
+Generaladmin'srightsisrestrictusersandcontroltheirruleswiththismoduleyoucaneaselydoit.
 
-<b>AvailableXcommands:</b>
+<b>Availablecommands:</b>
 <b>Kicks:</b>
--X/kick:XKicksXaXuser
--X/skick:XSilentlyXkicks
+-/kick:Kicksauser
+-/skick:Silentlykicks
 
 <b>Mutes:</b>
--X/mute:XMutesXaXuser
--X/smute:XSilentlyXmutes
--X/tmuteX(time):XTemprotaryXmuteXaXuser
--X/stmuteX(time):XSilentlyXtemprotaryXmuteXaXuser
--X/unmute:XUnmutesXtheXuser
+-/mute:Mutesauser
+-/smute:Silentlymutes
+-/tmute(time):Temprotarymuteauser
+-/stmute(time):Silentlytemprotarymuteauser
+-/unmute:Unmutestheuser
 
 <b>Bans:</b>
--X/ban:XBansXaXuser
--X/sban:XSilentlyXbans
--X/tbanX(time):XTemprotaryXbanXaXuser
--/stbanX(time):XSilentlyXtemprotaryXbanXaXuser
--X/unban:XUnbansXtheXuser
+-/ban:Bansauser
+-/sban:Silentlybans
+-/tban(time):Temprotarybanauser
+-/stban(time):Silentlytemprotarybanauser
+-/unban:Unbanstheuser
 
 <b>Examples:</b>
-<code>-XMuteXaXuserXforXtwoXhours.
-->X/tmuteX@usernameX2h</code>
+<code>-Muteauserfortwohours.
+->/tmute@username2h</code>
 
 
 """

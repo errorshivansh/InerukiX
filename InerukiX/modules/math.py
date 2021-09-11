@@ -1,182 +1,182 @@
-#XWrittenXbyXerrorshivanshXforXtheXInerukiXproject
-#XThisXfileXisXpartXofXInerukiXBotX(TelegramXBot)
+#WrittenbyerrorshivanshfortheInerukiproject
+#ThisfileispartofInerukiBot(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
-
-
-importXjson
-importXmath
-
-importXrequests
-
-fromXInerukiX.decoratorXimportXregister
-
-fromX.utils.disableXimportXdisableable_dec
-fromX.utils.messageXimportXget_args_str
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
 
-@register(cmds=["math",X"simplify"])
+importjson
+importmath
+
+importrequests
+
+fromIneruki.decoratorimportregister
+
+from.utils.disableimportdisableable_dec
+from.utils.messageimportget_args_str
+
+
+@register(cmds=["math","simplify"])
 @disableable_dec("math")
-asyncXdefX_(message):
-XXXXargsX=Xget_args_str(message)
-XXXXresponseX=Xrequests.get(f"https://newton.now.sh/api/v2/simplify/{args}")
-XXXXcX=Xresponse.text
-XXXXobjX=Xjson.loads(c)
-XXXXjX=Xobj["result"]
-XXXXawaitXmessage.reply(j)
+asyncdef_(message):
+args=get_args_str(message)
+response=requests.get(f"https://newton.now.sh/api/v2/simplify/{args}")
+c=response.text
+obj=json.loads(c)
+j=obj["result"]
+awaitmessage.reply(j)
 
 
-@register(cmds=["factor",X"factorize"])
+@register(cmds=["factor","factorize"])
 @disableable_dec("factor")
-asyncXdefX_(message):
-XXXXargsX=Xget_args_str(message)
-XXXXresponseX=Xrequests.get(f"https://newton.now.sh/api/v2/factor/{args}")
-XXXXcX=Xresponse.text
-XXXXobjX=Xjson.loads(c)
-XXXXjX=Xobj["result"]
-XXXXawaitXmessage.reply(j)
+asyncdef_(message):
+args=get_args_str(message)
+response=requests.get(f"https://newton.now.sh/api/v2/factor/{args}")
+c=response.text
+obj=json.loads(c)
+j=obj["result"]
+awaitmessage.reply(j)
 
 
 @register(cmds="derive")
 @disableable_dec("derive")
-asyncXdefX_(message):
-XXXXargsX=Xget_args_str(message)
-XXXXresponseX=Xrequests.get(f"https://newton.now.sh/api/v2/derive/{args}")
-XXXXcX=Xresponse.text
-XXXXobjX=Xjson.loads(c)
-XXXXjX=Xobj["result"]
-XXXXawaitXmessage.reply(j)
+asyncdef_(message):
+args=get_args_str(message)
+response=requests.get(f"https://newton.now.sh/api/v2/derive/{args}")
+c=response.text
+obj=json.loads(c)
+j=obj["result"]
+awaitmessage.reply(j)
 
 
 @register(cmds="integrate")
 @disableable_dec("integrate")
-asyncXdefX_(message):
-XXXXargsX=Xget_args_str(message)
-XXXXresponseX=Xrequests.get(f"https://newton.now.sh/api/v2/integrate/{args}")
-XXXXcX=Xresponse.text
-XXXXobjX=Xjson.loads(c)
-XXXXjX=Xobj["result"]
-XXXXawaitXmessage.reply(j)
+asyncdef_(message):
+args=get_args_str(message)
+response=requests.get(f"https://newton.now.sh/api/v2/integrate/{args}")
+c=response.text
+obj=json.loads(c)
+j=obj["result"]
+awaitmessage.reply(j)
 
 
 @register(cmds="zeroes")
 @disableable_dec("zeroes")
-asyncXdefX_(message):
-XXXXargsX=Xget_args_str(message)
-XXXXresponseX=Xrequests.get(f"https://newton.now.sh/api/v2/zeroes/{args}")
-XXXXcX=Xresponse.text
-XXXXobjX=Xjson.loads(c)
-XXXXjX=Xobj["result"]
-XXXXawaitXmessage.reply(j)
+asyncdef_(message):
+args=get_args_str(message)
+response=requests.get(f"https://newton.now.sh/api/v2/zeroes/{args}")
+c=response.text
+obj=json.loads(c)
+j=obj["result"]
+awaitmessage.reply(j)
 
 
 @register(cmds="tangent")
 @disableable_dec("tangent")
-asyncXdefX_(message):
-XXXXargsX=Xget_args_str(message)
-XXXXresponseX=Xrequests.get(f"https://newton.now.sh/api/v2/tangent/{args}")
-XXXXcX=Xresponse.text
-XXXXobjX=Xjson.loads(c)
-XXXXjX=Xobj["result"]
-XXXXawaitXmessage.reply(j)
+asyncdef_(message):
+args=get_args_str(message)
+response=requests.get(f"https://newton.now.sh/api/v2/tangent/{args}")
+c=response.text
+obj=json.loads(c)
+j=obj["result"]
+awaitmessage.reply(j)
 
 
 @register(cmds="area")
 @disableable_dec("area")
-asyncXdefX_(message):
-XXXXargsX=Xget_args_str(message)
-XXXXresponseX=Xrequests.get(f"https://newton.now.sh/api/v2/area/{args}")
-XXXXcX=Xresponse.text
-XXXXobjX=Xjson.loads(c)
-XXXXjX=Xobj["result"]
-XXXXawaitXmessage.reply(j)
+asyncdef_(message):
+args=get_args_str(message)
+response=requests.get(f"https://newton.now.sh/api/v2/area/{args}")
+c=response.text
+obj=json.loads(c)
+j=obj["result"]
+awaitmessage.reply(j)
 
 
 @register(cmds="cos")
 @disableable_dec("cos")
-asyncXdefX_(message):
-XXXXargsX=Xget_args_str(message)
-XXXXawaitXmessage.reply(str(math.cos(int(args))))
+asyncdef_(message):
+args=get_args_str(message)
+awaitmessage.reply(str(math.cos(int(args))))
 
 
 @register(cmds="sin")
 @disableable_dec("sin")
-asyncXdefX_(message):
-XXXXargsX=Xget_args_str(message)
-XXXXawaitXmessage.reply(str(math.sin(int(args))))
+asyncdef_(message):
+args=get_args_str(message)
+awaitmessage.reply(str(math.sin(int(args))))
 
 
 @register(cmds="tan")
 @disableable_dec("tan")
-asyncXdefX_(message):
-XXXXargsX=Xget_args_str(message)
-XXXXawaitXmessage.reply(str(math.tan(int(args))))
+asyncdef_(message):
+args=get_args_str(message)
+awaitmessage.reply(str(math.tan(int(args))))
 
 
 @register(cmds="arccos")
 @disableable_dec("arccos")
-asyncXdefX_(message):
-XXXXargsX=Xget_args_str(message)
-XXXXawaitXmessage.reply(str(math.acos(int(args))))
+asyncdef_(message):
+args=get_args_str(message)
+awaitmessage.reply(str(math.acos(int(args))))
 
 
 @register(cmds="arcsin")
 @disableable_dec("arcsin")
-asyncXdefX_(message):
-XXXXargsX=Xget_args_str(message)
-XXXXawaitXmessage.reply(str(math.asin(int(args))))
+asyncdef_(message):
+args=get_args_str(message)
+awaitmessage.reply(str(math.asin(int(args))))
 
 
 @register(cmds="arctan")
 @disableable_dec("arctan")
-asyncXdefX_(message):
-XXXXargsX=Xget_args_str(message)
-XXXXawaitXmessage.reply(str(math.atan(int(args))))
+asyncdef_(message):
+args=get_args_str(message)
+awaitmessage.reply(str(math.atan(int(args))))
 
 
 @register(cmds="abs")
 @disableable_dec("abs")
-asyncXdefX_(message):
-XXXXargsX=Xget_args_str(message)
-XXXXawaitXmessage.reply(str(math.fabs(int(args))))
+asyncdef_(message):
+args=get_args_str(message)
+awaitmessage.reply(str(math.fabs(int(args))))
 
 
 @register(cmds="log")
 @disableable_dec("log")
-asyncXdefX_(message):
-XXXXargsX=Xget_args_str(message)
-XXXXawaitXmessage.reply(str(math.log(int(args))))
+asyncdef_(message):
+args=get_args_str(message)
+awaitmessage.reply(str(math.log(int(args))))
 
 
-__help__X=X"""
-SolvesXcomplexXmathXproblemsXusingXhttps://newton.now.shXandXpythonXmathXmodule
-X-X/simplify-XMathX/mathX2^2+2(2)
-X-X/factorX-XFactorX/factorXx^2X+X2x
-X-X/deriveX-XDeriveX/deriveXx^2+2x
-X-X/integrateX-XIntegrateX/integrateXx^2+2x
-X-X/zeroesX-XFindX0'sX/zeroesXx^2+2x
-X-X/tangentX-XFindXTangentX/tangentX2lx^
-X-X/areaX-XAreaXUnderXCurveX/areaX2:4lx^3`
-X-X/cosX-XCosineX/cosXpi
-X-X/sinX-XSineX/sinX0
-X-X/tanX-XTangentX/tanX0
-X-X/arccosX-XInverseXCosineX/arccosX1
-X-X/arcsinX-XInverseXSineX/arcsinX0
-X-X/arctanX-XInverseXTangentX/arctanX0
-X-X/absX-XAbsoluteXValueX/absX-1
-X-X/log*X-XLogarithmX/logX2l8
-X
-KeepXinXmind,XToXfindXtheXtangentXlineXofXaXfunctionXatXaXcertainXxXvalue,XsendXtheXrequestXasXc|f(x)XwhereXcXisXtheXgivenXxXvalueXandXf(x)XisXtheXfunctionXexpression,XtheXseparatorXisXaXverticalXbarX'|'.XSeeXtheXtableXaboveXforXanXexampleXrequest.
-ToXfindXtheXareaXunderXaXfunction,XsendXtheXrequestXasXc:d|f(x)XwhereXcXisXtheXstartingXxXvalue,XdXisXtheXendingXxXvalue,XandXf(x)XisXtheXfunctionXunderXwhichXyouXwantXtheXcurveXbetweenXtheXtwoXxXvalues.
-ToXcomputeXfractions,XenterXexpressionsXasXnumerator(over)denominator.XForXexample,XtoXprocessX2/4XyouXmustXsendXinXyourXexpressionXasX2(over)4.XTheXresultXexpressionXwillXbeXinXstandardXmathXnotationX(1/2,X3/4).
+__help__="""
+Solvescomplexmathproblemsusinghttps://newton.now.shandpythonmathmodule
+-/simplify-Math/math2^2+2(2)
+-/factor-Factor/factorx^2+2x
+-/derive-Derive/derivex^2+2x
+-/integrate-Integrate/integratex^2+2x
+-/zeroes-Find0's/zeroesx^2+2x
+-/tangent-FindTangent/tangent2lx^
+-/area-AreaUnderCurve/area2:4lx^3`
+-/cos-Cosine/cospi
+-/sin-Sine/sin0
+-/tan-Tangent/tan0
+-/arccos-InverseCosine/arccos1
+-/arcsin-InverseSine/arcsin0
+-/arctan-InverseTangent/arctan0
+-/abs-AbsoluteValue/abs-1
+-/log*-Logarithm/log2l8
+
+Keepinmind,Tofindthetangentlineofafunctionatacertainxvalue,sendtherequestasc|f(x)wherecisthegivenxvalueandf(x)isthefunctionexpression,theseparatorisaverticalbar'|'.Seethetableaboveforanexamplerequest.
+Tofindtheareaunderafunction,sendtherequestasc:d|f(x)wherecisthestartingxvalue,distheendingxvalue,andf(x)isthefunctionunderwhichyouwantthecurvebetweenthetwoxvalues.
+Tocomputefractions,enterexpressionsasnumerator(over)denominator.Forexample,toprocess2/4youmustsendinyourexpressionas2(over)4.Theresultexpressionwillbeinstandardmathnotation(1/2,3/4).
 """
 
-__mod_name__X=X"Maths"
+__mod_name__="Maths"

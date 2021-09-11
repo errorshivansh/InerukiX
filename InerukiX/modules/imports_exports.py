@@ -1,174 +1,174 @@
-#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
-#XCopyrightX(C)X2021Xerrorshivansh
-#XCopyrightX(C)X2020XInukaXAsith
+#Copyright(C)2018-2020MrYacha.Allrightsreserved.SourcecodeavailableundertheAGPL.
+#Copyright(C)2021errorshivansh
+#Copyright(C)2020InukaAsith
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXasyncio
-importXio
-fromXdatetimeXimportXdatetime,Xtimedelta
+importasyncio
+importio
+fromdatetimeimportdatetime,timedelta
 
-importXrapidjson
-fromXaiogramXimportXtypes
-fromXaiogram.dispatcher.filters.stateXimportXState,XStatesGroup
-fromXaiogram.types.input_fileXimportXInputFile
-fromXbabel.datesXimportXformat_timedelta
+importrapidjson
+fromaiogramimporttypes
+fromaiogram.dispatcher.filters.stateimportState,StatesGroup
+fromaiogram.types.input_fileimportInputFile
+frombabel.datesimportformat_timedelta
 
-fromXInerukiXXimportXOPERATORS,Xbot
-fromXInerukiX.decoratorXimportXregister
-fromXInerukiX.services.redisXimportXredis
+fromInerukiimportOPERATORS,bot
+fromIneruki.decoratorimportregister
+fromIneruki.services.redisimportredis
 
-fromX.XimportXLOADED_MODULES
-fromX.utils.connectionsXimportXchat_connection
-fromX.utils.languageXimportXget_strings_dec
+from.importLOADED_MODULES
+from.utils.connectionsimportchat_connection
+from.utils.languageimportget_strings_dec
 
-VERSIONX=X5
-
-
-#XWaitingXforXimportXfileXstate
-classXImportFileWait(StatesGroup):
-XXXXwaitingX=XState()
+VERSION=5
 
 
-@register(cmds="export",Xuser_admin=True)
-@chat_connection(admin=True,Xonly_groups=True)
+#Waitingforimportfilestate
+classImportFileWait(StatesGroup):
+waiting=State()
+
+
+@register(cmds="export",user_admin=True)
+@chat_connection(admin=True,only_groups=True)
 @get_strings_dec("imports_exports")
-asyncXdefXexport_chat_data(message,Xchat,Xstrings):
-XXXXchat_idX=Xchat["chat_id"]
-XXXXkeyX=X"export_lock:"X+Xstr(chat_id)
-XXXXifXredis.get(key)XandXmessage.from_user.idXnotXinXOPERATORS:
-XXXXXXXXttlX=Xformat_timedelta(
-XXXXXXXXXXXXtimedelta(seconds=redis.ttl(key)),Xstrings["language_info"]["babel"]
-XXXXXXXX)
-XXXXXXXXawaitXmessage.reply(strings["exports_locked"]X%Xttl)
-XXXXXXXXreturn
+asyncdefexport_chat_data(message,chat,strings):
+chat_id=chat["chat_id"]
+key="export_lock:"+str(chat_id)
+ifredis.get(key)andmessage.from_user.idnotinOPERATORS:
+ttl=format_timedelta(
+timedelta(seconds=redis.ttl(key)),strings["language_info"]["babel"]
+)
+awaitmessage.reply(strings["exports_locked"]%ttl)
+return
 
-XXXXredis.set(key,X1)
-XXXXredis.expire(key,X7200)
+redis.set(key,1)
+redis.expire(key,7200)
 
-XXXXmsgX=XawaitXmessage.reply(strings["started_exporting"])
-XXXXdataX=X{
-XXXXXXXX"general":X{
-XXXXXXXXXXXX"chat_name":Xchat["chat_title"],
-XXXXXXXXXXXX"chat_id":Xchat_id,
-XXXXXXXXXXXX"date":Xdatetime.now().strftime("%Y-%m-%dX%H:%M:%S"),
-XXXXXXXXXXXX"version":XVERSION,
-XXXXXXXX}
-XXXX}
+msg=awaitmessage.reply(strings["started_exporting"])
+data={
+"general":{
+"chat_name":chat["chat_title"],
+"chat_id":chat_id,
+"date":datetime.now().strftime("%Y-%m-%d%H:%M:%S"),
+"version":VERSION,
+}
+}
 
-XXXXforXmoduleXinX[mXforXmXinXLOADED_MODULESXifXhasattr(m,X"__export__")]:
-XXXXXXXXawaitXasyncio.sleep(0)XX#XSwitchXtoXotherXeventsXbeforeXcontinue
-XXXXXXXXifXkX:=XawaitXmodule.__export__(chat_id):
-XXXXXXXXXXXXdata.update(k)
+formodulein[mforminLOADED_MODULESifhasattr(m,"__export__")]:
+awaitasyncio.sleep(0)#Switchtoothereventsbeforecontinue
+ifk:=awaitmodule.__export__(chat_id):
+data.update(k)
 
-XXXXjfileX=XInputFile(
-XXXXXXXXio.StringIO(rapidjson.dumps(data,Xindent=2)),Xfilename=f"{chat_id}_export.json"
-XXXX)
-XXXXtextX=Xstrings["export_done"].format(chat_name=chat["chat_title"])
-XXXXawaitXmessage.answer_document(jfile,Xtext,Xreply=message.message_id)
-XXXXawaitXmsg.delete()
+jfile=InputFile(
+io.StringIO(rapidjson.dumps(data,indent=2)),filename=f"{chat_id}_export.json"
+)
+text=strings["export_done"].format(chat_name=chat["chat_title"])
+awaitmessage.answer_document(jfile,text,reply=message.message_id)
+awaitmsg.delete()
 
 
-@register(cmds="import",Xuser_admin=True)
+@register(cmds="import",user_admin=True)
 @get_strings_dec("imports_exports")
-asyncXdefXimport_reply(message,Xstrings):
-XXXXifX"document"XinXmessage:
-XXXXXXXXdocumentX=Xmessage.document
-XXXXelse:
-XXXXXXXXifX"reply_to_message"XnotXinXmessage:
-XXXXXXXXXXXXawaitXImportFileWait.waiting.set()
-XXXXXXXXXXXXawaitXmessage.reply(strings["send_import_file"])
-XXXXXXXXXXXXreturn
+asyncdefimport_reply(message,strings):
+if"document"inmessage:
+document=message.document
+else:
+if"reply_to_message"notinmessage:
+awaitImportFileWait.waiting.set()
+awaitmessage.reply(strings["send_import_file"])
+return
 
-XXXXXXXXelifX"document"XnotXinXmessage.reply_to_message:
-XXXXXXXXXXXXawaitXmessage.reply(strings["rpl_to_file"])
-XXXXXXXXXXXXreturn
-XXXXXXXXdocumentX=Xmessage.reply_to_message.document
+elif"document"notinmessage.reply_to_message:
+awaitmessage.reply(strings["rpl_to_file"])
+return
+document=message.reply_to_message.document
 
-XXXXawaitXimport_fun(message,Xdocument)
+awaitimport_fun(message,document)
 
 
 @register(
-XXXXstate=ImportFileWait.waiting,
-XXXXcontent_types=types.ContentTypes.DOCUMENT,
-XXXXallow_kwargs=True,
+state=ImportFileWait.waiting,
+content_types=types.ContentTypes.DOCUMENT,
+allow_kwargs=True,
 )
-asyncXdefXimport_state(message,Xstate=None,X**kwargs):
-XXXXawaitXimport_fun(message,Xmessage.document)
-XXXXawaitXstate.finish()
+asyncdefimport_state(message,state=None,**kwargs):
+awaitimport_fun(message,message.document)
+awaitstate.finish()
 
 
-@chat_connection(admin=True,Xonly_groups=True)
+@chat_connection(admin=True,only_groups=True)
 @get_strings_dec("imports_exports")
-asyncXdefXimport_fun(message,Xdocument,Xchat,Xstrings):
-XXXXchat_idX=Xchat["chat_id"]
-XXXXkeyX=X"import_lock:"X+Xstr(chat_id)
-XXXXifXredis.get(key)XandXmessage.from_user.idXnotXinXOPERATORS:
-XXXXXXXXttlX=Xformat_timedelta(
-XXXXXXXXXXXXtimedelta(seconds=redis.ttl(key)),Xstrings["language_info"]["babel"]
-XXXXXXXX)
-XXXXXXXXawaitXmessage.reply(strings["imports_locked"]X%Xttl)
-XXXXXXXXreturn
+asyncdefimport_fun(message,document,chat,strings):
+chat_id=chat["chat_id"]
+key="import_lock:"+str(chat_id)
+ifredis.get(key)andmessage.from_user.idnotinOPERATORS:
+ttl=format_timedelta(
+timedelta(seconds=redis.ttl(key)),strings["language_info"]["babel"]
+)
+awaitmessage.reply(strings["imports_locked"]%ttl)
+return
 
-XXXXredis.set(key,X1)
-XXXXredis.expire(key,X7200)
+redis.set(key,1)
+redis.expire(key,7200)
 
-XXXXmsgX=XawaitXmessage.reply(strings["started_importing"])
-XXXXifXdocument["file_size"]X>X52428800:
-XXXXXXXXawaitXmessage.reply(strings["big_file"])
-XXXXXXXXreturn
-XXXXdataX=XawaitXbot.download_file_by_id(document.file_id,Xio.BytesIO())
-XXXXtry:
-XXXXXXXXdataX=Xrapidjson.load(data)
-XXXXexceptXValueError:
-XXXXXXXXreturnXawaitXmessage.reply(strings["invalid_file"])
+msg=awaitmessage.reply(strings["started_importing"])
+ifdocument["file_size"]>52428800:
+awaitmessage.reply(strings["big_file"])
+return
+data=awaitbot.download_file_by_id(document.file_id,io.BytesIO())
+try:
+data=rapidjson.load(data)
+exceptValueError:
+returnawaitmessage.reply(strings["invalid_file"])
 
-XXXXifX"general"XnotXinXdata:
-XXXXXXXXawaitXmessage.reply(strings["bad_file"])
-XXXXXXXXreturn
+if"general"notindata:
+awaitmessage.reply(strings["bad_file"])
+return
 
-XXXXfile_versionX=Xdata["general"]["version"]
+file_version=data["general"]["version"]
 
-XXXXifXfile_versionX>XVERSION:
-XXXXXXXXawaitXmessage.reply(strings["file_version_so_new"])
-XXXXXXXXreturn
+iffile_version>VERSION:
+awaitmessage.reply(strings["file_version_so_new"])
+return
 
-XXXXimportedX=X[]
-XXXXforXmoduleXinX[mXforXmXinXLOADED_MODULESXifXhasattr(m,X"__import__")]:
-XXXXXXXXmodule_nameX=Xmodule.__name__.replace("InerukiX.modules.",X"")
-XXXXXXXXifXmodule_nameXnotXinXdata:
-XXXXXXXXXXXXcontinue
-XXXXXXXXifXnotXdata[module_name]:
-XXXXXXXXXXXXcontinue
+imported=[]
+formodulein[mforminLOADED_MODULESifhasattr(m,"__import__")]:
+module_name=module.__name__.replace("Ineruki.modules.","")
+ifmodule_namenotindata:
+continue
+ifnotdata[module_name]:
+continue
 
-XXXXXXXXimported.append(module_name)
-XXXXXXXXawaitXasyncio.sleep(0)XX#XSwitchXtoXotherXeventsXbeforeXcontinue
-XXXXXXXXawaitXmodule.__import__(chat_id,Xdata[module_name])
+imported.append(module_name)
+awaitasyncio.sleep(0)#Switchtoothereventsbeforecontinue
+awaitmodule.__import__(chat_id,data[module_name])
 
-XXXXawaitXmsg.edit_text(strings["import_done"])
+awaitmsg.edit_text(strings["import_done"])
 
 
-__mod_name__X=X"Backups"
+__mod_name__="Backups"
 
-__help__X=X"""
-SometimesXyouXwantXtoXseeXallXofXyourXdataXinXyourXchatsXorXyouXwantXtoXcopyXyourXdataXtoXanotherXchatsXorXyouXevenXwantXtoXswiftXbots,XinXallXtheseXcasesXimports/exportsXforXyou!
+__help__="""
+Sometimesyouwanttoseeallofyourdatainyourchatsoryouwanttocopyyourdatatoanotherchatsoryouevenwanttoswiftbots,inallthesecasesimports/exportsforyou!
 
-<b>AvailableXcommands:</b>
--X/export:XExportXchat'sXdataXtoXJSONXfile
--X/import:XImportXJSONXfileXtoXchat
+<b>Availablecommands:</b>
+-/export:Exportchat'sdatatoJSONfile
+-/import:ImportJSONfiletochat
 
-<b>Notes:</b>XExportingX/XimportingXavaibleXeveryX2XhoursXtoXpreventXflooding.
+<b>Notes:</b>Exporting/importingavaibleevery2hourstopreventflooding.
 """

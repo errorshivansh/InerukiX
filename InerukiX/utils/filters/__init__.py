@@ -1,33 +1,33 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXglob
-importXos.path
-
-
-defXlist_all_filters():
-XXXXmod_pathsX=Xglob.glob(os.path.dirname(__file__)X+X"/*.py")
-XXXXall_filtersX=X[
-XXXXXXXXos.path.basename(f)[:-3]
-XXXXXXXXforXfXinXmod_paths
-XXXXXXXXifXos.path.isfile(f)XandXf.endswith(".py")XandXnotXf.endswith("__init__.py")
-XXXX]
-
-XXXXreturnXall_filters
+importglob
+importos.path
 
 
-ALL_FILTERSX=Xsorted(list(list_all_filters()))
+deflist_all_filters():
+mod_paths=glob.glob(os.path.dirname(__file__)+"/*.py")
+all_filters=[
+os.path.basename(f)[:-3]
+forfinmod_paths
+ifos.path.isfile(f)andf.endswith(".py")andnotf.endswith("__init__.py")
+]
 
-__all__X=XALL_FILTERSX+X["ALL_FILTERS"]
+returnall_filters
+
+
+ALL_FILTERS=sorted(list(list_all_filters()))
+
+__all__=ALL_FILTERS+["ALL_FILTERS"]

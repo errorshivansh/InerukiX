@@ -1,51 +1,51 @@
-#XCopyrightX(C)X2021Xerrorshivansh
+#Copyright(C)2021errorshivansh
 
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXjson
+importjson
 
-importXaiohttp
-fromXpyrogramXimportXfilters
+importaiohttp
+frompyrogramimportfilters
 
-fromXInerukiX.function.pluginhelpersXimportXadmins_only,Xget_text
-fromXInerukiX.services.pyrogramXimportXpbot
+fromIneruki.function.pluginhelpersimportadmins_only,get_text
+fromIneruki.services.pyrogramimportpbot
 
 
-#XUsedXmyXapiXkeyXhere,Xdon'tXfuckXwithXit
+#Usedmyapikeyhere,don'tfuckwithit
 @pbot.on_message(
-XXXXfilters.command("short")X&X~filters.editedX&X~filters.botX&X~filters.private
+filters.command("short")&~filters.edited&~filters.bot&~filters.private
 )
 @admins_only
-asyncXdefXshortify(client,Xmessage):
-XXXXlelX=XawaitXclient.send_message(message.chat.id,X"`WaitXaXsec....`")
-XXXXurlX=Xget_text(message)
-XXXXifX"."XnotXinXurl:
-XXXXXXXXawaitXlel.edit("Defuq!.XIsXitXaXurl?")
-XXXXXXXXreturn
-XXXXheaderX=X{
-XXXXXXXX"Authorization":X"BearerXad39983fa42d0b19e4534f33671629a4940298dc",
-XXXXXXXX"Content-Type":X"application/json",
-XXXX}
-XXXXpayloadX=X{"long_url":Xf"{url}"}
-XXXXpayloadX=Xjson.dumps(payload)
-XXXXasyncXwithXaiohttp.ClientSession()XasXsession:
-XXXXXXXXasyncXwithXsession.post(
-XXXXXXXXXXXX"https://api-ssl.bitly.com/v4/shorten",Xheaders=header,Xdata=payload
-XXXXXXXX)XasXresp:
-XXXXXXXXXXXXdataX=XawaitXresp.json()
-XXXXmsgX=Xf"**OriginalXUrl:**X{url}\n**ShortenedXUrl:**X{data['link']}"
-XXXXawaitXlel.edit(msg)
+asyncdefshortify(client,message):
+lel=awaitclient.send_message(message.chat.id,"`Waitasec....`")
+url=get_text(message)
+if"."notinurl:
+awaitlel.edit("Defuq!.Isitaurl?")
+return
+header={
+"Authorization":"Bearerad39983fa42d0b19e4534f33671629a4940298dc",
+"Content-Type":"application/json",
+}
+payload={"long_url":f"{url}"}
+payload=json.dumps(payload)
+asyncwithaiohttp.ClientSession()assession:
+asyncwithsession.post(
+"https://api-ssl.bitly.com/v4/shorten",headers=header,data=payload
+)asresp:
+data=awaitresp.json()
+msg=f"**OriginalUrl:**{url}\n**ShortenedUrl:**{data['link']}"
+awaitlel.edit(msg)

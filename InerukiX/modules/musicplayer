@@ -1,61 +1,61 @@
-#XCopyrightX(C)X2021Xerrorshivansh
+#Copyright(C)2021errorshivansh
 
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-__mod_name__X=X"MusicXPlayer"
-__help__X=X"""
-XXXXXXXXXX<b>》**XINERUKIXMUSICXv2X**X《</b>
-XXXXXXXXXXXX
-XINERUKIXMUSICXplaysXplaysXmusicXinXyourXgroup'sXvoiceXchat
-X
-XAssistantXnameX>>X@InerukiXhelper
-X
-<b>XSettingXupX</b>
+__mod_name__="MusicPlayer"
+__help__="""
+<b>》**INERUKIMUSICv2**《</b>
 
-1)XMakeXbotXadmin
-2)XStartXaXvoiceXchat
-3)XTryX`/playX[songXname]`XforXtheXfirstXtimeXbyXanXadmin
-*)XIfXuserbotXjoinedXenjoyXmusic,XIfXnotXaddX@InerukiXhelperXtoXyourXgroupXandXretry
+INERUKIMUSICplaysplaysmusicinyourgroup'svoicechat
 
-<b>XCommandsX</b>
+Assistantname>>@Inerukihelper
 
-=>>XSongXPlayingX🎧X
+<b>Settingup</b>
 
-XX/play:XPlayXsongXusingXyoutubeXmusic
-XX/playX[ytXurl]X:XPlayXtheXgivenXytXurl
-XX/dplay:XPlayXsongXviaXdeezer
-XX/splay:XPlayXsongXviaXjioXsaavn
-XX
-=>>XPlaybackX⏯
+1)Makebotadmin
+2)Startavoicechat
+3)Try`/play[songname]`forthefirsttimebyanadmin
+*)Ifuserbotjoinedenjoymusic,Ifnotadd@Inerukihelpertoyourgroupandretry
 
-XX/player:XOpenXSettingsXmenuXofXplayer
-XX/skip:XSkipsXtheXcurrentXtrack
-XX/pause:XPauseXtrack
-XX/resume:XResumesXtheXpausedXtrack
-XX/end:XStopsXmediaXplayback
-XX/current:XShowsXtheXcurrentXPlayingXtrack
-XX/playlist:XShowsXplaylist
+<b>Commands</b>
 
-=>>XMoreXtoolsX🧑‍🔧
+=>>SongPlaying🎧
 
-XX/admincache:XUpdatesXadminXinfoXofXyourXgroup.XTryXifXbotXisn'tXrecognizeXadmin
-XX/userbotjoin:XInviteX@InerukiXhelperXUserbotXtoXyourXchat
+/play:Playsongusingyoutubemusic
+/play[yturl]:Playthegivenyturl
+/dplay:Playsongviadeezer
+/splay:Playsongviajiosaavn
 
-*PlayerXcmdXandXallXotherXcmdsXexceptX/play,X/currentXXandX/playlistXXareXonlyXforXadminsXwithXmanageXgroup
+=>>Playback⏯
 
-<b>XPLEASEXNOTEXTHISXSERVICEXISXUNSTABLEXANDXCANXBEXSTOPPEDXANYTIMEX</b>
+/player:OpenSettingsmenuofplayer
+/skip:Skipsthecurrenttrack
+/pause:Pausetrack
+/resume:Resumesthepausedtrack
+/end:Stopsmediaplayback
+/current:ShowsthecurrentPlayingtrack
+/playlist:Showsplaylist
+
+=>>Moretools🧑‍🔧
+
+/admincache:Updatesadmininfoofyourgroup.Tryifbotisn'trecognizeadmin
+/userbotjoin:Invite@InerukihelperUserbottoyourchat
+
+*Playercmdandallothercmdsexcept/play,/currentand/playlistareonlyforadminswithmanagegroup
+
+<b>PLEASENOTETHISSERVICEISUNSTABLEANDCANBESTOPPEDANYTIME</b>
 """

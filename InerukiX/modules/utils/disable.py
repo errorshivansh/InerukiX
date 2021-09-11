@@ -1,52 +1,52 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-fromXcontextlibXimportXsuppress
+fromcontextlibimportsuppress
 
-fromXInerukiX.modules.utils.user_detailsXimportXis_user_admin
-fromXInerukiX.services.mongoXimportXdb
-fromXInerukiX.utils.loggerXimportXlog
+fromIneruki.modules.utils.user_detailsimportis_user_admin
+fromIneruki.services.mongoimportdb
+fromIneruki.utils.loggerimportlog
 
-DISABLABLE_COMMANDSX=X[]
+DISABLABLE_COMMANDS=[]
 
 
-defXdisableable_dec(command):
-XXXXlog.debug(f"AddingX{command}XtoXtheXdisableableXcommands...")
+defdisableable_dec(command):
+log.debug(f"Adding{command}tothedisableablecommands...")
 
-XXXXifXcommandXnotXinXDISABLABLE_COMMANDS:
-XXXXXXXXDISABLABLE_COMMANDS.append(command)
+ifcommandnotinDISABLABLE_COMMANDS:
+DISABLABLE_COMMANDS.append(command)
 
-XXXXdefXwrapped(func):
-XXXXXXXXasyncXdefXwrapped_1(*args,X**kwargs):
-XXXXXXXXXXXXmessageX=Xargs[0]
+defwrapped(func):
+asyncdefwrapped_1(*args,**kwargs):
+message=args[0]
 
-XXXXXXXXXXXXchat_idX=Xmessage.chat.id
-XXXXXXXXXXXXuser_idX=Xmessage.from_user.id
-XXXXXXXXXXXXcmdX=Xcommand
+chat_id=message.chat.id
+user_id=message.from_user.id
+cmd=command
 
-XXXXXXXXXXXXwithXsuppress(KeyError):
-XXXXXXXXXXXXXXXXifXcommandXinX(aliasesX:=Xmessage.conf["cmds"]):
-XXXXXXXXXXXXXXXXXXXXcmdX=Xaliases[0]
+withsuppress(KeyError):
+ifcommandin(aliases:=message.conf["cmds"]):
+cmd=aliases[0]
 
-XXXXXXXXXXXXcheckX=XawaitXdb.disabled.find_one(
-XXXXXXXXXXXXXXXX{"chat_id":Xchat_id,X"cmds":X{"$in":X[cmd]}}
-XXXXXXXXXXXX)
-XXXXXXXXXXXXifXcheckXandXnotXawaitXis_user_admin(chat_id,Xuser_id):
-XXXXXXXXXXXXXXXXreturn
-XXXXXXXXXXXXreturnXawaitXfunc(*args,X**kwargs)
+check=awaitdb.disabled.find_one(
+{"chat_id":chat_id,"cmds":{"$in":[cmd]}}
+)
+ifcheckandnotawaitis_user_admin(chat_id,user_id):
+return
+returnawaitfunc(*args,**kwargs)
 
-XXXXXXXXreturnXwrapped_1
+returnwrapped_1
 
-XXXXreturnXwrapped
+returnwrapped

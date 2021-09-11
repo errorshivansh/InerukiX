@@ -1,44 +1,44 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-fromXaiogramXimportXtypes
-fromXaiogram.dispatcher.filtersXimportXBoundFilter
+fromaiogramimporttypes
+fromaiogram.dispatcher.filtersimportBoundFilter
 
-fromXInerukiXXimportXdp
-
-
-classXOnlyPM(BoundFilter):
-XXXXkeyX=X"only_pm"
-
-XXXXdefX__init__(self,Xonly_pm):
-XXXXXXXXself.only_pmX=Xonly_pm
-
-XXXXasyncXdefXcheck(self,Xmessage:Xtypes.Message):
-XXXXXXXXifXmessage.from_user.idX==Xmessage.chat.id:
-XXXXXXXXXXXXreturnXTrue
+fromInerukiimportdp
 
 
-classXOnlyGroups(BoundFilter):
-XXXXkeyX=X"only_groups"
+classOnlyPM(BoundFilter):
+key="only_pm"
 
-XXXXdefX__init__(self,Xonly_groups):
-XXXXXXXXself.only_groupsX=Xonly_groups
+def__init__(self,only_pm):
+self.only_pm=only_pm
 
-XXXXasyncXdefXcheck(self,Xmessage:Xtypes.Message):
-XXXXXXXXifXnotXmessage.from_user.idX==Xmessage.chat.id:
-XXXXXXXXXXXXreturnXTrue
+asyncdefcheck(self,message:types.Message):
+ifmessage.from_user.id==message.chat.id:
+returnTrue
+
+
+classOnlyGroups(BoundFilter):
+key="only_groups"
+
+def__init__(self,only_groups):
+self.only_groups=only_groups
+
+asyncdefcheck(self,message:types.Message):
+ifnotmessage.from_user.id==message.chat.id:
+returnTrue
 
 
 dp.filters_factory.bind(OnlyPM)

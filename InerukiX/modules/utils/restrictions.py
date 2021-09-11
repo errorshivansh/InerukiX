@@ -1,77 +1,77 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-fromXaiogram.types.chat_permissionsXimportXChatPermissions
-fromXaiogram.utils.exceptionsXimportXBadRequest,XMigrateToChat,XUnauthorized
+fromaiogram.types.chat_permissionsimportChatPermissions
+fromaiogram.utils.exceptionsimportBadRequest,MigrateToChat,Unauthorized
 
-fromXInerukiXXimportXbot
-
-
-asyncXdefXban_user(chat_id,Xuser_id,Xuntil_date=None):
-XXXXtry:
-XXXXXXXXawaitXbot.kick_chat_member(chat_id,Xuser_id,Xuntil_date=until_date)
-XXXXexceptX(BadRequest,XMigrateToChat,XUnauthorized):
-XXXXXXXXreturnXFalse
-XXXXreturnXTrue
+fromInerukiimportbot
 
 
-asyncXdefXkick_user(chat_id,Xuser_id):
-XXXXawaitXbot.unban_chat_member(chat_id,Xuser_id)
-XXXXreturnXTrue
+asyncdefban_user(chat_id,user_id,until_date=None):
+try:
+awaitbot.kick_chat_member(chat_id,user_id,until_date=until_date)
+except(BadRequest,MigrateToChat,Unauthorized):
+returnFalse
+returnTrue
 
 
-asyncXdefXmute_user(chat_id,Xuser_id,Xuntil_date=None):
-XXXXawaitXbot.restrict_chat_member(
-XXXXXXXXchat_id,
-XXXXXXXXuser_id,
-XXXXXXXXpermissions=ChatPermissions(can_send_messages=False,Xuntil_date=until_date),
-XXXXXXXXuntil_date=until_date,
-XXXX)
-XXXXreturnXTrue
+asyncdefkick_user(chat_id,user_id):
+awaitbot.unban_chat_member(chat_id,user_id)
+returnTrue
 
 
-asyncXdefXrestrict_user(chat_id,Xuser_id,Xuntil_date=None):
-XXXXawaitXbot.restrict_chat_member(
-XXXXXXXXchat_id,
-XXXXXXXXuser_id,
-XXXXXXXXpermissions=ChatPermissions(
-XXXXXXXXXXXXcan_send_messages=True,
-XXXXXXXXXXXXcan_send_media_messages=False,
-XXXXXXXXXXXXcan_send_other_messages=False,
-XXXXXXXXXXXXcan_add_web_page_previews=False,
-XXXXXXXXXXXXuntil_date=until_date,
-XXXXXXXX),
-XXXXXXXXuntil_date=until_date,
-XXXX)
-XXXXreturnXTrue
+asyncdefmute_user(chat_id,user_id,until_date=None):
+awaitbot.restrict_chat_member(
+chat_id,
+user_id,
+permissions=ChatPermissions(can_send_messages=False,until_date=until_date),
+until_date=until_date,
+)
+returnTrue
 
 
-asyncXdefXunmute_user(chat_id,Xuser_id):
-XXXXawaitXbot.restrict_chat_member(
-XXXXXXXXchat_id,
-XXXXXXXXuser_id,
-XXXXXXXXcan_send_messages=True,
-XXXXXXXXcan_send_media_messages=True,
-XXXXXXXXcan_send_other_messages=True,
-XXXXXXXXcan_add_web_page_previews=True,
-XXXX)
-XXXXreturnXTrue
+asyncdefrestrict_user(chat_id,user_id,until_date=None):
+awaitbot.restrict_chat_member(
+chat_id,
+user_id,
+permissions=ChatPermissions(
+can_send_messages=True,
+can_send_media_messages=False,
+can_send_other_messages=False,
+can_add_web_page_previews=False,
+until_date=until_date,
+),
+until_date=until_date,
+)
+returnTrue
 
 
-asyncXdefXunban_user(chat_id,Xuser_id):
-XXXXtry:
-XXXXXXXXreturnXawaitXbot.unban_chat_member(chat_id,Xuser_id,Xonly_if_banned=True)
-XXXXexceptX(BadRequest,XUnauthorized):
-XXXXXXXXreturnXFalse
+asyncdefunmute_user(chat_id,user_id):
+awaitbot.restrict_chat_member(
+chat_id,
+user_id,
+can_send_messages=True,
+can_send_media_messages=True,
+can_send_other_messages=True,
+can_add_web_page_previews=True,
+)
+returnTrue
+
+
+asyncdefunban_user(chat_id,user_id):
+try:
+returnawaitbot.unban_chat_member(chat_id,user_id,only_if_banned=True)
+except(BadRequest,Unauthorized):
+returnFalse

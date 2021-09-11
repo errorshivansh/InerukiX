@@ -1,144 +1,144 @@
-#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
-#XCopyrightX(C)X2021Xerrorshivansh
-#XCopyrightX(C)X2020XInukaXAsith
+#Copyright(C)2018-2020MrYacha.Allrightsreserved.SourcecodeavailableundertheAGPL.
+#Copyright(C)2021errorshivansh
+#Copyright(C)2020InukaAsith
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXre
+importre
 
-fromXaiogram.dispatcher.filtersXimportXCommandStart
+fromaiogram.dispatcher.filtersimportCommandStart
 
-fromXInerukiX.decoratorXimportXregister
-fromXInerukiX.services.mongoXimportXdb
+fromIneruki.decoratorimportregister
+fromIneruki.services.mongoimportdb
 
-fromX.utils.connectionsXimportXchat_connection
-fromX.utils.disableXimportXdisableable_dec
-fromX.utils.languageXimportXget_strings_dec
-fromX.utils.notesXimportX(
-XXXXALLOWED_COLUMNS,
-XXXXBUTTONS,
-XXXXget_parsed_note_list,
-XXXXsend_note,
-XXXXt_unparse_note_item,
+from.utils.connectionsimportchat_connection
+from.utils.disableimportdisableable_dec
+from.utils.languageimportget_strings_dec
+from.utils.notesimport(
+ALLOWED_COLUMNS,
+BUTTONS,
+get_parsed_note_list,
+send_note,
+t_unparse_note_item,
 )
 
 
-@register(cmds=["setrules",X"saverules"],Xuser_admin=True)
-@chat_connection(admin=True,Xonly_groups=True)
+@register(cmds=["setrules","saverules"],user_admin=True)
+@chat_connection(admin=True,only_groups=True)
 @get_strings_dec("rules")
-asyncXdefXset_rules(message,Xchat,Xstrings):
-XXXXchat_idX=Xchat["chat_id"]
+asyncdefset_rules(message,chat,strings):
+chat_id=chat["chat_id"]
 
-XXXX#XFIXME:XdocumentsXareXallowXtoXsavedX(why?),XcheckXforXargsXifXnoX'reply_to_message'
-XXXXnoteX=XawaitXget_parsed_note_list(message,Xallow_reply_message=True,Xsplit_args=-1)
-XXXXnote["chat_id"]X=Xchat_id
+#FIME:documentsareallowtosaved(why?),checkforargsifno'reply_to_message'
+note=awaitget_parsed_note_list(message,allow_reply_message=True,split_args=-1)
+note["chat_id"]=chat_id
 
-XXXXifX(
-XXXXXXXXawaitXdb.rules.replace_one({"chat_id":Xchat_id},Xnote,Xupsert=True)
-XXXX).modified_countX>X0:
-XXXXXXXXtextX=Xstrings["updated"]
-XXXXelse:
-XXXXXXXXtextX=Xstrings["saved"]
+if(
+awaitdb.rules.replace_one({"chat_id":chat_id},note,upsert=True)
+).modified_count>0:
+text=strings["updated"]
+else:
+text=strings["saved"]
 
-XXXXawaitXmessage.reply(textX%Xchat["chat_title"])
+awaitmessage.reply(text%chat["chat_title"])
 
 
 @register(cmds="rules")
 @disableable_dec("rules")
 @chat_connection(only_groups=True)
 @get_strings_dec("rules")
-asyncXdefXrules(message,Xchat,Xstrings):
-XXXXchat_idX=Xchat["chat_id"]
-XXXXsend_idX=Xmessage.chat.id
+asyncdefrules(message,chat,strings):
+chat_id=chat["chat_id"]
+send_id=message.chat.id
 
-XXXXifX"reply_to_message"XinXmessage:
-XXXXXXXXrpl_idX=Xmessage.reply_to_message.message_id
-XXXXelse:
-XXXXXXXXrpl_idX=Xmessage.message_id
+if"reply_to_message"inmessage:
+rpl_id=message.reply_to_message.message_id
+else:
+rpl_id=message.message_id
 
-XXXXifXlen(argsX:=Xmessage.get_args().split())X>X0:
-XXXXXXXXarg1X=Xargs[0].lower()
-XXXXelse:
-XXXXXXXXarg1X=XNone
-XXXXnoformatX=Xarg1XinX("noformat",X"raw")
+iflen(args:=message.get_args().split())>0:
+arg1=args[0].lower()
+else:
+arg1=None
+noformat=arg1in("noformat","raw")
 
-XXXXifXnotX(db_itemX:=XawaitXdb.rules.find_one({"chat_id":Xchat_id})):
-XXXXXXXXawaitXmessage.reply(strings["not_found"])
-XXXXXXXXreturn
+ifnot(db_item:=awaitdb.rules.find_one({"chat_id":chat_id})):
+awaitmessage.reply(strings["not_found"])
+return
 
-XXXXtext,XkwargsX=XawaitXt_unparse_note_item(
-XXXXXXXXmessage,Xdb_item,Xchat_id,Xnoformat=noformat
-XXXX)
-XXXXkwargs["reply_to"]X=Xrpl_id
+text,kwargs=awaitt_unparse_note_item(
+message,db_item,chat_id,noformat=noformat
+)
+kwargs["reply_to"]=rpl_id
 
-XXXXawaitXsend_note(send_id,Xtext,X**kwargs)
+awaitsend_note(send_id,text,**kwargs)
 
 
-@register(cmds="resetrules",Xuser_admin=True)
-@chat_connection(admin=True,Xonly_groups=True)
+@register(cmds="resetrules",user_admin=True)
+@chat_connection(admin=True,only_groups=True)
 @get_strings_dec("rules")
-asyncXdefXreset_rules(message,Xchat,Xstrings):
-XXXXchat_idX=Xchat["chat_id"]
+asyncdefreset_rules(message,chat,strings):
+chat_id=chat["chat_id"]
 
-XXXXifX(awaitXdb.rules.delete_one({"chat_id":Xchat_id})).deleted_countX<X1:
-XXXXXXXXawaitXmessage.reply(strings["not_found"])
-XXXXXXXXreturn
+if(awaitdb.rules.delete_one({"chat_id":chat_id})).deleted_count<1:
+awaitmessage.reply(strings["not_found"])
+return
 
-XXXXawaitXmessage.reply(strings["deleted"])
+awaitmessage.reply(strings["deleted"])
 
 
-BUTTONS.update({"rules":X"btn_rules"})
+BUTTONS.update({"rules":"btn_rules"})
 
 
 @register(CommandStart(re.compile("btn_rules")))
 @get_strings_dec("rules")
-asyncXdefXrules_btn(message,Xstrings):
-XXXXchat_idX=X(message.get_args().split("_"))[2]
-XXXXuser_idX=Xmessage.chat.id
-XXXXifXnotX(db_itemX:=XawaitXdb.rules.find_one({"chat_id":Xint(chat_id)})):
-XXXXXXXXawaitXmessage.answer(strings["not_found"])
-XXXXXXXXreturn
+asyncdefrules_btn(message,strings):
+chat_id=(message.get_args().split("_"))[2]
+user_id=message.chat.id
+ifnot(db_item:=awaitdb.rules.find_one({"chat_id":int(chat_id)})):
+awaitmessage.answer(strings["not_found"])
+return
 
-XXXXtext,XkwargsX=XawaitXt_unparse_note_item(message,Xdb_item,Xchat_id)
-XXXXawaitXsend_note(user_id,Xtext,X**kwargs)
-
-
-asyncXdefX__export__(chat_id):
-XXXXrulesX=XawaitXdb.rules.find_one({"chat_id":Xchat_id})
-XXXXifXrules:
-XXXXXXXXdelXrules["_id"]
-XXXXXXXXdelXrules["chat_id"]
-
-XXXXXXXXreturnX{"rules":Xrules}
+text,kwargs=awaitt_unparse_note_item(message,db_item,chat_id)
+awaitsend_note(user_id,text,**kwargs)
 
 
-asyncXdefX__import__(chat_id,Xdata):
-XXXXrulesX=Xdata
-XXXXforXcolumnXinX[iXforXiXinXdataXifXiXnotXinXALLOWED_COLUMNS]:
-XXXXXXXXdelXrules[column]
+asyncdef__export__(chat_id):
+rules=awaitdb.rules.find_one({"chat_id":chat_id})
+ifrules:
+delrules["_id"]
+delrules["chat_id"]
 
-XXXXrules["chat_id"]X=Xchat_id
-XXXXawaitXdb.rules.replace_one({"chat_id":Xrules["chat_id"]},Xrules,Xupsert=True)
+return{"rules":rules}
 
 
-__mod_name__X=X"Rules"
+asyncdef__import__(chat_id,data):
+rules=data
+forcolumnin[iforiindataifinotinALLOWED_COLUMNS]:
+delrules[column]
 
-__help__X=X"""
-<b>AvailableXCommands:</b>
--X/setrulesX(rules):XsavesXtheXrulesX(alsoXworksXwithXreply)
--X/rules:XShowsXtheXrulesXofXchatXifXany!
--X/resetrules:XResetsXgroup'sXrules
+rules["chat_id"]=chat_id
+awaitdb.rules.replace_one({"chat_id":rules["chat_id"]},rules,upsert=True)
+
+
+__mod_name__="Rules"
+
+__help__="""
+<b>AvailableCommands:</b>
+-/setrules(rules):savestherules(alsoworkswithreply)
+-/rules:Showstherulesofchatifany!
+-/resetrules:Resetsgroup'srules
 """

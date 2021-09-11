@@ -1,178 +1,178 @@
-#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
-#XCopyrightX(C)X2021Xerrorshivansh
-#XCopyrightX(C)X2020XInukaXAsith
+#Copyright(C)2018-2020MrYacha.Allrightsreserved.SourcecodeavailableundertheAGPL.
+#Copyright(C)2021errorshivansh
+#Copyright(C)2020InukaAsith
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-fromXcontextlibXimportXsuppress
+fromcontextlibimportsuppress
 
-fromXaiogram.types.inline_keyboardXimportXInlineKeyboardButton,XInlineKeyboardMarkup
-fromXaiogram.utils.callback_dataXimportXCallbackData
-fromXaiogram.utils.exceptionsXimportXMessageNotModified
+fromaiogram.types.inline_keyboardimportInlineKeyboardButton,InlineKeyboardMarkup
+fromaiogram.utils.callback_dataimportCallbackData
+fromaiogram.utils.exceptionsimportMessageNotModified
 
-fromXInerukiX.decoratorXimportXregister
-fromXInerukiX.services.mongoXimportXdb
+fromIneruki.decoratorimportregister
+fromIneruki.services.mongoimportdb
 
-fromX.utils.languageXimportX(
-XXXXLANGUAGES,
-XXXXchange_chat_lang,
-XXXXget_chat_lang_info,
-XXXXget_strings,
-XXXXget_strings_dec,
+from.utils.languageimport(
+LANGUAGES,
+change_chat_lang,
+get_chat_lang_info,
+get_strings,
+get_strings_dec,
 )
-fromX.utils.messageXimportXget_arg
+from.utils.messageimportget_arg
 
-select_lang_cbX=XCallbackData("select_lang_cb",X"lang",X"back_btn")
-translators_lang_cbX=XCallbackData("translators_lang_cb",X"lang")
+select_lang_cb=CallbackData("select_lang_cb","lang","back_btn")
+translators_lang_cb=CallbackData("translators_lang_cb","lang")
 
 
-@register(cmds="lang",Xno_args=True,Xuser_can_change_info=True)
-asyncXdefXselect_lang_cmd(message):
-XXXXawaitXselect_lang_keyboard(message)
+@register(cmds="lang",no_args=True,user_can_change_info=True)
+asyncdefselect_lang_cmd(message):
+awaitselect_lang_keyboard(message)
 
 
 @get_strings_dec("language")
-asyncXdefXselect_lang_keyboard(message,Xstrings,Xedit=False):
-XXXXmarkupX=XInlineKeyboardMarkup(row_width=2)
-XXXXtaskX=Xmessage.replyXifXeditXisXFalseXelseXmessage.edit_text
+asyncdefselect_lang_keyboard(message,strings,edit=False):
+markup=InlineKeyboardMarkup(row_width=2)
+task=message.replyifeditisFalseelsemessage.edit_text
 
-XXXXlang_infoX=XawaitXget_chat_lang_info(message.chat.id)
+lang_info=awaitget_chat_lang_info(message.chat.id)
 
-XXXXifXmessage.chat.typeX==X"private":
-XXXXXXXXtextX=Xstrings["your_lang"].format(
-XXXXXXXXXXXXlang=lang_info["flag"]X+X"X"X+Xlang_info["babel"].display_name
-XXXXXXXX)
-XXXXXXXXtextX+=Xstrings["select_pm_lang"]
+ifmessage.chat.type=="private":
+text=strings["your_lang"].format(
+lang=lang_info["flag"]+""+lang_info["babel"].display_name
+)
+text+=strings["select_pm_lang"]
 
-XXXX#XTODO:XConnectedXchatXlangXinfo
+#TODO:Connectedchatlanginfo
 
-XXXXelse:
-XXXXXXXXtextX=Xstrings["chat_lang"].format(
-XXXXXXXXXXXXlang=lang_info["flag"]X+X"X"X+Xlang_info["babel"].display_name
-XXXXXXXX)
-XXXXXXXXtextX+=Xstrings["select_chat_lang"]
+else:
+text=strings["chat_lang"].format(
+lang=lang_info["flag"]+""+lang_info["babel"].display_name
+)
+text+=strings["select_chat_lang"]
 
-XXXXforXlangXinXLANGUAGES.values():
-XXXXXXXXlang_infoX=Xlang["language_info"]
-XXXXXXXXmarkup.insert(
-XXXXXXXXXXXXInlineKeyboardButton(
-XXXXXXXXXXXXXXXXlang_info["flag"]X+X"X"X+Xlang_info["babel"].display_name,
-XXXXXXXXXXXXXXXXcallback_data=select_lang_cb.new(
-XXXXXXXXXXXXXXXXXXXXlang=lang_info["code"],Xback_btn=FalseXifXeditXisXFalseXelseXTrue
-XXXXXXXXXXXXXXXX),
-XXXXXXXXXXXX)
-XXXXXXXX)
+forlanginLANGUAGES.values():
+lang_info=lang["language_info"]
+markup.insert(
+InlineKeyboardButton(
+lang_info["flag"]+""+lang_info["babel"].display_name,
+callback_data=select_lang_cb.new(
+lang=lang_info["code"],back_btn=FalseifeditisFalseelseTrue
+),
+)
+)
 
-XXXXmarkup.add(
-XXXXXXXXInlineKeyboardButton(
-XXXXXXXXXXXXstrings["crowdin_btn"],Xurl="https://t.me/Inerukisupport_official"
-XXXXXXXX)
-XXXX)
-XXXXifXedit:
-XXXXXXXXmarkup.add(InlineKeyboardButton(strings["back"],Xcallback_data="go_to_start"))
-XXXXwithXsuppress(MessageNotModified):
-XXXXXXXXawaitXtask(text,Xreply_markup=markup)
-
-
-asyncXdefXchange_lang(message,Xlang,Xe=False,Xback_btn=False):
-XXXXchat_idX=Xmessage.chat.id
-XXXXawaitXchange_chat_lang(chat_id,Xlang)
-
-XXXXstringsX=XawaitXget_strings(chat_id,X"language")
-
-XXXXlang_infoX=XLANGUAGES[lang]["language_info"]
-
-XXXXtextX=Xstrings["lang_changed"].format(
-XXXXXXXXlang_name=lang_info["flag"]X+X"X"X+Xlang_info["babel"].display_name
-XXXX)
-XXXXtextX+=Xstrings["help_us_translate"]
-
-XXXXmarkupX=XInlineKeyboardMarkup()
-
-XXXXifX"translators"XinXlang_info:
-XXXXXXXXmarkup.add(
-XXXXXXXXXXXXInlineKeyboardButton(
-XXXXXXXXXXXXXXXXstrings["see_translators"],
-XXXXXXXXXXXXXXXXcallback_data=translators_lang_cb.new(lang=lang),
-XXXXXXXXXXXX)
-XXXXXXXX)
-
-XXXXifXback_btnX==X"True":
-XXXXXXXX#XCallback_dataXconvertsXbooleanXtoXstr
-XXXXXXXXmarkup.add(InlineKeyboardButton(strings["back"],Xcallback_data="go_to_start"))
-
-XXXXifXe:
-XXXXXXXXwithXsuppress(MessageNotModified):
-XXXXXXXXXXXXawaitXmessage.edit_text(
-XXXXXXXXXXXXXXXXtext,Xreply_markup=markup,Xdisable_web_page_preview=True
-XXXXXXXXXXXX)
-XXXXelse:
-XXXXXXXXawaitXmessage.reply(text,Xreply_markup=markup,Xdisable_web_page_preview=True)
+markup.add(
+InlineKeyboardButton(
+strings["crowdin_btn"],url="https://t.me/Inerukisupport_official"
+)
+)
+ifedit:
+markup.add(InlineKeyboardButton(strings["back"],callback_data="go_to_start"))
+withsuppress(MessageNotModified):
+awaittask(text,reply_markup=markup)
 
 
-@register(cmds="lang",Xhas_args=True,Xuser_can_change_info=True)
+asyncdefchange_lang(message,lang,e=False,back_btn=False):
+chat_id=message.chat.id
+awaitchange_chat_lang(chat_id,lang)
+
+strings=awaitget_strings(chat_id,"language")
+
+lang_info=LANGUAGES[lang]["language_info"]
+
+text=strings["lang_changed"].format(
+lang_name=lang_info["flag"]+""+lang_info["babel"].display_name
+)
+text+=strings["help_us_translate"]
+
+markup=InlineKeyboardMarkup()
+
+if"translators"inlang_info:
+markup.add(
+InlineKeyboardButton(
+strings["see_translators"],
+callback_data=translators_lang_cb.new(lang=lang),
+)
+)
+
+ifback_btn=="True":
+#Callback_dataconvertsbooleantostr
+markup.add(InlineKeyboardButton(strings["back"],callback_data="go_to_start"))
+
+ife:
+withsuppress(MessageNotModified):
+awaitmessage.edit_text(
+text,reply_markup=markup,disable_web_page_preview=True
+)
+else:
+awaitmessage.reply(text,reply_markup=markup,disable_web_page_preview=True)
+
+
+@register(cmds="lang",has_args=True,user_can_change_info=True)
 @get_strings_dec("language")
-asyncXdefXselect_lang_msg(message,Xstrings):
-XXXXlangX=Xget_arg(message).lower()
+asyncdefselect_lang_msg(message,strings):
+lang=get_arg(message).lower()
 
-XXXXifXlangXnotXinXLANGUAGES:
-XXXXXXXXawaitXmessage.reply(strings["not_supported_lang"])
-XXXXXXXXreturn
+iflangnotinLANGUAGES:
+awaitmessage.reply(strings["not_supported_lang"])
+return
 
-XXXXawaitXchange_lang(message,Xlang)
+awaitchange_lang(message,lang)
 
 
 @register(
-XXXXselect_lang_cb.filter(),
-XXXXf="cb",
-XXXXallow_kwargs=True,
+select_lang_cb.filter(),
+f="cb",
+allow_kwargs=True,
 )
-asyncXdefXselect_lang_callback(query,Xcallback_data=None,X**kwargs):
-XXXXlangX=Xcallback_data["lang"]
-XXXXback_btnX=Xcallback_data["back_btn"]
-XXXXawaitXchange_lang(query.message,Xlang,Xe=True,Xback_btn=back_btn)
+asyncdefselect_lang_callback(query,callback_data=None,**kwargs):
+lang=callback_data["lang"]
+back_btn=callback_data["back_btn"]
+awaitchange_lang(query.message,lang,e=True,back_btn=back_btn)
 
 
-asyncXdefX__stats__():
-XXXXreturnXf"*X<code>{len(LANGUAGES)}</code>XlanguagesXloaded.\n"
+asyncdef__stats__():
+returnf"*<code>{len(LANGUAGES)}</code>languagesloaded.\n"
 
 
-asyncXdefX__export__(chat_id):
-XXXXlangX=XawaitXget_chat_lang_info(chat_id)
+asyncdef__export__(chat_id):
+lang=awaitget_chat_lang_info(chat_id)
 
-XXXXreturnX{"language":Xlang["code"]}
-
-
-asyncXdefX__import__(chat_id,Xdata):
-XXXXifXdataXnotXinXLANGUAGES:
-XXXXXXXXreturn
-XXXXawaitXdb.lang.update_one(
-XXXXXXXX{"chat_id":Xchat_id},X{"$set":X{"lang":Xdata}},Xupsert=True
-XXXX)
+return{"language":lang["code"]}
 
 
-__mod_name__X=X"Languages"
+asyncdef__import__(chat_id,data):
+ifdatanotinLANGUAGES:
+return
+awaitdb.lang.update_one(
+{"chat_id":chat_id},{"$set":{"lang":data}},upsert=True
+)
 
-__help__X=X"""
-ThisXmoduleXisXdedicatedXtowardsXutlisingXIneruki'sXlocalizationXfeature!XYouXcanXalsoX<aXhref='https://crowdin.com/project/InerukiXx'>contribute</a>XforXimprovingXlocalizationXinXIneruki!
 
-<b>AvailableXcommands:</b>
--X/lang:XShowsXaXlistXofXavaibleXlanguages
--X/langX(languageXcodename):XSetsXaXlanguage
+__mod_name__="Languages"
 
-<b>Example:</b>X<code>/lang</code>
-InerukiXwillXsendXyouXbunchXofXinlineXbuttonsXwhereXyouXcanXselectXyourXpreferedXlanguageXinterativelyXwithoutXanyXhassles!
+__help__="""
+ThismoduleisdedicatedtowardsutlisingIneruki'slocalizationfeature!Youcanalso<ahref='https://crowdin.com/project/Inerukix'>contribute</a>forimprovinglocalizationinIneruki!
+
+<b>Availablecommands:</b>
+-/lang:Showsalistofavaiblelanguages
+-/lang(languagecodename):Setsalanguage
+
+<b>Example:</b><code>/lang</code>
+Inerukiwillsendyoubunchofinlinebuttonswhereyoucanselectyourpreferedlanguageinterativelywithoutanyhassles!
 """

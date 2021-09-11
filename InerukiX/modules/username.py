@@ -1,113 +1,113 @@
-#XCopyrightX(C)X2021Xerrorshivansh
+#Copyright(C)2021errorshivansh
 
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-fromXtelethon.errors.rpcerrorlistXimportXYouBlockedUserError
-fromXtelethon.tlXimportXfunctions,Xtypes
+fromtelethon.errors.rpcerrorlistimportYouBlockedUserError
+fromtelethon.tlimportfunctions,types
 
-fromXInerukiX.services.eventsXimportXregisterXasXIneruki
-fromXInerukiX.services.telethonXimportXtbot
-fromXInerukiX.services.telethonuserbotXimportXubot
-
-
-asyncXdefXis_register_admin(chat,Xuser):
-
-XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
-
-XXXXXXXXreturnXisinstance(
-XXXXXXXXXXXX(
-XXXXXXXXXXXXXXXXawaitXtbot(functions.channels.GetParticipantRequest(chat,Xuser))
-XXXXXXXXXXXX).participant,
-XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
-XXXXXXXX)
-XXXXifXisinstance(chat,Xtypes.InputPeerChat):
-
-XXXXXXXXuiX=XawaitXtbot.get_peer_id(user)
-XXXXXXXXpsX=X(
-XXXXXXXXXXXXawaitXtbot(functions.messages.GetFullChatRequest(chat.chat_id))
-XXXXXXXX).full_chat.participants.participants
-XXXXXXXXreturnXisinstance(
-XXXXXXXXXXXXnext((pXforXpXinXpsXifXp.user_idX==Xui),XNone),
-XXXXXXXXXXXX(types.ChatParticipantAdmin,Xtypes.ChatParticipantCreator),
-XXXXXXXX)
-XXXXreturnXNone
+fromIneruki.services.eventsimportregisterasIneruki
+fromIneruki.services.telethonimporttbot
+fromIneruki.services.telethonuserbotimportubot
 
 
-asyncXdefXsilently_send_message(conv,Xtext):
-XXXXawaitXconv.send_message(text)
-XXXXresponseX=XawaitXconv.get_response()
-XXXXawaitXconv.mark_read(message=response)
-XXXXreturnXresponse
+asyncdefis_register_admin(chat,user):
+
+ifisinstance(chat,(types.InputPeerChannel,types.InputChannel)):
+
+returnisinstance(
+(
+awaittbot(functions.channels.GetParticipantRequest(chat,user))
+).participant,
+(types.ChannelParticipantAdmin,types.ChannelParticipantCreator),
+)
+ifisinstance(chat,types.InputPeerChat):
+
+ui=awaittbot.get_peer_id(user)
+ps=(
+awaittbot(functions.messages.GetFullChatRequest(chat.chat_id))
+).full_chat.participants.participants
+returnisinstance(
+next((pforpinpsifp.user_id==ui),None),
+(types.ChatParticipantAdmin,types.ChatParticipantCreator),
+)
+returnNone
 
 
-@Ineruki(pattern="^/namehistoryX?(.*)")
-asyncXdefX_(event):
+asyncdefsilently_send_message(conv,text):
+awaitconv.send_message(text)
+response=awaitconv.get_response()
+awaitconv.mark_read(message=response)
+returnresponse
 
-XXXXifXevent.fwd_from:
 
-XXXXXXXXreturn
+@Ineruki(pattern="^/namehistory?(.*)")
+asyncdef_(event):
 
-XXXXifXevent.is_group:
-XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
-XXXXXXXXXXXXpass
-XXXXXXXXelse:
-XXXXXXXXXXXXreturn
-XXXXifXnotXevent.reply_to_msg_id:
+ifevent.fwd_from:
 
-XXXXXXXXawaitXevent.reply("```ReplyXtoXanyXuserXmessage.```")
+return
 
-XXXXXXXXreturn
+ifevent.is_group:
+ifawaitis_register_admin(event.input_chat,event.message.sender_id):
+pass
+else:
+return
+ifnotevent.reply_to_msg_id:
 
-XXXXreply_messageX=XawaitXevent.get_reply_message()
+awaitevent.reply("```Replytoanyusermessage.```")
 
-XXXXifXnotXreply_message.text:
+return
 
-XXXXXXXXawaitXevent.reply("```replyXtoXtextXmessage```")
+reply_message=awaitevent.get_reply_message()
 
-XXXXXXXXreturn
+ifnotreply_message.text:
 
-XXXXchatX=X"@DetectiveInfoBot"
-XXXXuidX=Xreply_message.sender_id
-XXXXreply_message.sender
+awaitevent.reply("```replytotextmessage```")
 
-XXXXifXreply_message.sender.bot:
+return
 
-XXXXXXXXawaitXevent.edit("```ReplyXtoXactualXusersXmessage.```")
+chat="@DetectiveInfoBot"
+uid=reply_message.sender_id
+reply_message.sender
 
-XXXXXXXXreturn
+ifreply_message.sender.bot:
 
-XXXXlolX=XawaitXevent.reply("```Processing```")
+awaitevent.edit("```Replytoactualusersmessage.```")
 
-XXXXasyncXwithXubot.conversation(chat)XasXconv:
+return
 
-XXXXXXXXtry:
+lol=awaitevent.reply("```Processing```")
 
-XXXXXXXXXXXX#XresponseX=Xconv.wait_event(
-XXXXXXXXXXXX#XXXevents.NewMessage(incoming=True,Xfrom_users=1706537835)
-XXXXXXXXXXXX#X)
+asyncwithubot.conversation(chat)asconv:
 
-XXXXXXXXXXXXawaitXsilently_send_message(conv,Xf"/detect_idX{uid}")
+try:
 
-XXXXXXXXXXXX#XresponseX=XawaitXresponse
-XXXXXXXXXXXXresponsesX=XawaitXsilently_send_message(conv,Xf"/detect_idX{uid}")
-XXXXXXXXexceptXYouBlockedUserError:
+#response=conv.wait_event(
+#events.NewMessage(incoming=True,from_users=1706537835)
+#)
 
-XXXXXXXXXXXXawaitXevent.reply("```PleaseXunblockX@DetectiveInfoBotXandXtryXagain```")
+awaitsilently_send_message(conv,f"/detect_id{uid}")
 
-XXXXXXXXXXXXreturn
-XXXXXXXXawaitXlol.edit(f"{responses.text}")
-XXXXXXXX#XawaitXlol.edit(f"{response.message.message}")
+#response=awaitresponse
+responses=awaitsilently_send_message(conv,f"/detect_id{uid}")
+exceptYouBlockedUserError:
+
+awaitevent.reply("```Pleaseunblock@DetectiveInfoBotandtryagain```")
+
+return
+awaitlol.edit(f"{responses.text}")
+#awaitlol.edit(f"{response.message.message}")

@@ -1,57 +1,57 @@
-#XCopyrightX(C)X2021Xerrorshivansh
+#Copyright(C)2021errorshivansh
 
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-fromXpyrogramXimportXfilters
+frompyrogramimportfilters
 
-fromXInerukiX.function.pluginhelpersXimportXadmins_only
-fromXInerukiX.services.pyrogramXimportXpbot
+fromIneruki.function.pluginhelpersimportadmins_only
+fromIneruki.services.pyrogramimportpbot
 
-__HELP__X=X"""
-ClassicXfiltersXareXjustXlikeXmarie'sXfilterXsystem.XIfXyouXstillXlikeXthatXkindXofXfilterXsystem
-**AdminXOnly**
-X-X/cfilterX<word>X<message>:XEveryXtimeXsomeoneXsaysX"word",XtheXbotXwillXreplyXwithX"message"
-YouXcanXalsoXincludeXbuttonsXinXfilters,XexampleXsendX`/savefilterXgoogle`XinXreplyXtoX`ClickXHereXToXOpenXGoogleX|X[Button.url('Google',X'google.com')]`
-X-X/stopcfilterX<word>:XStopXthatXfilter.
-X-X/stopallcfilters:XDeleteXallXfiltersXinXtheXcurrentXchat.
+__HELP__="""
+Classicfiltersarejustlikemarie'sfiltersystem.Ifyoustilllikethatkindoffiltersystem
+**AdminOnly**
+-/cfilter<word><message>:Everytimesomeonesays"word",thebotwillreplywith"message"
+Youcanalsoincludebuttonsinfilters,examplesend`/savefiltergoogle`inreplyto`ClickHereToOpenGoogle|[Button.url('Google','google.com')]`
+-/stopcfilter<word>:Stopthatfilter.
+-/stopallcfilters:Deleteallfiltersinthecurrentchat.
 **Admin+Non-Admin**
-X-X/cfilters:XListXallXactiveXfiltersXinXtheXchat
-X
-X**PleaseXnoteXclassicXfiltersXcanXbeXunstable.XWeXrecommendXyouXtoXuseX/addfilter**
+-/cfilters:Listallactivefiltersinthechat
+
+**Pleasenoteclassicfilterscanbeunstable.Werecommendyoutouse/addfilter**
 """
 
 
 @pbot.on_message(
-XXXXfilters.command("invitelink")X&X~filters.editedX&X~filters.botX&X~filters.private
+filters.command("invitelink")&~filters.edited&~filters.bot&~filters.private
 )
 @admins_only
-asyncXdefXinvitelink(client,Xmessage):
-XXXXchidX=Xmessage.chat.id
-XXXXtry:
-XXXXXXXXinvitelinkX=XawaitXclient.export_chat_invite_link(chid)
-XXXXexcept:
-XXXXXXXXawaitXmessage.reply_text(
-XXXXXXXXXXXX"AddXmeXasXadminXofXyorXgroupXfirst",
-XXXXXXXX)
-XXXXXXXXreturn
-XXXXawaitXmessage.reply_text(f"InviteXlinkXgeneratedXsuccessfullyX\n\nX{invitelink}")
+asyncdefinvitelink(client,message):
+chid=message.chat.id
+try:
+invitelink=awaitclient.export_chat_invite_link(chid)
+except:
+awaitmessage.reply_text(
+"Addmeasadminofyorgroupfirst",
+)
+return
+awaitmessage.reply_text(f"Invitelinkgeneratedsuccessfully\n\n{invitelink}")
 
 
-@pbot.on_message(filters.command("cfilterhelp")X&X~filters.privateX&X~filters.edited)
+@pbot.on_message(filters.command("cfilterhelp")&~filters.private&~filters.edited)
 @admins_only
-asyncXdefXfiltersghelp(client,Xmessage):
-XXXXawaitXclient.send_message(message.chat.id,Xtext=__HELP__)
+asyncdeffiltersghelp(client,message):
+awaitclient.send_message(message.chat.id,text=__HELP__)

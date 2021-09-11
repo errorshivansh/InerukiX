@@ -1,135 +1,135 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXos
+importos
 
-importXyaml
-fromXbabel.coreXimportXLocale
+importyaml
+frombabel.coreimportLocale
 
-fromXInerukiX.services.mongoXimportXdb
-fromXInerukiX.services.redisXimportXredis
-fromXInerukiX.utils.loggerXimportXlog
+fromIneruki.services.mongoimportdb
+fromIneruki.services.redisimportredis
+fromIneruki.utils.loggerimportlog
 
-LANGUAGESX=X{}
+LANGUAGES={}
 
-log.info("LoadingXlocalizations...")
+log.info("Loadinglocalizations...")
 
-forXfilenameXinXos.listdir("InerukiX/localization"):
-XXXXlog.debug("LoadingXlanguageXfileX"X+Xfilename)
-XXXXwithXopen("InerukiX/localization/"X+Xfilename,X"r",Xencoding="utf8")XasXf:
-XXXXXXXXlangX=Xyaml.load(f,XLoader=yaml.CLoader)
+forfilenameinos.listdir("Ineruki/localization"):
+log.debug("Loadinglanguagefile"+filename)
+withopen("Ineruki/localization/"+filename,"r",encoding="utf8")asf:
+lang=yaml.load(f,Loader=yaml.CLoader)
 
-XXXXXXXXlang_codeX=Xlang["language_info"]["code"]
-XXXXXXXXlang["language_info"]["babel"]X=XLocale(lang_code)
+lang_code=lang["language_info"]["code"]
+lang["language_info"]["babel"]=Locale(lang_code)
 
-XXXXXXXXLANGUAGES[lang_code]X=Xlang
+LANGUAGES[lang_code]=lang
 
 log.info(
-XXXX"LanguagesXloaded:X{}".format(
-XXXXXXXX[
-XXXXXXXXXXXXlanguage["language_info"]["babel"].display_name
-XXXXXXXXXXXXforXlanguageXinXLANGUAGES.values()
-XXXXXXXX]
-XXXX)
+"Languagesloaded:{}".format(
+[
+language["language_info"]["babel"].display_name
+forlanguageinLANGUAGES.values()
+]
+)
 )
 
 
-asyncXdefXget_chat_lang(chat_id):
-XXXXrX=Xredis.get("lang_cache_{}".format(chat_id))
-XXXXifXr:
-XXXXXXXXreturnXr
-XXXXelse:
-XXXXXXXXdb_langX=XawaitXdb.lang.find_one({"chat_id":Xchat_id})
-XXXXXXXXifXdb_lang:
-XXXXXXXXXXXX#XRebuildXlangXcache
-XXXXXXXXXXXXredis.set("lang_cache_{}".format(chat_id),Xdb_lang["lang"])
-XXXXXXXXXXXXreturnXdb_lang["lang"]
-XXXXXXXXuser_langX=XawaitXdb.user_list.find_one({"user_id":Xchat_id})
-XXXXXXXXifXuser_langXandXuser_lang["user_lang"]XinXLANGUAGES:
-XXXXXXXXXXXX#XAddXtelegramXlanguageXinXlangXcache
-XXXXXXXXXXXXredis.set("lang_cache_{}".format(chat_id),Xuser_lang["user_lang"])
-XXXXXXXXXXXXreturnXuser_lang["user_lang"]
-XXXXXXXXelse:
-XXXXXXXXXXXXreturnX"en"
+asyncdefget_chat_lang(chat_id):
+r=redis.get("lang_cache_{}".format(chat_id))
+ifr:
+returnr
+else:
+db_lang=awaitdb.lang.find_one({"chat_id":chat_id})
+ifdb_lang:
+#Rebuildlangcache
+redis.set("lang_cache_{}".format(chat_id),db_lang["lang"])
+returndb_lang["lang"]
+user_lang=awaitdb.user_list.find_one({"user_id":chat_id})
+ifuser_langanduser_lang["user_lang"]inLANGUAGES:
+#Addtelegramlanguageinlangcache
+redis.set("lang_cache_{}".format(chat_id),user_lang["user_lang"])
+returnuser_lang["user_lang"]
+else:
+return"en"
 
 
-asyncXdefXchange_chat_lang(chat_id,Xlang):
-XXXXredis.set("lang_cache_{}".format(chat_id),Xlang)
-XXXXawaitXdb.lang.update_one(
-XXXXXXXX{"chat_id":Xchat_id},X{"$set":X{"chat_id":Xchat_id,X"lang":Xlang}},Xupsert=True
-XXXX)
+asyncdefchange_chat_lang(chat_id,lang):
+redis.set("lang_cache_{}".format(chat_id),lang)
+awaitdb.lang.update_one(
+{"chat_id":chat_id},{"$set":{"chat_id":chat_id,"lang":lang}},upsert=True
+)
 
 
-asyncXdefXget_strings(chat_id,Xmodule,Xmas_name="STRINGS"):
-XXXXchat_langX=XawaitXget_chat_lang(chat_id)
-XXXXifXchat_langXnotXinXLANGUAGES:
-XXXXXXXXawaitXchange_chat_lang(chat_id,X"en")
+asyncdefget_strings(chat_id,module,mas_name="STRINGS"):
+chat_lang=awaitget_chat_lang(chat_id)
+ifchat_langnotinLANGUAGES:
+awaitchange_chat_lang(chat_id,"en")
 
-XXXXclassXStrings:
-XXXXXXXX@staticmethod
-XXXXXXXXdefXget_strings(lang,Xmas_name,Xmodule):
+classStrings:
+@staticmethod
+defget_strings(lang,mas_name,module):
 
-XXXXXXXXXXXXifX(
-XXXXXXXXXXXXXXXXmas_nameXnotXinXLANGUAGES[lang]
-XXXXXXXXXXXXXXXXorXmoduleXnotXinXLANGUAGES[lang][mas_name]
-XXXXXXXXXXXX):
-XXXXXXXXXXXXXXXXreturnX{}
+if(
+mas_namenotinLANGUAGES[lang]
+ormodulenotinLANGUAGES[lang][mas_name]
+):
+return{}
 
-XXXXXXXXXXXXdataX=XLANGUAGES[lang][mas_name][module]
+data=LANGUAGES[lang][mas_name][module]
 
-XXXXXXXXXXXXifXmas_nameX==X"STRINGS":
-XXXXXXXXXXXXXXXXdata["language_info"]X=XLANGUAGES[chat_lang]["language_info"]
-XXXXXXXXXXXXreturnXdata
+ifmas_name=="STRINGS":
+data["language_info"]=LANGUAGES[chat_lang]["language_info"]
+returndata
 
-XXXXXXXXdefXget_string(self,Xname):
-XXXXXXXXXXXXdataX=Xself.get_strings(chat_lang,Xmas_name,Xmodule)
-XXXXXXXXXXXXifXnameXnotXinXdata:
-XXXXXXXXXXXXXXXXdataX=Xself.get_strings("en",Xmas_name,Xmodule)
+defget_string(self,name):
+data=self.get_strings(chat_lang,mas_name,module)
+ifnamenotindata:
+data=self.get_strings("en",mas_name,module)
 
-XXXXXXXXXXXXreturnXdata[name]
+returndata[name]
 
-XXXXXXXXdefX__getitem__(self,Xkey):
-XXXXXXXXXXXXreturnXself.get_string(key)
+def__getitem__(self,key):
+returnself.get_string(key)
 
-XXXXreturnXStrings()
-
-
-asyncXdefXget_string(chat_id,Xmodule,Xname,Xmas_name="STRINGS"):
-XXXXstringsX=XawaitXget_strings(chat_id,Xmodule,Xmas_name=mas_name)
-XXXXreturnXstrings[name]
+returnStrings()
 
 
-defXget_strings_dec(module,Xmas_name="STRINGS"):
-XXXXdefXwrapped(func):
-XXXXXXXXasyncXdefXwrapped_1(*args,X**kwargs):
-XXXXXXXXXXXXmessageX=Xargs[0]
-XXXXXXXXXXXXifXhasattr(message,X"chat"):
-XXXXXXXXXXXXXXXXchat_idX=Xmessage.chat.id
-XXXXXXXXXXXXelifXhasattr(message,X"message"):
-XXXXXXXXXXXXXXXXchat_idX=Xmessage.message.chat.id
-XXXXXXXXXXXXelse:
-XXXXXXXXXXXXXXXXchat_idX=XNone
-
-XXXXXXXXXXXXstringsX=XawaitXget_strings(chat_id,Xmodule,Xmas_name=mas_name)
-XXXXXXXXXXXXreturnXawaitXfunc(*args,Xstrings,X**kwargs)
-
-XXXXXXXXreturnXwrapped_1
-
-XXXXreturnXwrapped
+asyncdefget_string(chat_id,module,name,mas_name="STRINGS"):
+strings=awaitget_strings(chat_id,module,mas_name=mas_name)
+returnstrings[name]
 
 
-asyncXdefXget_chat_lang_info(chat_id):
-XXXXchat_langX=XawaitXget_chat_lang(chat_id)
-XXXXreturnXLANGUAGES[chat_lang]["language_info"]
+defget_strings_dec(module,mas_name="STRINGS"):
+defwrapped(func):
+asyncdefwrapped_1(*args,**kwargs):
+message=args[0]
+ifhasattr(message,"chat"):
+chat_id=message.chat.id
+elifhasattr(message,"message"):
+chat_id=message.message.chat.id
+else:
+chat_id=None
+
+strings=awaitget_strings(chat_id,module,mas_name=mas_name)
+returnawaitfunc(*args,strings,**kwargs)
+
+returnwrapped_1
+
+returnwrapped
+
+
+asyncdefget_chat_lang_info(chat_id):
+chat_lang=awaitget_chat_lang(chat_id)
+returnLANGUAGES[chat_lang]["language_info"]

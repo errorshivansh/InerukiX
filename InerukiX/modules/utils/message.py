@@ -1,91 +1,91 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-fromXdatetimeXimportXtimedelta
+fromdatetimeimporttimedelta
 
-#XelifXraw_button[1]X==X'note':
-#XtX=XInlineKeyboardButton(raw_button[0],Xcallback_data='get_note_{}_{}'.format(chat_id,Xraw_button[2]))
-#XelifXraw_button[1]X==X'alert':
-#XtX=XInlineKeyboardButton(raw_button[0],Xcallback_data='get_alert_{}_{}'.format(chat_id,Xraw_button[2]))
-#XelifXraw_button[1]X==X'deletemsg':
-#XtX=XInlineKeyboardButton(raw_button[0],Xcallback_data='get_delete_msg_{}_{}'.format(chat_id,Xraw_button[2]))
-
-
-classXInvalidTimeUnit(Exception):
-XXXXpass
+#elifraw_button[1]=='note':
+#t=InlineKeyboardButton(raw_button[0],callback_data='get_note_{}_{}'.format(chat_id,raw_button[2]))
+#elifraw_button[1]=='alert':
+#t=InlineKeyboardButton(raw_button[0],callback_data='get_alert_{}_{}'.format(chat_id,raw_button[2]))
+#elifraw_button[1]=='deletemsg':
+#t=InlineKeyboardButton(raw_button[0],callback_data='get_delete_msg_{}_{}'.format(chat_id,raw_button[2]))
 
 
-defXget_arg(message):
-XXXXtry:
-XXXXXXXXreturnXmessage.get_args().split()[0]
-XXXXexceptXIndexError:
-XXXXXXXXreturnX""
+classInvalidTimeUnit(Exception):
+pass
 
 
-defXget_args(message):
-XXXXargsX=Xmessage.get_args().split()
-XXXXifXargsXisXNone:
-XXXXXXXX#XgettingXargsXfromXnon-command
-XXXXXXXXargsX=Xmessage.text.split()
-XXXXreturnXargs
+defget_arg(message):
+try:
+returnmessage.get_args().split()[0]
+exceptIndexError:
+return""
 
 
-defXget_args_str(message):
-XXXXreturnX"X".join(get_args(message))
+defget_args(message):
+args=message.get_args().split()
+ifargsisNone:
+#gettingargsfromnon-command
+args=message.text.split()
+returnargs
 
 
-defXget_cmd(message):
-XXXXcmdX=Xmessage.get_command().lower()[1:].split("@")[0]
-XXXXreturnXcmd
+defget_args_str(message):
+return"".join(get_args(message))
 
 
-defXconvert_time(time_val):
-XXXXifXnotXany(time_val.endswith(unit)XforXunitXinX("m",X"h",X"d")):
-XXXXXXXXraiseXTypeError
-
-XXXXtime_numX=Xint(time_val[:-1])
-XXXXunitX=Xtime_val[-1]
-XXXXkwargsX=X{}
-
-XXXXifXunitX==X"m":
-XXXXXXXXkwargs["minutes"]X=Xtime_num
-XXXXelifXunitX==X"h":
-XXXXXXXXkwargs["hours"]X=Xtime_num
-XXXXelifXunitX==X"d":
-XXXXXXXXkwargs["days"]X=Xtime_num
-XXXXelse:
-XXXXXXXXraiseXInvalidTimeUnit()
-
-XXXXvalX=Xtimedelta(**kwargs)
-
-XXXXreturnXval
+defget_cmd(message):
+cmd=message.get_command().lower()[1:].split("@")[0]
+returncmd
 
 
-defXconvert_timedelta(time):
-XXXXreturnX{"days":Xtime.days,X"seconds":Xtime.seconds}
+defconvert_time(time_val):
+ifnotany(time_val.endswith(unit)forunitin("m","h","d")):
+raiseTypeError
+
+time_num=int(time_val[:-1])
+unit=time_val[-1]
+kwargs={}
+
+ifunit=="m":
+kwargs["minutes"]=time_num
+elifunit=="h":
+kwargs["hours"]=time_num
+elifunit=="d":
+kwargs["days"]=time_num
+else:
+raiseInvalidTimeUnit()
+
+val=timedelta(**kwargs)
+
+returnval
 
 
-defXneed_args_dec(num=1):
-XXXXdefXwrapped(func):
-XXXXXXXXasyncXdefXwrapped_1(*args,X**kwargs):
-XXXXXXXXXXXXmessageX=Xargs[0]
-XXXXXXXXXXXXifXlen(message.text.split("X"))X>Xnum:
-XXXXXXXXXXXXXXXXreturnXawaitXfunc(*args,X**kwargs)
-XXXXXXXXXXXXelse:
-XXXXXXXXXXXXXXXXawaitXmessage.reply("GiveXmeXargs!")
+defconvert_timedelta(time):
+return{"days":time.days,"seconds":time.seconds}
 
-XXXXXXXXreturnXwrapped_1
 
-XXXXreturnXwrapped
+defneed_args_dec(num=1):
+defwrapped(func):
+asyncdefwrapped_1(*args,**kwargs):
+message=args[0]
+iflen(message.text.split(""))>num:
+returnawaitfunc(*args,**kwargs)
+else:
+awaitmessage.reply("Givemeargs!")
+
+returnwrapped_1
+
+returnwrapped

@@ -1,200 +1,200 @@
-#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
-#XCopyrightX(C)X2021Xerrorshivansh
-#XCopyrightX(C)X2020XInukaXAsith
+#Copyright(C)2018-2020MrYacha.Allrightsreserved.SourcecodeavailableundertheAGPL.
+#Copyright(C)2021errorshivansh
+#Copyright(C)2020InukaAsith
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-fromXaiogram.types.inline_keyboardXimportXInlineKeyboardButton,XInlineKeyboardMarkup
+fromaiogram.types.inline_keyboardimportInlineKeyboardButton,InlineKeyboardMarkup
 
-fromXInerukiX.decoratorXimportXCOMMANDS_ALIASES,Xregister
-fromXInerukiX.services.mongoXimportXdb
+fromIneruki.decoratorimportCOMMANDS_ALIASES,register
+fromIneruki.services.mongoimportdb
 
-fromX.utils.connectionsXimportXchat_connection
-fromX.utils.disableXimportXDISABLABLE_COMMANDS,Xdisableable_dec
-fromX.utils.languageXimportXget_strings_dec
-fromX.utils.messageXimportXget_arg,Xneed_args_dec
+from.utils.connectionsimportchat_connection
+from.utils.disableimportDISABLABLE_COMMANDS,disableable_dec
+from.utils.languageimportget_strings_dec
+from.utils.messageimportget_arg,need_args_dec
 
 
 @register(cmds="disableable")
 @disableable_dec("disableable")
 @get_strings_dec("disable")
-asyncXdefXlist_disablable(message,Xstrings):
-XXXXtextX=Xstrings["disablable"]
-XXXXforXcommandXinXDISABLABLE_COMMANDS:
-XXXXXXXXtextX+=Xf"*X<code>/{command}</code>\n"
-XXXXawaitXmessage.reply(text)
+asyncdeflist_disablable(message,strings):
+text=strings["disablable"]
+forcommandinDISABLABLE_COMMANDS:
+text+=f"*<code>/{command}</code>\n"
+awaitmessage.reply(text)
 
 
 @register(cmds="disabled")
 @chat_connection(only_groups=True)
 @get_strings_dec("disable")
-asyncXdefXlist_disabled(message,Xchat,Xstrings):
-XXXXtextX=Xstrings["disabled_list"].format(chat_name=chat["chat_title"])
+asyncdeflist_disabled(message,chat,strings):
+text=strings["disabled_list"].format(chat_name=chat["chat_title"])
 
-XXXXifXnotX(disabledX:=XawaitXdb.disabled.find_one({"chat_id":Xchat["chat_id"]})):
-XXXXXXXXawaitXmessage.reply(
-XXXXXXXXXXXXstrings["no_disabled_cmds"].format(chat_name=chat["chat_title"])
-XXXXXXXX)
-XXXXXXXXreturn
+ifnot(disabled:=awaitdb.disabled.find_one({"chat_id":chat["chat_id"]})):
+awaitmessage.reply(
+strings["no_disabled_cmds"].format(chat_name=chat["chat_title"])
+)
+return
 
-XXXXcommandsX=Xdisabled["cmds"]
-XXXXforXcommandXinXcommands:
-XXXXXXXXtextX+=Xf"*X<code>/{command}</code>\n"
-XXXXawaitXmessage.reply(text)
+commands=disabled["cmds"]
+forcommandincommands:
+text+=f"*<code>/{command}</code>\n"
+awaitmessage.reply(text)
 
 
-@register(cmds="disable",Xuser_admin=True)
+@register(cmds="disable",user_admin=True)
 @need_args_dec()
-@chat_connection(admin=True,Xonly_groups=True)
+@chat_connection(admin=True,only_groups=True)
 @get_strings_dec("disable")
-asyncXdefXdisable_command(message,Xchat,Xstrings):
-XXXXcmdX=Xget_arg(message).lower()
-XXXXifXcmd[0]X==X"/"XorXcmd[0]X==X"!":
-XXXXXXXXcmdX=Xcmd[1:]
+asyncdefdisable_command(message,chat,strings):
+cmd=get_arg(message).lower()
+ifcmd[0]=="/"orcmd[0]=="!":
+cmd=cmd[1:]
 
-XXXX#XCheckXonXcommandsXaliases
-XXXXforXname,XkeysXinXCOMMANDS_ALIASES.items():
-XXXXXXXXifXcmdXinXkeys:
-XXXXXXXXXXXXcmdX=Xname
-XXXXXXXXXXXXbreak
+#Checkoncommandsaliases
+forname,keysinCOMMANDS_ALIASES.items():
+ifcmdinkeys:
+cmd=name
+break
 
-XXXXifXcmdXnotXinXDISABLABLE_COMMANDS:
-XXXXXXXXawaitXmessage.reply(strings["wot_to_disable"])
-XXXXXXXXreturn
+ifcmdnotinDISABLABLE_COMMANDS:
+awaitmessage.reply(strings["wot_to_disable"])
+return
 
-XXXXifXawaitXdb.disabled.find_one({"chat_id":Xchat["chat_id"],X"cmds":X{"$in":X[cmd]}}):
-XXXXXXXXawaitXmessage.reply(strings["already_disabled"])
-XXXXXXXXreturn
+ifawaitdb.disabled.find_one({"chat_id":chat["chat_id"],"cmds":{"$in":[cmd]}}):
+awaitmessage.reply(strings["already_disabled"])
+return
 
-XXXXawaitXdb.disabled.update_one(
-XXXXXXXX{"chat_id":Xchat["chat_id"]},
-XXXXXXXX{"$addToSet":X{"cmds":X{"$each":X[cmd]}}},
-XXXXXXXXupsert=True,
-XXXX)
+awaitdb.disabled.update_one(
+{"chat_id":chat["chat_id"]},
+{"$addToSet":{"cmds":{"$each":[cmd]}}},
+upsert=True,
+)
 
-XXXXawaitXmessage.reply(
-XXXXXXXXstrings["disabled"].format(cmd=cmd,Xchat_name=chat["chat_title"])
-XXXX)
+awaitmessage.reply(
+strings["disabled"].format(cmd=cmd,chat_name=chat["chat_title"])
+)
 
 
 @register(cmds="enable")
 @need_args_dec()
-@chat_connection(admin=True,Xonly_groups=True)
+@chat_connection(admin=True,only_groups=True)
 @get_strings_dec("disable")
-asyncXdefXenable_command(message,Xchat,Xstrings):
-XXXXchat_idX=Xchat["chat_id"]
-XXXXcmdX=Xget_arg(message).lower()
-XXXXifXcmd[0]X==X"/"XorXcmd[0]X==X"!":
-XXXXXXXXcmdX=Xcmd[1:]
+asyncdefenable_command(message,chat,strings):
+chat_id=chat["chat_id"]
+cmd=get_arg(message).lower()
+ifcmd[0]=="/"orcmd[0]=="!":
+cmd=cmd[1:]
 
-XXXX#XCheckXonXcommandsXaliases
-XXXXforXname,XkeysXinXCOMMANDS_ALIASES.items():
-XXXXXXXXifXcmdXinXkeys:
-XXXXXXXXXXXXcmdX=Xname
-XXXXXXXXXXXXbreak
+#Checkoncommandsaliases
+forname,keysinCOMMANDS_ALIASES.items():
+ifcmdinkeys:
+cmd=name
+break
 
-XXXXifXcmdXnotXinXDISABLABLE_COMMANDS:
-XXXXXXXXawaitXmessage.reply(strings["wot_to_enable"])
-XXXXXXXXreturn
+ifcmdnotinDISABLABLE_COMMANDS:
+awaitmessage.reply(strings["wot_to_enable"])
+return
 
-XXXXifXnotXawaitXdb.disabled.find_one(
-XXXXXXXX{"chat_id":Xchat["chat_id"],X"cmds":X{"$in":X[cmd]}}
-XXXX):
-XXXXXXXXawaitXmessage.reply(strings["already_enabled"])
-XXXXXXXXreturn
+ifnotawaitdb.disabled.find_one(
+{"chat_id":chat["chat_id"],"cmds":{"$in":[cmd]}}
+):
+awaitmessage.reply(strings["already_enabled"])
+return
 
-XXXXawaitXdb.disabled.update_one({"chat_id":Xchat_id},X{"$pull":X{"cmds":Xcmd}})
+awaitdb.disabled.update_one({"chat_id":chat_id},{"$pull":{"cmds":cmd}})
 
-XXXXawaitXmessage.reply(
-XXXXXXXXstrings["enabled"].format(cmd=cmd,Xchat_name=chat["chat_title"])
-XXXX)
+awaitmessage.reply(
+strings["enabled"].format(cmd=cmd,chat_name=chat["chat_title"])
+)
 
 
-@register(cmds="enableall",Xis_admin=True)
-@chat_connection(admin=True,Xonly_groups=True)
+@register(cmds="enableall",is_admin=True)
+@chat_connection(admin=True,only_groups=True)
 @get_strings_dec("disable")
-asyncXdefXenable_all(message,Xchat,Xstrings):
-XXXX#XEnsureXthatXsomethingXisXdisabled
-XXXXifXnotXawaitXdb.disabled.find_one({"chat_id":Xchat["chat_id"]}):
-XXXXXXXXawaitXmessage.reply(
-XXXXXXXXXXXXstrings["not_disabled_anything"].format(chat_title=chat["chat_title"])
-XXXXXXXX)
-XXXXXXXXreturn
+asyncdefenable_all(message,chat,strings):
+#Ensurethatsomethingisdisabled
+ifnotawaitdb.disabled.find_one({"chat_id":chat["chat_id"]}):
+awaitmessage.reply(
+strings["not_disabled_anything"].format(chat_title=chat["chat_title"])
+)
+return
 
-XXXXtextX=Xstrings["enable_all_text"].format(chat_name=chat["chat_title"])
-XXXXbuttonsX=XInlineKeyboardMarkup()
-XXXXbuttons.add(
-XXXXXXXXInlineKeyboardButton(
-XXXXXXXXXXXXstrings["enable_all_btn_yes"],Xcallback_data="enable_all_notes_cb"
-XXXXXXXX)
-XXXX)
-XXXXbuttons.add(
-XXXXXXXXInlineKeyboardButton(strings["enable_all_btn_no"],Xcallback_data="cancel")
-XXXX)
-XXXXawaitXmessage.reply(text,Xreply_markup=buttons)
+text=strings["enable_all_text"].format(chat_name=chat["chat_title"])
+buttons=InlineKeyboardMarkup()
+buttons.add(
+InlineKeyboardButton(
+strings["enable_all_btn_yes"],callback_data="enable_all_notes_cb"
+)
+)
+buttons.add(
+InlineKeyboardButton(strings["enable_all_btn_no"],callback_data="cancel")
+)
+awaitmessage.reply(text,reply_markup=buttons)
 
 
-@register(regexp="enable_all_notes_cb",Xf="cb",Xis_admin=True)
+@register(regexp="enable_all_notes_cb",f="cb",is_admin=True)
 @chat_connection(admin=True)
 @get_strings_dec("disable")
-asyncXdefXenable_all_notes_cb(event,Xchat,Xstrings):
-XXXXdataX=XawaitXdb.disabled.find_one({"chat_id":Xchat["chat_id"]})
-XXXXawaitXdb.disabled.delete_one({"_id":Xdata["_id"]})
+asyncdefenable_all_notes_cb(event,chat,strings):
+data=awaitdb.disabled.find_one({"chat_id":chat["chat_id"]})
+awaitdb.disabled.delete_one({"_id":data["_id"]})
 
-XXXXtextX=Xstrings["enable_all_done"].format(
-XXXXXXXXnum=len(data["cmds"]),Xchat_name=chat["chat_title"]
-XXXX)
-XXXXawaitXevent.message.edit_text(text)
-
-
-asyncXdefX__export__(chat_id):
-XXXXdisabledX=XawaitXdb.disabled.find_one({"chat_id":Xchat_id})
-
-XXXXreturnX{"disabling":Xdisabled["cmds"]XifXdisabledXelseX[]}
+text=strings["enable_all_done"].format(
+num=len(data["cmds"]),chat_name=chat["chat_title"]
+)
+awaitevent.message.edit_text(text)
 
 
-asyncXdefX__import__(chat_id,Xdata):
-XXXXnewX=X[]
-XXXXforXcmdXinXdata:
-XXXXXXXXifXcmdXnotXinXDISABLABLE_COMMANDS:
-XXXXXXXXXXXXcontinue
+asyncdef__export__(chat_id):
+disabled=awaitdb.disabled.find_one({"chat_id":chat_id})
 
-XXXXXXXXnew.append(cmd)
-
-XXXXawaitXdb.disabled.update_one(
-XXXXXXXX{"chat_id":Xchat_id},X{"$set":X{"cmds":Xnew}},Xupsert=True
-XXXX)
+return{"disabling":disabled["cmds"]ifdisabledelse[]}
 
 
-__mod_name__X=X"Disabling"
+asyncdef__import__(chat_id,data):
+new=[]
+forcmdindata:
+ifcmdnotinDISABLABLE_COMMANDS:
+continue
 
-__help__X=X"""
-DisablingXmoduleXisXallowXyouXtoXdisableXcertainXcommandsXfromXbeXexecutedXbyXusers.
+new.append(cmd)
 
-<b>AvailableXcommands:</b>
--X/disableable:XShowsXcommandsXwhichXcanXbeXdisabled
--X/disabled:XShowsXtheXallXdisabledXcommandsXofXtheXchat
--X/disableX(commandXname):XDisablesXtheXcommand.XCommandXshouldXbeXdisable-able
--X/enableX(commandXname):XEnablesXtheXdisabledXcommandXback.
--X/enableall:XEnablesXallXdisabledXcommands
+awaitdb.disabled.update_one(
+{"chat_id":chat_id},{"$set":{"cmds":new}},upsert=True
+)
+
+
+__mod_name__="Disabling"
+
+__help__="""
+Disablingmoduleisallowyoutodisablecertaincommandsfrombeexecutedbyusers.
+
+<b>Availablecommands:</b>
+-/disableable:Showscommandswhichcanbedisabled
+-/disabled:Showsthealldisabledcommandsofthechat
+-/disable(commandname):Disablesthecommand.Commandshouldbedisable-able
+-/enable(commandname):Enablesthedisabledcommandback.
+-/enableall:Enablesalldisabledcommands
 
 <b>Examples:</b>
-<code>/disableXhelp</code>
-ItXwouldXdisableXusaugeXofX<code>/help</code>XcommandXinXtheXchat!
+<code>/disablehelp</code>
+Itwoulddisableusaugeof<code>/help</code>commandinthechat!
 
-<code>/enableXhelp</code>
-ThisXenablesXpreviouslyXdisableXcommandX<code>/help</code>.
+<code>/enablehelp</code>
+Thisenablespreviouslydisablecommand<code>/help</code>.
 """

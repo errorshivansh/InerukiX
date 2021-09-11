@@ -1,55 +1,55 @@
-#XXXXCopyrightX(C)XMidhunXKMX2020-2021
-#XXXXThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XXXXitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXasXpublishedXby
-#XXXXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXtheXLicense,Xor
+#Copyright(C)MidhunKM2020-2021
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseaspublishedby
+#theFreeSoftwareFoundation,eitherversion3oftheLicense,or
 #
-#XXXXThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XXXXbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XXXXMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XXXXGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 #
-#XXXXYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XXXXalongXwithXthisXprogram.XXIfXnot,XseeX<https://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<https://www.gnu.org/licenses/>.
 
-fromXsqlalchemyXimportXColumn,XString
+fromsqlalchemyimportColumn,String
 
-fromXInerukiX.services.sqlXimportXBASE,XSESSION
+fromIneruki.services.sqlimportBASE,SESSION
 
 
-classXNsfwatch(BASE):
-XXXX__tablename__X=X"nsfwatch"
-XXXXchat_idX=XColumn(String(14),Xprimary_key=True)
+classNsfwatch(BASE):
+__tablename__="nsfwatch"
+chat_id=Column(String(14),primary_key=True)
 
-XXXXdefX__init__(self,Xchat_id):
-XXXXXXXXself.chat_idX=Xchat_id
+def__init__(self,chat_id):
+self.chat_id=chat_id
 
 
 Nsfwatch.__table__.create(checkfirst=True)
 
 
-defXadd_nsfwatch(chat_id:Xstr):
-XXXXnsfwsX=XNsfwatch(str(chat_id))
-XXXXSESSION.add(nsfws)
-XXXXSESSION.commit()
+defadd_nsfwatch(chat_id:str):
+nsfws=Nsfwatch(str(chat_id))
+SESSION.add(nsfws)
+SESSION.commit()
 
 
-defXrmnsfwatch(chat_id:Xstr):
-XXXXnsfwmX=XSESSION.query(Nsfwatch).get(str(chat_id))
-XXXXifXnsfwm:
-XXXXXXXXSESSION.delete(nsfwm)
-XXXXXXXXSESSION.commit()
+defrmnsfwatch(chat_id:str):
+nsfwm=SESSION.query(Nsfwatch).get(str(chat_id))
+ifnsfwm:
+SESSION.delete(nsfwm)
+SESSION.commit()
 
 
-defXget_all_nsfw_enabled_chat():
-XXXXstarkX=XSESSION.query(Nsfwatch).all()
-XXXXSESSION.close()
-XXXXreturnXstark
+defget_all_nsfw_enabled_chat():
+stark=SESSION.query(Nsfwatch).all()
+SESSION.close()
+returnstark
 
 
-defXis_nsfwatch_indb(chat_id:Xstr):
-XXXXtry:
-XXXXXXXXs__X=XSESSION.query(Nsfwatch).get(str(chat_id))
-XXXXXXXXifXs__:
-XXXXXXXXXXXXreturnXstr(s__.chat_id)
-XXXXfinally:
-XXXXXXXXSESSION.close()
+defis_nsfwatch_indb(chat_id:str):
+try:
+s__=SESSION.query(Nsfwatch).get(str(chat_id))
+ifs__:
+returnstr(s__.chat_id)
+finally:
+SESSION.close()

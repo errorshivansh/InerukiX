@@ -1,41 +1,41 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXasyncio
-importXsys
+importasyncio
+importsys
 
-fromXmotorXimportXmotor_asyncio
-fromXodmanticXimportXAIOEngine
-fromXpymongoXimportXMongoClient
-fromXpymongo.errorsXimportXServerSelectionTimeoutError
+frommotorimportmotor_asyncio
+fromodmanticimportAIOEngine
+frompymongoimportMongoClient
+frompymongo.errorsimportServerSelectionTimeoutError
 
-fromXInerukiXXimportXlog
-fromXInerukiX.configXimportXget_int_key,Xget_str_key
+fromInerukiimportlog
+fromIneruki.configimportget_int_key,get_str_key
 
-MONGO_URIX=Xget_str_key("MONGO_URI")
-MONGO_PORTX=Xget_int_key("MONGO_PORT")
-MONGO_DBX=Xget_str_key("MONGO_DB")
+MONGO_URI=get_str_key("MONGO_URI")
+MONGO_PORT=get_int_key("MONGO_PORT")
+MONGO_DB=get_str_key("MONGO_DB")
 
-#XInitXMongoDB
-mongodbX=XMongoClient(MONGO_URI,XMONGO_PORT)[MONGO_DB]
-motorX=Xmotor_asyncio.AsyncIOMotorClient(MONGO_URI,XMONGO_PORT)
-dbX=Xmotor[MONGO_DB]
+#InitMongoDB
+mongodb=MongoClient(MONGO_URI,MONGO_PORT)[MONGO_DB]
+motor=motor_asyncio.AsyncIOMotorClient(MONGO_URI,MONGO_PORT)
+db=motor[MONGO_DB]
 
-engineX=XAIOEngine(motor,XMONGO_DB)
+engine=AIOEngine(motor,MONGO_DB)
 
 try:
-XXXXasyncio.get_event_loop().run_until_complete(motor.server_info())
-exceptXServerSelectionTimeoutError:
-XXXXsys.exit(log.critical("Can'tXconnectXtoXmongodb!XExiting..."))
+asyncio.get_event_loop().run_until_complete(motor.server_info())
+exceptServerSelectionTimeoutError:
+sys.exit(log.critical("Can'tconnecttomongodb!Exiting..."))

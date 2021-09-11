@@ -1,67 +1,67 @@
-#XXXXCopyrightX(C)X@chsaiujwalX2020-2021
-#XXXXEditedXbyXerrorshivansh
-#XXXXThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XXXXitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXasXpublishedXby
-#XXXXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXtheXLicense,Xor
+#Copyright(C)@chsaiujwal2020-2021
+#Editedbyerrorshivansh
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseaspublishedby
+#theFreeSoftwareFoundation,eitherversion3oftheLicense,or
 #
-#XXXXThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XXXXbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XXXXMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XXXXGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 #
-#XXXXYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XXXXalongXwithXthisXprogram.XXIfXnot,XseeX<https://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<https://www.gnu.org/licenses/>.
 
 
-importXurllib.request
+importurllib.request
 
-fromXbs4XimportXBeautifulSoup
-fromXtelethonXimportXevents
-fromXtelethon.tlXimportXfunctions,Xtypes
+frombs4importBeautifulSoup
+fromtelethonimportevents
+fromtelethon.tlimportfunctions,types
 
-fromXInerukiX.services.telethonXimportXtbot
+fromIneruki.services.telethonimporttbot
 
 
-asyncXdefXis_register_admin(chat,Xuser):
+asyncdefis_register_admin(chat,user):
 
-XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
+ifisinstance(chat,(types.InputPeerChannel,types.InputChannel)):
 
-XXXXXXXXreturnXisinstance(
-XXXXXXXXXXXX(
-XXXXXXXXXXXXXXXXawaitXtbot(functions.channels.GetParticipantRequest(chat,Xuser))
-XXXXXXXXXXXX).participant,
-XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
-XXXXXXXX)
-XXXXifXisinstance(chat,Xtypes.InputPeerChat):
+returnisinstance(
+(
+awaittbot(functions.channels.GetParticipantRequest(chat,user))
+).participant,
+(types.ChannelParticipantAdmin,types.ChannelParticipantCreator),
+)
+ifisinstance(chat,types.InputPeerChat):
 
-XXXXXXXXuiX=XawaitXtbot.get_peer_id(user)
-XXXXXXXXpsX=X(
-XXXXXXXXXXXXawaitXtbot(functions.messages.GetFullChatRequest(chat.chat_id))
-XXXXXXXX).full_chat.participants.participants
-XXXXXXXXreturnXisinstance(
-XXXXXXXXXXXXnext((pXforXpXinXpsXifXp.user_idX==Xui),XNone),
-XXXXXXXXXXXX(types.ChatParticipantAdmin,Xtypes.ChatParticipantCreator),
-XXXXXXXX)
-XXXXreturnXNone
+ui=awaittbot.get_peer_id(user)
+ps=(
+awaittbot(functions.messages.GetFullChatRequest(chat.chat_id))
+).full_chat.participants.participants
+returnisinstance(
+next((pforpinpsifp.user_id==ui),None),
+(types.ChatParticipantAdmin,types.ChatParticipantCreator),
+)
+returnNone
 
 
 @tbot.on(events.NewMessage(pattern="/cs$"))
-asyncXdefX_(event):
-XXXXifXevent.fwd_from:
-XXXXXXXXreturn
-XXXXifXevent.is_group:
-XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
-XXXXXXXXXXXXpass
-XXXXXXXXelse:
-XXXXXXXXXXXXreturn
-XXXXscore_pageX=X"http://static.cricinfo.com/rss/livescores.xml"
-XXXXpageX=Xurllib.request.urlopen(score_page)
-XXXXsoupX=XBeautifulSoup(page,X"html.parser")
-XXXXresultX=Xsoup.find_all("description")
-XXXXSedX=X""
-XXXXforXmatchXinXresult:
-XXXXXXXXSedX+=Xmatch.get_text()X+X"\n\n"
-XXXXawaitXevent.reply(
-XXXXXXXXf"<b><u>MatchXinformationXgatheredXsuccessful</b></u>\n\n\n<code>{Sed}</code>",
-XXXXXXXXparse_mode="HTML",
-XXXX)
+asyncdef_(event):
+ifevent.fwd_from:
+return
+ifevent.is_group:
+ifawaitis_register_admin(event.input_chat,event.message.sender_id):
+pass
+else:
+return
+score_page="http://static.cricinfo.com/rss/livescores.xml"
+page=urllib.request.urlopen(score_page)
+soup=BeautifulSoup(page,"html.parser")
+result=soup.find_all("description")
+Sed=""
+formatchinresult:
+Sed+=match.get_text()+"\n\n"
+awaitevent.reply(
+f"<b><u>Matchinformationgatheredsuccessful</b></u>\n\n\n<code>{Sed}</code>",
+parse_mode="HTML",
+)

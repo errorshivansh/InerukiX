@@ -1,73 +1,73 @@
-importXthreading
+importthreading
 
-fromXsqlalchemyXimportXColumn,XString
+fromsqlalchemyimportColumn,String
 
-fromXInerukiX.services.sqlXimportXBASE,XSESSION
+fromIneruki.services.sqlimportBASE,SESSION
 
 
-classXChatbotChats(BASE):
-XXXX__tablename__X=X"chatbot_chats"
-XXXXchat_idX=XColumn(String(14),Xprimary_key=True)
-XXXXses_idX=XColumn(String(70))
-XXXXexpiresX=XColumn(String(15))
+classChatbotChats(BASE):
+__tablename__="chatbot_chats"
+chat_id=Column(String(14),primary_key=True)
+ses_id=Column(String(70))
+expires=Column(String(15))
 
-XXXXdefX__init__(self,Xchat_id,Xses_id,Xexpires):
-XXXXXXXXself.chat_idX=Xchat_id
-XXXXXXXXself.ses_idX=Xses_id
-XXXXXXXXself.expiresX=Xexpires
+def__init__(self,chat_id,ses_id,expires):
+self.chat_id=chat_id
+self.ses_id=ses_id
+self.expires=expires
 
 
 ChatbotChats.__table__.create(checkfirst=True)
 
-INSERTION_LOCKX=Xthreading.RLock()
+INSERTION_LOCK=threading.RLock()
 
 
-defXis_chat(chat_id):
-XXXXtry:
-XXXXXXXXchatX=XSESSION.query(ChatbotChats).get(str(chat_id))
-XXXXXXXXifXchat:
-XXXXXXXXXXXXreturnXTrue
-XXXXXXXXreturnXFalse
-XXXXfinally:
-XXXXXXXXSESSION.close()
+defis_chat(chat_id):
+try:
+chat=SESSION.query(ChatbotChats).get(str(chat_id))
+ifchat:
+returnTrue
+returnFalse
+finally:
+SESSION.close()
 
 
-defXset_ses(chat_id,Xses_id,Xexpires):
-XXXXwithXINSERTION_LOCK:
-XXXXXXXXautochatX=XSESSION.query(ChatbotChats).get(str(chat_id))
-XXXXXXXXifXnotXautochat:
-XXXXXXXXXXXXautochatX=XChatbotChats(str(chat_id),Xstr(ses_id),Xstr(expires))
-XXXXXXXXelse:
-XXXXXXXXXXXXautochat.ses_idX=Xstr(ses_id)
-XXXXXXXXXXXXautochat.expiresX=Xstr(expires)
+defset_ses(chat_id,ses_id,expires):
+withINSERTION_LOCK:
+autochat=SESSION.query(ChatbotChats).get(str(chat_id))
+ifnotautochat:
+autochat=ChatbotChats(str(chat_id),str(ses_id),str(expires))
+else:
+autochat.ses_id=str(ses_id)
+autochat.expires=str(expires)
 
-XXXXXXXXSESSION.add(autochat)
-XXXXXXXXSESSION.commit()
-
-
-defXget_ses(chat_id):
-XXXXautochatX=XSESSION.query(ChatbotChats).get(str(chat_id))
-XXXXseshX=X""
-XXXXexpX=X""
-XXXXifXautochat:
-XXXXXXXXseshX=Xstr(autochat.ses_id)
-XXXXXXXXexpX=Xstr(autochat.expires)
-
-XXXXSESSION.close()
-XXXXreturnXsesh,Xexp
+SESSION.add(autochat)
+SESSION.commit()
 
 
-defXrem_chat(chat_id):
-XXXXwithXINSERTION_LOCK:
-XXXXXXXXautochatX=XSESSION.query(ChatbotChats).get(str(chat_id))
-XXXXXXXXifXautochat:
-XXXXXXXXXXXXSESSION.delete(autochat)
+defget_ses(chat_id):
+autochat=SESSION.query(ChatbotChats).get(str(chat_id))
+sesh=""
+exp=""
+ifautochat:
+sesh=str(autochat.ses_id)
+exp=str(autochat.expires)
 
-XXXXXXXXSESSION.commit()
+SESSION.close()
+returnsesh,exp
 
 
-defXget_all_chats():
-XXXXtry:
-XXXXXXXXreturnXSESSION.query(ChatbotChats.chat_id).all()
-XXXXfinally:
-XXXXXXXXSESSION.close()
+defrem_chat(chat_id):
+withINSERTION_LOCK:
+autochat=SESSION.query(ChatbotChats).get(str(chat_id))
+ifautochat:
+SESSION.delete(autochat)
+
+SESSION.commit()
+
+
+defget_all_chats():
+try:
+returnSESSION.query(ChatbotChats.chat_id).all()
+finally:
+SESSION.close()

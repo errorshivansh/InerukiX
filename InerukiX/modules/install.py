@@ -1,29 +1,29 @@
-#XAllXCreditXToXWilliamXButcherXBot.
-#XPortedXThisXPluginXhereXByXDevilXfromXwbb.
-importXos
+#AllCreditToWilliamButcherBot.
+#PortedThisPluginhereByDevilfromwbb.
+importos
 
-fromXpyrogramXimportXfilters
+frompyrogramimportfilters
 
-fromXInerukiXXimportXOWNER_ID
-fromXInerukiX.services.pyrogramXimportXpbotXasXapp
+fromInerukiimportOWNER_ID
+fromIneruki.services.pyrogramimportpbotasapp
 
 
-@app.on_message(filters.command("install")X&Xfilters.user(OWNER_ID))
-asyncXdefXinstall_module(_,Xmessage):
-XXXXifXnotXmessage.reply_to_message:
-XXXXXXXXawaitXmessage.reply_text("ReplyXToXAX.pyXFileXToXInstallXIt.")
-XXXXXXXXreturn
-XXXXifXnotXmessage.reply_to_message.document:
-XXXXXXXXawaitXmessage.reply_text("ReplyXToXAX.pyXFileXToXInstallXIt.")
-XXXXXXXXreturn
-XXXXdocumentX=Xmessage.reply_to_message.document
-XXXXifXdocument.mime_typeX!=X"text/x-python":
-XXXXXXXXawaitXmessage.reply_text("INVALID_MIME_TYPE,XReplyXToXAXCorrectX.pyXFile.")
-XXXXXXXXreturn
-XXXXmX=XawaitXmessage.reply_text("**InstallingXModule**")
-XXXXawaitXmessage.reply_to_message.download(f"./InerukiX/modules/{document.file_name}")
-XXXXawaitXm.edit("**Restarting**")
-XXXXos.execvp(
-XXXXXXXXf"python{str(pyver.split('X')[0])[:3]}",
-XXXXXXXX[f"python{str(pyver.split('X')[0])[:3]}",X"-m",X"InerukiX"],
-XXXX)
+@app.on_message(filters.command("install")&filters.user(OWNER_ID))
+asyncdefinstall_module(_,message):
+ifnotmessage.reply_to_message:
+awaitmessage.reply_text("ReplyToA.pyFileToInstallIt.")
+return
+ifnotmessage.reply_to_message.document:
+awaitmessage.reply_text("ReplyToA.pyFileToInstallIt.")
+return
+document=message.reply_to_message.document
+ifdocument.mime_type!="text/x-python":
+awaitmessage.reply_text("INVALID_MIME_TYPE,ReplyToACorrect.pyFile.")
+return
+m=awaitmessage.reply_text("**InstallingModule**")
+awaitmessage.reply_to_message.download(f"./Ineruki/modules/{document.file_name}")
+awaitm.edit("**Restarting**")
+os.execvp(
+f"python{str(pyver.split('')[0])[:3]}",
+[f"python{str(pyver.split('')[0])[:3]}","-m","Ineruki"],
+)

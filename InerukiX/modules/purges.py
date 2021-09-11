@@ -1,91 +1,91 @@
-#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
-#XCopyrightX(C)X2021Xerrorshivansh
-#XCopyrightX(C)X2020XInukaXAsith
+#Copyright(C)2018-2020MrYacha.Allrightsreserved.SourcecodeavailableundertheAGPL.
+#Copyright(C)2021errorshivansh
+#Copyright(C)2020InukaAsith
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXasyncio
+importasyncio
 
-fromXtelethon.errors.rpcerrorlistXimportXMessageDeleteForbiddenError
+fromtelethon.errors.rpcerrorlistimportMessageDeleteForbiddenError
 
-fromXInerukiXXimportXbot
-fromXInerukiX.decoratorXimportXregister
-fromXInerukiX.services.telethonXimportXtbot
+fromInerukiimportbot
+fromIneruki.decoratorimportregister
+fromIneruki.services.telethonimporttbot
 
-fromX.utils.languageXimportXget_strings_dec
-fromX.utils.notesXimportXBUTTONS
+from.utils.languageimportget_strings_dec
+from.utils.notesimportBUTTONS
 
 
-@register(cmds="del",Xbot_can_delete_messages=True,Xuser_can_delete_messages=True)
+@register(cmds="del",bot_can_delete_messages=True,user_can_delete_messages=True)
 @get_strings_dec("msg_deleting")
-asyncXdefXdel_message(message,Xstrings):
-XXXXifXnotXmessage.reply_to_message:
-XXXXXXXXawaitXmessage.reply(strings["reply_to_msg"])
-XXXXXXXXreturn
-XXXXmsgsX=X[message.message_id,Xmessage.reply_to_message.message_id]
-XXXXawaitXtbot.delete_messages(message.chat.id,Xmsgs)
+asyncdefdel_message(message,strings):
+ifnotmessage.reply_to_message:
+awaitmessage.reply(strings["reply_to_msg"])
+return
+msgs=[message.message_id,message.reply_to_message.message_id]
+awaittbot.delete_messages(message.chat.id,msgs)
 
 
 @register(
-XXXXcmds="purge",
-XXXXno_args=True,
-XXXXbot_can_delete_messages=True,
-XXXXuser_can_delete_messages=True,
+cmds="purge",
+no_args=True,
+bot_can_delete_messages=True,
+user_can_delete_messages=True,
 )
 @get_strings_dec("msg_deleting")
-asyncXdefXfast_purge(message,Xstrings):
-XXXXifXnotXmessage.reply_to_message:
-XXXXXXXXawaitXmessage.reply(strings["reply_to_msg"])
-XXXXXXXXreturn
-XXXXmsg_idX=Xmessage.reply_to_message.message_id
-XXXXdelete_toX=Xmessage.message_id
+asyncdeffast_purge(message,strings):
+ifnotmessage.reply_to_message:
+awaitmessage.reply(strings["reply_to_msg"])
+return
+msg_id=message.reply_to_message.message_id
+delete_to=message.message_id
 
-XXXXchat_idX=Xmessage.chat.id
-XXXXmsgsX=X[]
-XXXXforXm_idXinXrange(int(delete_to),Xmsg_idX-X1,X-1):
-XXXXXXXXmsgs.append(m_id)
-XXXXXXXXifXlen(msgs)X==X100:
-XXXXXXXXXXXXawaitXtbot.delete_messages(chat_id,Xmsgs)
-XXXXXXXXXXXXmsgsX=X[]
+chat_id=message.chat.id
+msgs=[]
+form_idinrange(int(delete_to),msg_id-1,-1):
+msgs.append(m_id)
+iflen(msgs)==100:
+awaittbot.delete_messages(chat_id,msgs)
+msgs=[]
 
-XXXXtry:
-XXXXXXXXawaitXtbot.delete_messages(chat_id,Xmsgs)
-XXXXexceptXMessageDeleteForbiddenError:
-XXXXXXXXawaitXmessage.reply(strings["purge_error"])
-XXXXXXXXreturn
+try:
+awaittbot.delete_messages(chat_id,msgs)
+exceptMessageDeleteForbiddenError:
+awaitmessage.reply(strings["purge_error"])
+return
 
-XXXXmsgX=XawaitXbot.send_message(chat_id,Xstrings["fast_purge_done"])
-XXXXawaitXasyncio.sleep(5)
-XXXXawaitXmsg.delete()
-
-
-BUTTONS.update({"delmsg":X"btn_deletemsg_cb"})
+msg=awaitbot.send_message(chat_id,strings["fast_purge_done"])
+awaitasyncio.sleep(5)
+awaitmsg.delete()
 
 
-@register(regexp=r"btn_deletemsg:(\w+)",Xf="cb",Xallow_kwargs=True)
-asyncXdefXdelmsg_btn(event,Xregexp=None,X**kwargs):
-XXXXawaitXevent.message.delete()
+BUTTONS.update({"delmsg":"btn_deletemsg_cb"})
 
 
-__mod_name__X=X"Purges"
+@register(regexp=r"btn_deletemsg:(\w+)",f="cb",allow_kwargs=True)
+asyncdefdelmsg_btn(event,regexp=None,**kwargs):
+awaitevent.message.delete()
 
-__help__X=X"""
-NeedXtoXdeleteXlotsXofXmessages?XThat'sXwhatXpurgesXareXfor!
 
-<b>AvailableXcommands:</b>
--X/purge:XDeletesXallXmessagesXfromXtheXmessageXyouXrepliedXto,XtoXtheXcurrentXmessage.
--X/del:XDeletesXtheXmessageXyouXrepliedXtoXandXyourX"<code>/del</code>"XcommandXmessage.
+__mod_name__="Purges"
+
+__help__="""
+Needtodeletelotsofmessages?That'swhatpurgesarefor!
+
+<b>Availablecommands:</b>
+-/purge:Deletesallmessagesfromthemessageyourepliedto,tothecurrentmessage.
+-/del:Deletesthemessageyourepliedtoandyour"<code>/del</code>"commandmessage.
 """

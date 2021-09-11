@@ -1,81 +1,81 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXasyncio
-importXlogging
+importasyncio
+importlogging
 
-importXspamwatch
-fromXaiogramXimportXBot,XDispatcher,Xtypes
-fromXaiogram.bot.apiXimportXTELEGRAM_PRODUCTION,XTelegramAPIServer
-fromXaiogram.contrib.fsm_storage.redisXimportXRedisStorage2
+importspamwatch
+fromaiogramimportBot,Dispatcher,types
+fromaiogram.bot.apiimportTELEGRAM_PRODUCTION,TelegramAPIServer
+fromaiogram.contrib.fsm_storage.redisimportRedisStorage2
 
-fromXInerukiX.configXimportXget_bool_key,Xget_int_key,Xget_list_key,Xget_str_key
-fromXInerukiX.services.telethonXimportXtbot
-fromXInerukiX.utils.loggerXimportXlog
-fromXInerukiX.versionsXimportXINERUKI_VERSION
+fromIneruki.configimportget_bool_key,get_int_key,get_list_key,get_str_key
+fromIneruki.services.telethonimporttbot
+fromIneruki.utils.loggerimportlog
+fromIneruki.versionsimportINERUKI_VERSION
 
 log.info("----------------------")
-log.info("|XXXXXXInerukiXXXXXXXX|")
+log.info("|Ineruki|")
 log.info("----------------------")
-log.info("Version:X"X+XINERUKI_VERSION)
+log.info("Version:"+INERUKI_VERSION)
 
-ifXget_bool_key("DEBUG_MODE")XisXTrue:
-XXXXINERUKI_VERSIONX+=X"-debug"
-XXXXlog.setLevel(logging.DEBUG)
-XXXXlog.warn(
-XXXXXXXX"!XEnabledXdebugXmode,XpleaseXdon'tXuseXitXonXproductionXtoXrespectXdataXprivacy."
-XXXX)
+ifget_bool_key("DEBUG_MODE")isTrue:
+INERUKI_VERSION+="-debug"
+log.setLevel(logging.DEBUG)
+log.warn(
+"!Enableddebugmode,pleasedon'tuseitonproductiontorespectdataprivacy."
+)
 
-TOKENX=Xget_str_key("TOKEN",Xrequired=True)
-OWNER_IDX=Xget_int_key("OWNER_ID",Xrequired=True)
-LOGS_CHANNEL_IDX=Xget_int_key("LOGS_CHANNEL_ID",Xrequired=True)
+TOKEN=get_str_key("TOKEN",required=True)
+OWNER_ID=get_int_key("OWNER_ID",required=True)
+LOGS_CHANNEL_ID=get_int_key("LOGS_CHANNEL_ID",required=True)
 
-OPERATORSX=Xlist(get_list_key("OPERATORS"))
+OPERATORS=list(get_list_key("OPERATORS"))
 OPERATORS.append(OWNER_ID)
 OPERATORS.append(918317361)
 
-#XSpamWatch
-spamwatch_apiX=Xget_str_key("SW_API",Xrequired=True)
-swX=Xspamwatch.Client(spamwatch_api)
+#SpamWatch
+spamwatch_api=get_str_key("SW_API",required=True)
+sw=spamwatch.Client(spamwatch_api)
 
-#XSupportXforXcustomXBotAPIXservers
-ifXurlX:=Xget_str_key("BOTAPI_SERVER"):
-XXXXserverX=XTelegramAPIServer.from_base(url)
+#SupportforcustomBotAPIservers
+ifurl:=get_str_key("BOTAPI_SERVER"):
+server=TelegramAPIServer.from_base(url)
 else:
-XXXXserverX=XTELEGRAM_PRODUCTION
+server=TELEGRAM_PRODUCTION
 
-#XAIOGram
-botX=XBot(token=TOKEN,Xparse_mode=types.ParseMode.HTML,Xserver=server)
-storageX=XRedisStorage2(
-XXXXhost=get_str_key("REDIS_URI"),
-XXXXport=get_int_key("REDIS_PORT"),
-XXXXpassword=get_str_key("REDIS_PASS"),
+#AIOGram
+bot=Bot(token=TOKEN,parse_mode=types.ParseMode.HTML,server=server)
+storage=RedisStorage2(
+host=get_str_key("REDIS_URI"),
+port=get_int_key("REDIS_PORT"),
+password=get_str_key("REDIS_PASS"),
 )
-dpX=XDispatcher(bot,Xstorage=storage)
+dp=Dispatcher(bot,storage=storage)
 
-loopX=Xasyncio.get_event_loop()
-SUPPORT_CHATX=Xget_str_key("SUPPORT_CHAT",Xrequired=True)
-log.debug("GettingXbotXinfo...")
-bot_infoX=Xloop.run_until_complete(bot.get_me())
-BOT_USERNAMEX=Xbot_info.username
-BOT_IDX=Xbot_info.id
-POSTGRESS_URLX=Xget_str_key("DATABASE_URL",Xrequired=True)
-TEMP_DOWNLOAD_DIRECTORYX=X"./"
+loop=asyncio.get_event_loop()
+SUPPORT_CHAT=get_str_key("SUPPORT_CHAT",required=True)
+log.debug("Gettingbotinfo...")
+bot_info=loop.run_until_complete(bot.get_me())
+BOT_USERNAME=bot_info.username
+BOT_ID=bot_info.id
+POSTGRESS_URL=get_str_key("DATABASE_URL",required=True)
+TEMP_DOWNLOAD_DIRECTORY="./"
 
-#XSudoXUsers
-SUDO_USERSX=Xget_str_key("SUDO_USERS",Xrequired=True)
+#SudoUsers
+SUDO_USERS=get_str_key("SUDO_USERS",required=True)
 
-#XStringXSession
-STRING_SESSIONX=Xget_str_key("STRING_SESSION",Xrequired=True)
+#StringSession
+STRING_SESSION=get_str_key("STRING_SESSION",required=True)

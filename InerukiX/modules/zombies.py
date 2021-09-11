@@ -1,140 +1,140 @@
-#XCopyrightX(C)X2021Xerrorshivansh
+#Copyright(C)2021errorshivansh
 
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-fromXasyncioXimportXsleep
+fromasyncioimportsleep
 
-fromXtelethonXimportXevents
-fromXtelethon.errorsXimportXChatAdminRequiredError,XUserAdminInvalidError
-fromXtelethon.tl.functions.channelsXimportXEditBannedRequest
-fromXtelethon.tl.typesXimportXChatBannedRights
+fromtelethonimportevents
+fromtelethon.errorsimportChatAdminRequiredError,UserAdminInvalidError
+fromtelethon.tl.functions.channelsimportEditBannedRequest
+fromtelethon.tl.typesimportChatBannedRights
 
-fromXInerukiXXimportXOWNER_ID
-fromXInerukiX.services.telethonXimportXtbotXasXclient
+fromInerukiimportOWNER_ID
+fromIneruki.services.telethonimporttbotasclient
 
-#X===================XCONSTANTX===================
+#===================CONSTANT===================
 
-BANNED_RIGHTSX=XChatBannedRights(
-XXXXuntil_date=None,
-XXXXview_messages=True,
-XXXXsend_messages=True,
-XXXXsend_media=True,
-XXXXsend_stickers=True,
-XXXXsend_gifs=True,
-XXXXsend_games=True,
-XXXXsend_inline=True,
-XXXXembed_links=True,
+BANNED_RIGHTS=ChatBannedRights(
+until_date=None,
+view_messages=True,
+send_messages=True,
+send_media=True,
+send_stickers=True,
+send_gifs=True,
+send_games=True,
+send_inline=True,
+embed_links=True,
 )
 
 
-UNBAN_RIGHTSX=XChatBannedRights(
-XXXXuntil_date=None,
-XXXXsend_messages=None,
-XXXXsend_media=None,
-XXXXsend_stickers=None,
-XXXXsend_gifs=None,
-XXXXsend_games=None,
-XXXXsend_inline=None,
-XXXXembed_links=None,
+UNBAN_RIGHTS=ChatBannedRights(
+until_date=None,
+send_messages=None,
+send_media=None,
+send_stickers=None,
+send_gifs=None,
+send_games=None,
+send_inline=None,
+embed_links=None,
 )
 
-OFFICERSX=XOWNER_ID
+OFFICERS=OWNER_ID
 
-#XCheckXifXuserXhasXadminXrights
-asyncXdefXis_register_admin(chat,Xuser):
-XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
+#Checkifuserhasadminrights
+asyncdefis_register_admin(chat,user):
+ifisinstance(chat,(types.InputPeerChannel,types.InputChannel)):
 
-XXXXXXXXreturnXisinstance(
-XXXXXXXXXXXX(
-XXXXXXXXXXXXXXXXawaitXtbot(functions.channels.GetParticipantRequest(chat,Xuser))
-XXXXXXXXXXXX).participant,
-XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
-XXXXXXXX)
-XXXXifXisinstance(chat,Xtypes.InputPeerChat):
+returnisinstance(
+(
+awaittbot(functions.channels.GetParticipantRequest(chat,user))
+).participant,
+(types.ChannelParticipantAdmin,types.ChannelParticipantCreator),
+)
+ifisinstance(chat,types.InputPeerChat):
 
-XXXXXXXXuiX=XawaitXtbot.get_peer_id(user)
-XXXXXXXXpsX=X(
-XXXXXXXXXXXXawaitXtbot(functions.messages.GetFullChatRequest(chat.chat_id))
-XXXXXXXX).full_chat.participants.participants
-XXXXXXXXreturnXisinstance(
-XXXXXXXXXXXXnext((pXforXpXinXpsXifXp.user_idX==Xui),XNone),
-XXXXXXXXXXXX(types.ChatParticipantAdmin,Xtypes.ChatParticipantCreator),
-XXXXXXXX)
-XXXXreturnXNone
+ui=awaittbot.get_peer_id(user)
+ps=(
+awaittbot(functions.messages.GetFullChatRequest(chat.chat_id))
+).full_chat.participants.participants
+returnisinstance(
+next((pforpinpsifp.user_id==ui),None),
+(types.ChatParticipantAdmin,types.ChatParticipantCreator),
+)
+returnNone
 
 
-@client.on(events.NewMessage(pattern=f"^[!/]zombiesX?(.*)"))
-asyncXdefXzombies(event):
-XXXX"""ForX.zombiesXcommand,XlistXallXtheXzombiesXinXaXchat."""
-XXXXifXevent.fwd_from:
-XXXXXXXXreturn
-XXXXifXevent.is_group:
-XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
-XXXXXXXXXXXXpass
-XXXXXXXXelse:
-XXXXXXXXXXXXreturn
-XXXXconX=Xevent.pattern_match.group(1).lower()
-XXXXdel_uX=X0
-XXXXdel_statusX=X"NoXDeletedXAccountsXFound,XGroupXIsXClean."
+@client.on(events.NewMessage(pattern=f"^[!/]zombies?(.*)"))
+asyncdefzombies(event):
+"""For.zombiescommand,listallthezombiesinachat."""
+ifevent.fwd_from:
+return
+ifevent.is_group:
+ifawaitis_register_admin(event.input_chat,event.message.sender_id):
+pass
+else:
+return
+con=event.pattern_match.group(1).lower()
+del_u=0
+del_status="NoDeletedAccountsFound,GroupIsClean."
 
-XXXXifXconX!=X"clean":
-XXXXXXXXfind_zombiesX=XawaitXevent.respond("SearchingXForXZombies...")
-XXXXXXXXasyncXforXuserXinXevent.client.iter_participants(event.chat_id):
+ifcon!="clean":
+find_zombies=awaitevent.respond("SearchingForZombies...")
+asyncforuserinevent.client.iter_participants(event.chat_id):
 
-XXXXXXXXXXXXifXuser.deleted:
-XXXXXXXXXXXXXXXXdel_uX+=X1
-XXXXXXXXXXXXXXXXawaitXsleep(1)
-XXXXXXXXifXdel_uX>X0:
-XXXXXXXXXXXXdel_statusX=Xf"FoundX**{del_u}**XZombiesXInXThisXGroup.\
-XXXXXXXXXXXX\nCleanXThemXByXUsingX-X`/zombiesXclean`"
-XXXXXXXXawaitXfind_zombies.edit(del_status)
-XXXXXXXXreturn
+ifuser.deleted:
+del_u+=1
+awaitsleep(1)
+ifdel_u>0:
+del_status=f"Found**{del_u}**ZombiesInThisGroup.\
+\nCleanThemByUsing-`/zombiesclean`"
+awaitfind_zombies.edit(del_status)
+return
 
-XXXX#XHereXlayingXtheXsanityXcheck
-XXXXchatX=XawaitXevent.get_chat()
-XXXXchat.admin_rights
-XXXXchat.creator
+#Herelayingthesanitycheck
+chat=awaitevent.get_chat()
+chat.admin_rights
+chat.creator
 
-XXXX#XWell
+#Well
 
-XXXXcleaning_zombiesX=XawaitXevent.respond("CleaningXZombies...")
-XXXXdel_uX=X0
-XXXXdel_aX=X0
+cleaning_zombies=awaitevent.respond("CleaningZombies...")
+del_u=0
+del_a=0
 
-XXXXasyncXforXuserXinXevent.client.iter_participants(event.chat_id):
-XXXXXXXXifXuser.deleted:
-XXXXXXXXXXXXtry:
-XXXXXXXXXXXXXXXXawaitXevent.client(
-XXXXXXXXXXXXXXXXXXXXEditBannedRequest(event.chat_id,Xuser.id,XBANNED_RIGHTS)
-XXXXXXXXXXXXXXXX)
-XXXXXXXXXXXXexceptXChatAdminRequiredError:
-XXXXXXXXXXXXXXXXawaitXcleaning_zombies.edit("IXDon'tXHaveXBanXRightsXInXThisXGroup.")
-XXXXXXXXXXXXXXXXreturn
-XXXXXXXXXXXXexceptXUserAdminInvalidError:
-XXXXXXXXXXXXXXXXdel_uX-=X1
-XXXXXXXXXXXXXXXXdel_aX+=X1
-XXXXXXXXXXXXawaitXevent.client(EditBannedRequest(event.chat_id,Xuser.id,XUNBAN_RIGHTS))
-XXXXXXXXXXXXdel_uX+=X1
+asyncforuserinevent.client.iter_participants(event.chat_id):
+ifuser.deleted:
+try:
+awaitevent.client(
+EditBannedRequest(event.chat_id,user.id,BANNED_RIGHTS)
+)
+exceptChatAdminRequiredError:
+awaitcleaning_zombies.edit("IDon'tHaveBanRightsInThisGroup.")
+return
+exceptUserAdminInvalidError:
+del_u-=1
+del_a+=1
+awaitevent.client(EditBannedRequest(event.chat_id,user.id,UNBAN_RIGHTS))
+del_u+=1
 
-XXXXifXdel_uX>X0:
-XXXXXXXXdel_statusX=Xf"CleanedX`{del_u}`XZombies"
+ifdel_u>0:
+del_status=f"Cleaned`{del_u}`Zombies"
 
-XXXXifXdel_aX>X0:
-XXXXXXXXdel_statusX=Xf"CleanedX`{del_u}`XZombiesX\
-XXXXXXXX\n`{del_a}`XZombieXAdminXAccountsXAreXNotXRemoved!"
+ifdel_a>0:
+del_status=f"Cleaned`{del_u}`Zombies\
+\n`{del_a}`ZombieAdminAccountsAreNotRemoved!"
 
-XXXXawaitXcleaning_zombies.edit(del_status)
+awaitcleaning_zombies.edit(del_status)

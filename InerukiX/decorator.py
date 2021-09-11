@@ -1,132 +1,132 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXtime
-fromXimportlibXimportXimport_module
+importtime
+fromimportlibimportimport_module
 
-fromXaiogramXimportXtypes
-fromXaiogram.dispatcher.handlerXimportXSkipHandler
-fromXsentry_sdkXimportXconfigure_scope
+fromaiogramimporttypes
+fromaiogram.dispatcher.handlerimportSkipHandler
+fromsentry_sdkimportconfigure_scope
 
-fromXInerukiXXimportXBOT_USERNAME,Xdp
-fromXInerukiX.configXimportXget_bool_key
-fromXInerukiX.modules.errorXimportXparse_update
-fromXInerukiX.utils.filtersXimportXALL_FILTERS
-fromXInerukiX.utils.loggerXimportXlog
+fromInerukiimportBOT_USERNAME,dp
+fromIneruki.configimportget_bool_key
+fromIneruki.modules.errorimportparse_update
+fromIneruki.utils.filtersimportALL_FILTERS
+fromIneruki.utils.loggerimportlog
 
-DEBUG_MODEX=Xget_bool_key("DEBUG_MODE")
-ALLOW_F_COMMANDSX=Xget_bool_key("ALLOW_FORWARDS_COMMANDS")
-ALLOW_COMMANDS_FROM_EXCX=Xget_bool_key("ALLOW_EXCEL")
-CMD_NOT_MONOX=Xget_bool_key("DISALLOW_MONO_CMDS")
+DEBUG_MODE=get_bool_key("DEBUG_MODE")
+ALLOW_F_COMMANDS=get_bool_key("ALLOW_FORWARDS_COMMANDS")
+ALLOW_COMMANDS_FROM_EC=get_bool_key("ALLOW_ECEL")
+CMD_NOT_MONO=get_bool_key("DISALLOW_MONO_CMDS")
 
-REGISTRED_COMMANDSX=X[]
-COMMANDS_ALIASESX=X{}
+REGISTRED_COMMANDS=[]
+COMMANDS_ALIASES={}
 
-#XImportXfilters
-log.info("FiltersXtoXload:X%s",Xstr(ALL_FILTERS))
-forXmodule_nameXinXALL_FILTERS:
-XXXXlog.debug("ImportingX"X+Xmodule_name)
-XXXXimported_moduleX=Ximport_module("InerukiX.utils.filters."X+Xmodule_name)
-log.info("FiltersXloaded!")
+#Importfilters
+log.info("Filterstoload:%s",str(ALL_FILTERS))
+formodule_nameinALL_FILTERS:
+log.debug("Importing"+module_name)
+imported_module=import_module("Ineruki.utils.filters."+module_name)
+log.info("Filtersloaded!")
 
 
-defXregister(*args,Xcmds=None,Xf=None,Xallow_edited=True,Xallow_kwargs=False,X**kwargs):
-XXXXifXcmdsXandXtype(cmds)XisXstr:
-XXXXXXXXcmdsX=X[cmds]
+defregister(*args,cmds=None,f=None,allow_edited=True,allow_kwargs=False,**kwargs):
+ifcmdsandtype(cmds)isstr:
+cmds=[cmds]
 
-XXXXregister_kwargsX=X{}
+register_kwargs={}
 
-XXXXifXcmdsXandXnotXf:
-XXXXXXXXregexX=Xr"\A^{}(".format("[!/]"XifXALLOW_COMMANDS_FROM_EXCXelseX"/")
+ifcmdsandnotf:
+regex=r"\A^{}(".format("[!/]"ifALLOW_COMMANDS_FROM_ECelse"/")
 
-XXXXXXXXifX"not_forwarded"XnotXinXkwargsXandXALLOW_F_COMMANDSXisXFalse:
-XXXXXXXXXXXXkwargs["not_forwarded"]X=XTrue
+if"not_forwarded"notinkwargsandALLOW_F_COMMANDSisFalse:
+kwargs["not_forwarded"]=True
 
-XXXXXXXXifX"cmd_not_mono"XnotXinXkwargsXandXCMD_NOT_MONO:
-XXXXXXXXXXXXkwargs["cmd_not_mono"]X=XTrue
+if"cmd_not_mono"notinkwargsandCMD_NOT_MONO:
+kwargs["cmd_not_mono"]=True
 
-XXXXXXXXforXidx,XcmdXinXenumerate(cmds):
-XXXXXXXXXXXXifXcmdXinXREGISTRED_COMMANDS:
-XXXXXXXXXXXXXXXXlog.warn(f"DuplicationXofX/{cmd}Xcommand")
-XXXXXXXXXXXXREGISTRED_COMMANDS.append(cmd)
-XXXXXXXXXXXXregexX+=Xcmd
+foridx,cmdinenumerate(cmds):
+ifcmdinREGISTRED_COMMANDS:
+log.warn(f"Duplicationof/{cmd}command")
+REGISTRED_COMMANDS.append(cmd)
+regex+=cmd
 
-XXXXXXXXXXXXifXnotXidxX==Xlen(cmds)X-X1:
-XXXXXXXXXXXXXXXXifXnotXcmds[0]XinXCOMMANDS_ALIASES:
-XXXXXXXXXXXXXXXXXXXXCOMMANDS_ALIASES[cmds[0]]X=X[cmds[idxX+X1]]
-XXXXXXXXXXXXXXXXelse:
-XXXXXXXXXXXXXXXXXXXXCOMMANDS_ALIASES[cmds[0]].append(cmds[idxX+X1])
-XXXXXXXXXXXXXXXXregexX+=X"|"
+ifnotidx==len(cmds)-1:
+ifnotcmds[0]inCOMMANDS_ALIASES:
+COMMANDS_ALIASES[cmds[0]]=[cmds[idx+1]]
+else:
+COMMANDS_ALIASES[cmds[0]].append(cmds[idx+1])
+regex+="|"
 
-XXXXXXXXifX"disable_args"XinXkwargs:
-XXXXXXXXXXXXdelXkwargs["disable_args"]
-XXXXXXXXXXXXregexX+=Xf")($|@{BOT_USERNAME}$)"
-XXXXXXXXelse:
-XXXXXXXXXXXXregexX+=Xf")(|@{BOT_USERNAME})(:?X|$)"
+if"disable_args"inkwargs:
+delkwargs["disable_args"]
+regex+=f")($|@{BOT_USERNAME}$)"
+else:
+regex+=f")(|@{BOT_USERNAME})(:?|$)"
 
-XXXXXXXXregister_kwargs["regexp"]X=Xregex
+register_kwargs["regexp"]=regex
 
-XXXXelifXfX==X"text":
-XXXXXXXXregister_kwargs["content_types"]X=Xtypes.ContentTypes.TEXT
+eliff=="text":
+register_kwargs["content_types"]=types.ContentTypes.TET
 
-XXXXelifXfX==X"welcome":
-XXXXXXXXregister_kwargs["content_types"]X=Xtypes.ContentTypes.NEW_CHAT_MEMBERS
+eliff=="welcome":
+register_kwargs["content_types"]=types.ContentTypes.NEW_CHAT_MEMBERS
 
-XXXXelifXfX==X"leave":
-XXXXXXXXregister_kwargs["content_types"]X=Xtypes.ContentTypes.LEFT_CHAT_MEMBER
+eliff=="leave":
+register_kwargs["content_types"]=types.ContentTypes.LEFT_CHAT_MEMBER
 
-XXXXelifXfX==X"service":
-XXXXXXXXregister_kwargs["content_types"]X=Xtypes.ContentTypes.NEW_CHAT_MEMBERS
-XXXXelifXfX==X"any":
-XXXXXXXXregister_kwargs["content_types"]X=Xtypes.ContentTypes.ANY
+eliff=="service":
+register_kwargs["content_types"]=types.ContentTypes.NEW_CHAT_MEMBERS
+eliff=="any":
+register_kwargs["content_types"]=types.ContentTypes.ANY
 
-XXXXlog.debug(f"RegistredXnewXhandler:X<d><n>{str(register_kwargs)}</></>")
+log.debug(f"Registrednewhandler:<d><n>{str(register_kwargs)}</></>")
 
-XXXXregister_kwargs.update(kwargs)
+register_kwargs.update(kwargs)
 
-XXXXdefXdecorator(func):
-XXXXXXXXasyncXdefXnew_func(*def_args,X**def_kwargs):
-XXXXXXXXXXXXmessageX=Xdef_args[0]
+defdecorator(func):
+asyncdefnew_func(*def_args,**def_kwargs):
+message=def_args[0]
 
-XXXXXXXXXXXXifXcmds:
-XXXXXXXXXXXXXXXXmessage.conf["cmds"]X=Xcmds
+ifcmds:
+message.conf["cmds"]=cmds
 
-XXXXXXXXXXXXifXallow_kwargsXisXFalse:
-XXXXXXXXXXXXXXXXdef_kwargsX=Xdict()
+ifallow_kwargsisFalse:
+def_kwargs=dict()
 
-XXXXXXXXXXXXwithXconfigure_scope()XasXscope:
-XXXXXXXXXXXXXXXXparsed_updateX=Xparse_update(dict(message))
-XXXXXXXXXXXXXXXXscope.set_extra("update",Xstr(parsed_update))
+withconfigure_scope()asscope:
+parsed_update=parse_update(dict(message))
+scope.set_extra("update",str(parsed_update))
 
-XXXXXXXXXXXXifXDEBUG_MODE:
-XXXXXXXXXXXXXXXX#Xlog.debug('[*]XStartingX{}.'.format(func.__name__))
-XXXXXXXXXXXXXXXX#Xlog.debug('Event:X\n'X+Xstr(message))
-XXXXXXXXXXXXXXXXstartX=Xtime.time()
-XXXXXXXXXXXXXXXXawaitXfunc(*def_args,X**def_kwargs)
-XXXXXXXXXXXXXXXXlog.debug(
-XXXXXXXXXXXXXXXXXXXX"[*]X{}XTime:X{}Xsec.".format(func.__name__,Xtime.time()X-Xstart)
-XXXXXXXXXXXXXXXX)
-XXXXXXXXXXXXelse:
-XXXXXXXXXXXXXXXXawaitXfunc(*def_args,X**def_kwargs)
-XXXXXXXXXXXXraiseXSkipHandler()
+ifDEBUG_MODE:
+#log.debug('[*]Starting{}.'.format(func.__name__))
+#log.debug('Event:\n'+str(message))
+start=time.time()
+awaitfunc(*def_args,**def_kwargs)
+log.debug(
+"[*]{}Time:{}sec.".format(func.__name__,time.time()-start)
+)
+else:
+awaitfunc(*def_args,**def_kwargs)
+raiseSkipHandler()
 
-XXXXXXXXifXfX==X"cb":
-XXXXXXXXXXXXdp.register_callback_query_handler(new_func,X*args,X**register_kwargs)
-XXXXXXXXelse:
-XXXXXXXXXXXXdp.register_message_handler(new_func,X*args,X**register_kwargs)
-XXXXXXXXXXXXifXallow_editedXisXTrue:
-XXXXXXXXXXXXXXXXdp.register_edited_message_handler(new_func,X*args,X**register_kwargs)
+iff=="cb":
+dp.register_callback_query_handler(new_func,*args,**register_kwargs)
+else:
+dp.register_message_handler(new_func,*args,**register_kwargs)
+ifallow_editedisTrue:
+dp.register_edited_message_handler(new_func,*args,**register_kwargs)
 
-XXXXreturnXdecorator
+returndecorator

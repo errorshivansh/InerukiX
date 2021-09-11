@@ -1,126 +1,126 @@
-#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
-#XCopyrightX(C)X2019XAiogram
-#XCopyrightX(C)X2020XJeepeo
+#Copyright(C)2018-2020MrYacha.Allrightsreserved.SourcecodeavailableundertheAGPL.
+#Copyright(C)2019Aiogram
+#Copyright(C)2020Jeepeo
 #
-#XThisXfileXwasXaXXpartXofXHitsukiX(TelegramXBot)
-#XModifiedXbyXerrorshivanshXforXInerukiX
+#ThisfilewasapartofHitsuki(TelegramBot)
+#ModifiedbyerrorshivanshforIneruki
 
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXitertools
+importitertools
 
-fromXaiogram.types.chat_permissionsXimportXChatPermissions
+fromaiogram.types.chat_permissionsimportChatPermissions
 
-fromXInerukiXXimportXbot
-fromXInerukiX.decoratorXimportXregister
+fromInerukiimportbot
+fromIneruki.decoratorimportregister
 
-fromX.utils.connectionsXimportXchat_connection
-fromX.utils.languageXimportXget_strings_dec
+from.utils.connectionsimportchat_connection
+from.utils.languageimportget_strings_dec
 
 
-@register(cmds=["locks",X"locktypes"],Xuser_admin=True)
+@register(cmds=["locks","locktypes"],user_admin=True)
 @chat_connection(only_groups=True)
 @get_strings_dec("locks")
-asyncXdefXlock_types(message,Xchat,Xstrings):
-XXXXchat_idX=Xchat["chat_id"]
-XXXXchat_titleX=Xchat["chat_title"]
-XXXXtextX=Xstrings["locks_header"].format(chat_title=chat_title)
+asyncdeflock_types(message,chat,strings):
+chat_id=chat["chat_id"]
+chat_title=chat["chat_title"]
+text=strings["locks_header"].format(chat_title=chat_title)
 
-XXXXasyncXforXlock,XstatusXinXlock_parser(chat_id):
-XXXXXXXXtextX+=Xf"-X{lock}X=X{status}X\n"
-XXXXawaitXmessage.reply(text)
+asyncforlock,statusinlock_parser(chat_id):
+text+=f"-{lock}={status}\n"
+awaitmessage.reply(text)
 
 
-@register(cmds="lock",Xuser_can_restrict_members=True,Xbot_can_restrict_members=True)
+@register(cmds="lock",user_can_restrict_members=True,bot_can_restrict_members=True)
 @chat_connection(only_groups=True)
 @get_strings_dec("locks")
-asyncXdefXlock_cmd(message,Xchat,Xstrings):
-XXXXchat_idX=Xchat["chat_id"]
-XXXXchat_titleX=Xchat["chat_title"]
+asyncdeflock_cmd(message,chat,strings):
+chat_id=chat["chat_id"]
+chat_title=chat["chat_title"]
 
-XXXXifX(argsX:=Xmessage.get_args().split("X",X1))X==X[""]:
-XXXXXXXXawaitXmessage.reply(strings["no_lock_args"])
-XXXXXXXXreturn
+if(args:=message.get_args().split("",1))==[""]:
+awaitmessage.reply(strings["no_lock_args"])
+return
 
-XXXXasyncXforXlock,XstatusXinXlock_parser(chat_id,Xrev=True):
-XXXXXXXXifXargs[0]X==Xlock[0]:
-XXXXXXXXXXXXifXstatusXisXTrue:
-XXXXXXXXXXXXXXXXawaitXmessage.reply(strings["already_locked"])
-XXXXXXXXXXXXXXXXcontinue
+asyncforlock,statusinlock_parser(chat_id,rev=True):
+ifargs[0]==lock[0]:
+ifstatusisTrue:
+awaitmessage.reply(strings["already_locked"])
+continue
 
-XXXXXXXXXXXXto_lockX=X{lock[1]:XFalse}
-XXXXXXXXXXXXnew_permX=XChatPermissions(**to_lock)
-XXXXXXXXXXXXawaitXbot.set_chat_permissions(chat_id,Xnew_perm)
-XXXXXXXXXXXXawaitXmessage.reply(
-XXXXXXXXXXXXXXXXstrings["locked_successfully"].format(lock=lock[0],Xchat=chat_title)
-XXXXXXXXXXXX)
+to_lock={lock[1]:False}
+new_perm=ChatPermissions(**to_lock)
+awaitbot.set_chat_permissions(chat_id,new_perm)
+awaitmessage.reply(
+strings["locked_successfully"].format(lock=lock[0],chat=chat_title)
+)
 
 
-@register(cmds="unlock",Xuser_can_restrict_members=True,Xbot_can_restrict_members=True)
+@register(cmds="unlock",user_can_restrict_members=True,bot_can_restrict_members=True)
 @chat_connection(only_groups=True)
 @get_strings_dec("locks")
-asyncXdefXunlock_cmd(message,Xchat,Xstrings):
-XXXXchat_idX=Xchat["chat_id"]
-XXXXchat_titleX=Xchat["chat_title"]
+asyncdefunlock_cmd(message,chat,strings):
+chat_id=chat["chat_id"]
+chat_title=chat["chat_title"]
 
-XXXXifX(argsX:=Xmessage.get_args().split("X",X1))X==X[""]:
-XXXXXXXXawaitXmessage.reply(strings["no_unlock_args"])
-XXXXXXXXreturn
+if(args:=message.get_args().split("",1))==[""]:
+awaitmessage.reply(strings["no_unlock_args"])
+return
 
-XXXXasyncXforXlock,XstatusXinXlock_parser(chat_id,Xrev=True):
-XXXXXXXXifXargs[0]X==Xlock[0]:
-XXXXXXXXXXXXifXstatusXisXFalse:
-XXXXXXXXXXXXXXXXawaitXmessage.reply(strings["not_locked"])
-XXXXXXXXXXXXXXXXcontinue
+asyncforlock,statusinlock_parser(chat_id,rev=True):
+ifargs[0]==lock[0]:
+ifstatusisFalse:
+awaitmessage.reply(strings["not_locked"])
+continue
 
-XXXXXXXXXXXXto_unlockX=X{lock[1]:XTrue}
-XXXXXXXXXXXXnew_permX=XChatPermissions(**to_unlock)
-XXXXXXXXXXXXawaitXbot.set_chat_permissions(chat_id,Xnew_perm)
-XXXXXXXXXXXXawaitXmessage.reply(
-XXXXXXXXXXXXXXXXstrings["unlocked_successfully"].format(lock=lock[0],Xchat=chat_title)
-XXXXXXXXXXXX)
-
-
-asyncXdefXlock_parser(chat_id,Xrev=False):
-XXXXkeywordsX=X{
-XXXXXXXX"all":X"can_send_messages",
-XXXXXXXX"media":X"can_send_media_messages",
-XXXXXXXX"polls":X"can_send_polls",
-XXXXXXXX"others":X"can_send_other_messages",
-XXXX}
-XXXXcurrent_lockX=X(awaitXbot.get_chat(chat_id)).permissions
-
-XXXXforXlock,XkeywordXinXitertools.zip_longest(
-XXXXXXXXdict(current_lock).keys(),Xkeywords.items()
-XXXX):
-XXXXXXXXifXkeywordXisXnotXNoneXandXlockXinXkeyword:
-XXXXXXXXXXXXifXrev:
-XXXXXXXXXXXXXXXXlockX=Xlist([keyword[0],Xkeyword[1]])
-XXXXXXXXXXXXXXXXstatusX=XnotXcurrent_lock[keyword[1]]
-XXXXXXXXXXXXelse:
-XXXXXXXXXXXXXXXXstatusX=XnotXcurrent_lock[lock]
-XXXXXXXXXXXXXXXXlockX=Xkeyword[0]
-XXXXXXXXXXXXyieldXlock,Xstatus
+to_unlock={lock[1]:True}
+new_perm=ChatPermissions(**to_unlock)
+awaitbot.set_chat_permissions(chat_id,new_perm)
+awaitmessage.reply(
+strings["unlocked_successfully"].format(lock=lock[0],chat=chat_title)
+)
 
 
-__mod_name__X=X"Locks"
+asyncdeflock_parser(chat_id,rev=False):
+keywords={
+"all":"can_send_messages",
+"media":"can_send_media_messages",
+"polls":"can_send_polls",
+"others":"can_send_other_messages",
+}
+current_lock=(awaitbot.get_chat(chat_id)).permissions
 
-__help__X=X"""
-UseXthisXfeatureXtoXblockXusersXfromXsendingXspecificXmessageXtypesXtoXyourXgroup!
-<b>AvailableXcommandsXare:</b>
--X/locksXorX/locktypes:XUseXthisXcommandXtoXknowXcurrentXstateXofXyourXlocksXinXyourXgroup!
--X/lockX(locktype):XLocksXaXtypeXofXmessages
--X/unlockX(locktype):XUnlocksXaXtypeXofXmessage
+forlock,keywordinitertools.zip_longest(
+dict(current_lock).keys(),keywords.items()
+):
+ifkeywordisnotNoneandlockinkeyword:
+ifrev:
+lock=list([keyword[0],keyword[1]])
+status=notcurrent_lock[keyword[1]]
+else:
+status=notcurrent_lock[lock]
+lock=keyword[0]
+yieldlock,status
+
+
+__mod_name__="Locks"
+
+__help__="""
+Usethisfeaturetoblockusersfromsendingspecificmessagetypestoyourgroup!
+<b>Availablecommandsare:</b>
+-/locksor/locktypes:Usethiscommandtoknowcurrentstateofyourlocksinyourgroup!
+-/lock(locktype):Locksatypeofmessages
+-/unlock(locktype):Unlocksatypeofmessage
 """

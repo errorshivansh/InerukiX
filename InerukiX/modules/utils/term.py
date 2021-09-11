@@ -1,44 +1,44 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXasyncio
-importXsubprocess
+importasyncio
+importsubprocess
 
-fromXInerukiX.services.telethonXimportXtbot
-
-
-asyncXdefXchat_term(message,Xcommand):
-XXXXresultX=XawaitXterm(command)
-XXXXifXlen(result)X>X4096:
-XXXXXXXXoutputX=Xopen("output.txt",X"w+")
-XXXXXXXXoutput.write(result)
-XXXXXXXXoutput.close()
-XXXXXXXXawaitXtbot.send_file(
-XXXXXXXXXXXXmessage.chat.id,
-XXXXXXXXXXXX"output.txt",
-XXXXXXXXXXXXreply_to=message["message_id"],
-XXXXXXXXXXXXcaption="`OutputXtooXlarge,XsendingXasXfile`",
-XXXXXXXX)
-XXXXXXXXsubprocess.run(["rm",X"output.txt"],Xstdout=subprocess.PIPE)
-XXXXreturnXresult
+fromIneruki.services.telethonimporttbot
 
 
-asyncXdefXterm(command):
-XXXXprocessX=XawaitXasyncio.create_subprocess_shell(
-XXXXXXXXcommand,Xstdout=asyncio.subprocess.PIPE,Xstderr=asyncio.subprocess.PIPE
-XXXX)
-XXXXstdout,XstderrX=XawaitXprocess.communicate()
-XXXXresultX=Xstr(stdout.decode().strip())X+Xstr(stderr.decode().strip())
-XXXXreturnXresult
+asyncdefchat_term(message,command):
+result=awaitterm(command)
+iflen(result)>4096:
+output=open("output.txt","w+")
+output.write(result)
+output.close()
+awaittbot.send_file(
+message.chat.id,
+"output.txt",
+reply_to=message["message_id"],
+caption="`Outputtoolarge,sendingasfile`",
+)
+subprocess.run(["rm","output.txt"],stdout=subprocess.PIPE)
+returnresult
+
+
+asyncdefterm(command):
+process=awaitasyncio.create_subprocess_shell(
+command,stdout=asyncio.subprocess.PIPE,stderr=asyncio.subprocess.PIPE
+)
+stdout,stderr=awaitprocess.communicate()
+result=str(stdout.decode().strip())+str(stderr.decode().strip())
+returnresult

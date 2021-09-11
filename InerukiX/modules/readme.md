@@ -1,84 +1,84 @@
-#XInerukiXXExampleXpluginXformat
+#InerukiExamplepluginformat
 
-##XBasic:XSimpleXPlugins
+##Basic:SimplePlugins
 ```python3
 
-fromXInerukiX.decoratorXimportXregister
-fromX.utils.disableXimportXdisableable_dec
-fromX.utils.messageXimportXget_args_str
+fromIneruki.decoratorimportregister
+from.utils.disableimportdisableable_dec
+from.utils.messageimportget_args_str
 
 @register(cmds="Hi")
 @disableable_dec("Hi")
-asyncXdefX_(message):
-XXXXjX=X"HelloXthere"
-XXXXawaitXmessage.reply(j)
-XXXX
-__mod_name__X=X"Hi"
-__help__X=X"""
+asyncdef_(message):
+j="Hellothere"
+awaitmessage.reply(j)
+
+__mod_name__="Hi"
+__help__="""
 <b>Hi</b>
--X/hi:XSayXHelloXThere
+-/hi:SayHelloThere
 """
 ```
 
-##XBasic:XEnvXVars
+##Basic:EnvVars
 ```python3
-#XYouXcanXimportXenvXlikeXthis.XIfXconfigXpresentXautoXuseXconfig
+#Youcanimportenvlikethis.Ifconfigpresentautouseconfig
 
-fromXInerukiX.decoratorXimportXregister
-fromX.utils.disableXimportXdisableable_dec
-fromX.utils.messageXimportXget_args_str
-fromXInerukiX.configXimportXget_int_key,Xget_str_key
+fromIneruki.decoratorimportregister
+from.utils.disableimportdisableable_dec
+from.utils.messageimportget_args_str
+fromIneruki.configimportget_int_key,get_str_key
 
-HI_STRINGX=Xget_str_key("HI_STRING",Xrequired=True)X#XString
-MULTIX=Xget_int_key("MULTI",Xrequired=True)X#Intiger
+HI_STRING=get_str_key("HI_STRING",required=True)#String
+MULTI=get_int_key("MULTI",required=True)#Intiger
 
 @register(cmds="Hi")
 @disableable_dec("Hi")
-asyncXdefX_(message):
-XXXXjX=XHI_STRING*MULTI
-XXXXawaitXmessage.reply(j)
-XXXX
-__mod_name__X=X"Hi"
-__help__X=X"""
+asyncdef_(message):
+j=HI_STRING*MULTI
+awaitmessage.reply(j)
+
+__mod_name__="Hi"
+__help__="""
 <b>Hi</b>
--X/hi:XSayXHelloXThere
+-/hi:SayHelloThere
 """
 ```
 
 
 
-##XAdvanced:XPyrogram
+##Advanced:Pyrogram
 ```python3
-fromXInerukiX.function.pluginhelpersXimportXadmins_only
-fromXInerukiX.services.pyrogramXimportXpbot
+fromIneruki.function.pluginhelpersimportadmins_only
+fromIneruki.services.pyrogramimportpbot
 
-@pbot.on_message(filters.command("hi")X&X~filters.editedX&X~filters.bot)
+@pbot.on_message(filters.command("hi")&~filters.edited&~filters.bot)
 @admins_only
-asyncXdefXhmm(client,Xmessage):
-XXXXjX=X"HelloXthere"
-XXXXawaitXmessage.reply(j)
-XXXX
-__mod_name__X=X"Hi"
-__help__X=X"""
+asyncdefhmm(client,message):
+j="Hellothere"
+awaitmessage.reply(j)
+
+__mod_name__="Hi"
+__help__="""
 <b>Hi</b>
--X/hi:XSayXHelloXThere
+-/hi:SayHelloThere
 """
 ```
 
-##XAdvanced:XTelethon
+##Advanced:Telethon
 ```python3
 
-fromXInerukiX.services.telethonXimportXtbot
-fromXInerukiX.services.eventsXimportXregister
+fromIneruki.services.telethonimporttbot
+fromIneruki.services.eventsimportregister
 
 @register(pattern="^/hi$")
-asyncXdefXhmm(event):
-XXXXjX=X"HelloXthere"
-XXXXawaitXevent.reply(j)
-XXXX
-__mod_name__X=X"Hi"
-__help__X=X"""
+asyncdefhmm(event):
+j="Hellothere"
+awaitevent.reply(j)
+
+__mod_name__="Hi"
+__help__="""
 <b>Hi</b>
--X/hi:XSayXHelloXThere
+-/hi:SayHelloThere
 """
 ```

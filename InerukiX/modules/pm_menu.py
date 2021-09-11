@@ -1,160 +1,160 @@
-#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
-#XCopyrightX(C)X2021Xerrorshivansh
-#XCopyrightX(C)X2020XInukaXAsith
+#Copyright(C)2018-2020MrYacha.Allrightsreserved.SourcecodeavailableundertheAGPL.
+#Copyright(C)2021errorshivansh
+#Copyright(C)2020InukaAsith
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXrandom
-fromXcontextlibXimportXsuppress
+importrandom
+fromcontextlibimportsuppress
 
-fromXaiogram.types.inline_keyboardXimportXInlineKeyboardButton,XInlineKeyboardMarkup
-fromXaiogram.utils.callback_dataXimportXCallbackData
-fromXaiogram.utils.exceptionsXimportXMessageNotModified
+fromaiogram.types.inline_keyboardimportInlineKeyboardButton,InlineKeyboardMarkup
+fromaiogram.utils.callback_dataimportCallbackData
+fromaiogram.utils.exceptionsimportMessageNotModified
 
-fromXInerukiX.decoratorXimportXregister
-fromXInerukiX.modules.utils.disableXimportXdisableable_dec
+fromIneruki.decoratorimportregister
+fromIneruki.modules.utils.disableimportdisableable_dec
 
-fromX.XimportXMOD_HELP
-fromX.languageXimportXselect_lang_keyboard
-fromX.utils.disableXimportXdisableable_dec
-fromX.utils.languageXimportXget_strings_dec
+from.importMOD_HELP
+from.languageimportselect_lang_keyboard
+from.utils.disableimportdisableable_dec
+from.utils.languageimportget_strings_dec
 
-helpmenu_cbX=XCallbackData("helpmenu",X"mod")
-
-
-defXhelp_markup(modules):
-XXXXmarkupX=XInlineKeyboardMarkup()
-XXXXforXmoduleXinXmodules:
-XXXXXXXXmarkup.insert(
-XXXXXXXXXXXXInlineKeyboardButton(module,Xcallback_data=helpmenu_cb.new(mod=module))
-XXXXXXXX)
-XXXXreturnXmarkup
+helpmenu_cb=CallbackData("helpmenu","mod")
 
 
-STICKERSX=X(
-XXXX"CAACAgUAAxkBAAJOGmBeli95P073FKVkgc4esfKE4UlXAAIOAgACyavAVkbLMIidWYdyHgQ",
-XXXX"CAACAgUAAxkBAAJOG2BeljABwlCfwzHT1gzyiciBri6_AAIsAgACXBPBVgpGQRz-1qmlHgQ",
-XXXX"CAACAgUAAxkBAAJOHGBeljOJ35CQNnkpnVcgRoHuJX6DAAL3AQACN8TBVm1PIART01cWHgQ",
-XXXX"CAACAgUAAxkBAAJOHWBeljXW9QzYQ51gpCjHZHCF5Ui6AAJ7AgAC3zDBVo2xenp7JYhAHgQ",
-XXXX"CAACAgUAAxkBAAJOHmBeljjU0_FT_QpdUUJBqVUC0nfJAAKYAgACJ_jBVvntHY_8WF27HgQ",
-XXXX"CAACAgUAAxkBAAJOH2BeljrV68mPLu8_6n4edT20Q3IQAAJ9AgACq3LBVmLuZuNPlvkfHgQ",
-XXXX"CAACAgUAAxkBAAJOIGBeljttuniUPykRtzkSZj3SRwKJAAI7AgACNm_BVp8TCkE6ZqCoHgQ",
-XXXX"CAACAgUAAxkBAAJOIWBelj-P_2vtVqtkF2OMlVN3M0N4AAK3AQACSm3BVkXF2voraS2tHgQ",
-XXXX"CAACAgUAAxkBAAJOImBelkJxUBm2rL1iPfMZfk-_9DaOAALrAgAC4T3BVniopXQVsZ4KHgQ",
-XXXX"CAACAgUAAxkBAAJOI2BelkMO0AX_wtAc7hUZz1NixuMlAAKEAwACY4TAViVuNLTBmmkgHgQ",
+defhelp_markup(modules):
+markup=InlineKeyboardMarkup()
+formoduleinmodules:
+markup.insert(
+InlineKeyboardButton(module,callback_data=helpmenu_cb.new(mod=module))
+)
+returnmarkup
+
+
+STICKERS=(
+"CAACAgUAAxkBAAJOGmBeli95P073FKVkgc4esfKE4UlAAIOAgACyavAVkbLMIidWYdyHgQ",
+"CAACAgUAAxkBAAJOG2BeljABwlCfwzHT1gzyiciBri6_AAIsAgACBPBVgpGQRz-1qmlHgQ",
+"CAACAgUAAxkBAAJOHGBeljOJ35CQNnkpnVcgRoHuJ6DAAL3AQACN8TBVm1PIART01cWHgQ",
+"CAACAgUAAxkBAAJOHWBeljW9QzYQ51gpCjHZHCF5Ui6AAJ7AgAC3zDBVo2xenp7JYhAHgQ",
+"CAACAgUAAxkBAAJOHmBeljjU0_FT_QpdUUJBqVUC0nfJAAKYAgACJ_jBVvntHY_8WF27HgQ",
+"CAACAgUAAxkBAAJOH2BeljrV68mPLu8_6n4edT20Q3IQAAJ9AgACq3LBVmLuZuNPlvkfHgQ",
+"CAACAgUAAxkBAAJOIGBeljttuniUPykRtzkSZj3SRwKJAAI7AgACNm_BVp8TCkE6ZqCoHgQ",
+"CAACAgUAAxkBAAJOIWBelj-P_2vtVqtkF2OMlVN3M0N4AAK3AQACSm3BVkF2voraS2tHgQ",
+"CAACAgUAAxkBAAJOImBelkJxUBm2rL1iPfMZfk-_9DaOAALrAgAC4T3BVniopQVsZ4KHgQ",
+"CAACAgUAAxkBAAJOI2BelkMO0A_wtAc7hUZz1NixuMlAAKEAwACY4TAViVuNLTBmmkgHgQ",
 )
 
 
-@register(cmds="start",Xno_args=True,Xonly_groups=True)
+@register(cmds="start",no_args=True,only_groups=True)
 @disableable_dec("start")
 @get_strings_dec("pm_menu")
-asyncXdefXstart_group_cmd(message,Xstrings):
-XXXXawaitXmessage.reply(strings["start_hi_group"])
+asyncdefstart_group_cmd(message,strings):
+awaitmessage.reply(strings["start_hi_group"])
 
 
-@register(cmds="start",Xno_args=True,Xonly_pm=True)
-asyncXdefXstart_cmd(message):
-XXXXawaitXmessage.reply_sticker(random.choice(STICKERS))
-XXXXawaitXget_start_func(message)
+@register(cmds="start",no_args=True,only_pm=True)
+asyncdefstart_cmd(message):
+awaitmessage.reply_sticker(random.choice(STICKERS))
+awaitget_start_func(message)
 
 
 @get_strings_dec("pm_menu")
-asyncXdefXget_start_func(message,Xstrings,Xedit=False):
-XXXXmsgX=Xmessage.messageXifXhasattr(message,X"message")XelseXmessage
+asyncdefget_start_func(message,strings,edit=False):
+msg=message.messageifhasattr(message,"message")elsemessage
 
-XXXXtaskX=Xmsg.edit_textXifXeditXelseXmsg.reply
-XXXXbuttonsX=XInlineKeyboardMarkup()
-XXXXbuttons.add(InlineKeyboardButton(strings["btn_help"],Xcallback_data="get_help"))
-XXXXbuttons.add(
-XXXXXXXXInlineKeyboardButton(strings["btn_lang"],Xcallback_data="lang_btn"),
-XXXXXXXXInlineKeyboardButton(
-XXXXXXXXXXXXstrings["btn_source"],Xurl="https://github.com/errorshivansh/"
-XXXXXXXX),
-XXXX)
-XXXXbuttons.add(
-XXXXXXXXInlineKeyboardButton(
-XXXXXXXXXXXXstrings["btn_channel"],Xurl="https://t.me/InerukiXUpdates"
-XXXXXXXX),
-XXXXXXXXInlineKeyboardButton(
-XXXXXXXXXXXXstrings["btn_group"],Xurl="https://t.me/InerukiSupport_Official"
-XXXXXXXX),
-XXXX)
-XXXXbuttons.add(
-XXXXXXXXInlineKeyboardButton(
-XXXXXXXXXXXX"👸🏼XAddXInerukiXXtoXyourXgroup",
-XXXXXXXXXXXXurl=f"https://telegram.me/Inerukixbot?startgroup=true",
-XXXXXXXX)
-XXXX)
-XXXX#XHandleXerrorXwhenXuserXclickXtheXbuttonX2XorXmoreXtimesXsimultaneously
-XXXXwithXsuppress(MessageNotModified):
-XXXXXXXXawaitXtask(strings["start_hi"],Xreply_markup=buttons)
+task=msg.edit_textifeditelsemsg.reply
+buttons=InlineKeyboardMarkup()
+buttons.add(InlineKeyboardButton(strings["btn_help"],callback_data="get_help"))
+buttons.add(
+InlineKeyboardButton(strings["btn_lang"],callback_data="lang_btn"),
+InlineKeyboardButton(
+strings["btn_source"],url="https://github.com/errorshivansh/"
+),
+)
+buttons.add(
+InlineKeyboardButton(
+strings["btn_channel"],url="https://t.me/InerukiUpdates"
+),
+InlineKeyboardButton(
+strings["btn_group"],url="https://t.me/InerukiSupport_Official"
+),
+)
+buttons.add(
+InlineKeyboardButton(
+"👸🏼AddInerukitoyourgroup",
+url=f"https://telegram.me/Inerukixbot?startgroup=true",
+)
+)
+#Handleerrorwhenuserclickthebutton2ormoretimessimultaneously
+withsuppress(MessageNotModified):
+awaittask(strings["start_hi"],reply_markup=buttons)
 
 
-@register(regexp="get_help",Xf="cb")
+@register(regexp="get_help",f="cb")
 @get_strings_dec("pm_menu")
-asyncXdefXhelp_cb(event,Xstrings):
-XXXXbuttonX=Xhelp_markup(MOD_HELP)
-XXXXbutton.add(InlineKeyboardButton(strings["back"],Xcallback_data="go_to_start"))
-XXXXwithXsuppress(MessageNotModified):
-XXXXXXXXawaitXevent.message.edit_text(strings["help_header"],Xreply_markup=button)
+asyncdefhelp_cb(event,strings):
+button=help_markup(MOD_HELP)
+button.add(InlineKeyboardButton(strings["back"],callback_data="go_to_start"))
+withsuppress(MessageNotModified):
+awaitevent.message.edit_text(strings["help_header"],reply_markup=button)
 
 
-@register(regexp="lang_btn",Xf="cb")
-asyncXdefXset_lang_cb(event):
-XXXXawaitXselect_lang_keyboard(event.message,Xedit=True)
+@register(regexp="lang_btn",f="cb")
+asyncdefset_lang_cb(event):
+awaitselect_lang_keyboard(event.message,edit=True)
 
 
-@register(regexp="go_to_start",Xf="cb")
-asyncXdefXback_btn(event):
-XXXXawaitXget_start_func(event,Xedit=True)
+@register(regexp="go_to_start",f="cb")
+asyncdefback_btn(event):
+awaitget_start_func(event,edit=True)
 
 
-@register(cmds="help",Xonly_pm=True)
+@register(cmds="help",only_pm=True)
 @disableable_dec("help")
 @get_strings_dec("pm_menu")
-asyncXdefXhelp_cmd(message,Xstrings):
-XXXXbuttonX=Xhelp_markup(MOD_HELP)
-XXXXbutton.add(InlineKeyboardButton(strings["back"],Xcallback_data="go_to_start"))
-XXXXawaitXmessage.reply(strings["help_header"],Xreply_markup=button)
+asyncdefhelp_cmd(message,strings):
+button=help_markup(MOD_HELP)
+button.add(InlineKeyboardButton(strings["back"],callback_data="go_to_start"))
+awaitmessage.reply(strings["help_header"],reply_markup=button)
 
 
-@register(cmds="help",Xonly_groups=True)
+@register(cmds="help",only_groups=True)
 @disableable_dec("help")
 @get_strings_dec("pm_menu")
-asyncXdefXhelp_cmd_g(message,Xstrings):
-XXXXtextX=Xstrings["btn_group_help"]
-XXXXbuttonX=XInlineKeyboardMarkup().add(
-XXXXXXXXInlineKeyboardButton(text=text,Xurl="https://t.me/InerukiXBOT?start")
-XXXX)
-XXXXawaitXmessage.reply(strings["help_header"],Xreply_markup=button)
+asyncdefhelp_cmd_g(message,strings):
+text=strings["btn_group_help"]
+button=InlineKeyboardMarkup().add(
+InlineKeyboardButton(text=text,url="https://t.me/InerukiBOT?start")
+)
+awaitmessage.reply(strings["help_header"],reply_markup=button)
 
 
-@register(helpmenu_cb.filter(),Xf="cb",Xallow_kwargs=True)
-asyncXdefXhelpmenu_callback(query,Xcallback_data=None,X**kwargs):
-XXXXmodX=Xcallback_data["mod"]
-XXXXifXnotXmodXinXMOD_HELP:
-XXXXXXXXawaitXquery.answer()
-XXXXXXXXreturn
-XXXXmsgX=Xf"HelpXforX<b>{mod}</b>Xmodule:\n"
-XXXXmsgX+=Xf"{MOD_HELP[mod]}"
-XXXXbuttonX=XInlineKeyboardMarkup().add(
-XXXXXXXXInlineKeyboardButton(text="🏃‍♂️XBack",Xcallback_data="get_help")
-XXXX)
-XXXXwithXsuppress(MessageNotModified):
-XXXXXXXXawaitXquery.message.edit_text(
-XXXXXXXXXXXXmsg,Xdisable_web_page_preview=True,Xreply_markup=button
-XXXXXXXX)
-XXXXXXXXawaitXquery.answer("HelpXforX"X+Xmod)
+@register(helpmenu_cb.filter(),f="cb",allow_kwargs=True)
+asyncdefhelpmenu_callback(query,callback_data=None,**kwargs):
+mod=callback_data["mod"]
+ifnotmodinMOD_HELP:
+awaitquery.answer()
+return
+msg=f"Helpfor<b>{mod}</b>module:\n"
+msg+=f"{MOD_HELP[mod]}"
+button=InlineKeyboardMarkup().add(
+InlineKeyboardButton(text="🏃‍♂️Back",callback_data="get_help")
+)
+withsuppress(MessageNotModified):
+awaitquery.message.edit_text(
+msg,disable_web_page_preview=True,reply_markup=button
+)
+awaitquery.answer("Helpfor"+mod)

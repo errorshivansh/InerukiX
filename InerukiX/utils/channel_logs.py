@@ -1,28 +1,28 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXhtml
+importhtml
 
-fromXInerukiXXimportXbot
-fromXInerukiX.configXimportXget_int_key
-fromXInerukiX.utils.loggerXimportXlog
+fromInerukiimportbot
+fromIneruki.configimportget_int_key
+fromIneruki.utils.loggerimportlog
 
 
-asyncXdefXchannel_log(msg,Xinfo_log=True):
-XXXXchat_idX=Xget_int_key("LOGS_CHANNEL_ID")
-XXXXifXinfo_log:
-XXXXXXXXlog.info(msg)
+asyncdefchannel_log(msg,info_log=True):
+chat_id=get_int_key("LOGS_CHANNEL_ID")
+ifinfo_log:
+log.info(msg)
 
-XXXXawaitXbot.send_message(chat_id,Xhtml.escape(msg,Xquote=False))
+awaitbot.send_message(chat_id,html.escape(msg,quote=False))

@@ -1,26 +1,26 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXmath
+importmath
 
 
-defXconvert_size(size_bytes):
-XXXXifXsize_bytesX==X0:
-XXXXXXXXreturnX"0B"
-XXXXsize_nameX=X("B",X"KB",X"MB",X"GB",X"TB",X"PB",X"EB",X"ZB",X"YB")
-XXXXiX=Xint(math.floor(math.log(size_bytes,X1024)))
-XXXXpX=Xmath.pow(1024,Xi)
-XXXXsX=Xround(size_bytesX/Xp,X2)
-XXXXreturnX"%sX%s"X%X(s,Xsize_name[i])
+defconvert_size(size_bytes):
+ifsize_bytes==0:
+return"0B"
+size_name=("B","KB","MB","GB","TB","PB","EB","ZB","YB")
+i=int(math.floor(math.log(size_bytes,1024)))
+p=math.pow(1024,i)
+s=round(size_bytes/p,2)
+return"%s%s"%(s,size_name[i])

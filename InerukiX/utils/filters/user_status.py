@@ -1,81 +1,81 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-fromXaiogramXimportXtypes
-fromXaiogram.dispatcher.filtersXimportXBoundFilter
+fromaiogramimporttypes
+fromaiogram.dispatcher.filtersimportBoundFilter
 
-fromXInerukiXXimportXOPERATORS,Xdp
-fromXInerukiX.configXimportXget_int_key
-fromXInerukiX.modules.utils.languageXimportXget_strings_dec
-fromXInerukiX.modules.utils.user_detailsXimportXis_user_admin
-fromXInerukiX.services.mongoXimportXmongodb
-
-
-classXIsAdmin(BoundFilter):
-XXXXkeyX=X"is_admin"
-
-XXXXdefX__init__(self,Xis_admin):
-XXXXXXXXself.is_adminX=Xis_admin
-
-XXXX@get_strings_dec("global")
-XXXXasyncXdefXcheck(self,Xevent,Xstrings):
-
-XXXXXXXXifXhasattr(event,X"message"):
-XXXXXXXXXXXXchat_idX=Xevent.message.chat.id
-XXXXXXXXelse:
-XXXXXXXXXXXXchat_idX=Xevent.chat.id
-
-XXXXXXXXifXnotXawaitXis_user_admin(chat_id,Xevent.from_user.id):
-XXXXXXXXXXXXtaskX=Xevent.answerXifXhasattr(event,X"message")XelseXevent.reply
-XXXXXXXXXXXXawaitXtask(strings["u_not_admin"])
-XXXXXXXXXXXXreturnXFalse
-XXXXXXXXreturnXTrue
+fromInerukiimportOPERATORS,dp
+fromIneruki.configimportget_int_key
+fromIneruki.modules.utils.languageimportget_strings_dec
+fromIneruki.modules.utils.user_detailsimportis_user_admin
+fromIneruki.services.mongoimportmongodb
 
 
-classXIsOwner(BoundFilter):
-XXXXkeyX=X"is_owner"
+classIsAdmin(BoundFilter):
+key="is_admin"
 
-XXXXdefX__init__(self,Xis_owner):
-XXXXXXXXself.is_ownerX=Xis_owner
+def__init__(self,is_admin):
+self.is_admin=is_admin
 
-XXXXasyncXdefXcheck(self,Xmessage:Xtypes.Message):
-XXXXXXXXifXmessage.from_user.idX==Xget_int_key("OWNER_ID"):
-XXXXXXXXXXXXreturnXTrue
+@get_strings_dec("global")
+asyncdefcheck(self,event,strings):
+
+ifhasattr(event,"message"):
+chat_id=event.message.chat.id
+else:
+chat_id=event.chat.id
+
+ifnotawaitis_user_admin(chat_id,event.from_user.id):
+task=event.answerifhasattr(event,"message")elseevent.reply
+awaittask(strings["u_not_admin"])
+returnFalse
+returnTrue
 
 
-classXIsOP(BoundFilter):
-XXXXkeyX=X"is_op"
+classIsOwner(BoundFilter):
+key="is_owner"
 
-XXXXdefX__init__(self,Xis_op):
-XXXXXXXXself.is_ownerX=Xis_op
+def__init__(self,is_owner):
+self.is_owner=is_owner
 
-XXXXasyncXdefXcheck(self,Xmessage:Xtypes.Message):
-XXXXXXXXifXmessage.from_user.idXinXOPERATORS:
-XXXXXXXXXXXXreturnXTrue
+asyncdefcheck(self,message:types.Message):
+ifmessage.from_user.id==get_int_key("OWNER_ID"):
+returnTrue
 
 
-classXNotGbanned(BoundFilter):
-XXXXkeyX=X"not_gbanned"
+classIsOP(BoundFilter):
+key="is_op"
 
-XXXXdefX__init__(self,Xnot_gbanned):
-XXXXXXXXself.not_gbannedX=Xnot_gbanned
+def__init__(self,is_op):
+self.is_owner=is_op
 
-XXXXasyncXdefXcheck(self,Xmessage:Xtypes.Message):
-XXXXXXXXcheckX=Xmongodb.blacklisted_users.find_one({"user":Xmessage.from_user.id})
-XXXXXXXXifXnotXcheck:
-XXXXXXXXXXXXreturnXTrue
+asyncdefcheck(self,message:types.Message):
+ifmessage.from_user.idinOPERATORS:
+returnTrue
+
+
+classNotGbanned(BoundFilter):
+key="not_gbanned"
+
+def__init__(self,not_gbanned):
+self.not_gbanned=not_gbanned
+
+asyncdefcheck(self,message:types.Message):
+check=mongodb.blacklisted_users.find_one({"user":message.from_user.id})
+ifnotcheck:
+returnTrue
 
 
 dp.filters_factory.bind(IsAdmin)

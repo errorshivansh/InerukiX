@@ -1,71 +1,71 @@
-fromXsqlalchemyXimportXBigInteger,XBoolean,XColumn,XString,XUnicodeText
+fromsqlalchemyimportBigInteger,Boolean,Column,String,UnicodeText
 
-fromXInerukiX.services.sqlXimportXBASE,XSESSION
+fromIneruki.services.sqlimportBASE,SESSION
 
 
-classXGoodbye(BASE):
-XXXX__tablename__X=X"goodbye"
-XXXXchat_idX=XColumn(String(14),Xprimary_key=True)
-XXXXcustom_goodbye_messageX=XColumn(UnicodeText)
-XXXXmedia_file_idX=XColumn(UnicodeText)
-XXXXshould_clean_goodbyeX=XColumn(Boolean,Xdefault=False)
-XXXXprevious_goodbyeX=XColumn(BigInteger)
+classGoodbye(BASE):
+__tablename__="goodbye"
+chat_id=Column(String(14),primary_key=True)
+custom_goodbye_message=Column(UnicodeText)
+media_file_id=Column(UnicodeText)
+should_clean_goodbye=Column(Boolean,default=False)
+previous_goodbye=Column(BigInteger)
 
-XXXXdefX__init__(
-XXXXXXXXself,
-XXXXXXXXchat_id,
-XXXXXXXXcustom_goodbye_message,
-XXXXXXXXshould_clean_goodbye,
-XXXXXXXXprevious_goodbye,
-XXXXXXXXmedia_file_id=None,
-XXXX):
-XXXXXXXXself.chat_idX=Xchat_id
-XXXXXXXXself.custom_goodbye_messageX=Xcustom_goodbye_message
-XXXXXXXXself.media_file_idX=Xmedia_file_id
-XXXXXXXXself.should_clean_goodbyeX=Xshould_clean_goodbye
-XXXXXXXXself.previous_goodbyeX=Xprevious_goodbye
+def__init__(
+self,
+chat_id,
+custom_goodbye_message,
+should_clean_goodbye,
+previous_goodbye,
+media_file_id=None,
+):
+self.chat_id=chat_id
+self.custom_goodbye_message=custom_goodbye_message
+self.media_file_id=media_file_id
+self.should_clean_goodbye=should_clean_goodbye
+self.previous_goodbye=previous_goodbye
 
 
 Goodbye.__table__.create(checkfirst=True)
 
 
-defXget_current_goodbye_settings(chat_id):
-XXXXtry:
-XXXXXXXXreturnXSESSION.query(Goodbye).filter(Goodbye.chat_idX==Xstr(chat_id)).one()
-XXXXexcept:
-XXXXXXXXreturnXNone
-XXXXfinally:
-XXXXXXXXSESSION.close()
+defget_current_goodbye_settings(chat_id):
+try:
+returnSESSION.query(Goodbye).filter(Goodbye.chat_id==str(chat_id)).one()
+except:
+returnNone
+finally:
+SESSION.close()
 
 
-defXadd_goodbye_setting(
-XXXXchat_id,
-XXXXcustom_goodbye_message,
-XXXXshould_clean_goodbye,
-XXXXprevious_goodbye,
-XXXXmedia_file_id,
+defadd_goodbye_setting(
+chat_id,
+custom_goodbye_message,
+should_clean_goodbye,
+previous_goodbye,
+media_file_id,
 ):
-XXXX#XadderX=XSESSION.query(Goodbye).get(chat_id)
-XXXXadderX=XGoodbye(
-XXXXXXXXchat_id,
-XXXXXXXXcustom_goodbye_message,
-XXXXXXXXshould_clean_goodbye,
-XXXXXXXXprevious_goodbye,
-XXXXXXXXmedia_file_id,
-XXXX)
-XXXXSESSION.add(adder)
-XXXXSESSION.commit()
+#adder=SESSION.query(Goodbye).get(chat_id)
+adder=Goodbye(
+chat_id,
+custom_goodbye_message,
+should_clean_goodbye,
+previous_goodbye,
+media_file_id,
+)
+SESSION.add(adder)
+SESSION.commit()
 
 
-defXrm_goodbye_setting(chat_id):
-XXXXremX=XSESSION.query(Goodbye).get(str(chat_id))
-XXXXifXrem:
-XXXXXXXXSESSION.delete(rem)
-XXXXXXXXSESSION.commit()
+defrm_goodbye_setting(chat_id):
+rem=SESSION.query(Goodbye).get(str(chat_id))
+ifrem:
+SESSION.delete(rem)
+SESSION.commit()
 
 
-defXupdate_previous_goodbye(chat_id,Xprevious_goodbye):
-XXXXrowX=XSESSION.query(Goodbye).get(str(chat_id))
-XXXXrow.previous_goodbyeX=Xprevious_goodbye
-XXXX#XcommitXtheXchangesXtoXtheXDB
-XXXXSESSION.commit()
+defupdate_previous_goodbye(chat_id,previous_goodbye):
+row=SESSION.query(Goodbye).get(str(chat_id))
+row.previous_goodbye=previous_goodbye
+#committhechangestotheDB
+SESSION.commit()

@@ -1,35 +1,35 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXos
-importXsignal
+importos
+importsignal
 
-fromXInerukiX.services.redisXimportXredis
-fromXInerukiX.utils.loggerXimportXlog
-
-
-defXexit_gracefully(signum,Xframe):
-XXXXlog.warning("Bye!")
-
-XXXXtry:
-XXXXXXXXredis.save()
-XXXXexceptXException:
-XXXXXXXXlog.error("ExitingXimmediately!")
-XXXXos.kill(os.getpid(),Xsignal.SIGUSR1)
+fromIneruki.services.redisimportredis
+fromIneruki.utils.loggerimportlog
 
 
-#XSignalXexit
-log.info("SettingXexit_gracefullyXtask...")
-signal.signal(signal.SIGINT,Xexit_gracefully)
+defexit_gracefully(signum,frame):
+log.warning("Bye!")
+
+try:
+redis.save()
+exceptException:
+log.error("Exitingimmediately!")
+os.kill(os.getpid(),signal.SIGUSR1)
+
+
+#Signalexit
+log.info("Settingexit_gracefullytask...")
+signal.signal(signal.SIGINT,exit_gracefully)

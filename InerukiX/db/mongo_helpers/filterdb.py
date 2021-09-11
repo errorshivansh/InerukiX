@@ -1,77 +1,77 @@
-fromXtypingXimportXDict,XList,XUnion
+fromtypingimportDict,List,Union
 
-fromXInerukiX.services.mongo2XimportXdb
+fromIneruki.services.mongo2importdb
 
-#XPortedXfromXhttps://github.com/TheHamkerCat/WilliamButcherBot
+#Portedfromhttps://github.com/TheHamkerCat/WilliamButcherBot
 """
-MITXLicense
-CopyrightX(c)X2021XTheHamkerCat
-PermissionXisXherebyXgranted,XfreeXofXcharge,XtoXanyXpersonXobtainingXaXcopy
-ofXthisXsoftwareXandXassociatedXdocumentationXfilesX(theX"Software"),XtoXdeal
-inXtheXSoftwareXwithoutXrestriction,XincludingXwithoutXlimitationXtheXrights
-toXuse,Xcopy,Xmodify,Xmerge,Xpublish,Xdistribute,Xsublicense,Xand/orXsell
-copiesXofXtheXSoftware,XandXtoXpermitXpersonsXtoXwhomXtheXSoftwareXis
-furnishedXtoXdoXso,XsubjectXtoXtheXfollowingXconditions:
-TheXaboveXcopyrightXnoticeXandXthisXpermissionXnoticeXshallXbeXincludedXinXall
-copiesXorXsubstantialXportionsXofXtheXSoftware.
-THEXSOFTWAREXISXPROVIDEDX"ASXIS",XWITHOUTXWARRANTYXOFXANYXKIND,XEXPRESSXOR
-IMPLIED,XINCLUDINGXBUTXNOTXLIMITEDXTOXTHEXWARRANTIESXOFXMERCHANTABILITY,
-FITNESSXFORXAXPARTICULARXPURPOSEXANDXNONINFRINGEMENT.XINXNOXEVENTXSHALLXTHE
-AUTHORSXORXCOPYRIGHTXHOLDERSXBEXLIABLEXFORXANYXCLAIM,XDAMAGESXORXOTHER
-LIABILITY,XWHETHERXINXANXACTIONXOFXCONTRACT,XTORTXORXOTHERWISE,XARISINGXFROM,
-OUTXOFXORXINXCONNECTIONXWITHXTHEXSOFTWAREXORXTHEXUSEXORXOTHERXDEALINGSXINXTHE
+MITLicense
+Copyright(c)2021TheHamkerCat
+Permissionisherebygranted,freeofcharge,toanypersonobtainingacopy
+ofthissoftwareandassociateddocumentationfiles(the"Software"),todeal
+intheSoftwarewithoutrestriction,includingwithoutlimitationtherights
+touse,copy,modify,merge,publish,distribute,sublicense,and/orsell
+copiesoftheSoftware,andtopermitpersonstowhomtheSoftwareis
+furnishedtodoso,subjecttothefollowingconditions:
+Theabovecopyrightnoticeandthispermissionnoticeshallbeincludedinall
+copiesorsubstantialportionsoftheSoftware.
+THESOFTWAREISPROVIDED"ASIS",WITHOUTWARRANTYOFANYKIND,EPRESSOR
+IMPLIED,INCLUDINGBUTNOTLIMITEDTOTHEWARRANTIESOFMERCHANTABILITY,
+FITNESSFORAPARTICULARPURPOSEANDNONINFRINGEMENT.INNOEVENTSHALLTHE
+AUTHORSORCOPYRIGHTHOLDERSBELIABLEFORANYCLAIM,DAMAGESOROTHER
+LIABILITY,WHETHERINANACTIONOFCONTRACT,TORTOROTHERWISE,ARISINGFROM,
+OUTOFORINCONNECTIONWITHTHESOFTWAREORTHEUSEOROTHERDEALINGSINTHE
 SOFTWARE.
 """
 
 
-filtersdbX=Xdb.filters
+filtersdb=db.filters
 
 
-"""XFiltersXfuncionsX"""
+"""Filtersfuncions"""
 
 
-asyncXdefX_get_filters(chat_id:Xint)X->XDict[str,Xint]:
-XXXX_filtersX=XawaitXfiltersdb.find_one({"chat_id":Xchat_id})
-XXXXifX_filters:
-XXXXXXXX_filtersX=X_filters["filters"]
-XXXXelse:
-XXXXXXXX_filtersX=X{}
-XXXXreturnX_filters
+asyncdef_get_filters(chat_id:int)->Dict[str,int]:
+_filters=awaitfiltersdb.find_one({"chat_id":chat_id})
+if_filters:
+_filters=_filters["filters"]
+else:
+_filters={}
+return_filters
 
 
-asyncXdefXget_filters_names(chat_id:Xint)X->XList[str]:
-XXXX_filtersX=X[]
-XXXXforX_filterXinXawaitX_get_filters(chat_id):
-XXXXXXXX_filters.append(_filter)
-XXXXreturnX_filters
+asyncdefget_filters_names(chat_id:int)->List[str]:
+_filters=[]
+for_filterinawait_get_filters(chat_id):
+_filters.append(_filter)
+return_filters
 
 
-asyncXdefXget_filter(chat_id:Xint,Xname:Xstr)X->XUnion[bool,Xdict]:
-XXXXnameX=Xname.lower().strip()
-XXXX_filtersX=XawaitX_get_filters(chat_id)
-XXXXifXnameXinX_filters:
-XXXXXXXXreturnX_filters[name]
-XXXXelse:
-XXXXXXXXreturnXFalse
+asyncdefget_filter(chat_id:int,name:str)->Union[bool,dict]:
+name=name.lower().strip()
+_filters=await_get_filters(chat_id)
+ifnamein_filters:
+return_filters[name]
+else:
+returnFalse
 
 
-asyncXdefXsave_filter(chat_id:Xint,Xname:Xstr,X_filter:Xdict):
-XXXXnameX=Xname.lower().strip()
-XXXX_filtersX=XawaitX_get_filters(chat_id)
-XXXX_filters[name]X=X_filter
+asyncdefsave_filter(chat_id:int,name:str,_filter:dict):
+name=name.lower().strip()
+_filters=await_get_filters(chat_id)
+_filters[name]=_filter
 
-XXXXawaitXfiltersdb.update_one(
-XXXXXXXX{"chat_id":Xchat_id},X{"$set":X{"filters":X_filters}},Xupsert=True
-XXXX)
+awaitfiltersdb.update_one(
+{"chat_id":chat_id},{"$set":{"filters":_filters}},upsert=True
+)
 
 
-asyncXdefXdelete_filter(chat_id:Xint,Xname:Xstr)X->Xbool:
-XXXXfiltersdX=XawaitX_get_filters(chat_id)
-XXXXnameX=Xname.lower().strip()
-XXXXifXnameXinXfiltersd:
-XXXXXXXXdelXfiltersd[name]
-XXXXXXXXawaitXfiltersdb.update_one(
-XXXXXXXXXXXX{"chat_id":Xchat_id},X{"$set":X{"filters":Xfiltersd}},Xupsert=True
-XXXXXXXX)
-XXXXXXXXreturnXTrue
-XXXXreturnXFalse
+asyncdefdelete_filter(chat_id:int,name:str)->bool:
+filtersd=await_get_filters(chat_id)
+name=name.lower().strip()
+ifnameinfiltersd:
+delfiltersd[name]
+awaitfiltersdb.update_one(
+{"chat_id":chat_id},{"$set":{"filters":filtersd}},upsert=True
+)
+returnTrue
+returnFalse

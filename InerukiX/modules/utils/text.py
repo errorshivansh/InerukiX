@@ -1,154 +1,154 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 #
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 #
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 #
-#XThisXfileXisXpartXofXIneruki.
+#ThisfileispartofIneruki.
 
-fromXtypingXimportXUnion
-
-
-classXSanTeXDoc:
-XXXXdefX__init__(self,X*args):
-XXXXXXXXself.itemsX=Xlist(args)
-
-XXXXdefX__str__(self)X->Xstr:
-XXXXXXXXreturnX"\n".join([str(items)XforXitemsXinXself.items])
-
-XXXXdefX__add__(self,Xother):
-XXXXXXXXself.items.append(other)
-XXXXXXXXreturnXself
+fromtypingimportUnion
 
 
-classXStyleFormationCore:
-XXXXstart:Xstr
-XXXXend:Xstr
+classSanTeDoc:
+def__init__(self,*args):
+self.items=list(args)
 
-XXXXdefX__init__(self,Xtext:Xstr):
-XXXXXXXXself.textX=Xf"{self.start}{text}{self.end}"
+def__str__(self)->str:
+return"\n".join([str(items)foritemsinself.items])
 
-XXXXdefX__str__(self)X->Xstr:
-XXXXXXXXreturnXself.text
-
-
-classXBold(StyleFormationCore):
-XXXXstartX=X"<b>"
-XXXXendX=X"</b>"
+def__add__(self,other):
+self.items.append(other)
+returnself
 
 
-classXItalic(StyleFormationCore):
-XXXXstartX=X"<i>"
-XXXXendX=X"</i>"
+classStyleFormationCore:
+start:str
+end:str
+
+def__init__(self,text:str):
+self.text=f"{self.start}{text}{self.end}"
+
+def__str__(self)->str:
+returnself.text
 
 
-classXCode(StyleFormationCore):
-XXXXstartX=X"<code>"
-XXXXendX=X"</code>"
+classBold(StyleFormationCore):
+start="<b>"
+end="</b>"
 
 
-classXPre(StyleFormationCore):
-XXXXstartX=X"<pre>"
-XXXXendX=X"</pre>"
+classItalic(StyleFormationCore):
+start="<i>"
+end="</i>"
 
 
-classXStrikethrough(StyleFormationCore):
-XXXXstartX=X"<s>"
-XXXXendX=X"</s>"
+classCode(StyleFormationCore):
+start="<code>"
+end="</code>"
 
 
-classXUnderline(StyleFormationCore):
-XXXXstartX=X"<u>"
-XXXXendX=X"</u>"
+classPre(StyleFormationCore):
+start="<pre>"
+end="</pre>"
 
 
-classXSection:
-XXXXdefX__init__(self,X*args,Xtitle="",Xindent=3,Xbold=True,Xpostfix=":"):
-XXXXXXXXself.title_textX=Xtitle
-XXXXXXXXself.itemsX=Xlist(args)
-XXXXXXXXself.indentX=Xindent
-XXXXXXXXself.boldX=Xbold
-XXXXXXXXself.postfixX=Xpostfix
-
-XXXX@property
-XXXXdefXtitle(self)X->Xstr:
-XXXXXXXXtitleX=Xself.title_text
-XXXXXXXXtextX=Xstr(Bold(title))XifXself.boldXelseXtitle
-XXXXXXXXtextX+=Xself.postfix
-XXXXXXXXreturnXtext
-
-XXXXdefX__str__(self)X->Xstr:
-XXXXXXXXtextX=Xself.title
-XXXXXXXXspaceX=X"X"X*Xself.indent
-XXXXXXXXforXitemXinXself.items:
-XXXXXXXXXXXXtextX+=X"\n"
-
-XXXXXXXXXXXXifXtype(item)XisXSection:
-XXXXXXXXXXXXXXXXitem.indentX*=X2
-XXXXXXXXXXXXifXtype(item)XisXSList:
-XXXXXXXXXXXXXXXXitem.indentX=Xself.indent
-XXXXXXXXXXXXelse:
-XXXXXXXXXXXXXXXXtextX+=Xspace
-
-XXXXXXXXXXXXtextX+=Xstr(item)
-
-XXXXXXXXreturnXtext
-
-XXXXdefX__add__(self,Xother):
-XXXXXXXXself.items.append(other)
-XXXXXXXXreturnXself
+classStrikethrough(StyleFormationCore):
+start="<s>"
+end="</s>"
 
 
-classXSList:
-XXXXdefX__init__(self,X*args,Xindent=0,Xprefix="-X"):
-XXXXXXXXself.itemsX=Xlist(args)
-XXXXXXXXself.prefixX=Xprefix
-XXXXXXXXself.indentX=Xindent
-
-XXXXdefX__str__(self)X->Xstr:
-XXXXXXXXspaceX=X"X"X*Xself.indentXifXself.indentXelseX"X"
-XXXXXXXXtextX=X""
-XXXXXXXXforXidx,XitemXinXenumerate(self.items):
-XXXXXXXXXXXXifXidxX>X0:
-XXXXXXXXXXXXXXXXtextX+=X"\n"
-XXXXXXXXXXXXtextX+=Xf"{space}{self.prefix}{item}"
-
-XXXXXXXXreturnXtext
+classUnderline(StyleFormationCore):
+start="<u>"
+end="</u>"
 
 
-classXKeyValue:
-XXXXdefX__init__(self,Xtitle,Xvalue,Xsuffix=":X"):
-XXXXXXXXself.titleX=Xtitle
-XXXXXXXXself.valueX=Xvalue
-XXXXXXXXself.suffixX=Xsuffix
+classSection:
+def__init__(self,*args,title="",indent=3,bold=True,postfix=":"):
+self.title_text=title
+self.items=list(args)
+self.indent=indent
+self.bold=bold
+self.postfix=postfix
 
-XXXXdefX__str__(self)X->Xstr:
-XXXXXXXXtextX=Xf"{self.title}{self.suffix}{self.value}"
-XXXXXXXXreturnXtext
+@property
+deftitle(self)->str:
+title=self.title_text
+text=str(Bold(title))ifself.boldelsetitle
+text+=self.postfix
+returntext
+
+def__str__(self)->str:
+text=self.title
+space=""*self.indent
+foriteminself.items:
+text+="\n"
+
+iftype(item)isSection:
+item.indent*=2
+iftype(item)isSList:
+item.indent=self.indent
+else:
+text+=space
+
+text+=str(item)
+
+returntext
+
+def__add__(self,other):
+self.items.append(other)
+returnself
 
 
-classXMultiKeyValue:
-XXXXdefX__init__(self,X*items:XUnion[list,Xtuple],Xsuffix=":X",Xseparator=",X"):
-XXXXXXXXself.items:XlistX=Xitems
-XXXXXXXXself.suffixX=Xsuffix
-XXXXXXXXself.separatorX=Xseparator
+classSList:
+def__init__(self,*args,indent=0,prefix="-"):
+self.items=list(args)
+self.prefix=prefix
+self.indent=indent
 
-XXXXdefX__str__(self)X->Xstr:
-XXXXXXXXtextX=X""
-XXXXXXXXitems_countX=Xlen(self.items)
-XXXXXXXXforXidx,XitemXinXenumerate(self.items):
-XXXXXXXXXXXXtextX+=Xf"{item[0]}{self.suffix}{item[1]}"
+def__str__(self)->str:
+space=""*self.indentifself.indentelse""
+text=""
+foridx,iteminenumerate(self.items):
+ifidx>0:
+text+="\n"
+text+=f"{space}{self.prefix}{item}"
 
-XXXXXXXXXXXXifXitems_countX-X1X!=Xidx:
-XXXXXXXXXXXXXXXXtextX+=Xself.separator
+returntext
 
-XXXXXXXXreturnXtext
+
+classKeyValue:
+def__init__(self,title,value,suffix=":"):
+self.title=title
+self.value=value
+self.suffix=suffix
+
+def__str__(self)->str:
+text=f"{self.title}{self.suffix}{self.value}"
+returntext
+
+
+classMultiKeyValue:
+def__init__(self,*items:Union[list,tuple],suffix=":",separator=","):
+self.items:list=items
+self.suffix=suffix
+self.separator=separator
+
+def__str__(self)->str:
+text=""
+items_count=len(self.items)
+foridx,iteminenumerate(self.items):
+text+=f"{item[0]}{self.suffix}{item[1]}"
+
+ifitems_count-1!=idx:
+text+=self.separator
+
+returntext

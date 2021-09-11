@@ -1,56 +1,56 @@
-#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
-#XCopyrightX(C)X2021Xerrorshivansh
-#XCopyrightX(C)X2020XInukaXAsith
+#Copyright(C)2018-2020MrYacha.Allrightsreserved.SourcecodeavailableundertheAGPL.
+#Copyright(C)2021errorshivansh
+#Copyright(C)2020InukaAsith
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXos
-importXsys
+importos
+importsys
 
-fromXInerukiX.utils.loggerXimportXlog
+fromIneruki.utils.loggerimportlog
 
-LOADED_MODULESX=X[]
-MOD_HELPX=X{}
-
-
-defXlist_all_modules()X->Xlist:
-XXXXmodules_directoryX=X"InerukiX/modules"
-
-XXXXall_modulesX=X[]
-XXXXforXmodule_nameXinXos.listdir(modules_directory):
-XXXXXXXXpathX=Xmodules_directoryX+X"/"X+Xmodule_name
-
-XXXXXXXXifX"__init__"XinXpathXorX"__pycache__"XinXpath:
-XXXXXXXXXXXXcontinue
-
-XXXXXXXXifXpathXinXall_modules:
-XXXXXXXXXXXXlog.path("ModulesXwithXsameXnameXcan'tXexists!")
-XXXXXXXXXXXXsys.exit(5)
-
-XXXXXXXX#XOneXfileXmoduleXtype
-XXXXXXXXifXpath.endswith(".py"):
-XXXXXXXXXXXX#XTODO:Xremovesuffix
-XXXXXXXXXXXXall_modules.append(module_name.split(".py")[0])
-
-XXXXXXXX#XModuleXdirectory
-XXXXXXXXifXos.path.isdir(path)XandXos.path.exists(pathX+X"/__init__.py"):
-XXXXXXXXXXXXall_modules.append(module_name)
-
-XXXXreturnXall_modules
+LOADED_MODULES=[]
+MOD_HELP={}
 
 
-ALL_MODULESX=Xsorted(list_all_modules())
-__all__X=XALL_MODULESX+X["ALL_MODULES"]
+deflist_all_modules()->list:
+modules_directory="Ineruki/modules"
+
+all_modules=[]
+formodule_nameinos.listdir(modules_directory):
+path=modules_directory+"/"+module_name
+
+if"__init__"inpathor"__pycache__"inpath:
+continue
+
+ifpathinall_modules:
+log.path("Moduleswithsamenamecan'texists!")
+sys.exit(5)
+
+#Onefilemoduletype
+ifpath.endswith(".py"):
+#TODO:removesuffix
+all_modules.append(module_name.split(".py")[0])
+
+#Moduledirectory
+ifos.path.isdir(path)andos.path.exists(path+"/__init__.py"):
+all_modules.append(module_name)
+
+returnall_modules
+
+
+ALL_MODULES=sorted(list_all_modules())
+__all__=ALL_MODULES+["ALL_MODULES"]

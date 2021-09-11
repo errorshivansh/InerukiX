@@ -1,41 +1,41 @@
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-fromXapscheduler.executors.asyncioXimportXAsyncIOExecutor
-fromXapscheduler.jobstores.redisXimportXRedisJobStore
-fromXapscheduler.schedulers.asyncioXimportXAsyncIOScheduler
-fromXpytzXimportXutc
+fromapscheduler.executors.asyncioimportAsyncIOExecutor
+fromapscheduler.jobstores.redisimportRedisJobStore
+fromapscheduler.schedulers.asyncioimportAsyncIOScheduler
+frompytzimportutc
 
-fromXInerukiX.configXimportXget_str_key
-fromXInerukiX.utils.loggerXimportXlog
+fromIneruki.configimportget_str_key
+fromIneruki.utils.loggerimportlog
 
-DEFAULTX=X"default"
+DEFAULT="default"
 
-jobstoresX=X{
-XXXXDEFAULT:XRedisJobStore(
-XXXXXXXXhost=get_str_key("REDIS_URI"),
-XXXXXXXXport=get_str_key("REDIS_PORT"),
-XXXXXXXXpassword=get_str_key("REDIS_PASS"),
-XXXX)
+jobstores={
+DEFAULT:RedisJobStore(
+host=get_str_key("REDIS_URI"),
+port=get_str_key("REDIS_PORT"),
+password=get_str_key("REDIS_PASS"),
+)
 }
-executorsX=X{DEFAULT:XAsyncIOExecutor()}
-job_defaultsX=X{"coalesce":XFalse,X"max_instances":X3}
+executors={DEFAULT:AsyncIOExecutor()}
+job_defaults={"coalesce":False,"max_instances":3}
 
-schedulerX=XAsyncIOScheduler(
-XXXXjobstores=jobstores,Xexecutors=executors,Xjob_defaults=job_defaults,Xtimezone=utc
+scheduler=AsyncIOScheduler(
+jobstores=jobstores,executors=executors,job_defaults=job_defaults,timezone=utc
 )
 
-log.info("StartingXapscheduller...")
+log.info("Startingapscheduller...")
 scheduler.start()

@@ -1,37 +1,37 @@
-#XCreditsXTelegramX@ChankitSaini
+#CreditsTelegram@ChankitSaini
 
-__mod_name__X=X"Devs"
-__help__X=X"""
-<b>⚠️XNotice:</b>
-CommandsXlistedXhereXonlyXworkXforXusersXwithXspecialXaccessXareXmainlyXusedXforXtroubleshooting,XdebuggingXpurposes.
-GroupXadmins/groupXownersXdoXnotXneedXtheseXcommands.X
+__mod_name__="Devs"
+__help__="""
+<b>⚠️Notice:</b>
+Commandslistedhereonlyworkforuserswithspecialaccessaremainlyusedfortroubleshooting,debuggingpurposes.
+Groupadmins/groupownersdonotneedthesecommands.
 
-<b>Commands:</b>X
+<b>Commands:</b>
 
-<b>BotXOwnerXOnly:X</b>
--X<code>/leavechatXchatXid</code>X:XLeavesXtheXchat
--X<code>/ip</code>X:XFetchXserver'sXipX(WorksXinXpmXonly)
--X<code>/term</code>X:XRunsXtheXshellXcommands
--X<code>/sbroadcast</code>X:XSmartXbroadcastXinXchatsXwhereXbotXisXcurrentlyXadded.
--X<code>/stopsbroadcast</code>X:XStopsXtheXcurrentXongoingXbroadcast
--X<code>/continuebroadcast</code>X:XContinueXtheXstoppedXbroadcast
--X<code>/purgecache</code>X:XClearXcacheXinXredisXserver
+<b>BotOwnerOnly:</b>
+-<code>/leavechatchatid</code>:Leavesthechat
+-<code>/ip</code>:Fetchserver'sip(Worksinpmonly)
+-<code>/term</code>:Runstheshellcommands
+-<code>/sbroadcast</code>:Smartbroadcastinchatswherebotiscurrentlyadded.
+-<code>/stopsbroadcast</code>:Stopsthecurrentongoingbroadcast
+-<code>/continuebroadcast</code>:Continuethestoppedbroadcast
+-<code>/purgecache</code>:Clearcacheinredisserver
 
-<b>SystemXCommands</b>
--X<code>/botstop</code>X:XShutdownsXtheXbot.
--X<code>/restart</code>X:XRestartsXtheXbot
--X<code>/upgrade</code>X:XUpdatesXtheXbot.
--X<code>/upload</code>X:XUploadsXtheXfileXfromXbot'sXserver
--X<code>/crash</code>X:XCrashesXtheXbot
--X<code>/update</code>X:XupdatesXtheXbot
+<b>SystemCommands</b>
+-<code>/botstop</code>:Shutdownsthebot.
+-<code>/restart</code>:Restartsthebot
+-<code>/upgrade</code>:Updatesthebot.
+-<code>/upload</code>:Uploadsthefilefrombot'sserver
+-<code>/crash</code>:Crashesthebot
+-<code>/update</code>:updatesthebot
 
-<b>Operators:</b>X
--X<code>/stats</code>X:XToXgetXbot'sXcurrentXstats
--X<code>/allcommands</code>X:XShowsXtheXlistXofXallXavailableXcommandsX
--X<code>/allcmdsaliases</code>X:XShowsXtheXaliasesXlistX
--X<code>/loadedmodules</code>X:XShowsXtheXcurrentlyXloadedXmodules
--X<code>/avaiblebtns</code>X:XShowsXtheXlistXofXallXmessageXinlineXbuttons
--X<code>/logs</code>X:XUploadsXtheXbotXlogsXasXfile
--X<code>/event</code>X:XToXgetXaXeventXviaXaiogram
+<b>Operators:</b>
+-<code>/stats</code>:Togetbot'scurrentstats
+-<code>/allcommands</code>:Showsthelistofallavailablecommands
+-<code>/allcmdsaliases</code>:Showsthealiaseslist
+-<code>/loadedmodules</code>:Showsthecurrentlyloadedmodules
+-<code>/avaiblebtns</code>:Showsthelistofallmessageinlinebuttons
+-<code>/logs</code>:Uploadsthebotlogsasfile
+-<code>/event</code>:Togetaeventviaaiogram
 
 """

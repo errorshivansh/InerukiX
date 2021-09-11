@@ -1,14 +1,14 @@
-importXrequests
+importrequests
 
 
-asyncXdefXfetch(url):
-XXXXtry:
-XXXXXXXXrX=Xrequests.request("GET",Xurl=url)
-XXXXexcept:
-XXXXXXXXreturn
+asyncdeffetch(url):
+try:
+r=requests.request("GET",url=url)
+except:
+return
 
-XXXXtry:
-XXXXXXXXdataX=Xr.json()
-XXXXexcept:
-XXXXXXXXdataX=Xr.text()
-XXXXreturnXdata
+try:
+data=r.json()
+except:
+data=r.text()
+returndata

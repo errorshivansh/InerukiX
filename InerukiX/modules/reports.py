@@ -1,92 +1,92 @@
-#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
-#XCopyrightX(C)X2021Xerrorshivansh
-#XCopyrightX(C)X2020XInukaXAsith
+#Copyright(C)2018-2020MrYacha.Allrightsreserved.SourcecodeavailableundertheAGPL.
+#Copyright(C)2021errorshivansh
+#Copyright(C)2020InukaAsith
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-fromXInerukiX.decoratorXimportXregister
-fromXInerukiX.services.mongoXimportXdb
+fromIneruki.decoratorimportregister
+fromIneruki.services.mongoimportdb
 
-fromX.utils.connectionsXimportXchat_connection
-fromX.utils.disableXimportXdisableable_dec
-fromX.utils.languageXimportXget_strings_dec
-fromX.utils.user_detailsXimportXget_admins_rights,Xget_user_link,Xis_user_admin
+from.utils.connectionsimportchat_connection
+from.utils.disableimportdisableable_dec
+from.utils.languageimportget_strings_dec
+from.utils.user_detailsimportget_admins_rights,get_user_link,is_user_admin
 
 
 @register(regexp="^@admin$")
 @chat_connection(only_groups=True)
 @get_strings_dec("reports")
-asyncXdefXreport1_cmd(message,Xchat,Xstrings):
-XXXX#XCheckingXwhetherXreportXisXdisabledXinXchat!
-XXXXcheckX=XawaitXdb.disabled.find_one({"chat_id":Xchat["chat_id"]})
-XXXXifXcheck:
-XXXXXXXXifX"report"XinXcheck["cmds"]:
-XXXXXXXXXXXXreturn
-XXXXawaitXreport(message,Xchat,Xstrings)
+asyncdefreport1_cmd(message,chat,strings):
+#Checkingwhetherreportisdisabledinchat!
+check=awaitdb.disabled.find_one({"chat_id":chat["chat_id"]})
+ifcheck:
+if"report"incheck["cmds"]:
+return
+awaitreport(message,chat,strings)
 
 
 @register(cmds="report")
 @chat_connection(only_groups=True)
 @disableable_dec("report")
 @get_strings_dec("reports")
-asyncXdefXreport2_cmd(message,Xchat,Xstrings):
-XXXXawaitXreport(message,Xchat,Xstrings)
+asyncdefreport2_cmd(message,chat,strings):
+awaitreport(message,chat,strings)
 
 
-asyncXdefXreport(message,Xchat,Xstrings):
-XXXXuserX=Xmessage.from_user.id
+asyncdefreport(message,chat,strings):
+user=message.from_user.id
 
-XXXXifX(awaitXis_user_admin(chat["chat_id"],Xuser))XisXTrue:
-XXXXXXXXreturnXawaitXmessage.reply(strings["user_user_admin"])
+if(awaitis_user_admin(chat["chat_id"],user))isTrue:
+returnawaitmessage.reply(strings["user_user_admin"])
 
-XXXXifX"reply_to_message"XnotXinXmessage:
-XXXXXXXXreturnXawaitXmessage.reply(strings["no_user_to_report"])
+if"reply_to_message"notinmessage:
+returnawaitmessage.reply(strings["no_user_to_report"])
 
-XXXXoffender_idX=Xmessage.reply_to_message.from_user.id
-XXXXifX(awaitXis_user_admin(chat["chat_id"],Xoffender_id))XisXTrue:
-XXXXXXXXreturnXawaitXmessage.reply(strings["report_admin"])
+offender_id=message.reply_to_message.from_user.id
+if(awaitis_user_admin(chat["chat_id"],offender_id))isTrue:
+returnawaitmessage.reply(strings["report_admin"])
 
-XXXXadminsX=XawaitXget_admins_rights(chat["chat_id"])
+admins=awaitget_admins_rights(chat["chat_id"])
 
-XXXXoffenderX=XawaitXget_user_link(offender_id)
-XXXXtextX=Xstrings["reported_user"].format(user=offender)
+offender=awaitget_user_link(offender_id)
+text=strings["reported_user"].format(user=offender)
 
-XXXXtry:
-XXXXXXXXifXmessage.text.split(None,X2)[1]:
-XXXXXXXXXXXXreasonX=X"X".join(message.text.split(None,X2)[1:])
-XXXXXXXXXXXXtextX+=Xstrings["reported_reason"].format(reason=reason)
-XXXXexceptXIndexError:
-XXXXXXXXpass
+try:
+ifmessage.text.split(None,2)[1]:
+reason="".join(message.text.split(None,2)[1:])
+text+=strings["reported_reason"].format(reason=reason)
+exceptIndexError:
+pass
 
-XXXXforXadminXinXadmins:
-XXXXXXXXtextX+=XawaitXget_user_link(admin,Xcustom_name="​")
+foradmininadmins:
+text+=awaitget_user_link(admin,custom_name="​")
 
-XXXXawaitXmessage.reply(text)
+awaitmessage.reply(text)
 
 
-__mod_name__X=X"Reports"
+__mod_name__="Reports"
 
-__help__X=X"""
-We'reXallXbusyXpeopleXwhoXdon'tXhaveXtimeXtoXmonitorXourXgroupsX24/7.XButXhowXdoXyouXreactXifXsomeoneXinXyourXgroupXisXspamming?
+__help__="""
+We'reallbusypeoplewhodon'thavetimetomonitorourgroups24/7.Buthowdoyoureactifsomeoneinyourgroupisspamming?
 
-PresentingXreports;XifXsomeoneXinXyourXgroupXthinksXsomeoneXneedsXreporting,XtheyXnowXhaveXanXeasyXwayXtoXcallXallXadmins.
+Presentingreports;ifsomeoneinyourgroupthinkssomeoneneedsreporting,theynowhaveaneasywaytocallalladmins.
 
-<b>AvailableXcommands:</b>
--X/reportX(?text):XReports
--X@admins:XSameXasXabove,XbutXnotXaXclickable
+<b>Availablecommands:</b>
+-/report(?text):Reports
+-@admins:Sameasabove,butnotaclickable
 
-<b>TIP:</b>XYouXalwaysXcanXdisableXreportingXbyXdisablingXmodule
+<b>TIP:</b>Youalwayscandisablereportingbydisablingmodule
 """

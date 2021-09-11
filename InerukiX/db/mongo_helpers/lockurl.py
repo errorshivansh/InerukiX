@@ -1,37 +1,37 @@
-fromXInerukiX.services.mongoXimportXmongodbXasXdb_x
+fromIneruki.services.mongoimportmongodbasdb_x
 
-lockurlX=Xdb_x["Lockurlp"]
-
-
-defXadd_chat(chat_id):
-XXXXstarkX=Xlockurl.find_one({"chat_id":Xchat_id})
-XXXXifXstark:
-XXXXXXXXreturnXFalse
-XXXXelse:
-XXXXXXXXlockurl.insert_one({"chat_id":Xchat_id})
-XXXXXXXXreturnXTrue
+lockurl=db_x["Lockurlp"]
 
 
-defXremove_chat(chat_id):
-XXXXstarkX=Xlockurl.find_one({"chat_id":Xchat_id})
-XXXXifXnotXstark:
-XXXXXXXXreturnXFalse
-XXXXelse:
-XXXXXXXXlockurl.delete_one({"chat_id":Xchat_id})
-XXXXXXXXreturnXTrue
+defadd_chat(chat_id):
+stark=lockurl.find_one({"chat_id":chat_id})
+ifstark:
+returnFalse
+else:
+lockurl.insert_one({"chat_id":chat_id})
+returnTrue
 
 
-defXget_all_chats():
-XXXXrX=Xlist(lockurl.find())
-XXXXifXr:
-XXXXXXXXreturnXr
-XXXXelse:
-XXXXXXXXreturnXFalse
+defremove_chat(chat_id):
+stark=lockurl.find_one({"chat_id":chat_id})
+ifnotstark:
+returnFalse
+else:
+lockurl.delete_one({"chat_id":chat_id})
+returnTrue
 
 
-defXget_session(chat_id):
-XXXXstarkX=Xlockurl.find_one({"chat_id":Xchat_id})
-XXXXifXnotXstark:
-XXXXXXXXreturnXFalse
-XXXXelse:
-XXXXXXXXreturnXstark
+defget_all_chats():
+r=list(lockurl.find())
+ifr:
+returnr
+else:
+returnFalse
+
+
+defget_session(chat_id):
+stark=lockurl.find_one({"chat_id":chat_id})
+ifnotstark:
+returnFalse
+else:
+returnstark

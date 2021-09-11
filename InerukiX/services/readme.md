@@ -1,3 +1,3 @@
-##XServicesXSection
+##ServicesSection
 
-##XMainXconnectionsX&XSQLXDBXhere
+##Mainconnections&SQLDBhere

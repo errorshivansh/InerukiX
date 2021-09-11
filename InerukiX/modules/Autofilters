@@ -1,43 +1,43 @@
-#XCopyrightX(C)X2021Xerrorshivansh
+#Copyright(C)2021errorshivansh
 
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-__mod_name__X=X"AutoXFilters"
-__help__X=X"""
-<b>XAUTOXFILTERSX</b>
-InerukiXCanXfilterXcontentXofXaXgivenXchannelXautomatically
-CurrentlyXsupport:
-XXXXX-XVideos
-XXXXX-XMedia
-XXXXX-XDocuments
-XXXXX-XMusic
+__mod_name__="AutoFilters"
+__help__="""
+<b>AUTOFILTERS</b>
+InerukiCanfiltercontentofagivenchannelautomatically
+Currentlysupport:
+-Videos
+-Media
+-Documents
+-Music
 
-<b>XSettingXupX</b>
-1)XAddX@InerukiXBotXtoXyourXchannel
-2)XMakeXbotXadminXwithXfullXpermissions
-2)XGoXbackXtoXyourXgroup
+<b>Settingup</b>
+1)Add@InerukiBottoyourchannel
+2)Makebotadminwithfullpermissions
+2)Gobacktoyourgroup
 
-<b>XCommandsX</b>
--X/autofilterX[ChannelXUsername]X:XAddXgivenXchannelXtoXautofiltering
--X/autofilterdelX[ChannelXUsername]X:XRemoveXgivenXchannelXfromXautoXfiltering
--X/autofilterdelallX:XRemoveXallXchannelsXfromXautomaticXfiltering
--X/autofiltersettingsX:XShowXsettingsXpanelXaboutXautoXfilteringXchannels
+<b>Commands</b>
+-/autofilter[ChannelUsername]:Addgivenchanneltoautofiltering
+-/autofilterdel[ChannelUsername]:Removegivenchannelfromautofiltering
+-/autofilterdelall:Removeallchannelsfromautomaticfiltering
+-/autofiltersettings:Showsettingspanelaboutautofilteringchannels
 
-<i>XInspiredXbyXhttps://github.com/AlbertEinsteinTG/Adv-Auto-Filter-Bot-V2X</i>
-OriginalXworkXisXdoneXbyX@CrazyBotsz
+<i>Inspiredbyhttps://github.com/AlbertEinsteinTG/Adv-Auto-Filter-Bot-V2</i>
+Originalworkisdoneby@CrazyBotsz
 
 """

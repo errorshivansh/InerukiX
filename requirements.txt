@@ -1,23 +1,23 @@
-#XGeneral
+#General
 telethon==1.19.5
 pyrogram>=1.0.7
-aiogramX==X2.13
+aiogram==2.13
 
-#XDBs
+#DBs
 redis
-aioredis==1.3.1X#XRedisXmemeryXstorageXfomXaiogram
+aioredis==1.3.1#Redismemerystoragefomaiogram
 pymongo
 motor
-odmanticX#XMongoDBXORM
-sqlalchemy==1.3.20X#XForXoldXmodules
-dnspythonX#XneededXtoXconnectXtoXcloudXMongoDBXinstances
+odmantic#MongoDBORM
+sqlalchemy==1.3.20#Foroldmodules
+dnspython#neededtoconnecttocloudMongoDBinstances
 
-#XOptionalXdepsXtoXmakeXbotXfaster
+#Optionaldepstomakebotfaster
 aiohttp[speedups]
 cryptg
 cryptography
 
-#XOther
+#Other
 jikanpy
 envparse
 hypercorn
@@ -58,7 +58,7 @@ twistdl
 #Pyrogram
 tgCrypto>=1.2.2
 
-#OldXDBXProcesses
+#OldDBProcesses
 psycopg2-binary==2.8.6
 
 #YTDL
@@ -68,15 +68,15 @@ youtube_search_python
 #Search
 bs4
 html2text
-bing_image_downloaderX
+bing_image_downloader
 search_engine_parser
 pornhub_api
 youtube_search
 
 #Memes
 selenium
-zalgo_textX
-cowpyX
+zalgo_text
+cowpy
 fontTools
 nltk
 emoji
@@ -88,9 +88,9 @@ asyncio
 #Markup
 Markdown>=3.3.4
 
-#profanityX(CreditsXtoXJulia)
+#profanity(CreditstoJulia)
 better_profanity
-textblobX
+textblob
 nudepy
 
 #ImageEditor
@@ -110,10 +110,10 @@ chromedriver==2.24.1
 gitpython==3.1.11
 heroku3==4.2.3
 
-pykeyboardX
+pykeyboard
 countryinfo
 flag
-Python_ARQX
+Python_ARQ
 googletrans==4.0.0-rc1
 pyromod
 aiofiles

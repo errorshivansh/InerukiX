@@ -1,37 +1,37 @@
-#XThisXfileXisXpartXofXInerukiXBotX(TelegramXBot)
+#ThisfileispartofInerukiBot(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
-importXlogging
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
+importlogging
 
-fromXpyrogramXimportXClient
+frompyrogramimportClient
 
-#XfromXpyromodXimportXlisten
-fromXInerukiX.configXimportXget_int_key,Xget_str_key
+#frompyromodimportlisten
+fromIneruki.configimportget_int_key,get_str_key
 
-TOKENX=Xget_str_key("TOKEN",Xrequired=True)
-APP_IDX=Xget_int_key("APP_ID",Xrequired=True)
-APP_HASHX=Xget_str_key("APP_HASH",Xrequired=True)
-session_nameX=XTOKEN.split(":")[0]
-pbotX=XClient(
-XXXXsession_name,
-XXXXapi_id=APP_ID,
-XXXXapi_hash=APP_HASH,
-XXXXbot_token=TOKEN,
+TOKEN=get_str_key("TOKEN",required=True)
+APP_ID=get_int_key("APP_ID",required=True)
+APP_HASH=get_str_key("APP_HASH",required=True)
+session_name=TOKEN.split(":")[0]
+pbot=Client(
+session_name,
+api_id=APP_ID,
+api_hash=APP_HASH,
+bot_token=TOKEN,
 )
 
-#XdisableXloggingXforXpyrogramX[notXforXERRORXlogging]
+#disableloggingforpyrogram[notforERRORlogging]
 logging.getLogger("pyrogram").setLevel(level=logging.ERROR)
 
 pbot.start()

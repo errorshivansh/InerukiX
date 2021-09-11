@@ -1,283 +1,283 @@
-#XCopyrightX(C)X2018X-X2020XMrYacha.XAllXrightsXreserved.XSourceXcodeXavailableXunderXtheXAGPL.
-#XCopyrightX(C)X2019XAiogram
+#Copyright(C)2018-2020MrYacha.Allrightsreserved.SourcecodeavailableundertheAGPL.
+#Copyright(C)2019Aiogram
 #
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 #
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXdatetime
-importXhtml
+importdatetime
+importhtml
 
-fromXaiogram.dispatcher.middlewaresXimportXBaseMiddleware
+fromaiogram.dispatcher.middlewaresimportBaseMiddleware
 
-fromXInerukiXXimportXdp
-fromXInerukiX.decoratorXimportXregister
-fromXInerukiX.modulesXimportXLOADED_MODULES
-fromXInerukiX.services.mongoXimportXdb
-fromXInerukiX.utils.loggerXimportXlog
+fromInerukiimportdp
+fromIneruki.decoratorimportregister
+fromIneruki.modulesimportLOADED_MODULES
+fromIneruki.services.mongoimportdb
+fromIneruki.utils.loggerimportlog
 
-fromX.utils.connectionsXimportXchat_connection
-fromX.utils.disableXimportXdisableable_dec
-fromX.utils.languageXimportXget_strings_dec
-fromX.utils.user_detailsXimportX(
-XXXXget_admins_rights,
-XXXXget_user_dec,
-XXXXget_user_link,
-XXXXis_user_admin,
+from.utils.connectionsimportchat_connection
+from.utils.disableimportdisableable_dec
+from.utils.languageimportget_strings_dec
+from.utils.user_detailsimport(
+get_admins_rights,
+get_user_dec,
+get_user_link,
+is_user_admin,
 )
 
 
-asyncXdefXupdate_users_handler(message):
-XXXXchat_idX=Xmessage.chat.id
+asyncdefupdate_users_handler(message):
+chat_id=message.chat.id
 
-XXXX#XUpdateXchat
-XXXXnew_chatX=Xmessage.chat
-XXXXifXnotXnew_chat.typeX==X"private":
+#Updatechat
+new_chat=message.chat
+ifnotnew_chat.type=="private":
 
-XXXXXXXXold_chatX=XawaitXdb.chat_list.find_one({"chat_id":Xchat_id})
+old_chat=awaitdb.chat_list.find_one({"chat_id":chat_id})
 
-XXXXXXXXifXnotXhasattr(new_chat,X"username"):
-XXXXXXXXXXXXchatnickX=XNone
-XXXXXXXXelse:
-XXXXXXXXXXXXchatnickX=Xnew_chat.username
+ifnothasattr(new_chat,"username"):
+chatnick=None
+else:
+chatnick=new_chat.username
 
-XXXXXXXXifXold_chatXandX"first_detected_date"XinXold_chat:
-XXXXXXXXXXXXfirst_detected_dateX=Xold_chat["first_detected_date"]
-XXXXXXXXelse:
-XXXXXXXXXXXXfirst_detected_dateX=Xdatetime.datetime.now()
+ifold_chatand"first_detected_date"inold_chat:
+first_detected_date=old_chat["first_detected_date"]
+else:
+first_detected_date=datetime.datetime.now()
 
-XXXXXXXXchat_newX=X{
-XXXXXXXXXXXX"chat_id":Xchat_id,
-XXXXXXXXXXXX"chat_title":Xhtml.escape(new_chat.title,Xquote=False),
-XXXXXXXXXXXX"chat_nick":Xchatnick,
-XXXXXXXXXXXX"type":Xnew_chat.type,
-XXXXXXXXXXXX"first_detected_date":Xfirst_detected_date,
-XXXXXXXX}
+chat_new={
+"chat_id":chat_id,
+"chat_title":html.escape(new_chat.title,quote=False),
+"chat_nick":chatnick,
+"type":new_chat.type,
+"first_detected_date":first_detected_date,
+}
 
-XXXXXXXX#XCheckXonXoldXchatXinXDBXwithXsameXusername
-XXXXXXXXfind_old_chatX=X{
-XXXXXXXXXXXX"chat_nick":Xchat_new["chat_nick"],
-XXXXXXXXXXXX"chat_id":X{"$ne":Xchat_new["chat_id"]},
-XXXXXXXX}
-XXXXXXXXifXchat_new["chat_nick"]XandX(
-XXXXXXXXXXXXcheckX:=XawaitXdb.chat_list.find_one(find_old_chat)
-XXXXXXXX):
-XXXXXXXXXXXXawaitXdb.chat_list.delete_one({"_id":Xcheck["_id"]})
-XXXXXXXXXXXXlog.info(
-XXXXXXXXXXXXXXXXf"FoundXchatX({check['chat_id']})XwithXsameXusernameXasX({chat_new['chat_id']}),XoldXchatXwasXdeleted."
-XXXXXXXXXXXX)
+#CheckonoldchatinDBwithsameusername
+find_old_chat={
+"chat_nick":chat_new["chat_nick"],
+"chat_id":{"$ne":chat_new["chat_id"]},
+}
+ifchat_new["chat_nick"]and(
+check:=awaitdb.chat_list.find_one(find_old_chat)
+):
+awaitdb.chat_list.delete_one({"_id":check["_id"]})
+log.info(
+f"Foundchat({check['chat_id']})withsameusernameas({chat_new['chat_id']}),oldchatwasdeleted."
+)
 
-XXXXXXXXawaitXdb.chat_list.update_one(
-XXXXXXXXXXXX{"chat_id":Xchat_id},X{"$set":Xchat_new},Xupsert=True
-XXXXXXXX)
+awaitdb.chat_list.update_one(
+{"chat_id":chat_id},{"$set":chat_new},upsert=True
+)
 
-XXXXXXXXlog.debug(f"Users:XChatX{chat_id}Xupdated")
+log.debug(f"Users:Chat{chat_id}updated")
 
-XXXX#XUpdateXusers
-XXXXawaitXupdate_user(chat_id,Xmessage.from_user)
+#Updateusers
+awaitupdate_user(chat_id,message.from_user)
 
-XXXXifX(
-XXXXXXXX"reply_to_message"XinXmessage
-XXXXXXXXandXhasattr(message.reply_to_message.from_user,X"chat_id")
-XXXXXXXXandXmessage.reply_to_message.from_user.chat_id
-XXXX):
-XXXXXXXXawaitXupdate_user(chat_id,Xmessage.reply_to_message.from_user)
+if(
+"reply_to_message"inmessage
+andhasattr(message.reply_to_message.from_user,"chat_id")
+andmessage.reply_to_message.from_user.chat_id
+):
+awaitupdate_user(chat_id,message.reply_to_message.from_user)
 
-XXXXifX"forward_from"XinXmessage:
-XXXXXXXXawaitXupdate_user(chat_id,Xmessage.forward_from)
+if"forward_from"inmessage:
+awaitupdate_user(chat_id,message.forward_from)
 
 
-asyncXdefXupdate_user(chat_id,Xnew_user):
-XXXXold_userX=XawaitXdb.user_list.find_one({"user_id":Xnew_user.id})
+asyncdefupdate_user(chat_id,new_user):
+old_user=awaitdb.user_list.find_one({"user_id":new_user.id})
 
-XXXXnew_chatX=X[chat_id]
+new_chat=[chat_id]
 
-XXXXifXold_userXandX"chats"XinXold_user:
-XXXXXXXXifXold_user["chats"]:
-XXXXXXXXXXXXnew_chatX=Xold_user["chats"]
-XXXXXXXXifXnotXnew_chatXorXchat_idXnotXinXnew_chat:
-XXXXXXXXXXXXnew_chat.append(chat_id)
+ifold_userand"chats"inold_user:
+ifold_user["chats"]:
+new_chat=old_user["chats"]
+ifnotnew_chatorchat_idnotinnew_chat:
+new_chat.append(chat_id)
 
-XXXXifXold_userXandX"first_detected_date"XinXold_user:
-XXXXXXXXfirst_detected_dateX=Xold_user["first_detected_date"]
-XXXXelse:
-XXXXXXXXfirst_detected_dateX=Xdatetime.datetime.now()
+ifold_userand"first_detected_date"inold_user:
+first_detected_date=old_user["first_detected_date"]
+else:
+first_detected_date=datetime.datetime.now()
 
-XXXXifXnew_user.username:
-XXXXXXXXusernameX=Xnew_user.username.lower()
-XXXXelse:
-XXXXXXXXusernameX=XNone
+ifnew_user.username:
+username=new_user.username.lower()
+else:
+username=None
 
-XXXXifXhasattr(new_user,X"last_name")XandXnew_user.last_name:
-XXXXXXXXlast_nameX=Xhtml.escape(new_user.last_name,Xquote=False)
-XXXXelse:
-XXXXXXXXlast_nameX=XNone
+ifhasattr(new_user,"last_name")andnew_user.last_name:
+last_name=html.escape(new_user.last_name,quote=False)
+else:
+last_name=None
 
-XXXXfirst_nameX=Xhtml.escape(new_user.first_name,Xquote=False)
+first_name=html.escape(new_user.first_name,quote=False)
 
-XXXXuser_newX=X{
-XXXXXXXX"user_id":Xnew_user.id,
-XXXXXXXX"first_name":Xfirst_name,
-XXXXXXXX"last_name":Xlast_name,
-XXXXXXXX"username":Xusername,
-XXXXXXXX"user_lang":Xnew_user.language_code,
-XXXXXXXX"chats":Xnew_chat,
-XXXXXXXX"first_detected_date":Xfirst_detected_date,
-XXXX}
+user_new={
+"user_id":new_user.id,
+"first_name":first_name,
+"last_name":last_name,
+"username":username,
+"user_lang":new_user.language_code,
+"chats":new_chat,
+"first_detected_date":first_detected_date,
+}
 
-XXXX#XCheckXonXoldXuserXinXDBXwithXsameXusername
-XXXXfind_old_userX=X{
-XXXXXXXX"username":Xuser_new["username"],
-XXXXXXXX"user_id":X{"$ne":Xuser_new["user_id"]},
-XXXX}
-XXXXifXuser_new["username"]XandX(checkX:=XawaitXdb.user_list.find_one(find_old_user)):
-XXXXXXXXawaitXdb.user_list.delete_one({"_id":Xcheck["_id"]})
-XXXXXXXXlog.info(
-XXXXXXXXXXXXf"FoundXuserX({check['user_id']})XwithXsameXusernameXasX({user_new['user_id']}),XoldXuserXwasXdeleted."
-XXXXXXXX)
+#CheckonolduserinDBwithsameusername
+find_old_user={
+"username":user_new["username"],
+"user_id":{"$ne":user_new["user_id"]},
+}
+ifuser_new["username"]and(check:=awaitdb.user_list.find_one(find_old_user)):
+awaitdb.user_list.delete_one({"_id":check["_id"]})
+log.info(
+f"Founduser({check['user_id']})withsameusernameas({user_new['user_id']}),olduserwasdeleted."
+)
 
-XXXXawaitXdb.user_list.update_one(
-XXXXXXXX{"user_id":Xnew_user.id},X{"$set":Xuser_new},Xupsert=True
-XXXX)
+awaitdb.user_list.update_one(
+{"user_id":new_user.id},{"$set":user_new},upsert=True
+)
 
-XXXXlog.debug(f"Users:XUserX{new_user.id}Xupdated")
+log.debug(f"Users:User{new_user.id}updated")
 
-XXXXreturnXuser_new
+returnuser_new
 
 
 @register(cmds="info")
 @disableable_dec("info")
 @get_user_dec(allow_self=True)
 @get_strings_dec("users")
-asyncXdefXuser_info(message,Xuser,Xstrings):
-XXXXchat_idX=Xmessage.chat.id
+asyncdefuser_info(message,user,strings):
+chat_id=message.chat.id
 
-XXXXtextX=Xstrings["user_info"]
-XXXXtextX+=Xstrings["info_id"].format(id=user["user_id"])
-XXXXtextX+=Xstrings["info_first"].format(first_name=str(user["first_name"]))
+text=strings["user_info"]
+text+=strings["info_id"].format(id=user["user_id"])
+text+=strings["info_first"].format(first_name=str(user["first_name"]))
 
-XXXXifXuser["last_name"]XisXnotXNone:
-XXXXXXXXtextX+=Xstrings["info_last"].format(last_name=str(user["last_name"]))
+ifuser["last_name"]isnotNone:
+text+=strings["info_last"].format(last_name=str(user["last_name"]))
 
-XXXXifXuser["username"]XisXnotXNone:
-XXXXXXXXtextX+=Xstrings["info_username"].format(username="@"X+Xstr(user["username"]))
+ifuser["username"]isnotNone:
+text+=strings["info_username"].format(username="@"+str(user["username"]))
 
-XXXXtextX+=Xstrings["info_link"].format(
-XXXXXXXXuser_link=str(awaitXget_user_link(user["user_id"]))
-XXXX)
+text+=strings["info_link"].format(
+user_link=str(awaitget_user_link(user["user_id"]))
+)
 
-XXXXtextX+=X"\n"
+text+="\n"
 
-XXXXifXawaitXis_user_admin(chat_id,Xuser["user_id"])XisXTrue:
-XXXXXXXXtextX+=Xstrings["info_admeme"]
+ifawaitis_user_admin(chat_id,user["user_id"])isTrue:
+text+=strings["info_admeme"]
 
-XXXXforXmoduleXinX[mXforXmXinXLOADED_MODULESXifXhasattr(m,X"__user_info__")]:
-XXXXXXXXifXtxtX:=XawaitXmodule.__user_info__(message,Xuser["user_id"]):
-XXXXXXXXXXXXtextX+=Xtxt
+formodulein[mforminLOADED_MODULESifhasattr(m,"__user_info__")]:
+iftxt:=awaitmodule.__user_info__(message,user["user_id"]):
+text+=txt
 
-XXXXtextX+=Xstrings["info_saw"].format(num=len(user["chats"])XifX"chats"XinXuserXelseX0)
+text+=strings["info_saw"].format(num=len(user["chats"])if"chats"inuserelse0)
 
-XXXXawaitXmessage.reply(text)
+awaitmessage.reply(text)
 
 
-@register(cmds="admincache",Xis_admin=True)
-@chat_connection(only_groups=True,Xadmin=True)
+@register(cmds="admincache",is_admin=True)
+@chat_connection(only_groups=True,admin=True)
 @get_strings_dec("users")
-asyncXdefXreset_admins_cache(message,Xchat,Xstrings):
-XXXX#XResetXaXcache
-XXXXawaitXget_admins_rights(chat["chat_id"],Xforce_update=True)
-XXXXawaitXmessage.reply(strings["upd_cache_done"])
+asyncdefreset_admins_cache(message,chat,strings):
+#Resetacache
+awaitget_admins_rights(chat["chat_id"],force_update=True)
+awaitmessage.reply(strings["upd_cache_done"])
 
 
-@register(cmds=["id",X"chatid",X"userid"])
+@register(cmds=["id","chatid","userid"])
 @disableable_dec("id")
 @get_user_dec(allow_self=True)
 @get_strings_dec("misc")
 @chat_connection()
-asyncXdefXget_id(message,Xuser,Xstrings,Xchat):
-XXXXuser_idX=Xmessage.from_user.id
+asyncdefget_id(message,user,strings,chat):
+user_id=message.from_user.id
 
-XXXXtextX=Xstrings["your_id"].format(id=user_id)
-XXXXifXmessage.chat.idX!=Xuser_id:
-XXXXXXXXtextX+=Xstrings["chat_id"].format(id=message.chat.id)
+text=strings["your_id"].format(id=user_id)
+ifmessage.chat.id!=user_id:
+text+=strings["chat_id"].format(id=message.chat.id)
 
-XXXXifXchat["status"]XisXTrue:
-XXXXXXXXtextX+=Xstrings["conn_chat_id"].format(id=chat["chat_id"])
+ifchat["status"]isTrue:
+text+=strings["conn_chat_id"].format(id=chat["chat_id"])
 
-XXXXifXnotXuser["user_id"]X==Xuser_id:
-XXXXXXXXtextX+=Xstrings["user_id"].format(
-XXXXXXXXXXXXuser=awaitXget_user_link(user["user_id"]),Xid=user["user_id"]
-XXXXXXXX)
+ifnotuser["user_id"]==user_id:
+text+=strings["user_id"].format(
+user=awaitget_user_link(user["user_id"]),id=user["user_id"]
+)
 
-XXXXifX(
-XXXXXXXX"reply_to_message"XinXmessage
-XXXXXXXXandX"forward_from"XinXmessage.reply_to_message
-XXXXXXXXandXnotXmessage.reply_to_message.forward_from.id
-XXXXXXXX==Xmessage.reply_to_message.from_user.id
-XXXX):
-XXXXXXXXtextX+=Xstrings["user_id"].format(
-XXXXXXXXXXXXuser=awaitXget_user_link(message.reply_to_message.forward_from.id),
-XXXXXXXXXXXXid=message.reply_to_message.forward_from.id,
-XXXXXXXX)
+if(
+"reply_to_message"inmessage
+and"forward_from"inmessage.reply_to_message
+andnotmessage.reply_to_message.forward_from.id
+==message.reply_to_message.from_user.id
+):
+text+=strings["user_id"].format(
+user=awaitget_user_link(message.reply_to_message.forward_from.id),
+id=message.reply_to_message.forward_from.id,
+)
 
-XXXXawaitXmessage.reply(text)
+awaitmessage.reply(text)
 
 
-@register(cmds=["adminlist",X"admins"])
+@register(cmds=["adminlist","admins"])
 @disableable_dec("adminlist")
 @chat_connection(only_groups=True)
 @get_strings_dec("users")
-asyncXdefXadminlist(message,Xchat,Xstrings):
-XXXXadminsX=XawaitXget_admins_rights(chat["chat_id"])
-XXXXtextX=Xstrings["admins"]
-XXXXforXadmin,XrightsXinXadmins.items():
-XXXXXXXXifXrights["anonymous"]:
-XXXXXXXXXXXXcontinue
-XXXXXXXXtextX+=X"-X{}X(<code>{}</code>)\n".format(awaitXget_user_link(admin),Xadmin)
+asyncdefadminlist(message,chat,strings):
+admins=awaitget_admins_rights(chat["chat_id"])
+text=strings["admins"]
+foradmin,rightsinadmins.items():
+ifrights["anonymous"]:
+continue
+text+="-{}(<code>{}</code>)\n".format(awaitget_user_link(admin),admin)
 
-XXXXawaitXmessage.reply(text,Xdisable_notification=True)
-
-
-classXSaveUser(BaseMiddleware):
-XXXXasyncXdefXon_process_message(self,Xmessage,Xdata):
-XXXXXXXXawaitXupdate_users_handler(message)
+awaitmessage.reply(text,disable_notification=True)
 
 
-asyncXdefX__before_serving__(loop):
-XXXXdp.middleware.setup(SaveUser())
+classSaveUser(BaseMiddleware):
+asyncdefon_process_message(self,message,data):
+awaitupdate_users_handler(message)
 
 
-asyncXdefX__stats__():
-XXXXtextX=X"*X<code>{}</code>XtotalXusers,XinX<code>{}</code>Xchats\n".format(
-XXXXXXXXawaitXdb.user_list.count_documents({}),XawaitXdb.chat_list.count_documents({})
-XXXX)
+asyncdef__before_serving__(loop):
+dp.middleware.setup(SaveUser())
 
-XXXXtextX+=X"*X<code>{}</code>XnewXusersXandX<code>{}</code>XnewXchatsXinXtheXlastX48Xhours\n".format(
-XXXXXXXXawaitXdb.user_list.count_documents(
-XXXXXXXXXXXX{
-XXXXXXXXXXXXXXXX"first_detected_date":X{
-XXXXXXXXXXXXXXXXXXXX"$gte":Xdatetime.datetime.now()X-Xdatetime.timedelta(days=2)
-XXXXXXXXXXXXXXXX}
-XXXXXXXXXXXX}
-XXXXXXXX),
-XXXXXXXXawaitXdb.chat_list.count_documents(
-XXXXXXXXXXXX{
-XXXXXXXXXXXXXXXX"first_detected_date":X{
-XXXXXXXXXXXXXXXXXXXX"$gte":Xdatetime.datetime.now()X-Xdatetime.timedelta(days=2)
-XXXXXXXXXXXXXXXX}
-XXXXXXXXXXXX}
-XXXXXXXX),
-XXXX)
 
-XXXXreturnXtext
+asyncdef__stats__():
+text="*<code>{}</code>totalusers,in<code>{}</code>chats\n".format(
+awaitdb.user_list.count_documents({}),awaitdb.chat_list.count_documents({})
+)
+
+text+="*<code>{}</code>newusersand<code>{}</code>newchatsinthelast48hours\n".format(
+awaitdb.user_list.count_documents(
+{
+"first_detected_date":{
+"$gte":datetime.datetime.now()-datetime.timedelta(days=2)
+}
+}
+),
+awaitdb.chat_list.count_documents(
+{
+"first_detected_date":{
+"$gte":datetime.datetime.now()-datetime.timedelta(days=2)
+}
+}
+),
+)
+
+returntext

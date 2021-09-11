@@ -1,46 +1,46 @@
-fromXsqlalchemyXimportXColumn,XNumeric,XString
+fromsqlalchemyimportColumn,Numeric,String
 
-fromXInerukiX.services.sqlXimportXBASE,XSESSION
+fromIneruki.services.sqlimportBASE,SESSION
 
 
-classXforceSubscribe(BASE):
-XXXX__tablename__X=X"forceSubscribe"
-XXXXchat_idX=XColumn(Numeric,Xprimary_key=True)
-XXXXchannelX=XColumn(String)
+classforceSubscribe(BASE):
+__tablename__="forceSubscribe"
+chat_id=Column(Numeric,primary_key=True)
+channel=Column(String)
 
-XXXXdefX__init__(self,Xchat_id,Xchannel):
-XXXXXXXXself.chat_idX=Xchat_id
-XXXXXXXXself.channelX=Xchannel
+def__init__(self,chat_id,channel):
+self.chat_id=chat_id
+self.channel=channel
 
 
 forceSubscribe.__table__.create(checkfirst=True)
 
 
-defXfs_settings(chat_id):
-XXXXtry:
-XXXXXXXXreturnX(
-XXXXXXXXXXXXSESSION.query(forceSubscribe)
-XXXXXXXXXXXX.filter(forceSubscribe.chat_idX==Xchat_id)
-XXXXXXXXXXXX.one()
-XXXXXXXX)
-XXXXexcept:
-XXXXXXXXreturnXNone
-XXXXfinally:
-XXXXXXXXSESSION.close()
+deffs_settings(chat_id):
+try:
+return(
+SESSION.query(forceSubscribe)
+.filter(forceSubscribe.chat_id==chat_id)
+.one()
+)
+except:
+returnNone
+finally:
+SESSION.close()
 
 
-defXadd_channel(chat_id,Xchannel):
-XXXXadderX=XSESSION.query(forceSubscribe).get(chat_id)
-XXXXifXadder:
-XXXXXXXXadder.channelX=Xchannel
-XXXXelse:
-XXXXXXXXadderX=XforceSubscribe(chat_id,Xchannel)
-XXXXSESSION.add(adder)
-XXXXSESSION.commit()
+defadd_channel(chat_id,channel):
+adder=SESSION.query(forceSubscribe).get(chat_id)
+ifadder:
+adder.channel=channel
+else:
+adder=forceSubscribe(chat_id,channel)
+SESSION.add(adder)
+SESSION.commit()
 
 
-defXdisapprove(chat_id):
-XXXXremX=XSESSION.query(forceSubscribe).get(chat_id)
-XXXXifXrem:
-XXXXXXXXSESSION.delete(rem)
-XXXXXXXXSESSION.commit()
+defdisapprove(chat_id):
+rem=SESSION.query(forceSubscribe).get(chat_id)
+ifrem:
+SESSION.delete(rem)
+SESSION.commit()

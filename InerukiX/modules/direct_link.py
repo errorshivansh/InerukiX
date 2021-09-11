@@ -1,100 +1,100 @@
-#XCopyrightX(C)X2021Xerrorshivansh
+#Copyright(C)2021errorshivansh
 
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXre
-fromXrandomXimportXchoice
+importre
+fromrandomimportchoice
 
-importXrequests
-fromXbs4XimportXBeautifulSoup
+importrequests
+frombs4importBeautifulSoup
 
-fromXInerukiX.decoratorXimportXregister
+fromIneruki.decoratorimportregister
 
-fromX.utils.disableXimportXdisableable_dec
-fromX.utils.messageXimportXget_arg
+from.utils.disableimportdisableable_dec
+from.utils.messageimportget_arg
 
 
 @register(cmds="direct")
 @disableable_dec("direct")
-asyncXdefXdirect_link_generator(message):
-XXXXtextX=Xget_arg(message)
+asyncdefdirect_link_generator(message):
+text=get_arg(message)
 
-XXXXifXnotXtext:
-XXXXXXXXmX=X"Usage:X<code>/directX(url)</code>"
-XXXXXXXXawaitXmessage.reply(m)
-XXXXXXXXreturn
+ifnottext:
+m="Usage:<code>/direct(url)</code>"
+awaitmessage.reply(m)
+return
 
-XXXXifXtext:
-XXXXXXXXlinksX=Xre.findall(r"\bhttps?://.*\.\S+",Xtext)
-XXXXelse:
-XXXXXXXXreturn
+iftext:
+links=re.findall(r"\bhttps?://.*\.\S+",text)
+else:
+return
 
-XXXXreplyX=X[]
-XXXXifXnotXlinks:
-XXXXXXXXawaitXmessage.reply("NoXlinksXfound!")
-XXXXXXXXreturn
+reply=[]
+ifnotlinks:
+awaitmessage.reply("Nolinksfound!")
+return
 
-XXXXforXlinkXinXlinks:
-XXXXXXXXifX"sourceforge.net"XinXlink:
-XXXXXXXXXXXXreply.append(sourceforge(link))
-XXXXXXXXelse:
-XXXXXXXXXXXXreply.append(
-XXXXXXXXXXXXXXXXre.findall(r"\bhttps?://(.*?[^/]+)",Xlink)[0]X+X"XisXnotXsupported"
-XXXXXXXXXXXX)
+forlinkinlinks:
+if"sourceforge.net"inlink:
+reply.append(sourceforge(link))
+else:
+reply.append(
+re.findall(r"\bhttps?://(.*?[^/]+)",link)[0]+"isnotsupported"
+)
 
-XXXXawaitXmessage.reply("\n".join(reply))
-
-
-defXsourceforge(url:Xstr)X->Xstr:
-XXXXtry:
-XXXXXXXXlinkX=Xre.findall(r"\bhttps?://.*sourceforge\.net\S+",Xurl)[0]
-XXXXexceptXIndexError:
-XXXXXXXXreplyX=X"NoXSourceForgeXlinksXfound\n"
-XXXXXXXXreturnXreply
-
-XXXXfile_pathX=Xre.findall(r"/files(.*)/download",Xlink)
-XXXXifXnotXfile_path:
-XXXXXXXXfile_pathX=Xre.findall(r"/files(.*)",Xlink)
-XXXXfile_pathX=Xfile_path[0]
-XXXXreplyX=Xf"MirrorsXforX<code>{file_path.split('/')[-1]}</code>\n"
-XXXXprojectX=Xre.findall(r"projects?/(.*?)/files",Xlink)[0]
-XXXXmirrorsX=X(
-XXXXXXXXf"https://sourceforge.net/settings/mirror_choices?"
-XXXXXXXXf"projectname={project}&filename={file_path}"
-XXXX)
-XXXXpageX=XBeautifulSoup(requests.get(mirrors).content,X"lxml")
-XXXXinfoX=Xpage.find("ul",X{"id":X"mirrorList"}).findAll("li")
-
-XXXXforXmirrorXinXinfo[1:]:
-XXXXXXXXnameX=Xre.findall(r"\((.*)\)",Xmirror.text.strip())[0]
-XXXXXXXXdl_urlX=X(
-XXXXXXXXXXXXf'https://{mirror["id"]}.dl.sourceforge.net/project/{project}/{file_path}'
-XXXXXXXX)
-XXXXXXXXreplyX+=Xf'<aXhref="{dl_url}">{name}</a>X'
-XXXXreturnXreply
+awaitmessage.reply("\n".join(reply))
 
 
-defXuseragent():
-XXXXuseragentsX=XBeautifulSoup(
-XXXXXXXXrequests.get(
-XXXXXXXXXXXX"https://developers.whatismybrowser.com/"
-XXXXXXXXXXXX"useragents/explore/operating_system_name/android/"
-XXXXXXXX).content,
-XXXXXXXX"lxml",
-XXXX).findAll("td",X{"class":X"useragent"})
-XXXXuser_agentX=Xchoice(useragents)
-XXXXreturnXuser_agent.text
+defsourceforge(url:str)->str:
+try:
+link=re.findall(r"\bhttps?://.*sourceforge\.net\S+",url)[0]
+exceptIndexError:
+reply="NoSourceForgelinksfound\n"
+returnreply
+
+file_path=re.findall(r"/files(.*)/download",link)
+ifnotfile_path:
+file_path=re.findall(r"/files(.*)",link)
+file_path=file_path[0]
+reply=f"Mirrorsfor<code>{file_path.split('/')[-1]}</code>\n"
+project=re.findall(r"projects?/(.*?)/files",link)[0]
+mirrors=(
+f"https://sourceforge.net/settings/mirror_choices?"
+f"projectname={project}&filename={file_path}"
+)
+page=BeautifulSoup(requests.get(mirrors).content,"lxml")
+info=page.find("ul",{"id":"mirrorList"}).findAll("li")
+
+formirrorininfo[1:]:
+name=re.findall(r"\((.*)\)",mirror.text.strip())[0]
+dl_url=(
+f'https://{mirror["id"]}.dl.sourceforge.net/project/{project}/{file_path}'
+)
+reply+=f'<ahref="{dl_url}">{name}</a>'
+returnreply
+
+
+defuseragent():
+useragents=BeautifulSoup(
+requests.get(
+"https://developers.whatismybrowser.com/"
+"useragents/explore/operating_system_name/android/"
+).content,
+"lxml",
+).findAll("td",{"class":"useragent"})
+user_agent=choice(useragents)
+returnuser_agent.text

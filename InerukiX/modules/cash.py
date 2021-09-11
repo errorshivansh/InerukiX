@@ -1,93 +1,93 @@
-#XCopyrightX(C)X2021Xerrorshivansh
+#Copyright(C)2021errorshivansh
 
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXrequests
-fromXtelethonXimportXtypes
-fromXtelethon.tlXimportXfunctions
+importrequests
+fromtelethonimporttypes
+fromtelethon.tlimportfunctions
 
-fromXInerukiX.configXimportXget_str_key
-fromXInerukiX.services.eventsXimportXregister
-fromXInerukiX.services.telethonXimportXtbot
+fromIneruki.configimportget_str_key
+fromIneruki.services.eventsimportregister
+fromIneruki.services.telethonimporttbot
 
-CASH_API_KEYX=Xget_str_key("CASH_API_KEY",Xrequired=False)
+CASH_API_KEY=get_str_key("CASH_API_KEY",required=False)
 
 
-asyncXdefXis_register_admin(chat,Xuser):
-XXXXifXisinstance(chat,X(types.InputPeerChannel,Xtypes.InputChannel)):
-XXXXXXXXreturnXisinstance(
-XXXXXXXXXXXX(
-XXXXXXXXXXXXXXXXawaitXtbot(functions.channels.GetParticipantRequest(chat,Xuser))
-XXXXXXXXXXXX).participant,
-XXXXXXXXXXXX(types.ChannelParticipantAdmin,Xtypes.ChannelParticipantCreator),
-XXXXXXXX)
-XXXXifXisinstance(chat,Xtypes.InputPeerUser):
-XXXXXXXXreturnXTrue
+asyncdefis_register_admin(chat,user):
+ifisinstance(chat,(types.InputPeerChannel,types.InputChannel)):
+returnisinstance(
+(
+awaittbot(functions.channels.GetParticipantRequest(chat,user))
+).participant,
+(types.ChannelParticipantAdmin,types.ChannelParticipantCreator),
+)
+ifisinstance(chat,types.InputPeerUser):
+returnTrue
 
 
 @register(pattern="^/cash")
-asyncXdefX_(event):
-XXXXifXevent.fwd_from:
-XXXXXXXXreturn
-XXXX"""thisXmethodXofXapproveXsystemXisXmadeXbyX@AyushChatterjee,XgodXwillXcurseXyourXfamilyXifXyouXkangXitXmotherfucker"""
-XXXXifXevent.is_group:
-XXXXXXXXifXawaitXis_register_admin(event.input_chat,Xevent.message.sender_id):
-XXXXXXXXXXXXpass
-XXXXXXXXelse:
-XXXXXXXXXXXXreturn
+asyncdef_(event):
+ifevent.fwd_from:
+return
+"""thismethodofapprovesystemismadeby@AyushChatterjee,godwillcurseyourfamilyifyoukangitmotherfucker"""
+ifevent.is_group:
+ifawaitis_register_admin(event.input_chat,event.message.sender_id):
+pass
+else:
+return
 
-XXXXcmdX=Xevent.text
+cmd=event.text
 
-XXXXargsX=Xcmd.split("X")
+args=cmd.split("")
 
-XXXXifXlen(args)X==X4:
-XXXXXXXXtry:
-XXXXXXXXXXXXorig_cur_amountX=Xfloat(args[1])
+iflen(args)==4:
+try:
+orig_cur_amount=float(args[1])
 
-XXXXXXXXexceptXValueError:
-XXXXXXXXXXXXawaitXevent.reply("InvalidXAmountXOfXCurrency")
-XXXXXXXXXXXXreturn
+exceptValueError:
+awaitevent.reply("InvalidAmountOfCurrency")
+return
 
-XXXXXXXXorig_curX=Xargs[2].upper()
+orig_cur=args[2].upper()
 
-XXXXXXXXnew_curX=Xargs[3].upper()
+new_cur=args[3].upper()
 
-XXXXXXXXrequest_urlX=X(
-XXXXXXXXXXXXf"https://www.alphavantage.co/query"
-XXXXXXXXXXXXf"?function=CURRENCY_EXCHANGE_RATE"
-XXXXXXXXXXXXf"&from_currency={orig_cur}"
-XXXXXXXXXXXXf"&to_currency={new_cur}"
-XXXXXXXXXXXXf"&apikey={CASH_API_KEY}"
-XXXXXXXX)
-XXXXXXXXresponseX=Xrequests.get(request_url).json()
-XXXXXXXXtry:
-XXXXXXXXXXXXcurrent_rateX=Xfloat(
-XXXXXXXXXXXXXXXXresponse["RealtimeXCurrencyXExchangeXRate"]["5.XExchangeXRate"]
-XXXXXXXXXXXX)
-XXXXXXXXexceptXKeyError:
-XXXXXXXXXXXXawaitXevent.reply("CurrencyXNotXSupported.")
-XXXXXXXXXXXXreturn
-XXXXXXXXnew_cur_amountX=Xround(orig_cur_amountX*Xcurrent_rate,X5)
-XXXXXXXXawaitXevent.reply(f"{orig_cur_amount}X{orig_cur}X=X{new_cur_amount}X{new_cur}")
+request_url=(
+f"https://www.alphavantage.co/query"
+f"?function=CURRENCY_ECHANGE_RATE"
+f"&from_currency={orig_cur}"
+f"&to_currency={new_cur}"
+f"&apikey={CASH_API_KEY}"
+)
+response=requests.get(request_url).json()
+try:
+current_rate=float(
+response["RealtimeCurrencyExchangeRate"]["5.ExchangeRate"]
+)
+exceptKeyError:
+awaitevent.reply("CurrencyNotSupported.")
+return
+new_cur_amount=round(orig_cur_amount*current_rate,5)
+awaitevent.reply(f"{orig_cur_amount}{orig_cur}={new_cur_amount}{new_cur}")
 
-XXXXelifXlen(args)X==X1:
-XXXXXXXXawaitXevent.reply(__help__)
+eliflen(args)==1:
+awaitevent.reply(__help__)
 
-XXXXelse:
-XXXXXXXXawaitXevent.reply(
-XXXXXXXXXXXXf"**InvalidXArgs!!:**XRequiredX3XButXPassedX{len(args)X-1}",
-XXXXXXXX)
+else:
+awaitevent.reply(
+f"**InvalidArgs!!:**Required3ButPassed{len(args)-1}",
+)

@@ -1,34 +1,34 @@
-#XCopyrightX(C)X2021XProgrammingError
+#Copyright(C)2021ProgrammingError
 
-#XThisXfileXisXpartXofXInerukiX(TelegramXBot)
+#ThisfileispartofIneruki(TelegramBot)
 
-#XThisXprogramXisXfreeXsoftware:XyouXcanXredistributeXitXand/orXmodify
-#XitXunderXtheXtermsXofXtheXGNUXAfferoXGeneralXPublicXLicenseXas
-#XpublishedXbyXtheXFreeXSoftwareXFoundation,XeitherXversionX3XofXthe
-#XLicense,XorX(atXyourXoption)XanyXlaterXversion.
+#Thisprogramisfreesoftware:youcanredistributeitand/ormodify
+#itunderthetermsoftheGNUAfferoGeneralPublicLicenseas
+#publishedbytheFreeSoftwareFoundation,eitherversion3ofthe
+#License,or(atyouroption)anylaterversion.
 
-#XThisXprogramXisXdistributedXinXtheXhopeXthatXitXwillXbeXuseful,
-#XbutXWITHOUTXANYXWARRANTY;XwithoutXevenXtheXimpliedXwarrantyXof
-#XMERCHANTABILITYXorXFITNESSXFORXAXPARTICULARXPURPOSE.XXSeeXthe
-#XGNUXAfferoXGeneralXPublicXLicenseXforXmoreXdetails.
+#Thisprogramisdistributedinthehopethatitwillbeuseful,
+#butWITHOUTANYWARRANTY;withouteventheimpliedwarrantyof
+#MERCHANTABILITYorFITNESSFORAPARTICULARPURPOSE.Seethe
+#GNUAfferoGeneralPublicLicenseformoredetails.
 
-#XYouXshouldXhaveXreceivedXaXcopyXofXtheXGNUXAfferoXGeneralXPublicXLicense
-#XalongXwithXthisXprogram.XXIfXnot,XseeX<http://www.gnu.org/licenses/>.
+#YoushouldhavereceivedacopyoftheGNUAfferoGeneralPublicLicense
+#alongwiththisprogram.Ifnot,see<http://www.gnu.org/licenses/>.
 
-importXgithubXX#XpyGithub
-fromXpyrogramXimportXfilters
+importgithub#pyGithub
+frompyrogramimportfilters
 
-fromXInerukiX.services.pyrogramXimportXpbotXasXclient
+fromIneruki.services.pyrogramimportpbotasclient
 
 
-@client.on_message(filters.command("contributors")X&X~filters.edited)
-asyncXdefXgive_cobtribs(c,Xm):
-XXXXgX=Xgithub.Github()
-XXXXcoX=X""
-XXXXnX=X0
-XXXXrepoX=Xg.get_repo("errorshivansh/InerukiX")
-XXXXforXiXinXrepo.get_contributors():
-XXXXXXXXnX+=X1
-XXXXXXXXcoX+=Xf"{n}.X[{i.login}](https://github.com/{i.login})\n"
-XXXXtX=Xf"**InerukiXXContributors**\n\n{co}"
-XXXXawaitXm.reply(t,Xdisable_web_page_preview=True)
+@client.on_message(filters.command("contributors")&~filters.edited)
+asyncdefgive_cobtribs(c,m):
+g=github.Github()
+co=""
+n=0
+repo=g.get_repo("errorshivansh/Ineruki")
+foriinrepo.get_contributors():
+n+=1
+co+=f"{n}.[{i.login}](https://github.com/{i.login})\n"
+t=f"**InerukiContributors**\n\n{co}"
+awaitm.reply(t,disable_web_page_preview=True)
